@@ -7,12 +7,13 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
+
 #include <sstream>
+#include <fstream>
 
 namespace xpugi
 {
@@ -75,7 +76,7 @@ namespace xpugi
               const std::string& xml_file,
               bool pretty)
     {
-        boost::filesystem::fstream out;
+        std::ofstream out;
         out.open(xml_file, std::ios_base::out|std::ios_base::binary);
         if (!out.is_open())
         {
@@ -100,7 +101,7 @@ namespace xpugi
               const std::string& xml_file,
               bool pretty /*= false*/)
     {
-        boost::filesystem::fstream out;
+        std::ofstream out;
         out.open(xml_file, std::ios_base::out | std::ios_base::binary);
         if (!out.is_open())
         {
