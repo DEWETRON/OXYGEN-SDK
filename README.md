@@ -2,11 +2,9 @@
 DEWETRON OXYGEN SDK. OXYGEN API description and example sources. 
 
 
-# Prerequisites
-
 # Documentation
 
-# Building
+Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
 # Contact
 
