@@ -18,7 +18,7 @@
 namespace odk
 {
 
-inline oxy::PluginTimestamp getMasterTimestamp(odk::IfHost* host)
+inline odk::Timestamp getMasterTimestamp(odk::IfHost* host)
 {
     auto master_timebase_xml = host->getValue<odk::IfXMLValue>(odk::queries::Oxygen, odk::queries::Oxygen_MasterTimebaseValue);
 
@@ -28,7 +28,7 @@ inline oxy::PluginTimestamp getMasterTimestamp(odk::IfHost* host)
         return {};
     }
 
-    oxy::PluginTimestamp master_timebase;
+    odk::Timestamp master_timebase;
     master_timebase.parse(master_timebase_xml->getValue());
     return master_timebase;
 }

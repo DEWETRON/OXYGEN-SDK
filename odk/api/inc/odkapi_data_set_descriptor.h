@@ -5,7 +5,7 @@
 #include "odkbase_if_value.h"
 
 #include <boost/optional.hpp>
-
+#include <cstdint>
 #include <string>
 #include <vector>
 

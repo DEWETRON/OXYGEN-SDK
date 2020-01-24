@@ -27,10 +27,10 @@ END_CATEGORIES()
 BEGIN_GROUP(plugin_msg)
 
     // PLUGIN SUPPORT
-    MSG_ID(INIT,                       PLUGIN_SUPPORT, 0x000001, "not used (0)", "-", "-",
-            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(INIT,                       PLUGIN_SUPPORT, 0x000001, "not used (0)", "-", "optional; can provide an ErrorValue on problems",
+            "OK (0), INTERNAL_ERROR, UNSUPPORTED_VERSION (plugin not compatible with this Oxygen version)");
     MSG_ID(DEINIT,                     PLUGIN_SUPPORT, 0x000002, "0", "-", "-",
-            "0 if okay; 1 for internal error; 2 for compatibility error");
+            "OK (0), INTERNAL_ERROR");
 
 
     MSG_ID(ACQUISITION_TASK_PROCESS,           ACQUISITION_CONTROL, 0x00000105, "AcquisitionTaskID", " ", " ", "0 if okay");

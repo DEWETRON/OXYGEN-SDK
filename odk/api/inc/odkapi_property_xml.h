@@ -262,7 +262,7 @@ namespace odk
         void setValue(double value);
         /**
          * Returns the value of this property as double
-         * If this property is not of type FLOATING_NUMBER, an exception is thrown
+         * If this property is not of type FLOATING_POINT_NUMBER, an exception is thrown
          */
         double getDoubleValue() const;
 

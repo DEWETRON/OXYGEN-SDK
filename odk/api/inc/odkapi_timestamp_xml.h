@@ -5,13 +5,13 @@
 #include <cstdint>
 #include <string>
 
-namespace oxy
+namespace odk
 {
-    class PluginTimestamp
+    class Timestamp
     {
     public:
-        PluginTimestamp();
-        PluginTimestamp(std::uint64_t ticks, double frequency);
+        Timestamp();
+        Timestamp(std::uint64_t ticks, double frequency);
 
         bool parse(const char* xml_string);
         std::string generate() const;

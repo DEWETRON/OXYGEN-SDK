@@ -6,24 +6,24 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace oxy
+namespace odk
 {
-    PluginTimestamp::PluginTimestamp()
+    Timestamp::Timestamp()
         : m_ticks(0)
         , m_frequency(0.0)
     {}
 
-    PluginTimestamp::PluginTimestamp(std::uint64_t ticks, double frequency)
+    Timestamp::Timestamp(std::uint64_t ticks, double frequency)
         : m_ticks(ticks)
         , m_frequency(frequency)
     {}
 
-    bool PluginTimestamp::timestampValid() const
+    bool Timestamp::timestampValid() const
     {
         return m_frequency > 0;
     }
 
-    bool PluginTimestamp::parse(const char *xml_string)
+    bool Timestamp::parse(const char *xml_string)
     {
         pugi::xml_document doc;
         auto status = doc.load_string(xml_string);
@@ -42,7 +42,7 @@ namespace oxy
         }
     }
 
-    std::string PluginTimestamp::generate() const
+    std::string Timestamp::generate() const
     {
         pugi::xml_document doc;
         auto node = doc.append_child("Timestamp");
@@ -50,13 +50,13 @@ namespace oxy
         return xpugi::toXML(doc);
     }
 
-    void PluginTimestamp::writeTickFrequencyAttributes(pugi::xml_node& node) const
+    void Timestamp::writeTickFrequencyAttributes(pugi::xml_node& node) const
     {
         node.append_attribute("ticks").set_value(m_ticks);
         node.append_attribute("frequency").set_value(m_frequency);
     }
 
-    bool PluginTimestamp::parseTickFrequencyAttributes(const pugi::xml_node& node)
+    bool Timestamp::parseTickFrequencyAttributes(const pugi::xml_node& node)
     {
         m_ticks = 0;
         m_frequency = -1;

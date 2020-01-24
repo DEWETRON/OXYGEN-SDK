@@ -31,6 +31,7 @@ namespace error_codes
 {
     // NOTE: the description strings should match those in the translation file "oxygen_exceptions_en.ts", context PLUGIN_API
     ERROR_ID(NOT_IMPLEMENTED,          GENERIC, 0xffffffffffffffff, "The requested functionality is not implemented by the receiver.");
+    ERROR_ID(OXYNET_NODE_DISABLED,     GENERIC, 0xfffffffffffffffe, "The Oxynet node is disabled");
 
     ERROR_ID(OK,                       GENERIC, 0x00000000, "No error");
     ERROR_ID(INVALID_INPUT_PARAMETER,  GENERIC, 0x00000001, "An input parameter is invalid");
@@ -44,7 +45,7 @@ namespace error_codes
     ERROR_ID(DUPLICATE_CHANNEL,        GENERIC, 0x00000009, "Duplicate channel");
     ERROR_ID(CONFIGURATION_CHANGED,    GENERIC, 0x0000000A, "The configuration has changed");
     ERROR_ID(INVALID_STATE,            GENERIC, 0x0000000B, "Invalid state");
-    ERROR_ID(OXYNET_NODE_DISABLED, GENERIC, 0xfffffffffffffffe, "The Oxynet node is disabled");
+    ERROR_ID(UNSUPPORTED_VERSION,      GENERIC, 0x0000000C, "Unsupported version");
 
 
     ERROR_ID(COMMAND_SPECIFIC_RETURN_BASE, COMMAND_SPECIFIC, 0x00000000, "Commands can use up to 2^48 custom return codes starting at this id");
@@ -66,8 +67,9 @@ namespace error_codes
             ADD_NAMED_ERROR(CONFIGURATION_CHANGED);
             ADD_NAMED_ERROR(OXYNET_NODE_DISABLED);
             ADD_NAMED_ERROR(INVALID_STATE);
-        default:
-            return nullptr;
+            ADD_NAMED_ERROR(UNSUPPORTED_VERSION);
+            default:
+                return nullptr;
         }
     }
 }

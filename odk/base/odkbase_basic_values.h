@@ -30,7 +30,7 @@ namespace odk
     public:
         static const Type type_index = Type::TYPE_BOOL;
     };
-    
+
     class IfUIntValue : public IfValue
     {
     public:
@@ -118,7 +118,7 @@ namespace odk
 #endif
     };
 
-    
+
     /**
      * Represents a scalar value consisting of a floating point value and its unit as a string.
      * The unit is typically specified according to the SI format; unitless values should use an empty string or nullptr.
@@ -133,6 +133,25 @@ namespace odk
     public:
         static const Type type_index = Type::TYPE_SCALAR;
     };
+
+    /**
+     * Represents a scalar range consisting of two floating point values (min and max)
+     *   and two units (one for min, one for max) as a string.
+     * The unit is typically specified according to the SI format; unitless values should use an empty string or nullptr.
+     */
+    class IfScalarRange : public IfValue
+    {
+    public:
+        virtual double PLUGIN_API getMin() const = 0;
+        virtual double PLUGIN_API getMax() const = 0;
+        virtual const char* PLUGIN_API getMinUnit() const = 0;
+        virtual const char* PLUGIN_API getMaxUnit() const = 0;
+        virtual void PLUGIN_API set(double min, double max, const char* min_unit, const char* max_unit) = 0;
+
+    public:
+        static const Type type_index = Type::TYPE_RANGE;
+    };
+
 
     /**
      * Similar to IfScalarValue, but the numeric amount is stored in rational representation to reduce inaccuracies.
