@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Software Channel Plugins &mdash; Oxygen SDK 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/oxygen.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Oxygen Channel Configuration" href="channel_configuration.html" />
+    <link rel="prev" title="Build Instructions" href="build_instructions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Oxygen SDK
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software Channel Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#output-channels">Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-channels">Input Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#softwarechannelinstance-lifecycle">SoftwareChannelInstance Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-processing">Data processing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">Template: Empty Software Channel Plugin</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Oxygen SDK</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Software Channel Plugins</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="software-channel-plugins">
+<h1>Software Channel Plugins<a class="headerlink" href="#software-channel-plugins" title="Permalink to this headline">¶</a></h1>
+<p>SoftwareChannelPlugin is a framework support class including several helpers used to simplify read, process and/or write channel data from/to Oxygen.
+At runtime, depending on the current Oxygen setup, there can be multiple instances of one SoftwareChannelPlugin active, each acting independently.</p>
+<p>From a user perspective, an instance is created using the AddChannel Dialog (‘+’ button) in the Oxygen channellist.</p>
+<dl class="simple">
+<dt>Possible use cases are, for example:</dt><dd><ul class="simple">
+<li><p>Read channel data from Oxygen and forward them to an external interface</p></li>
+<li><p>Provide channels with simulated data read from a text file</p></li>
+<li><p>Process channel data from Oxygen in an custom calculation and write back the results as channels</p></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="output-channels">
+<h2>Output Channels<a class="headerlink" href="#output-channels" title="Permalink to this headline">¶</a></h2>
+<p>A SoftwareChannelPlugin instance can provide 1 to n output channels which are then available in Oxygen.
+One root channel of the instance is automatically added by the framework to act as an anchor point for the instance.
+Additional channels can be added as children of the root channel as needed.
+Output channels can provide configuration parameters and sample data in various formats.
+See <a class="reference internal" href="channel_configuration.html#channel-data-format"><span class="std std-ref">Data Format</span></a>
+By default, the root channel does not act as a data channel providing samples but can be configured to do so like every other output channel.</p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Configuration parameters can be added to every output channel, including the root channel.
+These configuration parameters are automatically available in Oxygen and get stored in the Oxygen setup file.</p>
+<p>See <a class="reference internal" href="channel_configuration.html"><span class="doc">Oxygen Channel Configuration</span></a></p>
+</div>
+<div class="section" id="input-channels">
+<h2>Input Channels<a class="headerlink" href="#input-channels" title="Permalink to this headline">¶</a></h2>
+<p>To request channels as input channels and fetch data from them, the channel id of the desired channel has to be contained in a
+ChannelID (for single channel) or ChannelIDList (for multiple channels) config item.
+This channels will get fetched automatically and data will be provided in the process() call.</p>
+<p>Additionally, in case of a config change of one of the input channels, the instance will get the opportunity to react in an update() call.</p>
+</div>
+<div class="section" id="softwarechannelinstance-lifecycle">
+<h2>SoftwareChannelInstance Lifecycle<a class="headerlink" href="#softwarechannelinstance-lifecycle" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/software_channel_instance_lifecycle.png" src="_images/software_channel_instance_lifecycle.png" />
+<dl>
+<dt>create</dt><dd><p>Called once on creation of the instance as first entry point.
+This can be triggered either by creating via GUI or by loading an Oxygen config file containing a software channel instance.</p>
+<p>All static configuration should happen in here.</p>
+<p>E.g.:
+- If the plugin provides 2 output channels, regardless of configuration and input, they should be configured here.</p>
+</dd>
+<dt>init</dt><dd><p>Called after creation over GUI and used to set up the instance based on the user selected input channels.</p>
+</dd>
+<dt>configure</dt><dd><p>Called after creation on setup load. A complete set of the stored parameters is provided to restore the state of the instance.
+There are some helper functions available to extract channel and config parameters and apply them.</p>
+</dd>
+<dt>update</dt><dd><p>called every time a configuration parameter of the instance or an input channel changes.
+Should be used to update the dynamic state of the instance:</p>
+<ul class="simple">
+<li><p>update config parameters</p></li>
+<li><p>add/remove/update output channels depending on configuration</p></li>
+</ul>
+<p>e.g.: input channel unit has changed, adapt unit of output channel</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="data-processing">
+<h2>Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h2>
+<p>If a SoftwareChannelInstance is configured and valid, it takes part in the Oxygen acquisition loop.</p>
+<img alt="_images/software_channel_instance_data_processing.png" src="_images/software_channel_instance_data_processing.png" />
+<dl class="simple">
+<dt>initTimebases</dt><dd><p>Called once per acquisition run when all input channel timebases are ready and used to determine the timebases of the output channels</p>
+</dd>
+<dt>prepareProcessing</dt><dd><p>Called once per acquisition run, used to set up the instance for processing (create buffers, …)</p>
+</dd>
+<dt>process</dt><dd><p>Called periodically as long as the acquisition is running.
+Adding samples to output channels must be done in here.
+ProcessingContext provides current time information and all new data of the requested input channels since the last call.</p>
+</dd>
+<dt>stopProcessing</dt><dd><p>Called once per acquisition run, used to clean up the instance</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="channel_configuration.html" class="btn btn-neutral float-right" title="Oxygen Channel Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="build_instructions.html" class="btn btn-neutral float-left" title="Build Instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, DEWETRON GmbH
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
