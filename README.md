@@ -1,10 +1,44 @@
 # DEWETRON OXYGEN SDK
-DEWETRON OXYGEN SDK. OXYGEN API description and example sources. 
+Develop your own plugins for DEWETRON Oxygen Software! The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
-
-# Documentation
+The following functionality is currently supported in the SDK and 'Oxygen 5.0.2 Developer Edition':
+- Read and Write data from/to numeric channels (Scalar and Vector)
+- Create channels
+- Create config items for setup save/load and user config 
+  * Numeric, Text, Channel List
+- Get Access to full channel list (read only)
+- Get Timebase and start time for sample placing
+- Log into Oxygen Logfile
 
 Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
+
+Several advanced features are not yet available:
+- Offline use
+- Create an export plugin
+- Create an advanced GUI
+- Create an instrument
+- Marker management
+- Start/Stop measurement or other application control
+- Licensing
+- ...
+
+If you are interested in one of the non-implemented features, please contact us!
+
+
+# What is DEWETRON Oxygen Software?
+The OXYGEN measurement software is the most intuitive and easy-to-use software in the data acquisition sector, designed to be operated via touchscreen or classic mouse and keyboard. Its nice instruments and controls make it fun to navigate through tons of data. 100 % Made in Austria by DEWETRON.
+
+Check out https://www.dewetron.com/products/oxygen-measurement-software/ for more information.
+
+
+# How to get Oxygen Software?
+The current version of Oxygen for SDK users can be downloaded from the customer care center portal at https://ccc.dewetron.com/
+
+- Create a user account
+- Navigate to DOWNLOADS -> SOFTWARE & TOOLS -> OXYGEN
+(https://ccc.dewetron.com/pl/oxygen)
+- Click on DEWETRON Oxygen R5.0.2 Developer Edition in the SDK Version category
+
 
 # Contact
 
@@ -32,7 +66,7 @@ gunther.laure@dewetron.com
 # License
 MIT License
 
-Copyright (c) 2019 DEWETRON
+Copyright (c) 2020 DEWETRON
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

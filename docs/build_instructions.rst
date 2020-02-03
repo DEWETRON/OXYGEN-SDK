@@ -13,8 +13,10 @@ Windows:
   * Source files for Boost C++ Libraries 1.70 or later
     (https://www.boost.org/users/history/version_1_70_0.html)
 
-Make sure Visual Studio and CMake are installed
-and the cmake command can be run from the command prompt.
+Make sure Visual Studio and CMake are installed.
+Please verify that the ``cmake`` command can be run from the command prompt.
+If this does not work you have use the 'Add CMake to the system PATH' option
+during installation or add it to the PATH manually.
 
 
 --------------------------------------------
