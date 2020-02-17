@@ -66,7 +66,7 @@ endif()
 if(WIN32)
   # BOOST
   if(NOT DEFINED BOOST_ROOT)
-    file(GLOB BOOST_PATHS ${ODK_ROOT}/3rdparty/boost_1_*)
+    file(GLOB BOOST_PATHS "${SW_APP_ROOT}/opt/include/boost/boost-1_*" "${ODK_ROOT}/3rdparty/boost_1_*")
     #message("BOOSTS: ${BOOST_PATHS}")
     find_path(BOOST_ROOT NAMES "boost/smart_ptr.hpp" PATHS ${BOOST_PATHS})
     #message("BOOST_ROOT: ${BOOST_ROOT}")

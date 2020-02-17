@@ -7,26 +7,16 @@ if(my_module_CommonVars_included)
 endif(my_module_CommonVars_included)
 set(my_module_CommonVars_included true)
 
-# set ARCH_LIB
-if (BUILD_X64)
-  set(ARCH_LIB lib64)
-endif()
-
-if (BUILD_X86)
-  set(ARCH_LIB lib)
-endif()
-
 # guess SW_APP_ROOT
 if (NOT DEFINED SW_APP_ROOT)
-  get_filename_component(SW_APP_ROOT ../.. ABSOLUTE)
+  file(GLOB FIND_APP_ROOT_PUGI_PATHS "${ODK_ROOT}/../../../3rdparty/pugixml-*" "${ODK_ROOT}/3rdparty/pugixml-*")
+  find_path(FIND_APP_ROOT_PUGI_ROOT NAMES "src/pugixml.hpp" PATHS ${FIND_APP_ROOT_PUGI_PATHS})
+
+  get_filename_component(SW_APP_ROOT "${FIND_APP_ROOT_PUGI_ROOT}/../.." ABSOLUTE)
 endif ()
 
 if (NOT DEFINED LIB_ROOT)
   get_filename_component(LIB_ROOT ${SW_APP_ROOT}/lib ABSOLUTE)
-endif ()
-
-if (NOT DEFINED API_ROOT)
-  get_filename_component(API_ROOT ${SW_APP_ROOT}/api ABSOLUTE)
 endif ()
 
 #
@@ -47,10 +37,6 @@ if (NOT DEFINED OPT_ROOT)
   endif()
 else()
   get_filename_component(OPT_ROOT ${OPT_ROOT} ABSOLUTE)
-endif ()
-
-if (NOT DEFINED WIN_CPP_RUNTIME)
-  get_filename_component(WIN_CPP_RUNTIME ${SW_APP_ROOT}/packaging/Win/bin/CPPRuntime ABSOLUTE)
 endif ()
 
 # determine build type: release, debug
