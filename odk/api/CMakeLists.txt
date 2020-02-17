@@ -19,8 +19,8 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_channel_mapping_xml.h
     inc/odkapi_config_item_keys.h
     inc/odkapi_data_set_xml.h
-    inc/odkapi_data_set_descriptor.h
-    inc/odkapi_data_set_descriptor_fwd.h
+    inc/odkapi_data_set_descriptor_xml.h
+    inc/odkapi_data_set_descriptor_xml_fwd.h
     inc/odkapi_error_codes.h
     inc/odkapi_event_ids.h
     inc/odkapi_message_ids.h
@@ -49,7 +49,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_channel_list_xml.cpp
     src/odkapi_channel_mapping_xml.cpp
     src/odkapi_data_set_xml.cpp
-    src/odkapi_data_set_descriptor.cpp
+    src/odkapi_data_set_descriptor_xml.cpp
     src/odkapi_property_xml.cpp
     src/odkapi_property_list_xml.cpp
     src/odkapi_software_channel_xml.cpp

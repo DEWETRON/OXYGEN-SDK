@@ -1,6 +1,6 @@
 // Copyright DEWETRON GmbH 2017
 #include "odkfw_stream_reader.h"
-#include "odkapi_data_set_descriptor.h"
+#include "odkapi_data_set_descriptor_xml.h"
 #include "odkuni_assert.h"
 
 #include <stdexcept>

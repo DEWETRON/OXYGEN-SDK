@@ -1,7 +1,7 @@
 // Copyright DEWETRON GmbH 2019
 #pragma once
 
-#include "odkapi_data_set_descriptor.h"
+#include "odkapi_data_set_descriptor_xml.h"
 #include "odkapi_timestamp_xml.h"
 #include "odkapi_update_channels_xml.h"
 #include "odkbase_basic_values.h"

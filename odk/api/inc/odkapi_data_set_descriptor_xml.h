@@ -1,7 +1,7 @@
 // Copyright DEWETRON GmbH 2017
 #pragma once
 
-#include "odkapi_data_set_descriptor_fwd.h"
+#include "odkapi_data_set_descriptor_xml_fwd.h"
 #include "odkbase_if_value.h"
 
 #include <boost/optional.hpp>
@@ -72,7 +72,7 @@ namespace odk
         std::uint32_t m_dimension;
 
         /// Position of timestamp value relative to sample position
-        boost::optional<std::uint32_t> m_timestamp_position;
+        boost::optional<std::int32_t> m_timestamp_position;
 
         bool operator==(const ChannelDescriptor& other) const;
         bool operator!=(const ChannelDescriptor& other) const;

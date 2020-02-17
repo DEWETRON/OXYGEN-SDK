@@ -1,6 +1,6 @@
 // Copyright DEWETRON GmbH 2017
 
-#include "odkapi_data_set_descriptor.h"
+#include "odkapi_data_set_descriptor_xml.h"
 #include "odkuni_assert.h"
 
 #include "odkuni_xpugixml.h"
