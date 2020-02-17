@@ -1,1 +1,3 @@
-﻿docs/build
+﻿3rdparty/boost*
+**/build
+
