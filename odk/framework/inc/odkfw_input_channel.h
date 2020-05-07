@@ -50,6 +50,8 @@ namespace framework
 
         bool isUsable();
 
+        bool isIdValid();
+
         odk::ChannelDataformat getDataFormat();
 
         odk::Timebase getTimeBase();
@@ -66,26 +68,33 @@ namespace framework
 
     private:
         template <class T>
-        odk::detail::ApiObjectPtr<const T> getInputChannelParam(std::uint64_t channel_id, const char* const key)
+        odk::detail::ApiObjectPtr<const T> getInputChannelParam(const char* const key)
         {
-            std::string channel_context = odk::queries::OxygenChannels;
-            channel_context += "#";
-            channel_context += std::to_string(channel_id);
+            if (isIdValid())
+            {
+                std::string channel_context = odk::queries::OxygenChannels;
+                channel_context += "#";
+                channel_context += std::to_string(getChannelId());
 
-            return m_host->getValue<T>(channel_context.c_str(), key);
+                return m_host->getValue<T>(channel_context.c_str(), key);
+            }
+            return odk::detail::ApiObjectPtr<const T>{};
         }
 
         template <class T>
-        odk::detail::ApiObjectPtr<const T> getInputChannelConfigParam(std::uint64_t channel_id, const char* const key)
+        odk::detail::ApiObjectPtr<const T> getInputChannelConfigParam(const char* const key)
         {
-            std::string channel_context = odk::queries::OxygenChannels;
-            channel_context += "#";
-            channel_context += std::to_string(channel_id);
-            channel_context += "#Config#";
-            channel_context += key;
+            if (isIdValid())
+            {
+                std::string channel_context = odk::queries::OxygenChannels;
+                channel_context += "#";
+                channel_context += std::to_string(getChannelId());
+                channel_context += "#Config#";
+                channel_context += key;
 
-
-            return m_host->getValue<T>(channel_context.c_str(), "Value");
+                return m_host->getValue<T>(channel_context.c_str(), "Value");
+            }
+            return odk::detail::ApiObjectPtr<const T>{};
         }
 
         std::string extractDataFormat(const odk::IfXMLValue& xml_value) const;

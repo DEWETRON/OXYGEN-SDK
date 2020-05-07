@@ -51,7 +51,6 @@ namespace queries
 
     STATIC_CONTEXT( OxygenChannels, "#Oxygen#Channels", "References the channel list");
     READ_ONLY_PROPERTY( OxygenChannels,  AllIds,                    IfXMLValue,            "Returns a list of all channel ids");
-    READ_ONLY_PROPERTY( OxygenChannels,  AllDataFormats,            IfXMLValue,            "Returns a list all channel ids including the data format for each channel");
     READ_ONLY_PROPERTY( OxygenChannels,  AllItemsEx,                IfXMLValue,            "Read the current value of all items as an xml document for each channel");
     READ_ONLY_PROPERTY( OxygenChannels,  AllConstraintsEx,          IfXMLValue,            "Read the constraints of all items as an xml document for each channel");
     READ_ONLY_PROPERTY( OxygenChannels,  AllTimebasesEx,            IfXMLValue,            "Read the timebase information (frequency, parents) required to convert channel ticks into seconds relative to acquisition start");

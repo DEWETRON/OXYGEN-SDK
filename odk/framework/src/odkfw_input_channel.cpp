@@ -17,13 +17,18 @@ namespace framework
 
     bool InputChannel::isUsable()
     {
-        const auto is_usable = getInputChannelParam<odk::IfBooleanValue>(m_input_channel_data.m_channel_id, "Usable");
+        const auto is_usable = getInputChannelParam<odk::IfBooleanValue>("Usable");
         if (is_usable)
         {
             return is_usable->getValue();
         }
 
         return false;
+    }
+
+    bool InputChannel::isIdValid()
+    {
+        return getChannelId() != std::numeric_limits<uint64>::max();
     }
 
     odk::ChannelDataformat InputChannel::getDataFormat()
@@ -38,7 +43,7 @@ namespace framework
 
     bool InputChannel::updateTimeBase()
     {
-        const auto timebase_xml = getInputChannelParam<odk::IfXMLValue>(m_input_channel_data.m_channel_id, "Timebase");
+        const auto timebase_xml = getInputChannelParam<odk::IfXMLValue>("Timebase");
 
         if (timebase_xml)
         {
@@ -59,20 +64,23 @@ namespace framework
 
     bool InputChannel::updateDataFormat()
     {
-        const auto data_format_xml = getInputChannelParam<odk::IfXMLValue>(m_input_channel_data.m_channel_id, "DataFormat");
+        const auto data_format_xml = getInputChannelParam<odk::IfXMLValue>("DataFormat");
         if (!data_format_xml)
         {
             return false;
         }
 
-        const auto data_format_extracted = extractDataFormat(*data_format_xml);
-
         odk::ChannelDataformat dataformat_bak(m_input_channel_data.dataformat);
 
-        if (!m_input_channel_data.dataformat.parse(data_format_extracted.c_str()))
+        if (!m_input_channel_data.dataformat.parse(data_format_xml->getValue()))
         {
-            m_input_channel_data.dataformat = dataformat_bak;
-            return false;
+            //corrupt or legacy xml
+            const auto data_format_extracted = extractDataFormat(*data_format_xml);
+            if (!m_input_channel_data.dataformat.parse(data_format_extracted.c_str()))
+            {
+                m_input_channel_data.dataformat = dataformat_bak;
+                return false;
+            }
         }
         return true;
     }
@@ -82,8 +90,7 @@ namespace framework
         if (m_input_channel_data.dataformat.m_sample_value_type ==
             odk::ChannelDataformat::SampleValueType::SAMPLE_VALUE_SCALAR)
         {
-            if (const auto range_xml =
-                getInputChannelParam<odk::IfXMLValue>(m_input_channel_data.m_channel_id, "Range"))
+            if (const auto range_xml = getInputChannelParam<odk::IfXMLValue>("Range"))
             {
                 pugi::xml_document doc;
                 auto status = doc.load_string(range_xml->getValue());
@@ -104,8 +111,7 @@ namespace framework
         }
         else
         {
-            if (const auto range_val =
-                getInputChannelConfigParam<odk::IfScalarRange>(m_input_channel_data.m_channel_id,"Range"))
+            if (const auto range_val = getInputChannelConfigParam<odk::IfScalarRange>("Range"))
             {
                 odk::Property range_property("Range",
                     odk::Range(range_val->getMin(), range_val->getMax(),
@@ -119,7 +125,7 @@ namespace framework
 
     const std::string InputChannel::getUnit()
     {
-        if (const auto unit = getInputChannelParam<odk::IfStringValue>(m_input_channel_data.m_channel_id, "Unit"))
+        if (const auto unit = getInputChannelParam<odk::IfStringValue>("Unit"))
         {
             return unit->getValue();
         }
@@ -128,7 +134,7 @@ namespace framework
 
     const std::string InputChannel::getName()
     {
-        if (const auto unit = getInputChannelParam<odk::IfStringValue>(m_input_channel_data.m_channel_id, "Name"))
+        if (const auto unit = getInputChannelParam<odk::IfStringValue>("Name"))
         {
             return unit->getValue();
         }
