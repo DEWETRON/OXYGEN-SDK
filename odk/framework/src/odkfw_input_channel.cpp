@@ -28,7 +28,7 @@ namespace framework
 
     bool InputChannel::isIdValid()
     {
-        return getChannelId() != std::numeric_limits<uint64>::max();
+        return getChannelId() != std::numeric_limits<std::uint64_t>::max();
     }
 
     odk::ChannelDataformat InputChannel::getDataFormat()
