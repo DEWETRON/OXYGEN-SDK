@@ -72,7 +72,7 @@ namespace odk
 
         SampleFormat m_sample_format = SampleFormat::INVALID;
         SampleValueType m_sample_value_type = SampleValueType::SAMPLE_VALUE_INVALID;
-        std::uint32_t m_sample_dimension = -1;
+        std::uint32_t m_sample_dimension = 0;
         SampleOccurrence m_sample_occurrence = SampleOccurrence::INVALID;
         SampleReducedFormat m_sample_reduced_format = SampleReducedFormat::UNKNOWN;
 
