@@ -638,6 +638,11 @@ namespace framework
         return {};
     }
 
+    std::string SoftwareChannelInstance::getKeyFromOutputChannel(const PluginChannelPtr channel) const
+    {
+        return std::dynamic_pointer_cast<EditableStringProperty>(channel->getProperty(INSTANCE_CHANNEL_KEY))->getValue();
+    }
+
 }
 }
 

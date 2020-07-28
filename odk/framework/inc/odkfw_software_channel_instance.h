@@ -265,6 +265,12 @@ namespace framework
          */
         PluginChannelPtr getOutputChannelByKey(const std::string& key) const;
 
+        /**
+        * Get the key specified on AddChannel for a given channel
+        * @param channel
+        */
+        std::string getKeyFromOutputChannel(const PluginChannelPtr channel) const;
+
     private:
 
         template<class SoftwareChannelInstance>
