@@ -96,12 +96,15 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-wav-export">Example: WAV Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">Template: Empty Software Channel Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html#template-empty-export-plugin">Template: Empty Export Plugin</a></li>
 </ul>
 
             
@@ -175,11 +178,14 @@
 <li><p>CMake 3.1 or later (<a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>)</p></li>
 <li><p>Source files for Boost C++ Libraries 1.70 or later
 (<a class="reference external" href="https://www.boost.org/users/history/version_1_70_0.html">https://www.boost.org/users/history/version_1_70_0.html</a>)</p></li>
+<li><p>Qt 5.12.x (<a class="reference external" href="https://www.qt.io/download-qt-installer">https://www.qt.io/download-qt-installer</a>)</p></li>
 </ul>
 </dd>
 </dl>
-<p>Make sure Visual Studio and CMake are installed
-and the cmake command can be run from the command prompt.</p>
+<p>Make sure Visual Studio and CMake are installed.
+Please verify that the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> command can be run from the command prompt.
+If this does not work you have use the ‘Add CMake to the system PATH’ option
+during installation or add it to the PATH manually.</p>
 </div>
 <div class="section" id="quick-summary-for-experienced-c-developers">
 <h2>Quick Summary for Experienced C++ Developers<a class="headerlink" href="#quick-summary-for-experienced-c-developers" title="Permalink to this headline">¶</a></h2>
@@ -187,8 +193,11 @@ and the cmake command can be run from the command prompt.</p>
 <div><ul class="simple">
 <li><p>Boost has to be extracted to to find the header files at
 {repo-root}\3rdparty\boost_1_*\boost</p></li>
+<li><p>Qt 5.12.x has to be installed on the system.
+This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\Qt\5.12.6\msvc2017_64)</p></li>
 <li><p>Main CMakeLists.txt file in root directory of the repository
-references the SDK and all example plugins.</p></li>
+references the SDK and all example plugins.
+Run cmbuild with the option -DCMAKE_PREFIX_PATH={QT_DIR}.</p></li>
 <li><p>Each example directory contains a CMakeLists.txt that can be
 used directly to build just that example and the necessary dependencies.</p></li>
 <li><p>Plugins are built to {solution-folder}\{build-type}\plugins\*.plugin
@@ -209,6 +218,7 @@ to c:\OXYGEN-SDK.</p>
 c:\OXYGEN-SDK\3rdparty\boost_1_70_0\boost\align.hpp exists
 to make sure the extracted paths are correct.</p>
 </li>
+<li><p>Install Qt to c:\Qt\5.12.6.</p></li>
 <li><p>Open a command line prompt and change to the directory c:\OXYGEN-SDK</p></li>
 <li><p>Create a new directory ‘build’ and change to c:\OXYGEN-SDK\build</p>
 <blockquote>
@@ -218,7 +228,7 @@ to make sure the extracted paths are correct.</p>
 </li>
 <li><p>Generate a Visual Studio solution by using the following command:</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">..</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-DCMAKE_PREFIX_PATH=c:\\Qt\\5.12.6\\msvc2017_64</span> <span class="pre">..</span></code></p>
 </div></blockquote>
 <p>If CMake encounters an error you need to fix the issue and then invoke</p>
 <blockquote>

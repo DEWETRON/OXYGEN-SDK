@@ -38,7 +38,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Oxygen Channel Configuration" href="channel_configuration.html" />
+    <link rel="next" title="Export Plugins" href="export_plugin.html" />
     <link rel="prev" title="Build Instructions" href="build_instructions.html" /> 
 </head>
 
@@ -98,12 +98,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#data-processing">Data processing</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-wav-export">Example: WAV Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">Template: Empty Software Channel Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html#template-empty-export-plugin">Template: Empty Export Plugin</a></li>
 </ul>
 
             
@@ -215,11 +218,18 @@ This can be triggered either by creating via GUI or by loading an Oxygen config 
 </dd>
 <dt>configure</dt><dd><p>Called after creation on setup load. A complete set of the stored parameters is provided to restore the state of the instance.
 There are some helper functions available to extract channel and config parameters and apply them.</p>
+<p>When loading a setup the framework will call updatePropertyTypes() for each loaded plugin output channel.
+Due to ambiguity in regard to ODK property types the framework loads properties with a placeholder type and the
+plugin is responsible to exchange this placeholder with the property data type it expects to work with.</p>
+<p>As property-constraints are not serialized to the setup file, all static constraints need to be re-established after loading.
+The framework will call the function updateStaticPropertyConstraints() for each plugin ouput channel.
+More dynamic constraints need to be handled during update().</p>
 </dd>
 <dt>update</dt><dd><p>called every time a configuration parameter of the instance or an input channel changes.
 Should be used to update the dynamic state of the instance:</p>
 <ul class="simple">
 <li><p>update config parameters</p></li>
+<li><p>update config constraints</p></li>
 <li><p>add/remove/update output channels depending on configuration</p></li>
 </ul>
 <p>e.g.: input channel unit has changed, adapt unit of output channel</p>
@@ -253,7 +263,7 @@ ProcessingContext provides current time information and all new data of the requ
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="channel_configuration.html" class="btn btn-neutral float-right" title="Oxygen Channel Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="export_plugin.html" class="btn btn-neutral float-right" title="Export Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="build_instructions.html" class="btn btn-neutral float-left" title="Build Instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

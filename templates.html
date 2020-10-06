@@ -90,19 +90,31 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-wav-export">Example: WAV Export</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Template: Empty Software Channel Plugin</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#descriptive-legend-of-elements-to-fill-in">Descriptive Legend of Elements to fill in</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#elements-in-the-cpp-file">Elements in the *.cpp file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#descriptive-legend-of-elements-to-fill-in">Descriptive Legend of Elements to Fill In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#elements-in-the-cpp-file">Elements in the *.cpp File</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#plugin-manifest">Plugin_Manifest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getsoftwarechannelinfo">getSoftwareChannelInfo()</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#elements-in-the-cmakelists-txt-file">Elements in the CmakeLists.txt file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#elements-in-the-cmakelists-txt-file">Elements in the CMakeLists.txt File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#template-empty-export-plugin">Template: Empty Export Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Descriptive Legend of Elements to Fill In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Elements in the *.cpp File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Plugin_Manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">getSoftwareChannelInfo()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">Elements in the CMakeLists.txt File</a></li>
 </ul>
 </li>
 </ul>
@@ -178,10 +190,10 @@ in all elements, that are marked with $ODK_REPLACE_ME$.</p>
 ($[IDENTIFIER]$, eg $GUID$) as an easy reference in the descriptive legend.</p>
 <p>This replacement is necessary in both - the cmake file, and in the *.cpp file.</p>
 <div class="section" id="descriptive-legend-of-elements-to-fill-in">
-<h2>Descriptive Legend of Elements to fill in<a class="headerlink" href="#descriptive-legend-of-elements-to-fill-in" title="Permalink to this headline">¶</a></h2>
+<h2>Descriptive Legend of Elements to Fill In<a class="headerlink" href="#descriptive-legend-of-elements-to-fill-in" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="elements-in-the-cpp-file">
-<h2>Elements in the *.cpp file<a class="headerlink" href="#elements-in-the-cpp-file" title="Permalink to this headline">¶</a></h2>
+<h2>Elements in the *.cpp File<a class="headerlink" href="#elements-in-the-cpp-file" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="plugin-manifest">
 <h3>Plugin_Manifest<a class="headerlink" href="#plugin-manifest" title="Permalink to this headline">¶</a></h3>
 <dl>
@@ -191,7 +203,7 @@ and will not be dipslayed to the user.</p>
 (that is for configuration items declared and managed by the plugin)</p>
 <p>It <em>shall</em> follow this pattern, to ensure sufficient
 uniqueness: <em>COMPANYID_PLUGIN_NAME</em></p>
-<p>eg: “MYCOMPANY_AN_EXAMPLE_PLUGIN”</p>
+<p>e.g.: “MYCOMPANY_AN_EXAMPLE_PLUGIN”</p>
 <dl class="simple">
 <dt><em>Allowed charachters</em>:</dt><dd><ul class="simple">
 <li><p>Upper case alphabetic charachters</p></li>
@@ -209,22 +221,24 @@ uniqueness: <em>COMPANYID_PLUGIN_NAME</em></p>
 </dd>
 </dl>
 </dd>
-<dt><strong>$PLUGIN_GUID$</strong>:</dt><dd><p>a GUID, used to identify the plugin (eg. in stored setup-files, etc)
-eg: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
+<dt><strong>$PLUGIN_GUID$</strong>:</dt><dd><p>a GUID, used to identify the plugin (eg. in stored setup-files, etc)</p>
+<p>e.g.: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
+<p>The GUID generator in Visual Studio (Tools -&gt; Create GUID) can be used to generate this value.
+Use the ‘Registry Format’ and replace the curly braces with double quotes.</p>
 </dd>
 <dt><strong>$PLUGIN_NAME$</strong>:</dt><dd><p>The human readable name of the plugin. This name will be shown in the
-plugin-overview (“System Settings”/”Extensions and Plugins”/”Overview”)
-eg: “Example Plugin”</p>
+plugin-overview (“System Settings”/”Extensions and Plugins”/”Overview”)</p>
+<p>e.g.: “Example Plugin”</p>
 </dd>
-<dt><strong>$VENDOR_NAME$</strong>:</dt><dd><p>This information will be shown in the plugin-overview as “Vendor”.
-eg: “My Company”</p>
+<dt><strong>$VENDOR_NAME$</strong>:</dt><dd><p>This information will be shown in the plugin-overview as “Vendor”.</p>
+<p>e.g.: “My Company”</p>
 </dd>
 <dt><strong>$PLUGIN_DESCRIPTION$</strong>:</dt><dd><p>This information will be shown in the plugin-overview. as a more
-elaborate description, than the name.
-eg: “This plugin is an empty example, and does nothing at all.”</p>
+elaborate description, than the name.</p>
+<p>e.g.: “This plugin is an empty example, and does nothing at all.”</p>
 </dd>
-<dt><strong>$MIN_HOST_VERSION$</strong>:</dt><dd><p>The minimum Oxygen version required to run this plugin
-eg: “5.0.1”</p>
+<dt><strong>$MIN_HOST_VERSION$</strong>:</dt><dd><p>The minimum Oxygen version required to run this plugin</p>
+<p>e.g.: “5.0.2”</p>
 </dd>
 </dl>
 </div>
@@ -248,12 +262,106 @@ The string does not support control-characters for carriage-return/line-feed.</p
 </div>
 </div>
 <div class="section" id="elements-in-the-cmakelists-txt-file">
-<h2>Elements in the CmakeLists.txt file<a class="headerlink" href="#elements-in-the-cmakelists-txt-file" title="Permalink to this headline">¶</a></h2>
-<p><em>$LIBNAME$</em></p>
+<h2>Elements in the CMakeLists.txt File<a class="headerlink" href="#elements-in-the-cmakelists-txt-file" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><em>$LIBNAME$</em></dt><dd><p>Name of the project and the resulting .plugin</p>
+</dd>
+<dt><em>$VS_PROJECT_GUID$</em>:</dt><dd><p>A GUID, necessary for Visual Studio to keep track of files in
+multi-project-workspaces.</p>
+<p>e.g.: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
+</dd>
+<dt><em>$PLUGIN_SOURCE_FILES$</em>:</dt><dd><p>Add here all necessary source-files of the plugin.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="template-empty-export-plugin">
+<h1>Template: Empty Export Plugin<a class="headerlink" href="#template-empty-export-plugin" title="Permalink to this headline">¶</a></h1>
+<p>This is an empty plugin-project to be used as a template for
+writing your own plugins.</p>
+<p>This project does not compile, nor does it provide any funtionality.</p>
+<p>Please copy the whole folder, rename as appropriate, and fill
+in all elements, that are marked with $ODK_REPLACE_ME$.</p>
+<p>Those marked elements are also marked with an identifier
+($[IDENTIFIER]$, eg $GUID$) as an easy reference in the descriptive legend.</p>
+<p>This replacement is necessary in both - the cmake file, and in the *.cpp file.</p>
+<div class="section" id="id1">
+<h2>Descriptive Legend of Elements to Fill In<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="id2">
+<h2>Elements in the *.cpp File<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Plugin_Manifest<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt><strong>$UNIQUE_PLUGIN_NAME$</strong>:</dt><dd><p>a (short)name of the plugin. This is only used internally,
+and will not be dipslayed to the user.</p>
+<p>It <em>shall</em> be used to prefix custom configuration-keys
+(that is for configuration items declared and managed by the plugin)</p>
+<p>It <em>shall</em> follow this pattern, to ensure sufficient
+uniqueness: <em>COMPANYID_PLUGIN_NAME</em></p>
+<p>e.g.: “MYCOMPANY_AN_EXAMPLE_PLUGIN”</p>
 <dl class="simple">
-<dt><em>$VS_PROJECT_GUID$</em>:</dt><dd><p>a GUID, necessary for visual-studio to keep track of files in
-multi-project-worksapces.
-eg: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
+<dt><em>Allowed charachters</em>:</dt><dd><ul class="simple">
+<li><p>Upper case alphabetic charachters</p></li>
+<li><p>underscores</p></li>
+</ul>
+</dd>
+<dt>To avoid conflicts with Oxygen-internal data or Dewetron-supplied plugins following COMPANYID prefixes are reserved:</dt><dd><ul class="simple">
+<li><p>OXY</p></li>
+<li><p>OXYGEN</p></li>
+<li><p>NEON</p></li>
+<li><p>DEWETRON</p></li>
+<li><p>DEWE</p></li>
+<li><p>DW</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><strong>$PLUGIN_GUID$</strong>:</dt><dd><p>a GUID, used to identify the plugin (eg. in stored setup-files, etc)</p>
+<p>e.g.: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
+<p>The GUID generator in Visual Studio (Tools -&gt; Create GUID) can be used to generate this value.
+Use the ‘Registry Format’ and replace the curly braces with double quotes.</p>
+</dd>
+<dt><strong>$PLUGIN_NAME$</strong>:</dt><dd><p>The human readable name of the plugin. This name will be shown in the
+plugin-overview (“System Settings”/”Extensions and Plugins”/”Overview”)</p>
+<p>e.g.: “Example Plugin”</p>
+</dd>
+<dt><strong>$VENDOR_NAME$</strong>:</dt><dd><p>This information will be shown in the plugin-overview as “Vendor”.</p>
+<p>e.g.: “My Company”</p>
+</dd>
+<dt><strong>$PLUGIN_DESCRIPTION$</strong>:</dt><dd><p>This information will be shown in the plugin-overview. as a more
+elaborate description, than the name.</p>
+<p>e.g.: “This plugin is an empty example, and does nothing at all.”</p>
+</dd>
+<dt><strong>$MIN_HOST_VERSION$</strong>:</dt><dd><p>The minimum Oxygen version required to run this plugin</p>
+<p>e.g.: “5.0.2”</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="id4">
+<h3>getSoftwareChannelInfo()<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>$REGISTER_EXPORT_FORMAT_NAME$</strong>:</dt><dd><p>This name will be displayed in the export format list</p>
+</dd>
+<dt><strong>$REGISTER_EXPORT_FORMAT_ID$</strong>:</dt><dd><p>Plugin unique id of the format</p>
+</dd>
+<dt><strong>$REGISTER_EXPORT_FILE_EXTENSION$</strong>:</dt><dd><p>Extension of the resulting exported file</p>
+</dd>
+<dt><strong>$REGISTER_EXPORT_UI_ITEM_SMALL$</strong>:</dt><dd><p>UI item shown in the export sidebar tab (used for additional configuration)</p>
+</dd>
+<dt><strong>$REGISTER_EXPORT_UI_ITEM_LARGE$</strong>:</dt><dd><p>UI item shown in the fullscreen export tab (used for additional configuration)</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>Elements in the CMakeLists.txt File<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><em>$LIBNAME$</em></dt><dd><p>Name of the project and the resulting .plugin</p>
+</dd>
+<dt><em>$VS_PROJECT_GUID$</em>:</dt><dd><p>A GUID, necessary for Visual Studio to keep track of files in
+multi-project-workspaces.</p>
+<p>e.g.: “5D75B044-B52E-4721-B594-666E3B413FE3”</p>
 </dd>
 <dt><em>$PLUGIN_SOURCE_FILES$</em>:</dt><dd><p>Add here all necessary source-files of the plugin.</p>
 </dd>

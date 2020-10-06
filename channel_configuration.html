@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Translation" href="translation.html" />
-    <link rel="prev" title="Software Channel Plugins" href="software_channel_plugin.html" /> 
+    <link rel="prev" title="Export Plugins" href="export_plugin.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Oxygen Channel Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#config-items">Config Items</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#name-key">Name / Key</a></li>
@@ -118,7 +119,9 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-wav-export">Example: WAV Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">Template: Empty Software Channel Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html#template-empty-export-plugin">Template: Empty Export Plugin</a></li>
 </ul>
 
             
@@ -385,6 +388,14 @@ regardless of the frequency.</p>
 <p>If a synchronous channel uses a Time Base frequency of 2 Hz the
 first three samples at tick 0, 1 &amp; 2 are shown at 0.0s, 0.5s
 and 1.0s in all instruments.</p>
+<p>Other channels or modules may rely on the timebase information
+of the plugins output channels. For example a user might want
+to perform an FFT calculation on the output channel.
+As a consequence, the timebase of synchronous output channels should
+be set as early as possible. In a typical SoftwareChannel implementation
+this means updating the timebase during an update() call.
+For synchronous channels the call to setSimpleTimebase of an output channel
+automatically updates the “SampleRate” property of the given channel.</p>
 </div>
 </div>
 
@@ -399,7 +410,7 @@ and 1.0s in all instruments.</p>
         <a href="translation.html" class="btn btn-neutral float-right" title="Translation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="software_channel_plugin.html" class="btn btn-neutral float-left" title="Software Channel Plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="export_plugin.html" class="btn btn-neutral float-left" title="Export Plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

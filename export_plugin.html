@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>About OxygenSDK &mdash; Oxygen SDK 1.0 documentation</title>
+  <title>Export Plugins &mdash; Oxygen SDK 1.0 documentation</title>
   
 
   
@@ -35,11 +35,11 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="author" title="About these documents" href="#" />
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Build Instructions" href="build_instructions.html" />
-    <link rel="prev" title="OxygenSDK Index" href="index.html" /> 
+    <link rel="next" title="Oxygen Channel Configuration" href="channel_configuration.html" />
+    <link rel="prev" title="Software Channel Plugins" href="software_channel_plugin.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,13 +88,14 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">About OxygenSDK</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#structure-of-the-repository">Structure of the Repository</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Export Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#export-transaction">Export transaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-settings-gui">Custom Settings GUI</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
@@ -148,7 +149,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>About OxygenSDK</li>
+      <li>Export Plugins</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,63 +166,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="about-oxygensdk">
-<h1>About OxygenSDK<a class="headerlink" href="#about-oxygensdk" title="Permalink to this headline">¶</a></h1>
-<p>This documentation describes plugin development for the
-DEWETRON Oxygen measurement software using the OxygenSDK (ODK).
-More detailed information about Oxygen can be found at
-<a class="reference external" href="https://www.dewetron.com/products/software-choices/oxygen/">https://www.dewetron.com/products/software-choices/oxygen/</a></p>
-<div class="section" id="structure-of-the-repository">
-<h2>Structure of the Repository<a class="headerlink" href="#structure-of-the-repository" title="Permalink to this headline">¶</a></h2>
-<p>/odk/uni</p>
-<blockquote>
-<div><p>Contains some low-level utility functions to work with strings,
-xml and UUIDs.</p>
-</div></blockquote>
-<p>/odk/base</p>
-<blockquote>
-<div><p>Basic data structures that are used for communication between a host
-application and its plugins.</p>
-</div></blockquote>
-<p>/odk/api</p>
-<blockquote>
-<div><p>The actual interface for Oxygen and Oxygen plugins. Describes messages
-that may be used in both directions and queries to read system information
-from Oxygen. Since some complex commands use XML parameters this
-library also includes (de-)serialization classes for most of them.</p>
-<p>These are still low level commands that should only be used directly if
-some task cannot be solved using the framework functionality.</p>
-</div></blockquote>
-<p>/odk/framework</p>
-<blockquote>
-<div><p>This library contains support classes that make plugin development
-much easier.</p>
-<p>The base classes, such as <a class="reference internal" href="software_channel_plugin.html"><span class="doc">SoftwareChannelPlugin</span></a>, are tailored for common
-types of plugins and implement basic tasks in order to allow the
-plugin developer to focus on the new functionality.</p>
-<p>Additional helper objects simplify reading input data or exposing
-config items.</p>
-</div></blockquote>
-<p>/<a class="reference internal" href="examples.html"><span class="doc">examples</span></a></p>
-<blockquote>
-<div><p>Source code for several small plugins is provided here to demonstrate
-different scenarios for using the ODK framework.</p>
-</div></blockquote>
-<p>/3rdparty</p>
-<blockquote>
-<div><p>Contains the source code of third party libraries that are required
-to build the SDK projects.</p>
-<p>pugixml is a fast XML parser for C++ and included on GitHub.</p>
-<p>ODK also requires some parts of the Boost C++ libraries which should
-be extracted to this directory.
-Check out the
-<a class="reference internal" href="build_instructions.html"><span class="doc">build instructions</span></a>
-for details.</p>
-</div></blockquote>
-<p>/docs</p>
-<blockquote>
-<div><p>ODK documentation source files</p>
-</div></blockquote>
+  <div class="section" id="export-plugins">
+<h1>Export Plugins<a class="headerlink" href="#export-plugins" title="Permalink to this headline">¶</a></h1>
+<p>ExportPlugin is a framework support class including several helpers used to simplify export of channel data from Oxygen to custom data formats.</p>
+<div class="section" id="export-transaction">
+<h2>Export transaction<a class="headerlink" href="#export-transaction" title="Permalink to this headline">¶</a></h2>
+<p>An export transaction consists of 3 calls:</p>
+<dl>
+<dt>validate</dt><dd><p>Exporter has to validate itself with the given context and return the result and possible warning/error messages to further describe the result.
+Checks of support for the given channels, formats, custom settings etc. provided by the context object should be made here.</p>
+<p>This could be called multiple times without an actual export happening to inform the user about the state.</p>
+</dd>
+<dt>exportData</dt><dd><p>One call for the actual export of data. All needed information about metadata, channels, settings etc. is provided via the context object.
+Channel data gets automatically fetched from oxygen and is accessible via iterators.</p>
+</dd>
+<dt>cancel</dt><dd><p>Called if export transaction gets cancelled by the user. All necessary cleanup tasks should be handled here (file deletion, etc.)</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="custom-settings-gui">
+<h2>Custom Settings GUI<a class="headerlink" href="#custom-settings-gui" title="Permalink to this headline">¶</a></h2>
+<p>If an export plugin needs some custom configuration from the user, a custom QML GUI element can be provided via export registration telegram.
+Separate elements can be provided for the small and fullscreen export tab in oxygen if needed.</p>
+<p>For creation and registration of custom UI elements see QML UI elements.</p>
+<p>Custom configuration properties can be specified in that element and are automatically provided to the plugin in the context object of the validate and exportData calls.
+The enable that, the following QML properties, functions and signal handlers need to be implemented by the root QML element:</p>
+<dl class="simple">
+<dt>property var customProperties</dt><dd><p>Object which holds the custom properties, see QPropertyList</p>
+</dd>
+<dt>readonly property bool settingsValid</dt><dd><p>Indicator if the currently selected GUI settings are valid</p>
+</dd>
+<dt>function applyDefaults()</dt><dd><p>All custom properties with their default values have to be set in here</p>
+</dd>
+<dt>onCustomPropertiesChanged</dt><dd><p>Called if the custom properties changed and used to update the custom GUI accordingly</p>
+</dd>
+</dl>
 </div>
 </div>
 
@@ -233,10 +212,10 @@ for details.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="build_instructions.html" class="btn btn-neutral float-right" title="Build Instructions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="channel_configuration.html" class="btn btn-neutral float-right" title="Oxygen Channel Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="OxygenSDK Index" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="software_channel_plugin.html" class="btn btn-neutral float-left" title="Software Channel Plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

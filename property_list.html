@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>About OxygenSDK &mdash; Oxygen SDK 1.0 documentation</title>
+  <title>odk::PropertyList &mdash; Oxygen SDK 1.0 documentation</title>
   
 
   
@@ -35,11 +35,9 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="author" title="About these documents" href="#" />
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Build Instructions" href="build_instructions.html" />
-    <link rel="prev" title="OxygenSDK Index" href="index.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,11 +85,8 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">About OxygenSDK</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#structure-of-the-repository">Structure of the Repository</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
@@ -148,7 +143,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>About OxygenSDK</li>
+      <li>odk::PropertyList</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,63 +160,102 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="about-oxygensdk">
-<h1>About OxygenSDK<a class="headerlink" href="#about-oxygensdk" title="Permalink to this headline">¶</a></h1>
-<p>This documentation describes plugin development for the
-DEWETRON Oxygen measurement software using the OxygenSDK (ODK).
-More detailed information about Oxygen can be found at
-<a class="reference external" href="https://www.dewetron.com/products/software-choices/oxygen/">https://www.dewetron.com/products/software-choices/oxygen/</a></p>
-<div class="section" id="structure-of-the-repository">
-<h2>Structure of the Repository<a class="headerlink" href="#structure-of-the-repository" title="Permalink to this headline">¶</a></h2>
-<p>/odk/uni</p>
-<blockquote>
-<div><p>Contains some low-level utility functions to work with strings,
-xml and UUIDs.</p>
-</div></blockquote>
-<p>/odk/base</p>
-<blockquote>
-<div><p>Basic data structures that are used for communication between a host
-application and its plugins.</p>
-</div></blockquote>
-<p>/odk/api</p>
-<blockquote>
-<div><p>The actual interface for Oxygen and Oxygen plugins. Describes messages
-that may be used in both directions and queries to read system information
-from Oxygen. Since some complex commands use XML parameters this
-library also includes (de-)serialization classes for most of them.</p>
-<p>These are still low level commands that should only be used directly if
-some task cannot be solved using the framework functionality.</p>
-</div></blockquote>
-<p>/odk/framework</p>
-<blockquote>
-<div><p>This library contains support classes that make plugin development
-much easier.</p>
-<p>The base classes, such as <a class="reference internal" href="software_channel_plugin.html"><span class="doc">SoftwareChannelPlugin</span></a>, are tailored for common
-types of plugins and implement basic tasks in order to allow the
-plugin developer to focus on the new functionality.</p>
-<p>Additional helper objects simplify reading input data or exposing
-config items.</p>
-</div></blockquote>
-<p>/<a class="reference internal" href="examples.html"><span class="doc">examples</span></a></p>
-<blockquote>
-<div><p>Source code for several small plugins is provided here to demonstrate
-different scenarios for using the ODK framework.</p>
-</div></blockquote>
-<p>/3rdparty</p>
-<blockquote>
-<div><p>Contains the source code of third party libraries that are required
-to build the SDK projects.</p>
-<p>pugixml is a fast XML parser for C++ and included on GitHub.</p>
-<p>ODK also requires some parts of the Boost C++ libraries which should
-be extracted to this directory.
-Check out the
-<a class="reference internal" href="build_instructions.html"><span class="doc">build instructions</span></a>
-for details.</p>
-</div></blockquote>
-<p>/docs</p>
-<blockquote>
-<div><p>ODK documentation source files</p>
-</div></blockquote>
+  <div class="section" id="odk-propertylist">
+<span id="property-list-type"></span><h1>odk::PropertyList<a class="headerlink" href="#odk-propertylist" title="Permalink to this headline">¶</a></h1>
+<p>Property list is a flexible container that can be used to exchange structured data
+between Oxygen and its plugins. For example it is used in custom plugin requests
+to send request parameters and return values beween a QML item and its
+associated plugin.</p>
+<div class="section" id="usage-in-c-and-qml">
+<h2>Usage in C++ and QML<a class="headerlink" href="#usage-in-c-and-qml" title="Permalink to this headline">¶</a></h2>
+<p>Property list is a sorted list of Key-Value pairs with typed values.
+The methods described in this section are identical for instances in C++ and QML.</p>
+<div class="section" id="supported-value-types">
+<h3>Supported Value Types<a class="headerlink" href="#supported-value-types" title="Permalink to this headline">¶</a></h3>
+<p>The data types described in this section are supported for values in the list and
+are referenced by the placeholder XY in the following document:</p>
+<dl>
+<dt>Bool</dt><dd><p>Boolean value</p>
+<p>Default value: false</p>
+</dd>
+<dt>Signed</dt><dd><p>Signed integer value</p>
+<p>C++ type: std::int64_t</p>
+<p>QML type: Number; <strong>cannot precisely represent the full 64bit range</strong></p>
+<p>Default value: 0</p>
+</dd>
+<dt>Unsigned</dt><dd><p>Unsigned integer value</p>
+<p>C++ type: std::uint64_t</p>
+<p>QML type: Number; <strong>cannot precisely represent the full 64bit range</strong></p>
+<p>Default value: 0</p>
+</dd>
+<dt>Double</dt><dd><p>Double precision floating point value</p>
+<p>C++ type: double</p>
+<p>QML type: Number</p>
+<p>Default value: NaN</p>
+</dd>
+<dt>String</dt><dd><p>String of Unicode characters. This can be used to store xml documents if required.</p>
+<p>C++ type: std::string in <strong>UTF-8 encoding</strong></p>
+<p>QML type: String</p>
+<p>Default value: “”</p>
+</dd>
+<dt>Scalar</dt><dd><p>Numeric value with an associated unit string (usually SI compatible)</p>
+<p>C++ type: odk::Scalar</p>
+<p>QML type: object with properties value (Number) and unit (String)</p>
+<p>Default value: value 0 with no unit</p>
+</dd>
+<dt>ChannelId</dt><dd><p>Unique id of an oxygen channel.</p>
+<p>C++ type: std::uint64_t</p>
+<p>QML type: <strong>string</strong>; string representation of the id</p>
+<p>Default value: 0 or “”</p>
+</dd>
+<dt>PropertyList</dt><dd><p>A property list value, which can be used to construct hierarchical structures.
+Values of this type are always copied, therefore it is not possible to manipulate
+a list in place.</p>
+<p>Default value: empty list</p>
+</dd>
+</dl>
+<p>Error value for QML per type</p>
+</div>
+<div class="section" id="basic-methods">
+<h3>Basic Methods<a class="headerlink" href="#basic-methods" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>empty()</dt><dd><p>returns true if the container constains no elements</p>
+</dd>
+<dt>clear()</dt><dd><p>removes all elements in the container</p>
+</dd>
+<dt>setXY(name, value)</dt><dd><p>appends a value of type XY to the list using key name.
+If name is not empty any other items with same name are removed.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="index-based-access">
+<h3>Index-based Access<a class="headerlink" href="#index-based-access" title="Permalink to this headline">¶</a></h3>
+<p>If values are appended with empty keys, the values are accessible by their 0-based index.</p>
+<dl class="simple">
+<dt>size()</dt><dd><p>returns the number of values in the container</p>
+</dd>
+<dt>getXY(index)</dt><dd><p>returns the value at position index</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="key-based-access">
+<h3>Key-based Access<a class="headerlink" href="#key-based-access" title="Permalink to this headline">¶</a></h3>
+<p>Values that are stored using a unique key can be retrieved using key-based methods.</p>
+<dl class="simple">
+<dt>containsPropery(name)</dt><dd><p>returns true if key name is associated with a value</p>
+</dd>
+<dt>getXY(name)</dt><dd><p>returns the value stored under this name, if the types matches.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="advanced-usage-in-c">
+<h2>Advanced Usage in C++<a class="headerlink" href="#advanced-usage-in-c" title="Permalink to this headline">¶</a></h2>
+<p>The C++ interface provides additional methods to get direct
+access to the underlying odk::Property objects, update
+values in place and handle additional data types.</p>
+<p>These features are usually not necessary to implement plugins using
+the provided framework classes.</p>
 </div>
 </div>
 
@@ -230,15 +264,6 @@ for details.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="build_instructions.html" class="btn btn-neutral float-right" title="Build Instructions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral float-left" title="OxygenSDK Index" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
