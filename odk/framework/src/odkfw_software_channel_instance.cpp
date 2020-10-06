@@ -64,11 +64,11 @@ namespace framework
         }
 
         // for every stream, create a reader on the data blocks and read the data
-        for (const auto& stream_descriptor : stream_descriptor)
+        for (const auto& sd : stream_descriptor)
         {
-            stream_reader.setStreamDescriptor(stream_descriptor);
+            stream_reader.setStreamDescriptor(sd);
 
-            for (auto& channel : stream_descriptor.m_channel_descriptors)
+            for (auto& channel : sd.m_channel_descriptors)
             {
                 // for every channel, create a channel iterator and read all samples
                 iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id);
@@ -78,30 +78,23 @@ namespace framework
         return iterators;
     }
 
-
-    void SoftwareChannelInstance::ProcessingContext::setStreamDescriptors(std::vector<odk::StreamDescriptor> stream_descriptors)
+    std::vector<std::uint32_t> SoftwareChannelInstance::getChannelsToDelete(std::vector<std::uint32_t> requested_chanels)
     {
-        m_stream_descriptors = stream_descriptors;
-    }
-
-    bool SoftwareChannelInstance::ProcessingContext::setBlockList(const odk::IfDataBlockList* block_list)
-    {
-        const auto block_count = block_list->getBlockCount();
-
-        auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
-        BlockListDescriptor list_descriptor;
-        list_descriptor.parse(block_list_descriptor_xml->getValue());
-
-        if (list_descriptor.m_windows.empty())
+        const auto root = getRootChannel();
+        if (requested_chanels.size() == 0 || !root)
         {
-            return false;
+            return {};
         }
 
-        m_window.first = list_descriptor.m_windows.front().m_begin;
-        m_window.second = list_descriptor.m_windows.back().m_end;
+        //if any selected, all are meant (original behaviour)
+        std::vector < std::uint32_t> channels_to_delete;
+        const auto all_channels = getOutputChannels();
+        for (const auto a_channel : all_channels)
+        {
+            channels_to_delete.push_back(a_channel->getLocalId());
+        }
 
-        m_channel_iterators = createChannelIterators(m_stream_descriptors, block_list);
-        return true;
+        return channels_to_delete;
     }
 
     SoftwareChannelInstance::~SoftwareChannelInstance()
@@ -155,7 +148,7 @@ namespace framework
         }
 
         initTimebases(host);
-        m_plugin_channels->synchronize();
+        m_plugin_channels->synchronize(false);
     }
 
     void SoftwareChannelInstance::onStartProcessing(odk::IfHost* host, std::uint64_t token)
@@ -258,12 +251,21 @@ namespace framework
 
                 if (auto block_list = odk::value_cast<odk::IfDataBlockList>(response))
                 {
-                    context.setStreamDescriptors(m_dataset_descriptor->m_stream_descriptors);
-                    if (!context.setBlockList(block_list))
+                    auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
+                    BlockListDescriptor list_descriptor;
+                    list_descriptor.parse(block_list_descriptor_xml->getValue());
+
+                    if (list_descriptor.m_windows.empty())
                     {
                         response->release();
                         return;
                     }
+
+                    context.m_window.first = list_descriptor.m_windows.front().m_begin;
+                    context.m_window.second = list_descriptor.m_windows.back().m_end;
+
+                    context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors, block_list);
+
                     process(context, host);
                     current_time = context.m_window.second;
                     response->release();
@@ -425,6 +427,12 @@ namespace framework
         return m_output_channels;
     }
 
+    std::string SoftwareChannelInstance::getKey(const PluginChannelPtr &channel) const
+    {
+        const auto& key_property = std::dynamic_pointer_cast<EditableStringProperty>(channel->getProperty(INSTANCE_CHANNEL_KEY));
+        return key_property->getValue();
+    }
+
     void SoftwareChannelInstance::fetchInputChannels()
     {
         clearRequestedInputChannels();
@@ -557,8 +565,7 @@ namespace framework
 
     void SoftwareChannelInstance::configureFromTelegram(const UpdateChannelsTelegram& request, std::map<uint32_t, uint32_t>& channel_id_map)
     {
-        createChannelsFromTelegram(request);
-        createMappingByKey(request, channel_id_map);
+        createChannelsFromTelegram(request, channel_id_map);
         updatePropertiesfromTelegram(request, channel_id_map);
     }
 
@@ -573,19 +580,32 @@ namespace framework
         }
     }
 
-    void SoftwareChannelInstance::createChannelsFromTelegram(const UpdateChannelsTelegram& request)
+    void SoftwareChannelInstance::createChannelsFromTelegram(const UpdateChannelsTelegram& request, std::map<uint32_t, uint32_t>& channel_id_map)
     {
         for (auto &requested_channel : request.m_channels)
         {
             const std::string key = requested_channel.m_channel_config.getProperty(INSTANCE_CHANNEL_KEY)->getStringValue();
             if(!getOutputChannelByKey(key))
             {
-                const auto& parent_channel = getOutputChannel(requested_channel.m_local_parent_id);
-                auto output_channel = addOutputChannel(key, parent_channel);
-                output_channel->setDefaultName(requested_channel.m_default_name)
+                const auto original_parent_id = requested_channel.m_local_parent_id;
+                const auto parent_id_it = channel_id_map.find(original_parent_id);
+                if (parent_id_it != channel_id_map.end())
+                {
+                    const auto parent_id = parent_id_it->second;
+
+                    const auto& parent_channel = getOutputChannel(parent_id);
+                    auto output_channel = addOutputChannel(key, parent_channel);
+                    output_channel->setDefaultName(requested_channel.m_default_name)
                         .setSampleFormat(requested_channel.m_dataformat_info.m_sample_occurrence,
-                                         requested_channel.m_dataformat_info.m_sample_format,
-                                         requested_channel.m_dataformat_info.m_sample_dimension);
+                            requested_channel.m_dataformat_info.m_sample_format,
+                            requested_channel.m_dataformat_info.m_sample_dimension);
+
+                    channel_id_map[requested_channel.m_local_id] = output_channel->getLocalId();
+                }
+                else
+                {
+                    ODK_ASSERT_FAIL("Unable to determine Parent");
+                }
             }
         }
     }
@@ -600,9 +620,27 @@ namespace framework
             {
                 for(const auto& property : requested_channel.m_channel_config.m_properties)
                 {
-                    if(auto destination_property = output_channel->getProperty(property.getName()))
+                    const auto property_name(property.getName());
+                    if(!output_channel->getProperty(property_name))
                     {
-                        destination_property->update(property);
+                        output_channel->addProperty(property_name, std::make_shared<RawPropertyHolder>());
+                    }
+                }
+
+                output_channel->updatePropertyTypes();
+                updatePropertyTypes(output_channel);
+                updateStaticPropertyConstraints(output_channel);
+
+                for (const auto& property : requested_channel.m_channel_config.m_properties)
+                {
+                    const auto property_name(property.getName());
+                    if (auto destination_property = output_channel->getProperty(property_name))
+                    {
+                        ODK_VERIFY(destination_property->update(property));
+                    }
+                    else
+                    {
+                        ODK_ASSERT_FAIL("Unable to configure property %s", property_name.c_str());
                     }
                 }
             }
@@ -636,6 +674,55 @@ namespace framework
             return *match;
         }
         return {};
+    }
+
+    namespace
+    {
+        void doGetChildrenOfChannel(
+            PluginChannelPtr parent_candidate,
+            const std::vector<PluginChannelPtr>& all_output_channels,
+            bool recursive,
+            std::vector<PluginChannelPtr>& children)
+        {
+            for (const auto a_channel : all_output_channels)
+            {
+                auto output_parent = a_channel->getLocalParent();
+                if (output_parent)
+                {
+                    if (output_parent->getLocalId() == parent_candidate->getLocalId())
+                    {
+                        children.push_back(a_channel);
+                        if (children.size() > all_output_channels.size())
+                        {
+                            throw std::domain_error("Cyclic dependency between channels detected");
+                        }
+
+                        if (recursive)
+                        {
+                            doGetChildrenOfChannel(a_channel, all_output_channels, recursive, children);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::vector<PluginChannelPtr> SoftwareChannelInstance::getChildrenOfChannel(uint32_t local_id, bool recursive) const
+    {
+        std::vector<PluginChannelPtr> children;
+        const auto parent_candidate = getOutputChannel(local_id);
+        ODK_ASSERT(parent_candidate);
+        if (parent_candidate)
+        {
+            doGetChildrenOfChannel(parent_candidate, m_output_channels, recursive, children);
+        }
+
+        return children;
+    }
+
+    odk::IfHost* SoftwareChannelInstance::getHost()
+    {
+        return m_host;
     }
 
 }

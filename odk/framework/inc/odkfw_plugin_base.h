@@ -1,15 +1,16 @@
 // Copyright DEWETRON GmbH 2019
 #pragma once
 
+#include "odkbase_api_object_ptr.h"
 #include "odkbase_if_plugin.h"
 #include "odkapi_error_codes.h"
 #include "odkapi_message_ids.h"
 
-#include "odkfw_channels.h"
 #include "odkfw_if_message_handler.h"
 
 #include <memory>
 #include <set>
+#include <string>
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -65,10 +66,8 @@ namespace framework
     public:
         PluginBase()
             : m_host(nullptr)
-            , m_plugin_channels(std::make_shared<odk::framework::PluginChannels>())
             , m_registered(false)
         {
-            m_message_handlers.insert(m_plugin_channels);
         }
 
         // only override for special message handling; normal stuff should register handlers
@@ -95,26 +94,32 @@ namespace framework
             return m_host;
         }
 
-        PluginChannelsPtr getPluginChannels()
+        void addTranslation(const char* translation_xml);
+        void addQtResources(const void* rcc, std::uint64_t rcc_size);
+
+        void PLUGIN_API setPluginHost(odk::IfHost* host) override
         {
-            return m_plugin_channels;
+            m_host = host;
+            for (auto& handler : m_message_handlers)
+            {
+                handler->setHost(host);
+            }
+        }
+
+        void addMessageHandler(std::shared_ptr<IfMessageHandler> handler)
+        {
+            m_message_handlers.insert(handler);
+            handler->setHost(getHost());
         }
 
     private:
-        void PLUGIN_API setPluginHost(odk::IfHost* host) final
-        {
-            m_host = host;
-            m_plugin_channels->setPluginHost(m_host);
-        }
-
         std::uint64_t PLUGIN_API pluginMessage(
             odk::PluginMessageId id, std::uint64_t key,
             const odk::IfValue* param, const odk::IfValue** ret) final;
 
     private:
         odk::IfHost* m_host;
-        std::set<std::shared_ptr<oxy::IfMessageHandler>> m_message_handlers;
-        PluginChannelsPtr m_plugin_channels;
+        std::set<std::shared_ptr<IfMessageHandler>> m_message_handlers;
         bool m_registered;
     };
 

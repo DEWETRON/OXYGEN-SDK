@@ -44,6 +44,12 @@ namespace detail
         return detail::ApiObjectPtr<T>(p);
     }
 
+    template <class T>
+    detail::ApiObjectPtr<T> ptr_add_ref(T* p)
+    {
+        return detail::ApiObjectPtr<T>(p, true);
+    }
+
     template <class T, class O>
     detail::ApiObjectPtr<T> api_ptr_cast(const detail::ApiObjectPtr<O>& ptr)
     {

@@ -15,17 +15,17 @@ namespace odk
             : m_value(nullptr)
         {
         }
-        operator const odk::IfValue**()
-        {
-            return &m_value;
-        }
-        bool valid()
+        bool valid() const
         {
             return m_value && m_value->getType() == T::type_index;
         }
         operator bool() const
         {
-            return valid;
+            return valid();
+        }
+        const odk::IfValue** data()
+        {
+            return &m_value;
         }
         const T* operator->()
         {

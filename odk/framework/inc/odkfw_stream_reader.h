@@ -46,10 +46,14 @@ namespace framework
         * and sets sample count for given channel
         */
         StreamIterator createChannelIterator(std::uint64_t channel_id, std::uint64_t& sample_count) const;
+
+        void updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, std::uint64_t& sample_count) const;
         /**
          * Returns true if the channel is included in the stream descriptor
          */
         bool hasChannel(std::uint64_t channel_id) const;
+
+        void clearBlocks();
 
     private:
         const ChannelDescriptor* getChannelDescriptor(std::uint64_t channel_id) const;

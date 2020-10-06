@@ -3,6 +3,8 @@
 
 #include "odkfw_interfaces.h"
 
+#include <regex>
+
 namespace odk
 {
 namespace framework
@@ -53,14 +55,36 @@ namespace framework
         IfChannelPropertyChangeListener* m_change_listener;
     };
 
+    // This property is not intended to be used directly
+    // The ODK-Framework will use this property on Load-Setup, das detailed information
+    // about the actual type is plugin-knowledge
+    class RawPropertyHolder : public PropertyBase
+    {
+    public:
+        explicit RawPropertyHolder();
+        explicit RawPropertyHolder(const odk::Property& value);
+
+        bool update(const odk::Property& value) override;
+
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+        odk::Property getProperty() const;
+
+    private:
+        odk::Property m_value;
+    };
+
     class EditableUnsignedProperty : public PropertyBase
     {
     public:
+        explicit EditableUnsignedProperty(const RawPropertyHolder& value);
         explicit EditableUnsignedProperty(unsigned int val, unsigned int mi = 1, unsigned int ma = 0);
 
         unsigned int getValue() const;
 
         void setValue(unsigned int v);
+
+        void setMinMaxConstraint(unsigned int min = 1, unsigned int max = 0);
 
         void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
@@ -74,13 +98,42 @@ namespace framework
         unsigned int m_max;
     };
 
+    class EditableFloatingPointProperty : public PropertyBase
+    {
+    public:
+        //TODO limit constraints
+        explicit EditableFloatingPointProperty(const RawPropertyHolder& value);
+        explicit EditableFloatingPointProperty(const float value);
+
+        float getValue() const;
+
+        void setValue(const float value);
+
+        void setMinMaxConstraint(float min = 1.0, float max = 0.0);
+
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+        bool update(const odk::Property& value) override;
+
+        bool hasValidRange() const;
+
+    private:
+        float m_value;
+        float m_min;
+        float m_max;
+    };
+
     class EditableScalarProperty : public PropertyBase
     {
     public:
+        explicit EditableScalarProperty(const RawPropertyHolder& value);
         explicit EditableScalarProperty(double val, const std::string& unit, double mi = 1.0, double ma = 0.0);
+        explicit EditableScalarProperty(odk::Scalar scalar, double mi = 1.0, double ma = 0.0);
 
         odk::Scalar getValue() const;
         void setValue(const odk::Scalar& s);
+
+        void setMinMaxConstraint(double min = 1, double max = 0);
 
         void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
@@ -101,6 +154,7 @@ namespace framework
     class EditableStringProperty : public PropertyBase
     {
     public:
+        explicit EditableStringProperty(const RawPropertyHolder& value);
         explicit EditableStringProperty(const std::string& val);
 
         std::string getValue() const;
@@ -116,7 +170,8 @@ namespace framework
         void setArbitraryString(bool state);
     private:
         std::string m_value;
-        std::string m_regex;
+        std::string m_regex_str;
+        std::regex m_regex;
         std::vector<std::string> m_options;
         bool m_is_a_arbitrary_string;
     };
@@ -185,10 +240,10 @@ namespace framework
         bool m_value;
     };
 
-
     class RangeProperty : public PropertyBase
     {
     public:
+        explicit RangeProperty(const RawPropertyHolder& value);
         explicit RangeProperty(const odk::Range& value);
 
         const odk::Range& getValue() const;
@@ -201,5 +256,46 @@ namespace framework
     private:
         odk::Range m_value;
     };
+
+    class SelectableProperty : public PropertyBase
+    {
+    public:
+        explicit SelectableProperty(const RawPropertyHolder& value);
+        explicit SelectableProperty(odk::Property);
+
+        odk::Property getValue() const;
+        void setValue(odk::Property);
+
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+        bool update(const odk::Property& value) override;
+
+        void addOption(odk::Property);
+        void clearOptions();
+
+        std::uint32_t count() const;
+    private:
+        odk::Property m_property;
+        std::vector<odk::Property> m_options;
+    };
+
+/*    class SelectableProperty : public PropertyBase
+    {
+    public:
+        explicit SelectableProperty(odk::detail::ApiObjectPtr<odk::IfValue>);
+
+        odk::detail::ApiObjectPtr<odk::IfValue> getValue() const;
+        void setValue(odk::detail::ApiObjectPtr<odk::IfValue>);
+
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+        bool update(const odk::Property& value) override;
+
+        void addOption(const odk::detail::ApiObjectPtr<odk::IfValue>);
+    private:
+        odk::detail::ApiObjectPtr<odk::IfValue> m_value;
+        std::vector< odk::detail::ApiObjectPtr<odk::IfValue>> m_options;
+    }; */
+
 }
 }

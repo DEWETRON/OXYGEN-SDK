@@ -12,6 +12,7 @@ Windows:
   * CMake 3.1 or later (https://cmake.org/download/)
   * Source files for Boost C++ Libraries 1.70 or later
     (https://www.boost.org/users/history/version_1_70_0.html)
+  * Qt 5.12.x (https://www.qt.io/download-qt-installer)
 
 Make sure Visual Studio and CMake are installed.
 Please verify that the ``cmake`` command can be run from the command prompt.
@@ -26,8 +27,12 @@ Quick Summary for Experienced C++ Developers
   * Boost has to be extracted to to find the header files at
     {repo-root}\\3rdparty\\boost_1_*\\boost
 
+  * Qt 5.12.x has to be installed on the system.
+    This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.12.6\\msvc2017_64)
+
   * Main CMakeLists.txt file in root directory of the repository
     references the SDK and all example plugins.
+    Run cmbuild with the option -DCMAKE_PREFIX_PATH={QT_DIR}.
 
   * Each example directory contains a CMakeLists.txt that can be
     used directly to build just that example and the necessary dependencies.
@@ -50,6 +55,8 @@ to c:\\OXYGEN-SDK.
     c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp exists
     to make sure the extracted paths are correct.
 
+  * Install Qt to c:\\Qt\\5.12.6.
+
   * Open a command line prompt and change to the directory c:\\OXYGEN-SDK
 
   * Create a new directory 'build' and change to c:\\OXYGEN-SDK\\build
@@ -60,7 +67,7 @@ to c:\\OXYGEN-SDK.
 
   * Generate a Visual Studio solution by using the following command:
 
-      ``cmake ..``
+      ``cmake -DCMAKE_PREFIX_PATH=c:\\Qt\\5.12.6\\msvc2017_64 ..``
 
     If CMake encounters an error you need to fix the issue and then invoke
 

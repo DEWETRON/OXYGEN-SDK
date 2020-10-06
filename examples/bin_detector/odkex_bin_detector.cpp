@@ -67,6 +67,14 @@ public:
         return telegram;
     }
 
+    void updatePropertyTypes(const PluginChannelPtr& output_channel) override
+    {
+    }
+
+    void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
+    {
+    }
+
     void init(const std::vector<InputChannel::InputChannelData>& input_channel_data) override
     {
         if (input_channel_data.size() >= 1)

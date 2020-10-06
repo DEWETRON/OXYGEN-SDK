@@ -7,8 +7,9 @@ namespace odk
 namespace framework
 {
     StreamIterator::StreamIterator()
+        : m_block_index(-1)
+        , m_data_requester(nullptr)
     {
-        m_block_index = -1;
     }
 
     const void* StreamIterator::data() const
@@ -30,6 +31,10 @@ namespace framework
             if (m_block_index != m_blocks_ranges.size())
             {
                 m_current_iterator = m_blocks_ranges[m_block_index].first;
+            }
+            else if(m_data_requester)
+            {
+                m_data_requester->updateStreamIterator(this);
             }
             else
             {
@@ -77,6 +82,18 @@ namespace framework
         m_blocks_ranges.emplace_back(begin, end);
         m_block_index = 0;
         m_current_iterator = m_blocks_ranges.front().first;
+    }
+
+    void StreamIterator::clearRanges()
+    {
+        m_blocks_ranges.clear();
+        m_block_index = -1;
+        m_current_iterator = BlockIterator();
+    }
+
+    void StreamIterator::setDataRequester(IfIteratorUpdater *requester)
+    {
+        m_data_requester = requester;
     }
 }
 }

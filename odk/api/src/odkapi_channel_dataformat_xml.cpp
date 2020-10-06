@@ -26,6 +26,7 @@ namespace odk
 
     static const SampleFormatStringMap SAMPLE_FORMAT_STRING_MAP = boost::assign::list_of<SampleFormatStringMap::relation>
         (ChannelDataformat::SampleFormat::NONE, "none")
+        (ChannelDataformat::SampleFormat::BYTE, "byte")
         (ChannelDataformat::SampleFormat::SINT8, "sint8")
         (ChannelDataformat::SampleFormat::SINT16, "sint16")
         (ChannelDataformat::SampleFormat::SINT24, "sint24")
@@ -60,6 +61,7 @@ namespace odk
         (ChannelDataformat::SampleValueType::SAMPLE_VALUE_VIDEO, "video")
         (ChannelDataformat::SampleValueType::SAMPLE_VALUE_STRING, "string")
         (ChannelDataformat::SampleValueType::SAMPLE_VALUE_FLEXRAY_MESSAGE, "flexray_message")
+        (ChannelDataformat::SampleValueType::SAMPLE_VALUE_BYTE_VECTOR, "byte_vector")
         ;
 
     static const char* const XML_NAME_DATAFORMAT = "DataFormat";

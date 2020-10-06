@@ -73,23 +73,44 @@ public:
         m_input_channels->setValue(odk::ChannelIDList(channel_ids));
     }
 
+    void updatePropertyTypes(const PluginChannelPtr& output_channel) override
+    {
+    }
+
+    void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
+    {
+    }
+
     bool update() override
     {
         std::string unit;
         double range_min = 0.0;
         double range_max = 0.0;
+        double sample_rate_max = 0.0;
         for(const auto& input_channel : getInputChannelProxies())
         {
             const auto& input_range = input_channel->getRange();
             range_min = range_min + input_range.m_min;
             range_max = range_max + input_range.m_max;
             unit = input_channel->getUnit();
+
+            const auto sampe_rate = input_channel->getSampleRate();
+            sample_rate_max = std::max(sample_rate_max, sampe_rate.m_val);
+        }
+
+        if (sample_rate_max == 0.0)
+        {
+            sample_rate_max = 100.0;
         }
 
         auto channel = getOutputChannels().at(0);
         channel->setRange({range_min, range_max, unit, unit})
             .setUnit(unit)
+            .setSimpleTimebase(sample_rate_max)
             ;
+
+        m_timebase_frequency = sample_rate_max;
+        updateNeedsResampling();
 
         const auto current_channel_ids(m_input_channels->getValue().m_values);
         auto is_valid(current_channel_ids.size() == 2);
@@ -174,52 +195,6 @@ public:
     {
         configureFromTelegram(request, channel_id_map);
         return true;
-    }
-
-    void initTimebases(odk::IfHost* host) override
-    {
-        const auto master_timestamp = getMasterTimestamp(host);
-
-        m_resampling_enabled = false;
-
-        m_timebase_frequency = 0.0;
-
-        for(auto& input_channel : getInputChannelProxies())
-        {
-            const auto timebase = input_channel->getTimeBase();
-            const auto sample_format = input_channel->getDataFormat();
-            if(sample_format.m_sample_occurrence == odk::ChannelDataformat::SampleOccurrence::SYNC)
-            {
-                m_timebase_frequency = std::max(m_timebase_frequency, timebase.m_frequency);
-            }
-        }
-
-        if(m_timebase_frequency == 0.0)
-        {
-            m_timebase_frequency = 100.0;
-        }
-
-        for (auto& input_channel : getInputChannelProxies())
-        {
-            const auto sample_format = input_channel->getDataFormat();
-            const auto timebase = input_channel->getTimeBase();
-
-            if (!m_resampling_enabled)
-            {
-                m_resampling_enabled = sample_format.m_sample_occurrence != odk::ChannelDataformat::SampleOccurrence::SYNC
-                    || timebase.m_frequency != m_timebase_frequency;
-
-                if (m_resampling_enabled)
-                {
-                    break;
-                }
-            }
-        }
-
-        for(auto& output_channel : m_output_channels)
-        {
-            output_channel->setSimpleTimebase(m_timebase_frequency);
-        }
     }
 
     void prepareProcessing(odk::IfHost *host) override
@@ -319,6 +294,28 @@ public:
     }
 
 private:
+    void updateNeedsResampling()
+    {
+        m_resampling_enabled = false;
+
+        for (auto& input_channel : getInputChannelProxies())
+        {
+            const auto sample_format = input_channel->getDataFormat();
+            const auto timebase = input_channel->getTimeBase();
+
+            if (!m_resampling_enabled)
+            {
+                m_resampling_enabled = sample_format.m_sample_occurrence != odk::ChannelDataformat::SampleOccurrence::SYNC
+                    || timebase.m_frequency != m_timebase_frequency;
+
+                if (m_resampling_enabled)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     // move to base?
     std::shared_ptr<EditableChannelIDListProperty> m_input_channels;
     std::array<double, 2> m_current_values;

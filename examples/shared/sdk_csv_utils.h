@@ -1,6 +1,7 @@
 // Copyright DEWETRON GmbH 2019
 #pragma once
 
+#include <cstdint>
 #include <istream>
 #include <string>
 #include <vector>
@@ -25,3 +26,19 @@ public:
     std::vector<std::vector<double>> m_values;
 };
 
+class CSVMessageReader
+{
+public:
+
+    std::vector<std::string> parseLine(std::istream& input);
+    bool parse(std::istream& input);
+
+    struct Entry
+    {
+        double m_time;
+        std::vector<uint8_t> m_message;
+    };
+
+    std::vector<std::string> m_headers;
+    std::vector<Entry> m_values;
+};

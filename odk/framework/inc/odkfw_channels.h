@@ -5,7 +5,7 @@
 
 #include "odkfw_interfaces.h"
 #include "odkfw_if_message_handler.h"
-#include "odkfw_interfaces.h"
+#include "odkfw_properties.h"
 
 #include "odkbase_if_host.h"
 
@@ -13,6 +13,7 @@
 #include "odkapi_channel_config_changed_xml.h"
 #include "odkapi_channel_dataformat_xml.h"
 #include "odkapi_channel_mapping_xml.h"
+#include "odkapi_oxygen_queries.h"
 #include "odkapi_update_channels_xml.h"
 
 #include <map>
@@ -25,12 +26,14 @@ namespace odk
 namespace framework
 {
 
+
+
     class PluginChannel : public IfChannelPropertyChangeListener
     {
         friend class PluginChannels;
     public:
 
-        PluginChannel(std::uint32_t local_id, IfPluginChannelChangeListener* change_listener);
+        PluginChannel(std::uint32_t local_id, IfPluginChannelChangeListener* change_listener, odk::IfHost* host);
 
         ~PluginChannel();
 
@@ -48,31 +51,63 @@ namespace framework
         std::string getDomain() const;
 
         PluginChannel& setDeletable(bool deletable);
+        bool isDeletable() const;
 
         PluginChannelPtr getLocalParent() const;
         PluginChannel& setLocalParent(PluginChannelPtr ch);
 
         PluginChannel& setValid(const bool valid);
         PluginChannel& setRange(const odk::Range& range);
+        PluginChannel& setSamplerate(const odk::Scalar& sample_rate);
         PluginChannel& setUnit(const std::string& unit);
 
         PluginChannel& addProperty(const std::string& name, ChannelPropertyPtr prop);
+        PluginChannel& addProperty(const std::string& name, const odk::Property& prop);
 
         ChannelPropertyPtr getProperty(const std::string& name) const;
+        PluginChannel& replaceProperty(const std::string& name, ChannelPropertyPtr prop);
+
+        void updatePropertyTypes();
 
         std::shared_ptr<BooleanProperty> getUsedProperty() const;
         std::shared_ptr<RangeProperty> getRangeProperty() const;
+        std::shared_ptr<EditableScalarProperty> getSamplerateProperty() const;
         std::shared_ptr<EditableStringProperty> getUnitProperty() const;
 
         const std::vector<std::pair<std::string, ChannelPropertyPtr>>& getProperties();
+
+        const std::string getName();
 
     protected:
         void setChangeListener(IfPluginChannelChangeListener* l);
 
         void onChannelPropertyChanged(const IfChannelProperty* channel) override;
 
+        template <class T>
+        odk::detail::ApiObjectPtr<const T> getChannelParam(const char* const key)
+        {
+            std::string channel_context = odk::queries::OxygenChannels;
+            channel_context += "#";
+            channel_context += std::to_string(getLocalId());
+
+            return m_host->getValue<T>(channel_context.c_str(), key);
+        }
+
+        template <class T>
+        odk::detail::ApiObjectPtr<const T> getChannelConfigParam(const char* const key)
+        {
+            std::string channel_context = odk::queries::OxygenChannels;
+            channel_context += "#";
+            channel_context += std::to_string(getLocalId());
+            channel_context += "#Config#";
+            channel_context += key;
+
+            return m_host->getValue<T>(channel_context.c_str(), "Value");
+        }
+
     protected:
         IfPluginChannelChangeListener* m_change_listener;
+        odk::IfHost* m_host;
         odk::UpdateChannelsTelegram::PluginChannelInfo m_channel_info;
         std::vector<std::pair<std::string, ChannelPropertyPtr>> m_properties;
         PluginChannelPtr m_local_parent;
@@ -111,7 +146,7 @@ namespace framework
         bool m_valid;
     };
 
-    class PluginChannels : public oxy::IfMessageHandler, public IfPluginChannelChangeListener, public IfPluginTaskChangeListener
+    class PluginChannels : public IfMessageHandler, public IfPluginChannelChangeListener, public IfPluginTaskChangeListener
     {
     public:
 
@@ -121,16 +156,15 @@ namespace framework
 
         void removeChannel(PluginChannelPtr ch);
 
-        void setPluginHost(odk::IfHost* host);
-
         std::shared_ptr<PluginTask> addTask(IfTaskWorker* worker, uint64_t token = 0);
 
         std::shared_ptr<PluginTask> addTask(std::shared_ptr<IfTaskWorker> worker, uint64_t token = 0);
 
         void removeTask(std::shared_ptr<PluginTask> task);
 
+        void setHost(odk::IfHost* host) override;
 
-        void synchronize();
+        void synchronize(bool register_tasks = true);
 
         void reset();
 
@@ -184,6 +218,30 @@ namespace framework
         bool m_channels_dirty = false; //< channels added, removed or reconfigured
         std::set<const PluginChannel*> m_properties_dirty;
     };
+
+    template<class TargetClass>
+    void replacePropertyType(PluginChannel& channel, const std::string& property_name)
+    {
+        const auto original_prop =
+            std::dynamic_pointer_cast<RawPropertyHolder>(channel.getProperty(property_name));
+        if (original_prop)
+        {
+            auto property_replacer = std::make_shared<TargetClass>(*original_prop);
+            channel.replaceProperty(property_name, property_replacer);
+        }
+    }
+
+    template<class TargetClass>
+    void replacePropertyType(const PluginChannelPtr& channel, const std::string& property_name)
+    {
+        const auto original_prop =
+            std::dynamic_pointer_cast<RawPropertyHolder>(channel->getProperty(property_name));
+        if (original_prop)
+        {
+            auto property_replacer = std::make_shared<TargetClass>(*original_prop);
+            channel->replaceProperty(property_name, property_replacer);
+        }
+    }
 
 }
 }

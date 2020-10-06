@@ -11,6 +11,30 @@
 #include <map>
 #include <vector>
 
+namespace
+{
+    bool appendChannelList(xpugi::xml_element elem, const std::vector<odk::InputChannelData>& channels)
+    {
+        if (channels.empty()) return true;
+
+        odk::ChannelList list_generator;
+
+        for (const auto a_channel : channels)
+        {
+            list_generator.addChannel(a_channel.channel_id);
+        }
+
+        pugi::xml_document channel_id_doc;
+        const auto channel_id_xml_string = list_generator.generate();
+
+        if (channel_id_xml_string.empty())
+        {
+            return false;
+        }
+
+        return (pugi::status_ok == elem.append_buffer(channel_id_xml_string.c_str(), channel_id_xml_string.size()).status);
+    }
+}
 namespace odk
 {
     RegisterSoftwareChannel::RegisterSoftwareChannel()
@@ -47,6 +71,16 @@ namespace odk
         m_description = xpugi::getText(xpugi::getChildNodeByTagName(node, "Description"));
         m_display_group = xpugi::getText(xpugi::getChildNodeByTagName(node, "DisplayGroup"));
 
+        auto ui_add_node = node.select_node("UIAdd").node();
+        if (ui_add_node)
+        {
+            m_ui_item_add = xpugi::getText(xpugi::getChildNodeByTagName(ui_add_node, "ItemName"));
+        }
+        else
+        {
+            m_ui_item_add.clear();
+        }
+
         return true;
     }
 
@@ -63,6 +97,12 @@ namespace odk
         if (!m_description.empty())
         {
             xpugi::setText(xpugi::xml_element(register_elem.append_child("Description")), m_description);
+        }
+
+        if (!m_ui_item_add.empty())
+        {
+            auto ui_full_node = register_elem.append_child("UIAdd");
+            xpugi::setText(xpugi::xml_element(ui_full_node.append_child("ItemName")), m_ui_item_add);
         }
 
         return xpugi::toXML(doc);
@@ -98,6 +138,16 @@ namespace odk
 
         m_service_name = xpugi::getText(xpugi::getChildNodeByTagName(node, "ServiceName"));
 
+        auto props = node.select_nodes("Property");
+        for (const auto& prop : props)
+        {
+            odk::Property p;
+            if (p.readFrom(prop.node(), {1, 0}))
+            {
+                m_properties.push_back(p);
+            }
+        }
+
         const auto channels_node = xpugi::getChildNodeByTagName(node, "Channels");
         if (channels_node)
         {
@@ -132,22 +182,12 @@ namespace odk
 
         xpugi::setText(xpugi::xml_element(register_elem.append_child("ServiceName")), m_service_name);
 
-        odk::ChannelList list_generator;
 
-        for (const auto a_channel : m_all_selected_channels_data)
-        {
-            list_generator.addChannel(a_channel.channel_id);
-        }
-
-        pugi::xml_document channel_id_doc;
-        const auto channel_id_xml_string = list_generator.generate();
-
-        if (channel_id_xml_string.empty())
+        if (!appendChannelList(register_elem, m_all_selected_channels_data))
         {
             return "";
         }
 
-        register_elem.append_buffer(channel_id_xml_string.c_str(), channel_id_xml_string.size());
         const auto channels_node = xpugi::getChildNodeByTagName(register_elem, "Channels");
         if (channels_node)
         {
@@ -166,6 +206,11 @@ namespace odk
                     return "";
                 }
             }
+        }
+
+        for (const auto prop : m_properties)
+        {
+            prop.appendTo(register_elem);
         }
 
         return xpugi::toXML(doc);
@@ -258,4 +303,160 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
+    bool QuerySoftwareChannelAction::parse(const char* xml_string)
+    {
+        m_all_selected_channels_data.clear();
+
+        pugi::xml_document doc;
+        auto status = doc.load_string(xml_string);
+        if (status.status != pugi::status_ok)
+        {
+            return false;
+        }
+
+        auto node = doc.document_element();
+        if (!node)
+        {
+            return false;
+        }
+
+        if (!odk::strequal(node.name(), "QuerySoftwareChannelAction"))
+        {
+            return false;
+        }
+
+        auto version = odk::getProtocolVersion(node);
+        if (version != odk::Version(1,0))
+        {
+            return false;
+        }
+
+        const auto channels_node = xpugi::getChildNodeByTagName(node, "Channels");
+        if (channels_node)
+        {
+            odk::ChannelList list_telegram;
+            list_telegram.parse(xpugi::toXML(channels_node).c_str());
+            for (const auto& a_channel : list_telegram.m_channels)
+            {
+                auto channel_id_str = std::to_string(a_channel.m_channel_id);
+                std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
+                auto ch_node = channels_node.select_node(xpath.c_str());
+                if (!ch_node)
+                {
+                    return false;
+                }
+                ChannelDataformat data_format;
+                if (data_format.extract(ch_node.node()))
+                {
+                    m_all_selected_channels_data.push_back({ a_channel.m_channel_id, data_format });
+                }
+            }
+        }
+
+        return true;
+    }
+
+    std::string QuerySoftwareChannelAction::generate() const
+    {
+        pugi::xml_document doc;
+
+        auto register_elem = xpugi::xml_element(doc.append_child("QuerySoftwareChannelAction"));
+        odk::setProtocolVersion(register_elem, odk::Version(1,0));
+
+        if (!appendChannelList(register_elem, m_all_selected_channels_data))
+        {
+            return "";
+        }
+
+        const auto channels_node = xpugi::getChildNodeByTagName(register_elem, "Channels");
+        if (channels_node)
+        {
+            for (const auto a_channel : m_all_selected_channels_data)
+            {
+                auto channel_id_str = std::to_string(a_channel.channel_id);
+                std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
+                auto ch_node = channels_node.select_node(xpath.c_str());
+                if (!ch_node)
+                {
+                    return "";
+                }
+
+                if (!a_channel.data_format.store(ch_node.node()))
+                {
+                    return "";
+                }
+            }
+        }
+        return xpugi::toXML(doc);
+    }
+
+    bool QuerySoftwareChannelActionResponse::parse(const char* xml_string)
+    {
+        pugi::xml_document doc;
+        auto status = doc.load_string(xml_string);
+        if (status.status != pugi::status_ok)
+        {
+            return false;
+        }
+
+        auto node = doc.document_element();
+        if (!node)
+        {
+            return false;
+        }
+
+        if (!odk::strequal(node.name(), "QuerySoftwareChannelActionResponse"))
+        {
+            return false;
+        }
+
+        auto version = odk::getProtocolVersion(node);
+        if (version != odk::Version(1,0))
+        {
+            return false;
+        }
+
+        const auto valid_node = xpugi::getChildNodeByTagName(node, "Valid");
+        if (valid_node)
+        {
+            m_valid = valid_node.attribute("is_valid").as_bool(false);
+        }
+
+        const auto channels_node = xpugi::getChildNodeByTagName(node, "Channels");
+        if (channels_node)
+        {
+            odk::ChannelList list_telegram;
+            list_telegram.parse(xpugi::toXML(channels_node).c_str());
+            for (const auto& a_channel : list_telegram.m_channels)
+            {
+                m_invalid_channels.emplace_back(a_channel.m_channel_id);
+            }
+        }
+
+        return true;
+    }
+
+    std::string QuerySoftwareChannelActionResponse::generate() const
+    {
+        pugi::xml_document doc;
+
+        auto response_elem = xpugi::xml_element(doc.append_child("QuerySoftwareChannelActionResponse"));
+        odk::setProtocolVersion(response_elem, odk::Version(1,0));
+
+        auto valid_elem = response_elem.append_child("Valid");
+        valid_elem.append_attribute("is_valid").set_value(m_valid);
+
+        if (!m_invalid_channels.empty())
+        {
+            auto channels_elem = response_elem.append_child("Channels");
+            for (const auto& channel : m_invalid_channels)
+            {
+                auto channel_node = channels_elem.append_child("Channel");
+
+                channel_node.append_attribute("channel_id").set_value(channel);
+            }
+        }
+
+        return xpugi::toXML(doc);
+    }
 }

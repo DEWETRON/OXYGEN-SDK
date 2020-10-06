@@ -56,6 +56,7 @@ namespace odk
     {
         Range();
         Range(const double& min, const double& max, const std::string& min_unit, const std::string& max_unit);
+        Range(const double& min, const double& max, const std::string& unit);
 
         bool operator==(Range const& other) const;
 
@@ -156,6 +157,7 @@ namespace odk
             GEO_COORDINATE = 20,
             POINT = 21,
             CHANNEL_ID_LIST = 22,
+            INTEGER64 = 23,
         };
 
         static Type getPropertyTypeFromValue(const Scalar& v) { return SCALAR; }
@@ -246,20 +248,30 @@ namespace odk
         unsigned int getUnsignedIntValue() const;
 
         /**
-         * Sets the value of this property as double
-         */
-
-        /**
          * Sets the value of this property as unsigned int 64 bit
          */
         void setValue(std::uint64_t value);
         /**
          * Returns the value of this property as uint64
-         * If this property is not of type UNSIGNED_INTEGER64, an exception is thrown
+         * If this property is not of type UNSIGNED_INTEGER[64], an exception is thrown
          */
         std::uint64_t getUnsignedInt64Value() const;
 
+        /**
+         * Sets the value of this property as signed int 64 bit
+         */
+        void setValue(std::int64_t value);
+        /**
+         * Returns the value of this property as sint64
+         * If this property is not of type INTEGER[64], an exception is thrown
+         */
+        std::int64_t getInt64Value() const;
+
+        /**
+         * Sets the value of this property as double
+         */
         void setValue(double value);
+
         /**
          * Returns the value of this property as double
          * If this property is not of type FLOATING_POINT_NUMBER, an exception is thrown
@@ -391,8 +403,8 @@ namespace odk
          */
         const PropertyList& getPropertyListValue() const;
 
-        pugi::xml_node appendTo(pugi::xml_node parent) const;
-        bool readFrom(const pugi::xml_node& tree, const Version& version);
+        virtual pugi::xml_node appendTo(pugi::xml_node parent) const;
+        virtual bool readFrom(const pugi::xml_node& tree, const Version& version);
 
         pugi::xml_node appendValue(pugi::xml_node parent) const;
         bool readValue(pugi::xml_node type_node, const Version& version);

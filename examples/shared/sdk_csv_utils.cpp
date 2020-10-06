@@ -2,9 +2,12 @@
 
 #include "sdk_csv_utils.h"
 
+#include <boost/algorithm/hex.hpp>
+
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
+#include <sstream>
 
 void ltrim(std::string& s)
 {
@@ -73,6 +76,10 @@ std::vector<std::string> CSVNumberReader::parseLine(std::istream& input)
                 break;
         }
     }
+    if (!cur_field.empty())
+    {
+        r.push_back(std::move(cur_field));
+    }
     return r;
 }
 
@@ -140,3 +147,82 @@ bool CSVNumberReader::parse(std::istream& input)
     }
     return success;
 }
+
+
+std::vector<std::string> tokenize(const std::string& str, const std::string& delimiters)
+{
+    std::vector<std::string> tokens;
+
+    std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+
+    while (std::string::npos != pos || std::string::npos != lastPos)
+    {
+        tokens.emplace_back(str.substr(lastPos, pos - lastPos));
+
+        // skip delimiters
+        lastPos = str.find_first_not_of(delimiters, pos);
+
+        // find next begin
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+
+    return tokens;
+}
+
+std::vector<uint8_t> AsciiHexToBits(const std::string& input)
+{
+    std::vector<uint8_t> result;
+    result.reserve(1 + (input.length() / 2));
+    boost::algorithm::unhex(input, std::back_inserter(result));
+    return result;
+}
+
+bool CSVMessageReader::parse(std::istream& input)
+{
+    m_headers.clear();
+    m_values.clear();
+
+    std::string line;
+    auto line_count = 0u;
+    bool success = true;
+    while (input && std::getline(input, line))
+    {
+        ++line_count;
+        const auto& fields = tokenize(line, ",; \t\r");
+
+        // skip empty lines
+        if (fields.empty() || (fields.size() == 1 && isSpace(fields.front())))
+        {
+            continue;
+        }
+
+        Entry entry;
+        bool valid_entry = true;
+        if (fields.size() >= 2)
+        {
+            char* endptr;
+            entry.m_time = strtod(fields[0].c_str(), &endptr);
+            auto is_valid = endptr != fields[0].c_str();
+
+            if (is_valid)
+            {
+                std::for_each(fields.begin() + 1, fields.end(),
+                    [&entry]
+                    (const std::string& val)
+                    {
+                        auto v = AsciiHexToBits(val);
+                        std::copy(v.begin(), v.end(), std::back_inserter(entry.m_message));
+                    });
+                m_values.emplace_back(entry);
+            }
+            else if (line_count == 1)
+            {
+                std::copy(fields.begin(), fields.end(), std::back_inserter(m_headers));
+            }
+        }
+    }
+
+    return (m_values.size() + 1 <= line_count);
+}
+

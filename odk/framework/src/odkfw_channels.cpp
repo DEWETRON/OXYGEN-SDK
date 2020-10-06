@@ -31,9 +31,11 @@ namespace odk
 namespace framework
 {
 
-    PluginChannel::PluginChannel(std::uint32_t local_id, IfPluginChannelChangeListener* change_listener)
+    PluginChannel::PluginChannel(std::uint32_t local_id, IfPluginChannelChangeListener* change_listener, odk::IfHost* host)
         : m_change_listener(change_listener)
+        , m_host(host)
     {
+        ODK_ASSERT(m_host);
         m_channel_info.m_local_id = local_id;
     }
 
@@ -61,6 +63,13 @@ namespace framework
     PluginChannel& PluginChannel::setSimpleTimebase(double frequency)
     {
         m_channel_info.setSimpleTimebase(frequency);
+
+        if (m_channel_info.m_dataformat_info.m_sample_occurrence ==
+            ChannelDataformat::SampleOccurrence::SYNC)
+        {
+            setSamplerate(odk::Scalar(frequency, "Hz"));
+        }
+
         if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
         return *this;
     }
@@ -108,6 +117,23 @@ namespace framework
         return *this;
     }
 
+    PluginChannel& PluginChannel::setSamplerate(const odk::Scalar& sample_rate)
+    {
+        auto sr_property = getSamplerateProperty();
+        if (sr_property)
+        {
+            sr_property->setValue(sample_rate);
+        }
+        else
+        {
+            auto prop = std::make_shared<EditableScalarProperty>(sample_rate.m_val, sample_rate.m_unit);
+            prop->setVisiblity("");
+            addProperty("SampleRate", prop);
+        }
+
+        return *this;
+    }
+
     PluginChannel &PluginChannel::setUnit(const std::string& unit)
     {
         auto unit_property = getUnitProperty();
@@ -127,6 +153,11 @@ namespace framework
         m_channel_info.setDeletable(deletable);
         if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
         return *this;
+    }
+
+    bool PluginChannel::isDeletable() const
+    {
+        return m_channel_info.m_deletable;
     }
 
     PluginChannelPtr PluginChannel::getLocalParent() const
@@ -150,6 +181,15 @@ namespace framework
         return *this;
     }
 
+    PluginChannel& PluginChannel::addProperty(const std::string& name, const odk::Property& prop)
+    {
+        auto prop_holder = std::make_shared<RawPropertyHolder>(prop);
+        std::dynamic_pointer_cast<IfChannelProperty>(prop_holder)->setChangeListener(this);
+        m_properties.push_back(std::make_pair(name, prop_holder));
+        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        return *this;
+    }
+
     ChannelPropertyPtr PluginChannel::getProperty(const std::string& name) const
     {
         for (auto& prop : m_properties)
@@ -162,6 +202,37 @@ namespace framework
         return {};
     }
 
+    PluginChannel& PluginChannel::replaceProperty(const std::string& name, ChannelPropertyPtr prop)
+    {
+        ODK_ASSERT(getProperty(name));
+        ODK_ASSERT(
+            std::find_if(
+                m_properties.begin(), m_properties.end(),
+                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+                {
+                    return a_property.first == name;
+                }) != m_properties.end());
+
+        prop->setChangeListener(this);
+        std::replace_if(
+            m_properties.begin(), m_properties.end(),
+            [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+            {
+                return a_property.first == name;
+            },
+            std::make_pair(name, prop));
+        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+
+        return *this;
+    }
+
+    void PluginChannel::updatePropertyTypes()
+    {
+        replacePropertyType<EditableScalarProperty>(*this, "SampleRate");
+        replacePropertyType<RangeProperty>(*this, "Range");
+        replacePropertyType<EditableStringProperty>(*this, "Unit");
+    }
+
     std::shared_ptr<BooleanProperty> PluginChannel::getUsedProperty() const
     {
         return std::dynamic_pointer_cast<BooleanProperty>(getProperty("Used"));
@@ -172,6 +243,11 @@ namespace framework
         return std::dynamic_pointer_cast<RangeProperty>(getProperty("Range"));
     }
 
+    std::shared_ptr<EditableScalarProperty> PluginChannel::getSamplerateProperty() const
+    {
+        return std::dynamic_pointer_cast<EditableScalarProperty>(getProperty("SampleRate"));
+    }
+
     std::shared_ptr<EditableStringProperty> PluginChannel::getUnitProperty() const
     {
         return std::dynamic_pointer_cast<EditableStringProperty>(getProperty("Unit"));
@@ -180,6 +256,15 @@ namespace framework
     const std::vector<std::pair<std::string, ChannelPropertyPtr> > &PluginChannel::getProperties()
     {
         return m_properties;
+    }
+
+    const std::string PluginChannel::getName()
+    {
+        if (const auto name = getChannelParam<odk::IfStringValue>("Name"))
+        {
+            return name->getValue();
+        }
+        return {};
     }
 
     void PluginChannel::setChangeListener(IfPluginChannelChangeListener* l)
@@ -274,7 +359,7 @@ namespace framework
     PluginChannelPtr PluginChannels::addChannel()
     {
         auto local_id = generateId();
-        auto ret = std::make_shared<PluginChannel>(local_id, this);
+        auto ret = std::make_shared<PluginChannel>(local_id, this, m_host);
         m_channels[local_id] = ret;
         m_channels_dirty = true;
         return ret;
@@ -304,7 +389,7 @@ namespace framework
         }
     }
 
-    void PluginChannels::setPluginHost(odk::IfHost* host)
+    void PluginChannels::setHost(odk::IfHost* host)
     {
         m_host = host;
     }
@@ -341,8 +426,13 @@ namespace framework
         m_tasks.erase(task->m_id);
     }
 
-    void PluginChannels::synchronize()
+    void PluginChannels::synchronize(bool register_tasks)
     {
+        if (!register_tasks)
+        {
+            ODK_ASSERT(m_properties_dirty.empty());
+        }
+
         ODK_ASSERT(m_host);
         if (m_channels_dirty)
         {
@@ -385,9 +475,12 @@ namespace framework
         m_channels_dirty = false;
         m_properties_dirty.clear();
 
-        for (auto& task : m_tasks)
+        if (register_tasks)
         {
-            registerTask(*task.second);
+            for (auto& task : m_tasks)
+            {
+                registerTask(*task.second);
+            }
         }
     }
 

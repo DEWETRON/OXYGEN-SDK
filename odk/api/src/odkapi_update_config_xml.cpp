@@ -311,7 +311,7 @@ namespace odk
             {
                 auto constraint_node = parent.append_child("RegularExpressionConstraint");
                 constraint_node.append_attribute("expression").set_value(getRegEx().c_str());
-            }
+            } break;
             case Constraint::VISIBLITY:
             {
                 auto constraint_node = parent.append_child("VisibilityConstraint");

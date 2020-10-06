@@ -24,3 +24,41 @@ function(SetPluginOutputOptions TARGETNAME)
         set_target_properties(${TARGETNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
     ENDIF(MSVC_IDE)
 endfunction(SetPluginOutputOptions)
+
+macro(AddResourceFile TGT SRC_FILE OUT_PATH)
+
+    get_filename_component(ABS_SRC_FILE ${SRC_FILE} ABSOLUTE)
+    get_filename_component(ABS_OUT_PATH ${OUT_PATH} ABSOLUTE)
+    get_filename_component(OUT_NAME ${SRC_FILE} NAME)
+    set(OUT_FILE ${ABS_OUT_PATH}/${OUT_NAME})
+
+    add_custom_command(
+      OUTPUT ${OUT_FILE}.h
+      COMMAND ${CMAKE_COMMAND} -D INPUT_FILE="${ABS_SRC_FILE}" -D OUTPUT_PATH="${ABS_OUT_PATH}" -D OUTPUT_BASENAME="${OUT_NAME}" -D OUTPUT_TYPE=HEADER -P ${ODK_ROOT}/cmake/GenerateCppResource.cmake
+      )
+
+    add_custom_command(
+      DEPENDS ${SRC_FILE}
+      OUTPUT ${OUT_FILE}.cpp
+      COMMAND ${CMAKE_COMMAND} -D INPUT_FILE="${ABS_SRC_FILE}" -D OUTPUT_PATH="${ABS_OUT_PATH}" -D OUTPUT_BASENAME="${OUT_NAME}" -D OUTPUT_TYPE=SOURCE -P ${ODK_ROOT}/cmake/GenerateCppResource.cmake
+      )
+
+    # tell CMake that the file is generated (maybe it would scan the
+    # file for dependencies otherwise), and that it is a header file
+    # (for whatever reason)
+
+    set_source_files_properties(
+      ${OUT_FILE}.h
+      PROPERTIES
+      GENERATED TRUE
+      HEADER_FILE_ONLY TRUE)
+
+    set_source_files_properties(
+      ${OUT_FILE}.cpp
+      PROPERTIES
+      GENERATED TRUE)
+
+    target_sources(${TGT} PRIVATE ${OUT_FILE}.h ${OUT_FILE}.cpp)
+
+endmacro()
+

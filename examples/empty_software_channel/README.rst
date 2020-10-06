@@ -16,11 +16,11 @@ Those marked elements are also marked with an identifier
 This replacement is necessary in both - the cmake file, and in the \*.cpp file.
 
 -----------------------------------------
-Descriptive Legend of Elements to fill in
+Descriptive Legend of Elements to Fill In
 -----------------------------------------
 
 ---------------------------
-Elements in the \*.cpp file
+Elements in the \*.cpp File
 ---------------------------
 
 Plugin_Manifest
@@ -36,7 +36,7 @@ Plugin_Manifest
   It *shall* follow this pattern, to ensure sufficient
   uniqueness: *COMPANYID_PLUGIN_NAME*
   
-  eg: "MYCOMPANY_AN_EXAMPLE_PLUGIN"
+  e.g.: "MYCOMPANY_AN_EXAMPLE_PLUGIN"
 
   *Allowed charachters*:
     * Upper case alphabetic charachters
@@ -52,27 +52,40 @@ Plugin_Manifest
 
 **$PLUGIN_GUID$**:
   a GUID, used to identify the plugin (eg. in stored setup-files, etc)
-  eg: "5D75B044-B52E-4721-B594-666E3B413FE3"
+
+  e.g.: "5D75B044-B52E-4721-B594-666E3B413FE3"
+
+  The GUID generator in Visual Studio (Tools -> Create GUID) can be used to generate this value.
+  Use the 'Registry Format' and replace the curly braces with double quotes.
+
 **$PLUGIN_NAME$**:
   The human readable name of the plugin. This name will be shown in the
   plugin-overview ("System Settings"/"Extensions and Plugins"/"Overview")
-  eg: "Example Plugin"
+
+  e.g.: "Example Plugin"
+
 **$VENDOR_NAME$**:
   This information will be shown in the plugin-overview as "Vendor".
-  eg: "My Company"
+
+  e.g.: "My Company"
+
 **$PLUGIN_DESCRIPTION$**:
   This information will be shown in the plugin-overview. as a more
   elaborate description, than the name.
-  eg: "This plugin is an empty example, and does nothing at all."
+
+  e.g.: "This plugin is an empty example, and does nothing at all."
+
 **$MIN_HOST_VERSION$**:
   The minimum Oxygen version required to run this plugin
-  eg: "5.0.1"
+
+  e.g.: "5.0.2"
 
 getSoftwareChannelInfo()
 ------------------------
 **$ADD_INSTANCE_DISPLAY_NAME$**:
   This name will be displayed in the add-channel-dialog
   (The '+' sign, in the channel-setup screen)
+
 **$ADD_INSTANCE_DISPLAY_GROUP$**:
   This determines, in which group the plugin-instance will be listed
   within the add-channel-dialog.
@@ -80,20 +93,23 @@ getSoftwareChannelInfo()
   or a new, custom-declared group.
   Please keep in mind, that too many custom-declared groups might clutter
   the interface and give a bad user experience.
+
 **$ADD_INSTANCE_DISPLAY_DESCRIPTION$**:
   This description will be shown on the righthand-side of the add-channel-dialog.
   The string does not support control-characters for carriage-return/line-feed.
 
 -----------------------------------
-Elements in the CmakeLists.txt file
+Elements in the CMakeLists.txt File
 -----------------------------------
 
 *$LIBNAME$*
+  Name of the project and the resulting .plugin
 
 *$VS_PROJECT_GUID$*:
-  a GUID, necessary for visual-studio to keep track of files in
-  multi-project-worksapces.
-  eg: "5D75B044-B52E-4721-B594-666E3B413FE3"
+  A GUID, necessary for Visual Studio to keep track of files in
+  multi-project-workspaces.
+
+  e.g.: "5D75B044-B52E-4721-B594-666E3B413FE3"
 
 *$PLUGIN_SOURCE_FILES$*:
   Add here all necessary source-files of the plugin.

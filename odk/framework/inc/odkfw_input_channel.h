@@ -62,6 +62,8 @@ namespace framework
 
         const odk::Range getRange();
 
+        const odk::Scalar getSampleRate();
+
         const std::string getUnit();
 
         const std::string getName();

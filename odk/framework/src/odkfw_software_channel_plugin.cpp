@@ -4,25 +4,16 @@
 
 #include "odkfw_version_check.h"
 
-#include "odkapi_utils.h"
-#include "odkbase_message_return_value_holder.h"
-
 namespace odk
 {
 namespace framework
 {
-    static const char* REQUIRED_OXYGEN_VERSION = "5.0.2";
+    static const char* REQUIRED_OXYGEN_VERSION = "5.3";
 
-    void SoftwareChannelPluginBase::addTranslation(const char* translation_xml)
+    SoftwareChannelPluginBase::SoftwareChannelPluginBase()
+        : m_plugin_channels(std::make_shared<odk::framework::PluginChannels>())
     {
-        odk::MessageReturnValueHolder<odk::IfErrorValue> ret_error;
-        if (sendSyncXMLMessage(getHost(), odk::host_msg::ADD_TRANSLATION, 0, translation_xml, strlen(translation_xml) + 1, ret_error))
-        {
-            if (ret_error)
-            {
-                auto error_message = ret_error->getDescription();
-            }
-        }
+        addMessageHandler(m_plugin_channels);
     }
 
     void SoftwareChannelPluginBase::registerSoftwareChannel()
@@ -56,6 +47,11 @@ namespace framework
             }
         }
         return false;
+    }
+
+    PluginChannelsPtr SoftwareChannelPluginBase::getPluginChannels()
+    {
+        return m_plugin_channels;
     }
 
 }

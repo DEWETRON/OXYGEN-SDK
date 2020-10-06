@@ -9,8 +9,11 @@
 
 #include <cstdint>
 
-namespace oxy
+namespace odk
 {
+namespace framework
+{
+
     class IfMessageHandler
     {
     public:
@@ -19,9 +22,14 @@ namespace oxy
             std::uint64_t key,
             const odk::IfValue* param,
             const odk::IfValue** ret) = 0;
+
+        virtual void setHost(odk::IfHost* host) {}
+
     protected:
         virtual ~IfMessageHandler()
         {}
     };
+
+}
 }
 

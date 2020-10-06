@@ -14,6 +14,8 @@ Features
   * Validate input file and update channel state accordingly
   * Set maximum range of output channel sample values
   * Write samples to a synchronous scalar output channel
+  * UI extension to configure replay file
+  * Custom request to demonstrate communication between UI and plugin
 
 ::
 

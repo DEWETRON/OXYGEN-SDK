@@ -61,9 +61,16 @@ target_link_libraries(${LIBNAME}
   odk_framework
 )
 
+qt5_add_binary_resources(${LIBNAME}_qml qml.qrc DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/qml.rcc")
+
+set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)
+include_directories(${RESOURCE_DIR})
+AddResourceFile(${LIBNAME} "${CMAKE_CURRENT_BINARY_DIR}/qml.rcc" ${RESOURCE_DIR})
+
 SetPluginOutputOptions(${LIBNAME})
 
 #
 # add this to Visual Studio group lib
-set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_examples")
+set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_examples/ex_replay_sync_scalar")
+set_target_properties(${LIBNAME}_qml PROPERTIES FOLDER "odk_examples/ex_replay_sync_scalar")
 

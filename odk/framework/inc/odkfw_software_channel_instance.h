@@ -30,12 +30,7 @@ namespace framework
          */
         struct ProcessingContext
         {
-            void setStreamDescriptors(std::vector<odk::StreamDescriptor> stream_descriptors);
-
-            bool setBlockList(const odk::IfDataBlockList* block_list);
-
             Timestamp m_master_timestamp;
-            std::vector<StreamDescriptor> m_stream_descriptors;
             std::map<uint64_t, odk::framework::StreamIterator> m_channel_iterators;
             std::pair<double, double> m_window;
         };
@@ -68,6 +63,16 @@ namespace framework
             const std::vector<InputChannel::InputChannelData>& input_channel_data) {};
 
         /**
+         * Called after init, can be used to pass additional properties to the plugin instance
+         *
+         * @param  properties List of additional properties to be passed to the instance
+         *
+         * @return  if passed proerties are valid, and creation of instance can continue
+         *
+         */
+        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
+
+        /**
          * Called after creation of a loaded instance for initialisation based on the saved setup
          * state of the instance has to be restored based on the request
          * this includes:
@@ -84,6 +89,14 @@ namespace framework
             std::map<uint32_t, uint32_t>& channel_id_map)
             = 0;
 
+        virtual void updatePropertyTypes(const PluginChannelPtr& output_channel)
+            = 0;
+
+        virtual void updateStaticPropertyConstraints(const PluginChannelPtr& channel)
+            = 0;
+
+        virtual void loadFinished() {};
+
         /**
          * Called on every config change of input and output channels of the instance
          * state of the instance has to be updated according to the new parameters
@@ -91,6 +104,19 @@ namespace framework
          * @return  if instance is valid in current configuration
          */
         virtual bool update() = 0;
+
+        /**
+         * Called when a user requested deletion of one or more channels
+         * the instance has to decide which channels are actually to be deleted
+         * with this selection. This allow to either shrink, or expand the list
+         * of channesl that will be deleted.
+         *
+         * Default implementation behaviour:
+         * if any output-channel of the instance is selected, all instance channels shall be deleted
+         *
+         * @return list of channels that should be deleted
+         */
+        virtual std::vector<std::uint32_t> getChannelsToDelete(std::vector<std::uint32_t> requested_chanels);
 
         /**
          * Called once before acquisition start when timebases of input channels are ready
@@ -158,6 +184,9 @@ namespace framework
          */
         std::vector<PluginChannelPtr> getOutputChannels();
 
+
+        std::string getKey(const PluginChannelPtr& channel) const;
+
     protected:
 
         /**
@@ -201,6 +230,7 @@ namespace framework
 
         InputChannelPtr getInputChannelProxy(std::uint64_t channel_id);
 
+
         std::vector<InputChannelPtr> getInputChannelProxies();
 
         /**
@@ -238,7 +268,7 @@ namespace framework
          *
          * @param request  request telegram to use
          */
-        void createChannelsFromTelegram(const odk::UpdateChannelsTelegram& request);
+        void createChannelsFromTelegram(const odk::UpdateChannelsTelegram& request, std::map<uint32_t, uint32_t>& channel_id_map);
 
         /**
          * Updates channel properties based on request
@@ -264,6 +294,17 @@ namespace framework
          * @param key
          */
         PluginChannelPtr getOutputChannelByKey(const std::string& key) const;
+
+        /**
+         * Get all output-channel children of a given channel id
+         *
+         * @param recursive:
+         *      false means only direct children,
+         *      true will alse report descendants of descendants
+         *
+         * @return vector or child-channels
+         */
+        std::vector<PluginChannelPtr> getChildrenOfChannel(uint32_t local_id, bool recursive) const;
 
     private:
 
@@ -295,6 +336,7 @@ namespace framework
         void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) final;
 
     protected:
+        odk::IfHost* getHost();
         std::vector<PluginChannelPtr> m_output_channels;
 
     private:
@@ -304,7 +346,7 @@ namespace framework
         std::vector<InputChannelPtr> m_input_channel_proxies;
         boost::optional<DataSetDescriptor> m_dataset_descriptor;
         std::vector<const odk::IfDataBlockList*> m_block_lists;
-        odk::IfHost* m_host;
+        odk::IfHost* m_host = nullptr;
     };
 
 }

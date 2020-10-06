@@ -74,6 +74,7 @@ namespace queries
     READ_ONLY_PROPERTY(OxygenPaths, AppDataDir,         IfStringValue, "Absolute path of the installed application data folder");
     READ_ONLY_PROPERTY(OxygenPaths, LogDir,             IfStringValue, "Absolute path of the oxygen logging folder ");
     READ_ONLY_PROPERTY(OxygenPaths, RecordingDir,       IfStringValue, "Absolute path of the configured oxygen recording folder ");
+    READ_ONLY_PROPERTY(OxygenPaths, SetupDir,           IfStringValue, "Absolute path of the oxygen setup folder ");
 
 }
 }

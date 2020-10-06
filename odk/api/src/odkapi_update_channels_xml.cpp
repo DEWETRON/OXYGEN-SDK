@@ -174,13 +174,58 @@ namespace
         return false;
     }
 
+    std::vector<UpdateChannelsTelegram::PluginChannelInfo> sortParentsFirst(
+        const std::vector<UpdateChannelsTelegram::PluginChannelInfo>& channels)
+    {
+        std::vector<UpdateChannelsTelegram::PluginChannelInfo> sorted_channels;
+
+        std::size_t last_sorted_size(sorted_channels.size());
+        while(sorted_channels.size() != channels.size())
+        {
+            std::copy_if(channels.cbegin(), channels.cend(), std::back_inserter(sorted_channels),
+                [sorted_channels](const UpdateChannelsTelegram::PluginChannelInfo& channel)
+                {
+                    //not yet sorted and root channel, or already known parent-channel,
+                    return
+                        (std::find(
+                            sorted_channels.begin(),
+                            sorted_channels.end(),
+                            channel) == sorted_channels.end()
+                        ) &&
+                        (
+                            (channel.m_local_parent_id == std::uint32_t(-1)) ||
+                            (std::find_if(
+                                sorted_channels.cbegin(),
+                                sorted_channels.cend(),
+                                [channel](const UpdateChannelsTelegram::PluginChannelInfo& candidate_channel)
+                                {
+                                    return candidate_channel.m_local_id == channel.m_local_parent_id;
+                                }
+                                ) != sorted_channels.end())
+                        );
+                }
+            );
+
+            if (last_sorted_size == sorted_channels.size())
+            {
+                throw std::domain_error("Cyclic dependency between channels detected");
+            }
+            last_sorted_size = sorted_channels.size();
+        }
+
+        return sorted_channels;
+    }
+
     std::string UpdateChannelsTelegram::generate() const
     {
         pugi::xml_document doc;
         auto request_node = doc.append_child("UpdatePluginChannels");
         odk::setProtocolVersion(request_node, odk::Version(1, 0));
 
-        for (const auto& ch : m_channels)
+        //sort to ensure parents-first
+        auto sorted_channels = sortParentsFirst(m_channels);
+
+        for (const auto& ch : sorted_channels)
         {
             auto channel_node = request_node.append_child("Channel");
 

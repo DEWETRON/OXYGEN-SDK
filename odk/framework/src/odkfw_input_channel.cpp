@@ -123,6 +123,19 @@ namespace framework
         return {};
     }
 
+    const odk::Scalar InputChannel::getSampleRate()
+    {
+        if (m_input_channel_data.dataformat.m_sample_occurrence ==
+            odk::ChannelDataformat::SampleOccurrence::SYNC)
+        {
+            if (const auto sr = getInputChannelParam<odk::IfScalarValue>("SampleRate"))
+            {
+                return odk::Scalar(sr->getValue(), sr->getUnit());
+            }
+        }
+        return {};
+    }
+
     const std::string InputChannel::getUnit()
     {
         if (const auto unit = getInputChannelParam<odk::IfStringValue>("Unit"))
@@ -134,9 +147,9 @@ namespace framework
 
     const std::string InputChannel::getName()
     {
-        if (const auto unit = getInputChannelParam<odk::IfStringValue>("Name"))
+        if (const auto name = getInputChannelParam<odk::IfStringValue>("Name"))
         {
-            return unit->getValue();
+            return name->getValue();
         }
         return {};
     }

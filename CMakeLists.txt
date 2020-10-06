@@ -48,12 +48,10 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
 
+  find_package(Qt5Core REQUIRED)
 
 endif()
 
 add_subdirectory(odk)
-
-add_subdirectory("examples/replay_sync_scalar")
-add_subdirectory("examples/sum_channels")
-add_subdirectory("examples/bin_detector")
+add_subdirectory(examples)
 

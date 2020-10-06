@@ -66,12 +66,22 @@ namespace framework
     StreamIterator StreamReader::createChannelIterator(std::uint64_t channel_id, std::uint64_t& sample_count) const
     {
         sample_count = 0;
+
+        StreamIterator iterator;
+        updateStreamIterator(channel_id, iterator, sample_count);
+        return iterator;
+    }
+
+    void StreamReader::updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, std::uint64_t& sample_count) const
+    {
+        iterator.clearRanges();
+
         auto channel_descriptor = getChannelDescriptor(channel_id);
         if (!channel_descriptor)
         {
             throw std::runtime_error("Invalid channel ID");
         }
-        StreamIterator iterator;
+
         auto blocks_begin = m_blocks.lower_bound(m_stream_descriptor.m_stream_id);
         auto blocks_end = m_blocks.upper_bound(m_stream_descriptor.m_stream_id);
         for (auto it_block = blocks_begin; it_block != blocks_end; ++it_block)
@@ -114,8 +124,12 @@ namespace framework
                 }
             }
         }
-
-        return iterator;
     }
+
+    void StreamReader::clearBlocks()
+    {
+        m_blocks.clear();
+    }
+
 }
 }

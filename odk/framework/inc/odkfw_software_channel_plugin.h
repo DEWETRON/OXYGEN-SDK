@@ -3,6 +3,7 @@
 
 #define ODK_EXTENSION_FUNCTIONS
 
+#include "odkfw_channels.h"
 #include "odkfw_plugin_base.h"
 #include "odkfw_software_channel_instance.h"
 
@@ -20,19 +21,26 @@ namespace framework
     {
     public:
 
-        virtual void registerTranslations() {};
+        virtual void registerTranslations() {}
+        virtual void registerResources() { registerTranslations(); }
 
-        void addTranslation(const char* translation_xml);
+        virtual bool validateInputChannels(const std::vector<InputChannel::InputChannelData>& input_channel_data,
+            std::vector<std::uint64_t>& invalid_channels) { return true; }
 
     protected:
+        SoftwareChannelPluginBase();
 
         void registerSoftwareChannel();
         void unregisterSoftwareChannel();
 
         virtual odk::RegisterSoftwareChannel getSoftwareChannelInfo() = 0;
 
+        PluginChannelsPtr getPluginChannels();
+
         bool checkOxygenCompatibility();
 
+    private:
+        PluginChannelsPtr m_plugin_channels;
     };
 
     template<class SoftwareChannelInstance>
@@ -53,7 +61,7 @@ namespace framework
                 return odk::error_codes::UNSUPPORTED_VERSION;
             }
 
-            registerTranslations();
+            registerResources();
             registerSoftwareChannel();
             return odk::error_codes::OK;
         }
@@ -66,29 +74,45 @@ namespace framework
             return true;
         }
 
-        bool deleteChannels(std::vector<std::uint32_t> channels)
+        bool deleteChannels(std::vector<std::uint32_t> channels_requested)
         {
-
-            const auto containsChannel = [this,&channels](const std::shared_ptr<SoftwareChannelInstance>& inst)
+            std::map<std::shared_ptr<SoftwareChannelInstance>, std::vector<std::uint32_t>> instance_channels_to_remove;
+            for (auto instance : m_instances)
             {
-                for(const auto& channel : channels)
-                {
-                    if(inst->containsChannel(channel))
+                std::vector<std::uint32_t> requested_instance_channels;
+                std::copy_if(
+                    channels_requested.begin(), channels_requested.end(),
+                    std::back_inserter(requested_instance_channels),
+                    [&instance](std::uint32_t a_channel_id)
                     {
-                        return true;
+                        return instance->containsChannel(a_channel_id);
                     }
-                }
-                return false;
-            };
+                );
 
+                const auto actual_instance_channels_to_delete =
+                    instance->getChannelsToDelete(requested_instance_channels);
+
+                instance_channels_to_remove[instance] = actual_instance_channels_to_delete;
+            }
+
+            for (auto instance_channels_info : instance_channels_to_remove)
             {
-                std::vector<std::shared_ptr<SoftwareChannelInstance>> instances_to_remove;
-                std::copy_if(m_instances.begin(), m_instances.end(), std::back_inserter(instances_to_remove), containsChannel);
-
-                for (auto& instance : instances_to_remove)
+                const auto instance_channels = instance_channels_info.second;
+                auto an_instance = instance_channels_info.first;
+                for (auto an_instance_channel : instance_channels)
                 {
-                    instance->shutDown();
-                    m_instances.erase(std::remove(m_instances.begin(), m_instances.end(), instance), m_instances.end());
+                    auto channel_ptr = an_instance->getOutputChannel(an_instance_channel);
+                    an_instance->removeOutputChannel(channel_ptr);
+                }
+            }
+
+            for (auto instance_channels_info : instance_channels_to_remove)
+            {
+                auto an_instance = instance_channels_info.first;
+                if (an_instance->getOutputChannels().size() == 0)
+                {
+                    an_instance->shutDown();
+                    m_instances.erase(std::remove(m_instances.begin(), m_instances.end(), an_instance), m_instances.end());
                 }
             }
 
@@ -108,6 +132,7 @@ namespace framework
                 auto instance = std::make_shared<SoftwareChannelInstance>();
                 instance->setPluginChannels(getPluginChannels());
                 instance->initInstance(getHost());
+                instance->getRootChannel()->setDefaultName(request.getChannel(root_channel_id)->m_default_name);
 
                 m_instances.push_back(instance);
                 root_channel_id_map[root_channel_id] = instance->getRootChannel()->getLocalId();
@@ -147,6 +172,33 @@ namespace framework
         {
             switch (id)
             {
+            case odk::plugin_msg::SOFTWARE_CHANNEL_QUERY_ACTION:
+            {
+                odk::QuerySoftwareChannelAction telegram;
+                if (parseXMLValue(param, telegram))
+                {
+                    std::vector<InputChannel::InputChannelData> input_channel_data;
+                    for (const auto& a_channel : telegram.m_all_selected_channels_data)
+                    {
+                        input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format });
+                    }
+
+                    odk::QuerySoftwareChannelActionResponse response;
+
+                    response.m_valid = validateInputChannels(input_channel_data, response.m_invalid_channels);
+
+                    if (ret)
+                    {
+                        const auto result_xml = response.generate();
+                        auto result = getHost()->template createValue<odk::IfXMLValue>();
+                        result->set(result_xml.c_str());
+                        *ret = result.detach();
+                    }
+                    return true;
+                }
+                return false;
+            }
+
             case odk::plugin_msg::SOFTWARE_CHANNEL_CREATE:
             {
                 odk::CreateSoftwareChannel telegram;
@@ -158,37 +210,43 @@ namespace framework
                     instance->initInstance(getHost());
 
                     std::vector<InputChannel::InputChannelData> input_channel_data;
-                    for (const auto a_channel : telegram.m_all_selected_channels_data)
+                    for (const auto& a_channel : telegram.m_all_selected_channels_data)
                     {
                         input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format });
                     }
-                    instance->init(input_channel_data);
-                    instance->fetchInputChannels();
 
-                    instance->handleConfigChange();
-
-                    getPluginChannels()->synchronize();
-
-                    m_instances.push_back(instance);
-                    if (ret)
+                    if (instance->setup(telegram.m_properties))
                     {
-                        odk::CreateSoftwareChannelResponse response;
-                        for (const auto& ch : instance->getOutputChannels())
-                        {
-                            response.m_channels.push_back(ch->getLocalId());
-                            if (!response.m_show_channel_details)
-                            {
-                                response.m_show_channel_details = true;
-                                response.m_detail_channel = ch->getLocalId();
-                            }
-                        }
 
-                        const auto result_xml = response.generate();
-                        auto result = getHost()->template createValue<odk::IfXMLValue>();
-                        result->set(result_xml.c_str());
-                        *ret = result.detach();
+                        instance->init(input_channel_data);
+
+                        instance->fetchInputChannels();
+
+                        instance->handleConfigChange();
+
+                        getPluginChannels()->synchronize();
+
+                        m_instances.push_back(instance);
+                        if (ret)
+                        {
+                            odk::CreateSoftwareChannelResponse response;
+                            for (const auto& ch : instance->getOutputChannels())
+                            {
+                                response.m_channels.push_back(ch->getLocalId());
+                                if (!response.m_show_channel_details)
+                                {
+                                    response.m_show_channel_details = true;
+                                    response.m_detail_channel = ch->getLocalId();
+                                }
+                            }
+
+                            const auto result_xml = response.generate();
+                            auto result = getHost()->template createValue<odk::IfXMLValue>();
+                            result->set(result_xml.c_str());
+                            *ret = result.detach();
+                        }
+                        return true;
                     }
-                    return true;
                 }
                 return false;
             }
@@ -207,11 +265,12 @@ namespace framework
                     );
                     if (deleteChannels(channels))
                     {
-                        return odk::error_codes::OK;
+                        ret_code = odk::error_codes::OK;
                     }
-                    return odk::error_codes::INTERNAL_ERROR;
+                    ret_code = odk::error_codes::INTERNAL_ERROR;
                 }
-                return odk::error_codes::INVALID_INPUT_PARAMETER;
+                ret_code = odk::error_codes::INVALID_INPUT_PARAMETER;
+                return true;
             }
 
             case odk::plugin_msg::PLUGIN_CHANNEL_IDS_CHANGED:
@@ -275,7 +334,7 @@ namespace framework
                                         getChildrenOfChannel(
                                             telegram,
                                             original_root_id,
-                                            false);
+                                            true);
 
                                     for(const auto& instance_channel_id : instance_channel_ids)
                                     {
@@ -290,9 +349,7 @@ namespace framework
 
                                 id_map[original_root_id] = instance_root_id;
 
-                                instance->configure(
-                                    instance_telegram, id_map);
-
+                                instance->configure(instance_telegram, id_map);
                                 cm.m_channel_id_map.insert(id_map.cbegin(), id_map.cend());
                             }
                         }
@@ -316,6 +373,7 @@ namespace framework
                     instance->fetchInputChannels();
                     instance->handleConfigChange();
                     getPluginChannels()->synchronize();
+                    instance->loadFinished();
                 }
                 return true;
             }

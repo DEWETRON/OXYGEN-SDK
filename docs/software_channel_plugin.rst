@@ -67,11 +67,21 @@ configure
     Called after creation on setup load. A complete set of the stored parameters is provided to restore the state of the instance.
     There are some helper functions available to extract channel and config parameters and apply them.
 
+    When loading a setup the framework will call updatePropertyTypes() for each loaded plugin output channel.
+    Due to ambiguity in regard to ODK property types the framework loads properties with a placeholder type and the 
+    plugin is responsible to exchange this placeholder with the property data type it expects to work with.
+
+    As property-constraints are not serialized to the setup file, all static constraints need to be re-established after loading.
+    The framework will call the function updateStaticPropertyConstraints() for each plugin ouput channel.
+    More dynamic constraints need to be handled during update().
+
+
 update
     called every time a configuration parameter of the instance or an input channel changes.
     Should be used to update the dynamic state of the instance:
 
     - update config parameters
+    - update config constraints
     - add/remove/update output channels depending on configuration
 
     e.g.: input channel unit has changed, adapt unit of output channel

@@ -1,13 +1,54 @@
 // Copyright DEWETRON GmbH 2019
 #include "odkfw_properties.h"
 
+#include "odkbase_basic_values.h"
+
+#include "odkuni_assert.h"
+
 #include <cmath>
+#include <regex>
 
 namespace odk
 {
 namespace framework
 {
-        
+
+    RawPropertyHolder::RawPropertyHolder()
+        : m_value{}
+    {
+    }
+
+    RawPropertyHolder::RawPropertyHolder(const odk::Property& value)
+        : m_value{value}
+    {
+    }
+
+    bool odk::framework::RawPropertyHolder::update(const odk::Property& value)
+    {
+        m_value = value;
+        return true;
+    }
+
+    void RawPropertyHolder::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+    }
+
+    odk::Property RawPropertyHolder::getProperty() const
+    {
+        return m_value;
+    }
+
+    EditableUnsignedProperty::EditableUnsignedProperty(const RawPropertyHolder& value)
+        : m_value{}
+        , m_min(1)
+        , m_max(0)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
     EditableUnsignedProperty::EditableUnsignedProperty(unsigned int val, unsigned int mi, unsigned int ma)
         : m_value(val)
         , m_min(mi)
@@ -21,8 +62,16 @@ namespace framework
 
     void EditableUnsignedProperty::setValue(unsigned int v)
     {
-        m_value = v;
-        notifyChanged();
+        if (v != m_value)
+        {
+            m_value = v;
+            notifyChanged();
+        }
+    }
+    void EditableUnsignedProperty::setMinMaxConstraint(unsigned int min, unsigned int max)
+    {
+        m_min = min;
+        m_max = max;
     }
     bool EditableUnsignedProperty::hasValidRange() const
     {
@@ -75,6 +124,93 @@ namespace framework
         }
     }
 
+    odk::framework::EditableFloatingPointProperty::EditableFloatingPointProperty(const RawPropertyHolder& value)
+        : m_value{}
+        , m_min(1.0)
+        , m_max(0.0)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+    EditableFloatingPointProperty::EditableFloatingPointProperty(const float value)
+        : m_value(value)
+        , m_min(1.0)
+        , m_max(0.0)
+    {
+    }
+    float EditableFloatingPointProperty::getValue() const
+    {
+        return m_value;
+    }
+    void EditableFloatingPointProperty::setValue(const float value)
+    {
+        if (value != m_value)
+        {
+            m_value = value;
+            notifyChanged();
+        }
+    }
+    void EditableFloatingPointProperty::setMinMaxConstraint(float min, float max)
+    {
+        m_min = min;
+        m_max = max;
+    }
+    void EditableFloatingPointProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        if (isLive())
+        {
+            odk::Property property(property_name);
+            property.setValue(m_value);
+            telegram.addProperty(property);
+            if (hasValidRange())
+            {
+                telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
+            }
+            addBaseConstraints(telegram, property_name);
+        }
+    }
+    bool EditableFloatingPointProperty::update(const odk::Property& value)
+    {
+        float v = std::numeric_limits<float>::quiet_NaN();
+        switch (value.getType())
+        {
+        case odk::Property::FLOATING_POINT_NUMBER:
+        {
+            double pv = value.getDoubleValue();
+            v = static_cast<float>(pv);
+        }
+        }
+
+        if (hasValidRange())
+        {
+            if (v < m_min || v > m_max)
+            {
+                return false;
+            }
+        }
+        m_value = v;
+
+        return true;
+    }
+    bool EditableFloatingPointProperty::hasValidRange() const
+    {
+        return m_min <= m_max;
+    }
+
+    EditableScalarProperty::EditableScalarProperty(const RawPropertyHolder& value)
+        : m_value{}
+        , m_unit{}
+        , m_min(1)
+        , m_max(0)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
     EditableScalarProperty::EditableScalarProperty(double val, const std::string& unit, double mi, double ma)
         : m_value(val)
         , m_unit(unit)
@@ -82,15 +218,32 @@ namespace framework
         , m_max(ma)
     {
     }
+
+    EditableScalarProperty::EditableScalarProperty(odk::Scalar scalar, double mi, double ma)
+        : m_value(scalar.m_val)
+        , m_unit(scalar.m_unit)
+        , m_min(mi)
+        , m_max(ma)
+    {
+    }
+
     odk::Scalar EditableScalarProperty::getValue() const
     {
         return { m_value, m_unit };
     }
     void EditableScalarProperty::setValue(const odk::Scalar& s)
     {
-        m_value = s.m_val;
-        m_unit = s.m_unit;
-        notifyChanged();
+        if (!(s == odk::Scalar(m_value, m_unit)))
+        {
+            m_value = s.m_val;
+            m_unit = s.m_unit;
+            notifyChanged();
+        }
+    }
+    void EditableScalarProperty::setMinMaxConstraint(double min, double max)
+    {
+        m_min = min;
+        m_max = max;
     }
     bool EditableScalarProperty::hasValidRange() const
     {
@@ -104,9 +257,16 @@ namespace framework
             case odk::Property::SCALAR:
             {
                 auto scalar_value = value.getScalarValue();
-                if (scalar_value.m_unit != m_unit)
+                if (m_unit.empty())
                 {
-                    return false;
+                    m_unit = scalar_value.m_unit;
+                }
+                else
+                {
+                    if (scalar_value.m_unit != m_unit)
+                    {
+                        return false;
+                    }
                 }
                 v = scalar_value.m_val;
             } break;
@@ -154,6 +314,16 @@ namespace framework
         m_options.push_back(val);
     }
 
+    EditableStringProperty::EditableStringProperty(const RawPropertyHolder& value)
+        : m_value{}
+        , m_is_a_arbitrary_string(true)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
     EditableStringProperty::EditableStringProperty(const std::string& val)
         : m_value(val)
         , m_is_a_arbitrary_string(true)
@@ -165,14 +335,26 @@ namespace framework
     }
     void EditableStringProperty::setValue(const std::string& str)
     {
-        m_value = str;
-        notifyChanged();
+        if (str != m_value)
+        {
+            m_value = str;
+            notifyChanged();
+        }
     }
     void EditableStringProperty::setRegEx(const std::string& regex)
     {
-        m_regex = regex;
         if (!regex.empty())
         {
+            try
+            {
+                m_regex = std::regex(regex);
+            }
+            catch (std::regex_error& /*e*/)
+            {
+                ODK_ASSERT_FAIL("Invalid Regex");
+                return;
+            }
+            m_regex_str = regex;
             m_is_a_arbitrary_string = false;
         }
         notifyChanged();
@@ -180,9 +362,20 @@ namespace framework
     bool EditableStringProperty::update(const odk::Property& value)
     {
         auto v = value.getStringValue();
-        if (!m_regex.empty())
+        if (!m_regex_str.empty())
         {
-            //TODO: verify regex match
+            try
+            {
+                const auto valid = std::regex_match(v, m_regex);
+                if (!valid)
+                {
+                    return false;
+                }
+            }
+            catch (std::regex_error& /*e*/)
+            {
+                ODK_ASSERT_FAIL("Invalid Regex");
+            }
         }
         m_value = v;
         return true;
@@ -197,9 +390,9 @@ namespace framework
                 telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
             }
 
-            if (! m_regex.empty())
+            if (! m_regex_str.empty())
             {
-                telegram.addConstraint(property_name, odk::makeRegExConstraint(m_regex.c_str()));
+                telegram.addConstraint(property_name, odk::makeRegExConstraint(m_regex_str.c_str()));
             }
 
             for (const auto& option : m_options)
@@ -250,8 +443,11 @@ namespace framework
 
     void EditableChannelIDProperty::setValue(odk::ChannelID ch_id)
     {
-        m_value = ch_id;
-        notifyChanged();
+        if (ch_id != m_value)
+        {
+            m_value = ch_id;
+            notifyChanged();
+        }
     }
 
     void EditableChannelIDProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
@@ -284,8 +480,11 @@ namespace framework
 
     void EditableChannelIDListProperty::setValue(odk::ChannelIDList value)
     {
-        m_value = value;
-        notifyChanged();
+        if (!(value == m_value))
+        {
+            m_value = value;
+            notifyChanged();
+        }
     }
 
     void EditableChannelIDListProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
@@ -318,8 +517,11 @@ namespace framework
 
     void BooleanProperty::setValue(const bool& value)
     {
-        m_value = value;
-        notifyChanged();
+        if (value != m_value)
+        {
+            m_value = value;
+            notifyChanged();
+        }
     }
 
     void BooleanProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
@@ -351,8 +553,11 @@ namespace framework
 
     void EditableBooleanProperty::setValue(const bool& value)
     {
-        m_value = value;
-        notifyChanged();
+        if (value != m_value)
+        {
+            m_value = value;
+            notifyChanged();
+        }
     }
 
     void EditableBooleanProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
@@ -377,6 +582,15 @@ namespace framework
         return true;
     }
 
+    RangeProperty::RangeProperty(const RawPropertyHolder& value)
+        : m_value{}
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
     RangeProperty::RangeProperty(const odk::Range &value)
         : m_value(value)
     {
@@ -389,8 +603,11 @@ namespace framework
 
     void RangeProperty::setValue(const odk::Range& value)
     {
-        m_value = value;
-        notifyChanged();
+        if (!(value == m_value))
+        {
+            m_value = value;
+            notifyChanged();
+        }
     }
 
     void RangeProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
@@ -409,6 +626,130 @@ namespace framework
         m_value = value.getRangeValue();
         return true;
     }
+
+
+    SelectableProperty::SelectableProperty(const RawPropertyHolder& value)
+        : SelectableProperty(value.getProperty())
+    {
+    }
+
+    SelectableProperty::SelectableProperty(odk::Property prop)
+        : m_property(prop)
+    {
+    }
+
+    odk::Property SelectableProperty::getValue() const
+    {
+        return m_property;
+    }
+
+    void SelectableProperty::setValue(odk::Property prop)
+    {
+        if (!(prop == m_property))
+        {
+            m_property = prop;
+            notifyChanged();
+        }
+    }
+
+    void SelectableProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        if (isLive())
+        {
+            odk::Property property = m_property;
+            property.setName(property_name);
+            telegram.addProperty(property);
+            addBaseConstraints(telegram, property_name);
+            for (const auto& option : m_options)
+            {
+                telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOption(option));
+            }
+        }
+    }
+
+    bool SelectableProperty::update(const odk::Property& value)
+    {
+        for (const auto& option : m_options)
+        {
+            if (value == option)
+            {
+                setValue(value);
+                break;
+            }
+        }
+        return true;
+    }
+
+    void SelectableProperty::addOption(odk::Property prop)
+    {
+        m_options.emplace_back(prop);
+    }
+
+    void SelectableProperty::clearOptions()
+    {
+        m_options.clear();
+    }
+
+    std::uint32_t SelectableProperty::count() const
+    {
+        return static_cast<std::uint32_t>(m_options.size());
+    }
+
+
+/*    SelectableProperty::SelectableProperty(odk::detail::ApiObjectPtr<odk::IfValue> value)
+        : m_value(value)
+    {
+    }
+
+    odk::detail::ApiObjectPtr<odk::IfValue> SelectableProperty::getValue() const
+    {
+        return m_value;
+    }
+
+    void SelectableProperty::setValue(odk::detail::ApiObjectPtr<odk::IfValue> value)
+    {
+        m_value = value;
+        notifyChanged();
+    }
+
+    void SelectableProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        if (isLive())
+        {
+            odk::Property property(property_name);
+            if (auto e_num = odk::value_ptr_cast<odk::IfEnumValue>(m_value))
+            {
+                property.setEnumValue(e_num->getEnumValue(), e_num->getEnumName());
+            }
+            telegram.addProperty(property);
+            addBaseConstraints(telegram, property_name);
+            for (const auto& option : m_options)
+            {
+                auto enum_option = odk::api_ptr_cast<odk::IfEnumValue>(option);
+                if (enum_option)
+                {
+                    odk::Property prop(property_name, enum_option->getEnumValue(), enum_option->getEnumName());
+                    telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOption(prop));
+                }
+            }
+
+        }
+    }
+
+    bool SelectableProperty::update(const odk::Property& value)
+    {
+        if (auto val = odk::value_ptr_cast<odk::IfEnumValue>(m_value))
+        {
+            val->set(value.getEnumType().c_str(), value.getEnumValue().c_str());
+        }
+        return true;
+    }
+
+    void SelectableProperty::addOption(const odk::detail::ApiObjectPtr<odk::IfValue> option)
+    {
+        m_options.emplace_back(option);
+    }*/
+
 
 }
 }

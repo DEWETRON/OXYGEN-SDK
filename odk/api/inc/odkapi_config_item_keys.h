@@ -49,10 +49,18 @@
 #define ODK_CI_KEY_CHANNEL_TYPE "ChannelType"
 
 /// Sample rate (=expected frequency of samples) of the channel
+/// This is a readonly property meant to be reported by the plugin.
+/// for synchronous channels it will be automatically set when using PluginChannel::setSimpleTimebase()
+/// of the odk framework
+/// To provied a property where the user can configure the sample rate see ODK_CI_KEY_ACQUISITION_RATE
 /// For synchronous channels this always implies the temporal distance between two successive samples.
 /// For asynchronous channel it contains the expected (~average) sample rate.
 /// Value: Scalar
 #define ODK_CI_KEY_SAMPLE_RATE "SampleRate"
+
+/// Acquisition rate (=expected frequency of samples) of the channel as a configurable item
+/// Value: Scalar
+#define ODK_CI_KEY_ACQUISITION_RATE "AcquisitionRate"
 
 /// Sample dimension (=number of samples per scan) of the channel
 /// Value: Uint

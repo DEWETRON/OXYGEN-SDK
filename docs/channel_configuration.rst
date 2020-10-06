@@ -237,3 +237,11 @@ If a synchronous channel uses a Time Base frequency of 2 Hz the
 first three samples at tick 0, 1 & 2 are shown at 0.0s, 0.5s
 and 1.0s in all instruments.
 
+Other channels or modules may rely on the timebase information 
+of the plugins output channels. For example a user might want
+to perform an FFT calculation on the output channel.
+As a consequence, the timebase of synchronous output channels should
+be set as early as possible. In a typical SoftwareChannel implementation 
+this means updating the timebase during an update() call.
+For synchronous channels the call to setSimpleTimebase of an output channel
+automatically updates the "SampleRate" property of the given channel.

@@ -56,9 +56,27 @@ BEGIN_GROUP(plugin_msg)
     MSG_ID(NOTIFY_EVENT,               SUPPORT_FUNCTIONS, 0x000001, "Event ID", "event specific", "-",
            "0 if okay");
 
-    MSG_ID(SOFTWARE_CHANNEL_CREATE,    SOFTWARE_CHANNEL, 0x000003, "SoftwareChannelId", "-", "-", " ");
+    MSG_ID(CUSTOM_QML_REQUEST,         SUPPORT_FUNCTIONS, 0x001000, "request id (uint range due to javascript limitations)", "request specific", "request specifc", "-1 if not implemented; request specific otherwise");
 
-    MSG_ID(DELETE_PLUGIN_CHANNELS,     GENERAL_FUNCTIONS, 0x000007, "-", "<Channels/> (odk::ChannelList) containing the local ids of channels to remove", "-", " ");
+    MSG_ID(SOFTWARE_CHANNEL_CREATE,       SOFTWARE_CHANNEL, 0x000003, "SoftwareChannelId", "-", "-", " ");
+
+    MSG_ID(SOFTWARE_CHANNEL_QUERY_ACTION, SOFTWARE_CHANNEL, 0x000004, "SoftwareChannelId", "-", "-", " ");
+
+    MSG_ID(DELETE_PLUGIN_CHANNELS,        GENERAL_FUNCTIONS, 0x000007, "-", "<Channels/> (odk::ChannelList) containing the local ids of channels to remove", "-", " ");
+
+    MSG_ID(EXPORT_VALIDATE_SETTINGS,      DATA_EXPORT, 0x000201, "Plugin UNIQUE",
+            "<settings as EXPORT_START>", "<reason OK/NOK>",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_GENERATE_NAME,          DATA_EXPORT, 0x000202, "Plugin UNIQUE", "<prefix>",
+            "<generated filename>", "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_START,                  DATA_EXPORT, 0x000203, "Plugin UNIQUE",
+            "<start time, channels, range, filename>", "<reason OK/NOK>",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_CANCEL,                 DATA_EXPORT, 0x000204, "Plugin UNIQUE", "<reason?>", "-",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_FINALIZE,            DATA_EXPORT, 0x000205, "Plugin UNIQUE", "<reason?>", "-",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+
 
 END_GROUP()
 
@@ -71,6 +89,11 @@ BEGIN_GROUP(host_msg)
         "<XML> or string", "-",
         "standard error codes");
 
+    MSG_ID(ADD_RESOURCES,               SUPPORT_FUNCTIONS, 0x000500,
+        "0: rcc (Qt Resource File); other values reserved",
+        "ArbitraryBinaryValue", "optional IfErrorValue in case of problems",
+        "standard error codes");
+
     MSG_ID(ADD_TRANSLATION,             SUPPORT_FUNCTIONS, 0x000501,
         "0: ts-xml-file; other values reserved",
         "<TS>", "optional IfErrorValue in case of problems",
@@ -81,6 +104,26 @@ BEGIN_GROUP(host_msg)
            "0 if okay; 1 for internal error; 2 for compatibility error; 3 already registered ...");
     MSG_ID(SOFTWARE_CHANNEL_UNREGISTER,       SOFTWARE_CHANNEL, 0x000002, "0", "<REASON>", "-",
            "0 if okay; 1 for internal error; 2 for compatibility error");
+
+    //     EXPORT_REGISTER name, format+version, file extensions,...
+    //     EXPORT_UNREGISTER
+    //     EXPORT_FINISHED id
+    //     EXPORT_CANCELED id, status (file deleted/invalid/okay),...
+    //     EXPORT_FAILED id, reason (disk full,...)
+    //     EXPORT_PROGRESS id, %, estimate?
+    MSG_ID(EXPORT_REGISTER,            DATA_EXPORT, 0x000001, "0", "<XML>",
+            "<xml special settings?>",
+            "0 if okay; 1 for internal error; 2 for compatibility error; 3 already registered ...");
+    MSG_ID(EXPORT_UNREGISTER,          DATA_EXPORT, 0x000002, "0", "<REASON>", "-",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_FINISHED,            DATA_EXPORT, 0x000101, "TransactionKey",
+            "-", "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_CANCELED,            DATA_EXPORT, 0x000102, "TransactionKey", "<filename>", "-",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_FAILED,              DATA_EXPORT, 0x000103, "TransactionKey", "<filename, reason>",
+            "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(EXPORT_PROGRESS,            DATA_EXPORT, 0x000104, "TransactionKey", "<filename, progress>",
+            "-", "0 if okay; 1 for internal error; 2 for compatibility error");
 
     // DATA_REQUEST key, settings - blocking
     // DATA_STOP_REQUEST key, settings (now; @TS) - blocking

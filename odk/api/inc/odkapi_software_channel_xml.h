@@ -2,12 +2,19 @@
 #pragma once
 
 #include "odkapi_channel_dataformat_xml.h"
+#include "odkapi_property_xml.h"
 
 #include <string>
 #include <vector>
 
 namespace odk
 {
+    struct InputChannelData
+    {
+        std::uint64_t channel_id;
+        ChannelDataformat data_format;
+    };
+
     class RegisterSoftwareChannel
     {
     public:
@@ -21,6 +28,7 @@ namespace odk
         std::string m_service_name;
         std::string m_display_name;
         std::string m_description;
+        std::string m_ui_item_add;
     };
 
     class CreateSoftwareChannel
@@ -32,14 +40,8 @@ namespace odk
 
         std::string m_service_name;
 
-        struct InputChannelData
-        {
-            std::uint64_t channel_id;
-            ChannelDataformat
-                data_format;
-        };
-
         std::vector<InputChannelData> m_all_selected_channels_data;
+        std::vector<odk::Property> m_properties;
     };
 
     class CreateSoftwareChannelResponse
@@ -57,6 +59,27 @@ namespace odk
         std::uint32_t m_detail_channel;
 
         std::vector<std::uint32_t> m_channels;
+    };
+
+    class QuerySoftwareChannelAction
+    {
+    public:
+        bool parse(const char* xml_string);
+        std::string generate() const;
+
+    public:
+        std::vector<InputChannelData> m_all_selected_channels_data;
+    };
+
+    class QuerySoftwareChannelActionResponse
+    {
+    public:
+        bool parse(const char* xml_string);
+        std::string generate() const;
+
+    public:
+        std::vector<std::uint64_t> m_invalid_channels;
+        bool m_valid;
     };
 
 }

@@ -12,6 +12,15 @@ namespace odk
 {
 namespace framework
 {
+
+    class StreamIterator;
+
+    class IfIteratorUpdater
+    {
+    public:
+        virtual void updateStreamIterator(StreamIterator* iterator) = 0;
+    };
+
     class StreamIterator
     {
     public:
@@ -31,6 +40,10 @@ namespace framework
         bool valid() const;
         void addRange(const BlockIterator& begin, const BlockIterator& end);
 
+        void clearRanges();
+
+        void setDataRequester(IfIteratorUpdater* requester);
+
         StreamIterator& operator++();
         StreamIterator& operator--();
         bool operator==(const StreamIterator&) const;
@@ -41,6 +54,7 @@ namespace framework
         std::vector<BlockIteratorRange> m_blocks_ranges;
         int m_block_index;
         BlockIterator m_current_iterator;
+        IfIteratorUpdater* m_data_requester;
     };
 }
 

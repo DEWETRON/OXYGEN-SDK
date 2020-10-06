@@ -181,13 +181,29 @@ namespace odk
     }
 
     std::uint64_t Property::getUnsignedInt64Value() const {
-        if(m_type != UNSIGNED_INTEGER64)
+        if (m_type != UNSIGNED_INTEGER64 && m_type != UNSIGNED_INTEGER)
         {
             std::string error = std::string("property ") + m_name + " is not of type uint64";
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
         return boost::lexical_cast<std::uint64_t>(m_string_value);
+    }
+
+    void Property::setValue(std::int64_t value) {
+        m_type = INTEGER64;
+        m_string_value = boost::lexical_cast<std::string>(value);
+        m_value.reset();
+    }
+
+    std::int64_t Property::getInt64Value() const {
+        if (m_type != INTEGER64 && m_type != INTEGER)
+        {
+            std::string error = std::string("property ") + m_name + " is not of type sint64";
+            ODKLOG_ERROR(error.c_str());
+            throw std::runtime_error(error);
+        }
+        return boost::lexical_cast<std::int64_t>(m_string_value);
     }
 
     void Property::setValue(double value)
@@ -1593,6 +1609,14 @@ namespace odk
         , m_max(max)
         , m_min_unit(min_unit)
         , m_max_unit(max_unit)
+    {
+    }
+
+    Range::Range(const double& min, const double& max, const std::string & unit)
+        : m_min(min)
+        , m_max(max)
+        , m_min_unit(unit)
+        , m_max_unit(unit)
     {
     }
 
