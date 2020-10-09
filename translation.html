@@ -38,7 +38,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Example: Sync File Replay" href="examples.html" />
+    <link rel="next" title="UI Extensions" href="ui_extensions.html" />
     <link rel="prev" title="Oxygen Channel Configuration" href="channel_configuration.html" /> 
 </head>
 
@@ -97,8 +97,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#format-of-translation-files">Format of Translation Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#registering-translations">Registering Translations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#config-items">Config Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qml-items">QML Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qstranslate-context-sourcetext"><code class="docutils literal notranslate"><span class="pre">qsTranslate(context,</span> <span class="pre">sourceText)</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ui_extensions.html">UI Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_qml.html">QML for Oxygen Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
@@ -177,7 +183,8 @@ shown to the user. Therefore it is recommended to upload plugin-specifc
 translation files to Oxygen during plugin initialization.</p>
 <div class="section" id="format-of-translation-files">
 <h2>Format of Translation Files<a class="headerlink" href="#format-of-translation-files" title="Permalink to this headline">¶</a></h2>
-<p>Oxygen currently accepts translations as XML files in the Qt Linguist format: <a class="reference external" href="https://doc.qt.io/qt-5/linguist-ts-file-format.html">https://doc.qt.io/qt-5/linguist-ts-file-format.html</a></p>
+<p>Oxygen currently accepts translations as XML files in the Qt Linguist format:
+<a class="reference external" href="https://doc.qt.io/qt-5/linguist-ts-file-format.html">https://doc.qt.io/qt-5/linguist-ts-file-format.html</a></p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
 <span class="nt">&lt;TS</span> <span class="na">version=</span><span class="s">&quot;2.1&quot;</span> <span class="na">language=</span><span class="s">&quot;en&quot;</span> <span class="na">sourcelanguage=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;context&gt;&lt;name&gt;</span>ConfigKeys<span class="nt">&lt;/name&gt;</span>
@@ -204,6 +211,8 @@ available.</p>
 <p><code class="docutils literal notranslate"><span class="pre">messageSync(ADD_TRANSLATION,</span> <span class="pre">0,</span> <span class="pre">XMLValue,</span> <span class="pre">&amp;ErrorValue);</span></code></p>
 <p>If using framework this is wrapped in the simple function</p>
 <p><code class="docutils literal notranslate"><span class="pre">addTranslation(&quot;&lt;ts-xml&gt;&quot;)</span></code></p>
+<p>Call this in your override of the <code class="docutils literal notranslate"><span class="pre">registerResources()</span></code> method in the
+plugin class.</p>
 </div>
 <div class="section" id="config-items">
 <h2>Config Items<a class="headerlink" href="#config-items" title="Permalink to this headline">¶</a></h2>
@@ -212,6 +221,34 @@ labels in the channel list and in the detail setup page of a channel.</p>
 <p>At least an English translation file should be provided to make the
 internal key strings display nicely.</p>
 <p>Use context <em>ConfigKeys</em> and the key as source string to provide translations.</p>
+</div>
+<div class="section" id="qml-items">
+<h2>QML Items<a class="headerlink" href="#qml-items" title="Permalink to this headline">¶</a></h2>
+<p>All displayed texts in QML items should be explicitly marked for translation
+using the qsTranslate method (<a class="reference external" href="https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method">https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">qsTranslate(&quot;MY_PLUGIN/AddChannel&quot;,</span> <span class="pre">&quot;Settings</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">new</span> <span class="pre">channel&quot;)</span></code></p>
+<p>Qt will automatically use a matching translated text if an entry is found in the
+translation file, or use the provided text as the fallback.</p>
+<div class="section" id="qstranslate-context-sourcetext">
+<h3><code class="docutils literal notranslate"><span class="pre">qsTranslate(context,</span> <span class="pre">sourceText)</span></code><a class="headerlink" href="#qstranslate-context-sourcetext" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>The context has to be in the format “&lt;PLUGIN_ID&gt;/&lt;QmlItemName&gt;” to prevent conflict
+between different plugins.</p>
+<p>sourceText should be the english version of the text. You can use placeholders
+if necessary to include dynamic parameters in the text as described in
+<a class="reference external" href="https://doc.qt.io/qt-5/qml-qtqml-string.html">https://doc.qt.io/qt-5/qml-qtqml-string.html</a>.</p>
+</div></blockquote>
+<p>For the example above, a german translation could be provided by adding the following
+code to your translation file:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;context&gt;&lt;name&gt;</span>MY_PLUGIN/AddChannel<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;message&gt;</span>
+        <span class="nt">&lt;source&gt;</span>Settings for the new channel<span class="nt">&lt;/source&gt;</span>
+        <span class="nt">&lt;translation&gt;</span>Einstellungen des neuen Kanals<span class="nt">&lt;/translation&gt;</span>
+    <span class="nt">&lt;/message&gt;</span>
+<span class="nt">&lt;/context&gt;</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -223,7 +260,7 @@ internal key strings display nicely.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="examples.html" class="btn btn-neutral float-right" title="Example: Sync File Replay" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ui_extensions.html" class="btn btn-neutral float-right" title="UI Extensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="channel_configuration.html" class="btn btn-neutral float-left" title="Oxygen Channel Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

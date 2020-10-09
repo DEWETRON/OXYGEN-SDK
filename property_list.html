@@ -92,6 +92,8 @@
 <li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui_extensions.html">UI Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_qml.html">QML for Oxygen Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
@@ -214,7 +216,6 @@ a list in place.</p>
 <p>Default value: empty list</p>
 </dd>
 </dl>
-<p>Error value for QML per type</p>
 </div>
 <div class="section" id="basic-methods">
 <h3>Basic Methods<a class="headerlink" href="#basic-methods" title="Permalink to this headline">¶</a></h3>
@@ -248,6 +249,11 @@ If name is not empty any other items with same name are removed.</p>
 </dd>
 </dl>
 </div>
+</div>
+<div class="section" id="qml-specific-information">
+<h2>QML Specific Information<a class="headerlink" href="#qml-specific-information" title="Permalink to this headline">¶</a></h2>
+<p>An object of type PropertyList can be created in JavaScript using</p>
+<p><code class="docutils literal notranslate"><span class="pre">var</span> <span class="pre">pl</span> <span class="pre">=</span> <span class="pre">plugin.createPropertyList();</span></code></p>
 </div>
 <div class="section" id="advanced-usage-in-c">
 <h2>Advanced Usage in C++<a class="headerlink" href="#advanced-usage-in-c" title="Permalink to this headline">¶</a></h2>

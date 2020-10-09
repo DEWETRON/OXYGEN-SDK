@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>UI Extensions &mdash; Oxygen SDK 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/oxygen.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="QML for Oxygen Plugins" href="plugin_qml.html" />
+    <link rel="prev" title="Translation" href="translation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Oxygen SDK
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_instructions.html">Build Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_channel_plugin.html">Software Channel Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">UI Extensions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#common-properties">Common Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-settings">Export settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#context-objects">Context Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#item-interface">Item interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#add-channel-dialog">Add channel dialog</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Context Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Item interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_qml.html">QML for Oxygen Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#example-wav-export">Example: WAV Export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">Template: Empty Software Channel Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html#template-empty-export-plugin">Template: Empty Export Plugin</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Oxygen SDK</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>UI Extensions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ui-extensions">
+<span id="id1"></span><h1>UI Extensions<a class="headerlink" href="#ui-extensions" title="Permalink to this headline">¶</a></h1>
+<p>Oxygen provides hooks allowing plugins to provide a custom user interface for configuration pages.</p>
+<p>Custom UI items are created in the Qt QML language (<a class="reference external" href="https://doc.qt.io/qt-5/qmlapplications.html">https://doc.qt.io/qt-5/qmlapplications.html</a>) and uploaded to Oxygen by the plugin.
+Check out <a class="reference internal" href="plugin_qml.html#plugin-qml-intro"><span class="std std-ref">Plugin QML documentation</span></a> for more information.</p>
+<p>The instantiation context of the custom UI defines which global objects are provided and
+which properties and behaviours are expected for proper integration with the host application.
+The expected QML properties, functions and signals have to be added to the root item
+and implemented according to this specification.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Properties tagged as <code class="docutils literal notranslate"><span class="pre">readonly</span></code> are only read by Oxygen.
+If you cannot use a binding you are free to make them mutable in your item
+and assign new values as necessary.</p>
+</div>
+<p>The following sections provide more details.</p>
+<div class="section" id="common-properties">
+<h2>Common Properties<a class="headerlink" href="#common-properties" title="Permalink to this headline">¶</a></h2>
+<p>The following layout properties should be used in all QML items for Oxygen
+to communicate their size preferences.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Depending on the context and application settings these constraints may
+or may not be respected, therefore every effort should be made to present
+an attractive layout based on the actual width and height of the item.</p>
+</div>
+<div class="highlight-qml notranslate"><div class="highlight"><pre><span></span><span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">preferredHeight</span>
+<span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">minimumHeight</span>
+<span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">maximumHeight</span>
+
+<span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">preferredWidth</span>
+<span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">minimumWidth</span>
+<span class="nx">readonly</span> <span class="nx">property</span> <span class="nx">real</span> <span class="nx">maximumWidth</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="export-settings">
+<h2>Export settings<a class="headerlink" href="#export-settings" title="Permalink to this headline">¶</a></h2>
+<p>The <em>WAV Export</em> example demonstrates usage of custom <em>Export Settings</em>.</p>
+<p>Export plugins can register two QML items by settings their names in the
+<code class="docutils literal notranslate"><span class="pre">odk::RegisterExport</span></code> telegram:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>m_ui_item_small</strong> is displayed in the sidebar</p></li>
+<li><p><strong>m_ui_item_full</strong> is used when the export settings area is displayed full screen</p></li>
+</ul>
+</div></blockquote>
+<p>These items will be shown in addition to the channel list and any
+common export settings provided by oxygen.</p>
+<div class="section" id="context-objects">
+<h3>Context Objects<a class="headerlink" href="#context-objects" title="Permalink to this headline">¶</a></h3>
+<p>None</p>
+</div>
+<div class="section" id="item-interface">
+<h3>Item interface<a class="headerlink" href="#item-interface" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">property</span> <span class="pre">var</span> <span class="pre">customProperties</span></code></dt><dd><p>This property will be initalized to a <a class="reference internal" href="property_list.html#property-list-type"><span class="std std-ref">PropertyList</span></a> instance by Oxygen
+and is used to synchronize settings between the full and small UI items.
+That means the structures have to be compatible.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">onCustomPropertiesChanged</span></code></dt><dd><p>This signal handler is strictly speaking not part of the interface,
+but should be implemented to update the content of the item based on
+the values stored in the customProperties list.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">function</span> <span class="pre">applyDefaults()</span></code></dt><dd><p>This function has to initialize the customProperties object to sensible
+default values. It is called when opening the export settings for the
+first time or after a configuration reset.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">readonly</span> <span class="pre">property</span> <span class="pre">bool</span> <span class="pre">settingsValid</span></code></dt><dd><p>This property should be <em>true</em> iff the current configuration could
+be used to start the export.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="add-channel-dialog">
+<h2>Add channel dialog<a class="headerlink" href="#add-channel-dialog" title="Permalink to this headline">¶</a></h2>
+<p>The <em>Sync File Replay</em> example demonstrates a custom <em>Add Channel</em> interface.</p>
+<p>Software channel plugins can display a custom item in the <em>Add Channel</em> dialog.
+Its name should be sent to Oxygen in <strong>m_ui_item_add</strong> member of the
+<code class="docutils literal notranslate"><span class="pre">odk::RegisterSoftwareChannel</span></code> telegram.</p>
+<div class="section" id="id2">
+<h3>Context Objects<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>None</p>
+</div>
+<div class="section" id="id3">
+<h3>Item interface<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">readonly</span> <span class="pre">property</span> <span class="pre">bool</span> <span class="pre">settingsValid</span></code></dt><dd><p>Should be true if the current settings are okay and  <em>Add</em> Button should
+be enabled.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This flag is ignored in Oxygen 5.3.0 but will be required in the next release.</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">function</span> <span class="pre">queryProperties()</span></code></dt><dd><p>This function has to return a JavaScript dictionary containing the settings
+specified in the UI. These are forwarded to the plugin after the user presses
+the <em>Add</em> button.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plugin_qml.html" class="btn btn-neutral float-right" title="QML for Oxygen Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="translation.html" class="btn btn-neutral float-left" title="Translation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, DEWETRON GmbH
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
