@@ -91,8 +91,6 @@ PropertyList
     Default value: empty list
 
 
-Error value for QML per type
-
 *************
 Basic Methods
 *************

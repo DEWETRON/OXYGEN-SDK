@@ -71,7 +71,7 @@ Item interface
 --------------
 
 ``property var customProperties``
-    This property will be initalized to a PropertyList instance by Oxygen
+    This property will be initalized to a :ref:`PropertyList <property_list_type>` instance by Oxygen
     and is used to synchronize settings between the full and small UI items.
     That means the structures have to be compatible.
 
@@ -110,8 +110,11 @@ Item interface
 --------------
 
 ``readonly property bool settingsValid``
-    Should be true if the current settings are okay and  *Add* Button should
-    be enabled.
+  Should be true if the current settings are okay and  *Add* Button should
+  be enabled.
+
+  .. warning::
+    This flag is ignored in Oxygen 5.3.0 but will be required in the next release.
 
 ``function queryProperties()``
   This function has to return a JavaScript dictionary containing the settings
