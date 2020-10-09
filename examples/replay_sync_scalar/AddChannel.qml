@@ -17,7 +17,7 @@ Item
 
     property string filename
     property bool csv_valid: false
-    readonly property bool configValid: filename !== "" && csv_valid
+    readonly property bool settingsValid: filename !== "" && csv_valid
 
     function queryProperties()
     {

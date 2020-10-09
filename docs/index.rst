@@ -18,6 +18,8 @@ Welcome to Oxygen SDK's documentation!
    export_plugin
    channel_configuration
    translation
+   ui_extensions
+   plugin_qml
    examples
    templates
 

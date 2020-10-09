@@ -11,3 +11,5 @@ Source Code of Main File
 .. include:: ../examples/sum_channels/README.rst
 
 .. include:: ../examples/bin_detector/README.rst
+
+.. include:: ../examples/wav_export/README.rst

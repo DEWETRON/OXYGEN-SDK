@@ -15,7 +15,8 @@ translation files to Oxygen during plugin initialization.
 Format of Translation Files
 ---------------------------
 
-Oxygen currently accepts translations as XML files in the Qt Linguist format: https://doc.qt.io/qt-5/linguist-ts-file-format.html
+Oxygen currently accepts translations as XML files in the Qt Linguist format:
+https://doc.qt.io/qt-5/linguist-ts-file-format.html
 
 .. code-block:: xml
 
@@ -52,6 +53,10 @@ If using framework this is wrapped in the simple function
 
 ``addTranslation("<ts-xml>")``
 
+Call this in your override of the ``registerResources()`` method in the
+plugin class.
+
+
 ------------
 Config Items
 ------------
@@ -63,4 +68,40 @@ At least an English translation file should be provided to make the
 internal key strings display nicely.
 
 Use context *ConfigKeys* and the key as source string to provide translations.
+
+
+---------
+QML Items
+---------
+
+All displayed texts in QML items should be explicitly marked for translation
+using the qsTranslate method (https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method):
+
+``qsTranslate("MY_PLUGIN/AddChannel", "Settings for the new channel")``
+
+Qt will automatically use a matching translated text if an entry is found in the
+translation file, or use the provided text as the fallback.
+
+``qsTranslate(context, sourceText)``
+------------------------------------
+
+  The context has to be in the format "<PLUGIN_ID>/<QmlItemName>" to prevent conflict
+  between different plugins.
+
+  sourceText should be the english version of the text. You can use placeholders
+  if necessary to include dynamic parameters in the text as described in
+  https://doc.qt.io/qt-5/qml-qtqml-string.html.
+
+For the example above, a german translation could be provided by adding the following
+code to your translation file:
+
+.. code-block:: xml
+
+    <context><name>MY_PLUGIN/AddChannel</name>
+        <message>
+            <source>Settings for the new channel</source>
+            <translation>Einstellungen des neuen Kanals</translation>
+        </message>
+    </context>
+
 
