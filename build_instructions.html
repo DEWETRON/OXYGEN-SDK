@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About OxygenSDK</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Build Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-requirements">Optional Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quick-summary-for-experienced-c-developers">Quick Summary for Experienced C++ Developers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-by-step-instructions">Step by Step Instructions</a></li>
 </ul>
@@ -99,6 +100,8 @@
 <li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="channel_configuration.html">Oxygen Channel Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="translation.html">Translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui_extensions.html">UI Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_qml.html">QML for Oxygen Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Example: Sync File Replay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-sync-async-channel">Example: Sync+Async Channel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html#example-bin-detector">Example: Bin Detector</a></li>
@@ -173,12 +176,11 @@
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Windows:</dt><dd><ul class="simple">
-<li><p>DEWETRON Oxygen 5.0.2 or later (<a class="reference external" href="https://ccc.dewetron.com/">https://ccc.dewetron.com/</a>)</p></li>
-<li><p>Microsoft Visual Studio 2017 with C++ compiler and toolchain (<a class="reference external" href="https://visualstudio.microsoft.com/">https://visualstudio.microsoft.com/</a>)</p></li>
+<li><p>DEWETRON Oxygen 5.3.0 or later (<a class="reference external" href="https://ccc.dewetron.com/">https://ccc.dewetron.com/</a>)</p></li>
+<li><p>Microsoft Visual Studio 2017 or 2019 with C++ compiler and toolchain (<a class="reference external" href="https://visualstudio.microsoft.com/">https://visualstudio.microsoft.com/</a>)</p></li>
 <li><p>CMake 3.1 or later (<a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>)</p></li>
 <li><p>Source files for Boost C++ Libraries 1.70 or later
 (<a class="reference external" href="https://www.boost.org/users/history/version_1_70_0.html">https://www.boost.org/users/history/version_1_70_0.html</a>)</p></li>
-<li><p>Qt 5.12.x (<a class="reference external" href="https://www.qt.io/download-qt-installer">https://www.qt.io/download-qt-installer</a>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -187,14 +189,26 @@ Please verify that the <code class="docutils literal notranslate"><span class="p
 If this does not work you have use the ‘Add CMake to the system PATH’ option
 during installation or add it to the PATH manually.</p>
 </div>
+<div class="section" id="optional-requirements">
+<h2>Optional Requirements<a class="headerlink" href="#optional-requirements" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Windows:</dt><dd><ul class="simple">
+<li><p>Qt 5.12.x (<a class="reference external" href="https://www.qt.io/download-qt-installer">https://www.qt.io/download-qt-installer</a>)</p></li>
+</ul>
+</dd>
+</dl>
+<p>As Qt is a rather large downwload (40GB with included debug symbol files)
+we provide a minimal archive (qt_resource_compiler.zip) in the Releases section.</p>
+</div>
 <div class="section" id="quick-summary-for-experienced-c-developers">
 <h2>Quick Summary for Experienced C++ Developers<a class="headerlink" href="#quick-summary-for-experienced-c-developers" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>Boost has to be extracted to to find the header files at
 {repo-root}\3rdparty\boost_1_*\boost</p></li>
-<li><p>Qt 5.12.x has to be installed on the system.
+<li><p>Optionally: Qt 5.12.x has to be installed on the system.
 This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\Qt\5.12.6\msvc2017_64)</p></li>
+<li><p>Alternative: extract qt_resource_compiler.zip to the SDK workspace</p></li>
 <li><p>Main CMakeLists.txt file in root directory of the repository
 references the SDK and all example plugins.
 Run cmbuild with the option -DCMAKE_PREFIX_PATH={QT_DIR}.</p></li>
@@ -218,7 +232,8 @@ to c:\OXYGEN-SDK.</p>
 c:\OXYGEN-SDK\3rdparty\boost_1_70_0\boost\align.hpp exists
 to make sure the extracted paths are correct.</p>
 </li>
-<li><p>Install Qt to c:\Qt\5.12.6.</p></li>
+<li><p>Either install Qt to c:\Qt\5.12.6.</p></li>
+<li><p>Or unpack qt_resource_compiler.zip to c:\OXYGEN-SDK</p></li>
 <li><p>Open a command line prompt and change to the directory c:\OXYGEN-SDK</p></li>
 <li><p>Create a new directory ‘build’ and change to c:\OXYGEN-SDK\build</p>
 <blockquote>
