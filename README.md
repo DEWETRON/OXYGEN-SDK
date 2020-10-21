@@ -14,8 +14,6 @@ Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
 Several advanced features are not yet available:
 - Offline use
-- Create an export plugin
-- Create an advanced GUI
 - Create an instrument
 - Marker management
 - Start/Stop measurement or other application control

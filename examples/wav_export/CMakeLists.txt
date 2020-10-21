@@ -35,7 +35,7 @@ else()
   include(OxygenPluginFunctions)
 endif()
 
-find_package(Qt5Core REQUIRED)
+find_package(SDKQt REQUIRED)
 
 include_directories(
   SYSTEM
@@ -81,3 +81,6 @@ SetPluginOutputOptions(${LIBNAME})
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_examples/ex_wav_export")
 set_target_properties(${LIBNAME}_qml PROPERTIES FOLDER "odk_examples/ex_wav_export")
 
+if (NOT GITHUB_REPO)
+  add_subdirectory(unit_tests)
+endif()

@@ -36,7 +36,7 @@ else()
   include(OxygenPluginFunctions)
 endif()
 
-find_package(Qt5Core REQUIRED)
+find_package(SDKQt REQUIRED)
 
 include_directories(
   SYSTEM

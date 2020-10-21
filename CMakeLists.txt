@@ -25,7 +25,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   endif()
 
   get_filename_component(ODK_ROOT . ABSOLUTE)
-  message("ODKROOT = ${ODK_ROOT}")
+  message(STATUS "ODKROOT = ${ODK_ROOT}")
   # expand cmake search path to check for project settings
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ODK_ROOT}/cmake )
 
@@ -42,13 +42,58 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   # (moved here to set output directory for 3rdparty libs too)
   SetCommonOutputDirectory()
 
+  #
+  # Is github repository (or inside company)
+  if(NOT DEFINED GITHUB_REPO)
+    set(GITHUB_REPO True)   # default
+  endif()
+
+  # Quiz "inside company"
+  if (EXISTS driver)
+    set(GITHUB_REPO False)
+  endif()
+
+  message(STATUS "GITHUB_REPO = ${GITHUB_REPO}")
+  
   SetBoostOptions() # set static, dynamic ...
 
-  find_package(Boost REQUIRED)
+  set(UNIT_TEST_SUFFIX test)
 
-  AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
 
-  find_package(Qt5Core REQUIRED)
+  if (NOT GITHUB_REPO)
+    set(BOOST_MODULES
+      chrono
+      date_time
+      filesystem
+      locale
+      log
+      program_options
+      regex
+      system
+      thread
+      unit_test_framework
+    )
+  else()
+    set(BOOST_MODULES)
+  endif()
+
+  find_package(Boost     REQUIRED COMPONENTS
+    ${BOOST_MODULES}
+    )
+
+  if (EXISTS "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts")
+    AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
+  else()
+    get_filename_component(SW_APP_ROOT ../../.. ABSOLUTE)
+
+    if(EXISTS "${SW_APP_ROOT}/3rdparty/pugixml-1.9/scripts")
+      AddUniqueTargetFromSubdirectory(pugixml "${SW_APP_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
+    else()
+      message(FATAL_ERROR "pugixml library not found")
+    endif()
+  endif()
+
+  find_package(SDKQt REQUIRED)
 
 endif()
 
