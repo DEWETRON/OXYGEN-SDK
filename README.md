@@ -23,6 +23,9 @@ Several advanced features are not yet available:
 If you are interested in one of the non-implemented features, please contact us!
 
 
+[![Github All Releases](https://img.shields.io/github/downloads/DEWETRON/OXYGEN-SDK/total)]()
+
+
 # What is DEWETRON Oxygen Software?
 The OXYGEN measurement software is the most intuitive and easy-to-use software in the data acquisition sector, designed to be operated via touchscreen or classic mouse and keyboard. Its nice instruments and controls make it fun to navigate through tons of data. 100 % Made in Austria by DEWETRON.
 
