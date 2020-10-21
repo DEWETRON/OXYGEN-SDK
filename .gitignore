@@ -1,0 +1,4 @@
+﻿3rdparty/boost*
+3rdparty/qt/bin
+**/build
+
