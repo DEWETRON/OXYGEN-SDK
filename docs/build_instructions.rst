@@ -7,17 +7,27 @@ Requirements
 ------------
 
 Windows:
-  * DEWETRON Oxygen 5.0.2 or later (https://ccc.dewetron.com/)
-  * Microsoft Visual Studio 2017 with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
+  * DEWETRON Oxygen 5.3.0 or later (https://ccc.dewetron.com/)
+  * Microsoft Visual Studio 2017 or 2019 with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
   * CMake 3.1 or later (https://cmake.org/download/)
   * Source files for Boost C++ Libraries 1.70 or later
     (https://www.boost.org/users/history/version_1_70_0.html)
-  * Qt 5.12.x (https://www.qt.io/download-qt-installer)
 
 Make sure Visual Studio and CMake are installed.
 Please verify that the ``cmake`` command can be run from the command prompt.
 If this does not work you have use the 'Add CMake to the system PATH' option
 during installation or add it to the PATH manually.
+
+---------------------
+Optional Requirements
+---------------------
+
+Windows:
+  * Qt 5.12.x (https://www.qt.io/download-qt-installer)
+
+As Qt is a rather large downwload (40GB with included debug symbol files)
+we provide a minimal archive (qt_resource_compiler.zip) in the Releases section.
+
 
 
 --------------------------------------------
@@ -27,8 +37,11 @@ Quick Summary for Experienced C++ Developers
   * Boost has to be extracted to to find the header files at
     {repo-root}\\3rdparty\\boost_1_*\\boost
 
-  * Qt 5.12.x has to be installed on the system.
+  * Optionally: Qt 5.12.x has to be installed on the system.
     This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.12.6\\msvc2017_64)
+
+  * Alternative: extract qt_resource_compiler.zip to the SDK workspace
+
 
   * Main CMakeLists.txt file in root directory of the repository
     references the SDK and all example plugins.
@@ -55,7 +68,9 @@ to c:\\OXYGEN-SDK.
     c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp exists
     to make sure the extracted paths are correct.
 
-  * Install Qt to c:\\Qt\\5.12.6.
+  * Either install Qt to c:\\Qt\\5.12.6.
+
+  * Or unpack qt_resource_compiler.zip to c:\\OXYGEN-SDK
 
   * Open a command line prompt and change to the directory c:\\OXYGEN-SDK
 
