@@ -10,8 +10,10 @@ The following functionality is currently supported in the SDK and 'Oxygen 5.0.2 
 - Get Timebase and start time for sample placing
 - Log into Oxygen Logfile
 
+## Manual
 Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
+## Coming soon
 Several advanced features are not yet available:
 - Offline use
 - Create an instrument
