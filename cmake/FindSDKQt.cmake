@@ -3,7 +3,7 @@ return()
 endif(my_module_Qt_included)
 set(my_module_Qt_included true)
 
-if(EXISTS ${ODK_ROOT}/3rdparty/qt)
+if(EXISTS ${ODK_ROOT}/3rdparty/qt/bin/rcc.exe)
     message(STATUS "Qt rcc found")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ODK_ROOT}/3rdparty/qt/cmake)
     set(Qt5Core_RCC_EXECUTABLE ${ODK_ROOT}/3rdparty/qt/bin/rcc.exe)
