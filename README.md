@@ -1,7 +1,7 @@
 # DEWETRON OXYGEN SDK
 Develop your own plugins for DEWETRON Oxygen Software! The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
-The following functionality is currently supported in the SDK and 'Oxygen 5.0.2 Developer Edition':
+The following functionality is currently supported in the SDK and 'Oxygen 5.3':
 - Read and Write data from/to numeric channels (Scalar and Vector)
 - Create channels
 - Create config items for setup save/load and user config 
@@ -9,6 +9,7 @@ The following functionality is currently supported in the SDK and 'Oxygen 5.0.2 
 - Get Access to full channel list (read only)
 - Get Timebase and start time for sample placing
 - Log into Oxygen Logfile
+- Custom export plugins
 
 ## Manual
 Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
