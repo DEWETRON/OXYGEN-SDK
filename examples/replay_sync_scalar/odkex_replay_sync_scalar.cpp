@@ -59,7 +59,7 @@ public:
     ReplayChannel()
         : m_input_file(new EditableStringProperty(""))
         , m_acquisition_rate(new EditableScalarProperty(1000, "Hz", 0.01, 10000000)) //SampleRate can be configured freely in a wide range (0.01 to 10000000 Hz)
-        , m_next_tick(-1)
+        , m_next_tick(std::numeric_limits<uint64_t>::max())
     {
         // add some proposed sample rates
         m_acquisition_rate->addOption(1);
@@ -95,10 +95,12 @@ public:
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override
     {
+        ODK_UNUSED(output_channel);
     }
 
     void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
     {
+        ODK_UNUSED(channel);
     }
 
     bool update() override
@@ -108,7 +110,7 @@ public:
         CSVNumberReader csv;
         std::ifstream input_stream(m_input_file->getValue());
 
-        m_next_tick = -1;
+        m_next_tick = std::numeric_limits<uint64_t>::max();
         m_values.clear();
 
         double range_min = std::numeric_limits<double>::max();
@@ -145,6 +147,8 @@ public:
 
     void create(odk::IfHost* host) override
     {
+        ODK_UNUSED(host);
+
         getRootChannel()->setDefaultName("Replay channel")
             .setSampleFormat(
                 odk::ChannelDataformat::SampleOccurrence::SYNC,
@@ -173,6 +177,8 @@ public:
 
     void process(ProcessingContext& context, odk::IfHost *host) override
     {
+        ODK_UNUSED(context);
+
         std::uint32_t channel_id = getRootChannel()->getLocalId();
         auto ts = getMasterTimestamp(host);
 

@@ -40,7 +40,7 @@ namespace framework
         /**
          * This is invoked immediately after creation of an instance
          */
-        virtual void create(odk::IfHost* host) {};
+        virtual void create(odk::IfHost* host) { ODK_UNUSED(host); };
 
         /**
          * Called when channel ids of input channels change
@@ -51,7 +51,7 @@ namespace framework
          * @param  channel_mapping Mapping from old to new channel id
          */
         virtual void updateInputChannelIDs(
-            const std::map<std::uint64_t, std::uint64_t>& channel_mapping) {};
+            const std::map<std::uint64_t, std::uint64_t>& channel_mapping) { ODK_UNUSED(channel_mapping); };
 
         /**
          * Called after creation of a fresh instance for initialisation based on the user selection
@@ -60,7 +60,7 @@ namespace framework
          * @param  input_channel_data  Meta information about all input channels selected by user
          */
         virtual void init(
-            const std::vector<InputChannel::InputChannelData>& input_channel_data) {};
+            const std::vector<InputChannel::InputChannelData>& input_channel_data) { ODK_UNUSED(input_channel_data); };
 
         /**
          * Called after init, can be used to pass additional properties to the plugin instance
@@ -70,7 +70,7 @@ namespace framework
          * @return  if passed proerties are valid, and creation of instance can continue
          *
          */
-        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
+        virtual bool setup(const std::vector<odk::Property>& properties) { ODK_UNUSED(properties); return true; }
 
         /**
          * Called after creation of a loaded instance for initialisation based on the saved setup
@@ -122,19 +122,19 @@ namespace framework
          * Called once before acquisition start when timebases of input channels are ready
          * timebases of all output channels of the instance have to be determined and set up in that call
          */
-        virtual void initTimebases(odk::IfHost* host) {}
+        virtual void initTimebases(odk::IfHost* host) { ODK_UNUSED(host); }
 
         /**
          * Called once before acquisition start
          * used to set up everything necessary for subsequent processing
          */
-        virtual void prepareProcessing(odk::IfHost* host) {}
+        virtual void prepareProcessing(odk::IfHost* host) { ODK_UNUSED(host); }
 
         /**
          * Called once after acquisition stop
          * used to clean up leftovers of processing
          */
-        virtual void stopProcessing(odk::IfHost* host) {}
+        virtual void stopProcessing(odk::IfHost* host) { ODK_UNUSED(host); }
 
         /**
          * Called periodically as long as acquisition is running

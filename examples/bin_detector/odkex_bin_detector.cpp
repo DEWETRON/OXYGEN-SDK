@@ -69,14 +69,18 @@ public:
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override
     {
+        ODK_UNUSED(output_channel);
     }
 
     void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
     {
+        ODK_UNUSED(channel);
     }
 
     void init(const std::vector<InputChannel::InputChannelData>& input_channel_data) override
     {
+        ODK_UNUSED(input_channel_data);
+
         if (input_channel_data.size() >= 1)
         {
             m_input_channel->setValue(input_channel_data[0].m_channel_id);
@@ -118,7 +122,7 @@ public:
         {
             const auto& input_range = input_channel->getRange();
             const auto& unit = input_channel->getUnit();
-            const auto& dimension = input_channel->getDataFormat().m_sample_dimension;
+            //const auto& dimension = input_channel->getDataFormat().m_sample_dimension;
 
             if (m_min_channels.m_value_channel)
             {
@@ -197,12 +201,16 @@ public:
 
     void updateInputChannelIDs(const std::map<uint64_t, uint64_t>& channel_mapping) override
     {
+        ODK_UNUSED(channel_mapping);
+
         //the channels have already been mapped by base-class
         //remove all channel_ids that are invalid (not done by base-class)
     }
 
     void create(odk::IfHost *host) override
     {
+        ODK_UNUSED(host);
+
         //configure my group channel
         //add properties for user interface
         getRootChannel()->setDefaultName("Bin Detector Group")

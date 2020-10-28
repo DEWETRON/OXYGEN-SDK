@@ -22,7 +22,7 @@ namespace odk
     public:
         struct PluginChannelInfo
         {
-            std::uint32_t m_local_id = -1;
+            std::uint32_t m_local_id = static_cast<std::uint32_t>(-1);
 
             explicit PluginChannelInfo(std::uint32_t local_id = -1)
                 : m_local_id(local_id)
@@ -173,12 +173,12 @@ namespace odk
             odk::Property getOption(size_t n) const
             {
                 auto i = n;
-                for (size_t i = 0; i < m_params.size(); ++i)
+                for (size_t j = 0; j < m_params.size(); ++j)
                 {
-                    auto prop = m_params.getProperty(i);
+                    auto prop = m_params.getProperty(j);
                     if (prop.getName() == "option")
                     {
-                        if (i)
+                        if (i > 0)
                         {
                             --i;
                         }

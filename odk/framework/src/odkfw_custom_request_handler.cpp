@@ -14,12 +14,12 @@ namespace framework
     {
         if (id == odk::plugin_msg::CUSTOM_QML_REQUEST)
         {
-            std::uint64_t ret_code = -1;
+            std::uint64_t ret_code = std::numeric_limits<uint64_t>::max();
             //limit to range that is safe for qml and reserve other uses
             if (key > 0 && key <= std::numeric_limits<std::int32_t>::max())
             {
-                auto id = static_cast<std::uint16_t>(key);
-                auto it = m_functions.find(id);
+                auto lid = static_cast<std::uint16_t>(key);
+                auto it = m_functions.find(lid);
                 if (it != m_functions.end())
                 {
                     ret_code = it->second(m_host, param, ret);
@@ -27,7 +27,7 @@ namespace framework
             }
             return ret_code;
         }
-        return -1;
+        return std::numeric_limits<uint64_t>::max();
     }
 
     void CustomRequestHandler::setHost(odk::IfHost* host)
@@ -85,6 +85,7 @@ namespace framework
 
     void CustomRequestHandler::registerFunction(std::uint16_t id, const char* name, std::function<GenericHandlerFunction> func)
     {
+        ODK_UNUSED(name);
         m_functions[id] = func;
     }
 

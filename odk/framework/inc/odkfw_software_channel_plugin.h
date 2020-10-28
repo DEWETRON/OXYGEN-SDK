@@ -25,7 +25,11 @@ namespace framework
         virtual void registerResources() { registerTranslations(); }
 
         virtual bool validateInputChannels(const std::vector<InputChannel::InputChannelData>& input_channel_data,
-            std::vector<std::uint64_t>& invalid_channels) { return true; }
+            std::vector<std::uint64_t>& invalid_channels) { 
+            ODK_UNUSED(input_channel_data);
+            ODK_UNUSED(invalid_channels); 
+            return true; 
+        }
 
     protected:
         SoftwareChannelPluginBase();

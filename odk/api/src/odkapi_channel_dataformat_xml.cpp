@@ -209,8 +209,7 @@ namespace odk
             return false;
         }
 
-        bool valid = true;
-        channel_id = channel_node.attribute(XML_NAME_ID_ATTRIBUTE).as_ullong(-1);
+        channel_id = channel_node.attribute(XML_NAME_ID_ATTRIBUTE).as_ullong(std::numeric_limits<uint64_t>::max());
         if (channel_id != -1)
         {
             return data_format.extract(channel_node);
@@ -228,7 +227,7 @@ namespace odk
         {
             return false;
         }
-        auto data_format = doc.document_element();
-        return parse(data_format);
+        auto dfmt = doc.document_element();
+        return parse(dfmt);
     }
 }

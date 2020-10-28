@@ -10,12 +10,15 @@ cmake_minimum_required(VERSION 3.1)
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   #
-  # Force C++14
-  set(CMAKE_CXX_STANDARD 14)
-
-  #
   # studio project name
   project(ODK)
+
+
+  if( MSVC )
+	  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  else()
+	  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+  endif()
 
   if(WIN32)
     set(3RDPARTY_LINK_TYPE "static")

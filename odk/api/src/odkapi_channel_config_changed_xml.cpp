@@ -33,7 +33,7 @@ namespace odk
             {
                 if (strcmp(channel_node.name(), "Channel") == 0)
                 {
-                    std::uint64_t chn_id = channel_node.attribute("id").as_ullong(-1);
+                    std::uint64_t chn_id = channel_node.attribute("id").as_ullong(std::numeric_limits<uint64_t>::max());
                     if (chn_id != -1)
                     {
                         auto& ch = addChannel(chn_id);

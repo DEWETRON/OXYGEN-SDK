@@ -185,7 +185,6 @@ bool CSVMessageReader::parse(std::istream& input)
 
     std::string line;
     auto line_count = 0u;
-    bool success = true;
     while (input && std::getline(input, line))
     {
         ++line_count;
@@ -198,7 +197,6 @@ bool CSVMessageReader::parse(std::istream& input)
         }
 
         Entry entry;
-        bool valid_entry = true;
         if (fields.size() >= 2)
         {
             char* endptr;

@@ -73,6 +73,11 @@ namespace framework
         // only override for special message handling; normal stuff should register handlers
         virtual bool handleMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret, std::uint64_t& ret_code)
         {
+            ODK_UNUSED(id);
+            ODK_UNUSED(key);
+            ODK_UNUSED(param);
+            ODK_UNUSED(ret);
+            ODK_UNUSED(ret_code);
             return false;
         }
 

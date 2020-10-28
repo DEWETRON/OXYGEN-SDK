@@ -396,7 +396,7 @@ namespace framework
 
     std::shared_ptr<PluginTask> PluginChannels::addTask(IfTaskWorker* worker, uint64_t token)
     {
-        auto no_delete = [](IfTaskWorker* worker) {};
+        auto no_delete = [](IfTaskWorker*) {};
         auto wrapped_worker = std::shared_ptr<IfTaskWorker>(worker, no_delete);
         return addTask(wrapped_worker, token);
     }
@@ -575,6 +575,7 @@ namespace framework
                         if (prop)
                         {
                             auto r = prop->update(ch_change);
+                            ODK_UNUSED(r);
                         }
                         else
                         {
@@ -750,16 +751,19 @@ namespace framework
 
     void PluginChannels::onChannelPropertyChanged(const PluginChannel* channel, const std::string& name)
     {
+        ODK_UNUSED(name);
         m_properties_dirty.insert(channel);
     }
 
     void PluginChannels::onChannelSetupChanged(const PluginChannel* channel)
     {
+        ODK_UNUSED(channel);
         m_channels_dirty = true;
     }
 
     std::uint64_t PluginChannels::pluginMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret)
     {
+        ODK_UNUSED(ret);
         switch (id)
         {
         case odk::plugin_msg::ACQUISITION_TASK_INIT_TIMEBASES:

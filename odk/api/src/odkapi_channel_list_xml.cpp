@@ -27,11 +27,11 @@ namespace odk
             {
                 if (strcmp(channel_node.name(), "Channel") == 0)
                 {
-                    auto channel_id = channel_node.attribute("channel_id").as_ullong(-1);
+                    auto channel_id = channel_node.attribute("channel_id").as_ullong(std::numeric_limits<uint64_t>::max());
                     if (channel_id == -1)
                         return false;
-                    std::string status = channel_node.attribute("status").value();
-                    m_channels.push_back({channel_id, status});
+                    std::string status_str = channel_node.attribute("status").value();
+                    m_channels.push_back({channel_id, status_str });
                 }
             }
             return true;

@@ -6,6 +6,7 @@
 #include "odkbase_if_plugin.h"
 #include "odkapi_error_codes.h"
 #include "odkapi_message_ids.h"
+#include "odkuni_defines.h"
 
 #include <cstdint>
 
@@ -23,7 +24,7 @@ namespace framework
             const odk::IfValue* param,
             const odk::IfValue** ret) = 0;
 
-        virtual void setHost(odk::IfHost* host) {}
+        virtual void setHost(odk::IfHost* host) { ODK_UNUSED(host); };
 
     protected:
         virtual ~IfMessageHandler()

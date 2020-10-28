@@ -142,6 +142,8 @@ namespace framework
 
     void SoftwareChannelInstance::onInitTimebases(odk::IfHost* host, std::uint64_t token)
     {
+        ODK_UNUSED(token);
+
         for(auto& input_channel : m_input_channel_proxies)
         {
             input_channel->updateTimeBase();
@@ -153,6 +155,8 @@ namespace framework
 
     void SoftwareChannelInstance::onStartProcessing(odk::IfHost* host, std::uint64_t token)
     {
+        ODK_UNUSED(token);
+
         if (!m_input_channel_proxies.empty())
         {
             setupDataRequest(host);
@@ -176,6 +180,8 @@ namespace framework
 
     void SoftwareChannelInstance::onStopProcessing(odk::IfHost *host, std::uint64_t token)
     {
+        ODK_UNUSED(token);
+
         if (m_dataset_descriptor)
         {
             if(m_data_request_type == DataRequestType::STREAM)
@@ -224,6 +230,8 @@ namespace framework
 
     void SoftwareChannelInstance::onProcess(odk::IfHost *host, std::uint64_t token)
     {
+        ODK_UNUSED(token);
+
         const auto master_timebase = getMasterTimestamp(host);
 
         ProcessingContext context;
@@ -289,6 +297,9 @@ namespace framework
 
     void SoftwareChannelInstance::onChannelConfigChanged(odk::IfHost* host, std::uint64_t token)
     {
+        ODK_UNUSED(host);
+        ODK_UNUSED(token);
+
         fetchInputChannels();
         handleConfigChange();
         m_plugin_channels->synchronize();

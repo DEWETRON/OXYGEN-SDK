@@ -4,6 +4,7 @@
 #include "odkfw_fwd.h"
 
 #include "odkapi_update_config_xml.h"
+#include "odkuni_defines.h"
 
 #include <string>
 #include <cstdint>
@@ -54,13 +55,13 @@ namespace framework
     class IfTaskWorker
     {
     public:
-        virtual void onInitTimebases(odk::IfHost* host, std::uint64_t token) {}
-        virtual void onStartProcessing(odk::IfHost* host, std::uint64_t token) {}
+        virtual void onInitTimebases(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
+        virtual void onStartProcessing(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
         virtual void onProcess(odk::IfHost* host, std::uint64_t token) = 0;
-        virtual void onStopProcessing(odk::IfHost* host, std::uint64_t token) {}
-        virtual void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) {};
+        virtual void onStopProcessing(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
+        virtual void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); };
 
-        virtual void onChannelDataformatChanged(std::uint64_t channel_id) {};
+        virtual void onChannelDataformatChanged(std::uint64_t channel_id) { ODK_UNUSED(channel_id); };
     protected:
         ~IfTaskWorker() {}
     };

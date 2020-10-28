@@ -160,16 +160,16 @@ namespace odk
             INTEGER64 = 23,
         };
 
-        static Type getPropertyTypeFromValue(const Scalar& v) { return SCALAR; }
-        static Type getPropertyTypeFromValue(const DecoratedNumber& v) { return DECORATED_NUMBER; }
-        static Type getPropertyTypeFromValue(const Range& v) { return RANGE; }
-        static Type getPropertyTypeFromValue(const DoubleList& v) { return FLOATING_POINT_NUMBER_LIST; }
-        static Type getPropertyTypeFromValue(const StringList& v) { return STRING_LIST; }
-        static Type getPropertyTypeFromValue(const Point& v) { return POINT; }
-        static Type getPropertyTypeFromValue(const PointList& v) { return POINT_LIST; }
-        static Type getPropertyTypeFromValue(const Rational& v) { return RATIONAL; }
-        static Type getPropertyTypeFromValue(const ChannelIDList& v) { return CHANNEL_ID_LIST; }
-        static Type getPropertyTypeFromValue(const PropertyList& v) { return PROPERTY_LIST; }
+        static Type getPropertyTypeFromValue(const Scalar&) { return SCALAR; }
+        static Type getPropertyTypeFromValue(const DecoratedNumber&) { return DECORATED_NUMBER; }
+        static Type getPropertyTypeFromValue(const Range&) { return RANGE; }
+        static Type getPropertyTypeFromValue(const DoubleList&) { return FLOATING_POINT_NUMBER_LIST; }
+        static Type getPropertyTypeFromValue(const StringList&) { return STRING_LIST; }
+        static Type getPropertyTypeFromValue(const Point&) { return POINT; }
+        static Type getPropertyTypeFromValue(const PointList&) { return POINT_LIST; }
+        static Type getPropertyTypeFromValue(const Rational&) { return RATIONAL; }
+        static Type getPropertyTypeFromValue(const ChannelIDList&) { return CHANNEL_ID_LIST; }
+        static Type getPropertyTypeFromValue(const PropertyList&) { return PROPERTY_LIST; }
 
         Property();
         Property(const Property& other);

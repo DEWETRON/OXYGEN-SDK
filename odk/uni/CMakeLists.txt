@@ -14,6 +14,7 @@ include_directories(
 
 set(ODK_UNI_HEADER_FILES
     inc/odkuni_assert.h
+    inc/odkuni_defines.h
     inc/odkuni_logger.h
     inc/odkuni_string_util.h
     inc/odkuni_uuid.h

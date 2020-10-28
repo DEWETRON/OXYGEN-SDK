@@ -41,7 +41,7 @@ std::uint64_t PLUGIN_API odk::framework::PluginBase::pluginMessage(odk::PluginMe
         case odk::plugin_msg::DEINIT:
             return deinit() ? odk::error_codes::OK : odk::error_codes::INTERNAL_ERROR;
     }
-    return -1;
+    return std::numeric_limits<uint64_t>::max();
 }
 
 void odk::framework::PluginBase::addTranslation(const char* translation_xml)
@@ -52,6 +52,7 @@ void odk::framework::PluginBase::addTranslation(const char* translation_xml)
         if (ret_error)
         {
             auto error_message = ret_error->getDescription();
+            ODK_UNUSED(error_message);
         }
     }
 }
@@ -65,6 +66,7 @@ void odk::framework::PluginBase::addQtResources(const void* rcc_data, std::uint6
         if (ret_error)
         {
             auto error_message = ret_error->getDescription();
+            ODK_UNUSED(error_message);
         }
     }
 }

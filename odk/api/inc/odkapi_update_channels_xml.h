@@ -23,7 +23,7 @@ namespace odk
         struct ChannelGroupInfo : equality_comparable<ChannelGroupInfo>
         {
             std::string m_group_name;
-            std::uint32_t m_channel_id = -1;
+            std::uint32_t m_channel_id = std::numeric_limits<uint32_t>::max();
 
             std::vector<ChannelGroupInfo> m_children;
 
@@ -77,7 +77,7 @@ namespace odk
                 UNSUPPORTED_FORMAT
             };
 
-            std::uint32_t m_local_id = -1;
+            std::uint32_t m_local_id = std::numeric_limits<uint32_t>::max();
 
             ChannelDataformat m_dataformat_info;
             Timebase m_timebase;
@@ -85,7 +85,7 @@ namespace odk
             std::string m_default_name;
             std::string m_domain;
             bool m_deletable = false;
-            std::uint32_t m_local_parent_id = -1;
+            std::uint32_t m_local_parent_id = std::numeric_limits<uint32_t>::max();
 
             bool m_valid = false;
 

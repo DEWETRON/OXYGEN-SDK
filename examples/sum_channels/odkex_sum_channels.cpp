@@ -75,10 +75,12 @@ public:
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override
     {
+        ODK_UNUSED(output_channel);
     }
 
     void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
     {
+        ODK_UNUSED(channel);
     }
 
     bool update() override
@@ -163,6 +165,8 @@ public:
 
     void updateInputChannelIDs(const std::map<std::uint64_t, std::uint64_t>& channel_mapping) override
     {
+        ODK_UNUSED(channel_mapping);
+
         //the channels have already been mapped by base-class
         //remove all channel_ids that are invalid (not done by base-class)
         const auto current_channel_ids(m_input_channels->getValue().m_values);
@@ -179,6 +183,8 @@ public:
 
     void create(odk::IfHost* host) override
     {
+        ODK_UNUSED(host);
+
         getRootChannel()->setDefaultName("SumChannel")
             .setSampleFormat(
                 odk::ChannelDataformat::SampleOccurrence::SYNC,
@@ -199,6 +205,8 @@ public:
 
     void prepareProcessing(odk::IfHost *host) override
     {
+        ODK_UNUSED(host);
+
         m_current_values.fill(std::numeric_limits<double>::quiet_NaN());
     }
 

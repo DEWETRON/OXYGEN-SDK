@@ -31,6 +31,8 @@ namespace framework
 
     void RawPropertyHolder::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
+        ODK_UNUSED(telegram);
+        ODK_UNUSED(property_name);
     }
 
     odk::Property RawPropertyHolder::getProperty() const

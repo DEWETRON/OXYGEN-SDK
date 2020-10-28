@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkuni_xpugixml_fwd.h"
+#include "odkuni_defines.h"
 #include <pugixml.hpp>
 #include <boost/function.hpp>
 #include <string>
@@ -313,7 +314,9 @@ namespace xpugi
     public:
         xml_element_exception(const std::string& msg) :
             std::exception()
-        {}
+        {
+            ODK_UNUSED(msg);
+        }
 
         virtual ~xml_element_exception() noexcept
         {}

@@ -42,7 +42,7 @@ namespace
     {
         if (strcmp(node.name(), "Channel") == 0)
         {
-            std::uint32_t channel_id = node.attribute("local_id").as_uint(-1);
+            std::uint32_t channel_id = node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
             g = UpdateChannelsTelegram::ChannelGroupInfo(channel_id);
         }
         else if (strcmp(node.name(), "Group") == 0)
@@ -126,7 +126,7 @@ namespace
 
             for (const auto node : request_node.children("Channel"))
             {
-                std::uint32_t local_id = node.attribute("local_id").as_uint(-1);
+                std::uint32_t local_id = node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
                 if (local_id != -1)
                 {
                     auto& ch = addChannel(local_id);
@@ -149,7 +149,7 @@ namespace
                     auto parent_node = node.child("Parent");
                     if (parent_node)
                     {
-                        ch.m_local_parent_id = parent_node.attribute("local_id").as_uint(-1);
+                        ch.m_local_parent_id = parent_node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
                     }
 
                     ch.m_channel_config.readProperties(node);

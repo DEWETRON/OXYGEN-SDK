@@ -764,6 +764,7 @@ namespace odk
 
     std::string Property::toXMLType(Type type) const
     {
+        ODK_UNUSED(type);
         switch (m_type)
         {
         case STRING:

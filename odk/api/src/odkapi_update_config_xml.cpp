@@ -80,7 +80,7 @@ namespace odk
             {
                 if (strcmp(channel_node.name(), "Channel") == 0)
                 {
-                    std::uint32_t local_id = channel_node.attribute("local_id").as_uint(-1);
+                    std::uint32_t local_id = channel_node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
                     if (local_id != -1)
                     {
                         auto& ch = addChannel(local_id);
