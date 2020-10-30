@@ -4,6 +4,7 @@
 
 #include "odkapi_property_list_xml.h"
 #include "odkuni_assert.h"
+#include "odkuni_defines.h"
 #include "odkuni_logger.h"
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"

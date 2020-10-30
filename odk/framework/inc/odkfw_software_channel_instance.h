@@ -35,6 +35,37 @@ namespace framework
             std::pair<double, double> m_window;
         };
 
+        struct InitParams
+        {
+            const std::vector<InputChannel::InputChannelData>& m_input_channels;
+            const std::vector<odk::Property>& m_properties;
+        };
+
+        struct InitResult
+        {
+            enum class ChannelListAction {
+                NOTHING,
+                SHOW_DETAILS_OF_SPECIFIED_CHANNEL,
+                SHOW_DETAILS_OF_FIRST_CHANNEL,
+            };
+
+            bool m_success = false; ///< set to true if the instance was properly initialized and any channels were successfully created
+
+            ChannelListAction m_channel_list_action = ChannelListAction::NOTHING;
+            std::uint32_t m_detail_channel = 0xffffffff;
+
+            InitResult(bool success = false)
+                : m_success(success)
+            {
+            }
+
+            void showChannelDetails(std::uint32_t local_id)
+            {
+                m_channel_list_action = ChannelListAction::SHOW_DETAILS_OF_SPECIFIED_CHANNEL;
+                m_detail_channel = local_id;
+            }
+        };
+
     public:
 
         /**
@@ -57,6 +88,26 @@ namespace framework
          * Called after creation of a fresh instance for initialisation based on the user selection
          * input channels can either be accepted or ignored, depending on their characteristics
          *
+         * @param  params Initialization paramaters provided by the UI
+         * @return        Status, additional parameters on how to proceed
+         */
+        virtual InitResult init(const InitParams& params)
+        {
+            if (setup(params.m_properties))
+            {
+                init(params.m_input_channels);
+                InitResult r{ true };
+                r.m_channel_list_action = InitResult::ChannelListAction::SHOW_DETAILS_OF_FIRST_CHANNEL;
+                return r;
+            }
+            return { false };
+        }
+
+        /**
+         * Called after creation of a fresh instance for initialisation based on the user selection
+         * input channels can either be accepted or ignored, depending on their characteristics
+         * @deprected {use init(const InitParams& params)) instead of init() and setup()}
+         *
          * @param  input_channel_data  Meta information about all input channels selected by user
          */
         virtual void init(
@@ -64,13 +115,14 @@ namespace framework
 
         /**
          * Called after init, can be used to pass additional properties to the plugin instance
+         * @deprected {use init(const InitParams& params)) instead of init() and setup()}
          *
          * @param  properties List of additional properties to be passed to the instance
          *
          * @return  if passed proerties are valid, and creation of instance can continue
          *
          */
-        virtual bool setup(const std::vector<odk::Property>& properties) { ODK_UNUSED(properties); return true; }
+        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
 
         /**
          * Called after creation of a loaded instance for initialisation based on the saved setup

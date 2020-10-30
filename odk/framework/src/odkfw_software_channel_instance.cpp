@@ -200,6 +200,8 @@ namespace framework
 
             m_dataset_descriptor = boost::none;
         }
+
+        stopProcessing(host);
     }
 
     std::map<uint64_t, odk::framework::StreamIterator> SoftwareChannelInstance::getSamplesAt(double time)

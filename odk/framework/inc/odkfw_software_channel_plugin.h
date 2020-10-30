@@ -219,11 +219,10 @@ namespace framework
                         input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format });
                     }
 
-                    if (instance->setup(telegram.m_properties))
+                    odk::framework::SoftwareChannelInstance::InitParams init_params{input_channel_data, telegram.m_properties};
+                    auto init_result = std::static_pointer_cast<odk::framework::SoftwareChannelInstance>(instance)->init(init_params);
+                    if (init_result.m_success)
                     {
-
-                        instance->init(input_channel_data);
-
                         instance->fetchInputChannels();
 
                         instance->handleConfigChange();
@@ -237,11 +236,22 @@ namespace framework
                             for (const auto& ch : instance->getOutputChannels())
                             {
                                 response.m_channels.push_back(ch->getLocalId());
-                                if (!response.m_show_channel_details)
+                                if (init_result.m_channel_list_action ==
+                                    odk::framework::SoftwareChannelInstance::InitResult::ChannelListAction::SHOW_DETAILS_OF_FIRST_CHANNEL)
                                 {
-                                    response.m_show_channel_details = true;
-                                    response.m_detail_channel = ch->getLocalId();
+                                    if (!response.m_show_channel_details)
+                                    {
+                                        response.m_show_channel_details = true;
+                                        response.m_detail_channel = ch->getLocalId();
+                                    }
                                 }
+                            }
+
+                            if (init_result.m_channel_list_action ==
+                                odk::framework::SoftwareChannelInstance::InitResult::ChannelListAction::SHOW_DETAILS_OF_SPECIFIED_CHANNEL)
+                            {
+                                response.m_show_channel_details = true;
+                                response.m_detail_channel = init_result.m_detail_channel;
                             }
 
                             const auto result_xml = response.generate();
