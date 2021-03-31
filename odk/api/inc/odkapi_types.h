@@ -19,6 +19,7 @@ namespace odk
         }
     };
 
+    template <class T>
     class Interval
     {
     public:
@@ -26,7 +27,7 @@ namespace odk
             : m_begin(0)
             , m_end(0)
         {}
-        explicit Interval(double begin, double end)
+        explicit Interval(T begin, T end)
             : m_begin(begin)
             , m_end(end)
         {}
@@ -39,9 +40,13 @@ namespace odk
             }
             return m_begin < rhs.m_begin;
         }
+        bool operator==(const Interval& rhs) const
+        {
+            return m_begin == rhs.m_begin && m_end == rhs.m_end;
+        }
 
-        double m_begin;
-        double m_end;
+        T m_begin;
+        T m_end;
     };
 
     enum class DataSetType

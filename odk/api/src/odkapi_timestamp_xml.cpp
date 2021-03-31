@@ -79,4 +79,73 @@ namespace odk
             return false;
         }
     }
+
+    AbsoluteTime::AbsoluteTime()
+    {
+    }
+
+    bool AbsoluteTime::parse(const char *xml_string)
+    {
+        pugi::xml_document doc;
+        auto status = doc.load_string(xml_string);
+        if (status.status == pugi::status_ok)
+        {
+            if (auto absolute_time_node = doc.select_node("AbsoluteTime").node())
+            {
+                m_year = boost::lexical_cast<int>(absolute_time_node.attribute("year").value());
+                m_month = boost::lexical_cast<int>(absolute_time_node.attribute("month").value());
+                m_day = boost::lexical_cast<int>(absolute_time_node.attribute("day").value());
+                m_hour = boost::lexical_cast<int>(absolute_time_node.attribute("hour").value());
+                m_minute = boost::lexical_cast<int>(absolute_time_node.attribute("minute").value());
+                m_second = boost::lexical_cast<int>(absolute_time_node.attribute("second").value());
+                m_nanosecond = boost::lexical_cast<std::uint32_t>(absolute_time_node.attribute("nanosecond").value());
+
+                m_nanoseconds_since_1970 = boost::lexical_cast<std::uint64_t>(absolute_time_node.attribute("nanoseconds_since_1970").value());
+
+                m_timezone_name = absolute_time_node.attribute("tz_name").value();
+                m_timezone_utc_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_utc_offset_seconds").value());
+                m_timezone_std_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_std_offset_seconds").value());
+                m_timezone_dst_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_dst_offset_seconds").value());
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    std::string AbsoluteTime::generate() const
+    {
+        pugi::xml_document doc;
+        auto timestamp_node = doc.append_child("AbsoluteTime");
+        timestamp_node.append_attribute("year")
+            .set_value(boost::lexical_cast<std::string>(m_year).c_str());
+        timestamp_node.append_attribute("month")
+            .set_value(boost::lexical_cast<std::string>(m_month).c_str());
+        timestamp_node.append_attribute("day")
+            .set_value(boost::lexical_cast<std::string>(m_day).c_str());
+        timestamp_node.append_attribute("hour")
+            .set_value(boost::lexical_cast<std::string>(m_hour).c_str());
+        timestamp_node.append_attribute("minute")
+            .set_value(boost::lexical_cast<std::string>(m_minute).c_str());
+        timestamp_node.append_attribute("second")
+            .set_value(boost::lexical_cast<std::string>(m_second).c_str());
+        timestamp_node.append_attribute("nanosecond")
+            .set_value(boost::lexical_cast<std::string>(m_nanosecond).c_str());
+
+        timestamp_node.append_attribute("nanoseconds_since_1970")
+            .set_value(boost::lexical_cast<std::string>(m_nanoseconds_since_1970).c_str());
+
+        timestamp_node.append_attribute("tz_name")
+            .set_value(m_timezone_name.c_str());
+        timestamp_node.append_attribute("tz_utc_offset_seconds")
+            .set_value(boost::lexical_cast<std::string>(m_timezone_utc_offset_seconds).c_str());
+        timestamp_node.append_attribute("tz_std_offset_seconds")
+            .set_value(boost::lexical_cast<std::string>(m_timezone_std_offset_seconds).c_str());
+        timestamp_node.append_attribute("tz_dst_offset_seconds")
+            .set_value(boost::lexical_cast<std::string>(m_timezone_dst_offset_seconds).c_str());
+
+        auto xml_string = xpugi::toXML(doc);
+        return xml_string;
+    }
+
 }

@@ -5,6 +5,8 @@
 
 #include "odkapi_update_config_xml.h"
 #include "odkuni_defines.h"
+#include "odkapi_timestamp_xml.h"
+#include "odkbase_basic_values.h"
 
 #include <string>
 #include <cstdint>
@@ -57,7 +59,7 @@ namespace framework
     public:
         virtual void onInitTimebases(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
         virtual void onStartProcessing(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
-        virtual void onProcess(odk::IfHost* host, std::uint64_t token) = 0;
+        virtual void onProcess(odk::IfHost* host, std::uint64_t token, const odk::IfXMLValue* param) = 0;
         virtual void onStopProcessing(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
         virtual void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); };
 

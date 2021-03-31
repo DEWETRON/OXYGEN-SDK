@@ -6,10 +6,14 @@
 
 #include "odkapi_block_descriptor_xml.h"
 #include "odkapi_data_set_xml.h"
+#include "odkapi_error_codes.h"
 #include "odkapi_utils.h"
+#include "odkbase_message_return_value_holder.h"
 #include "odkfw_channels.h"
+#include "odkfw_exceptions.h"
 #include "odkfw_properties.h"
 #include "odkfw_stream_reader.h"
+#include "odkuni_logger.h"
 
 namespace odk
 {
@@ -32,14 +36,10 @@ namespace framework
 
     std::map<uint64_t, odk::framework::StreamIterator> createChannelIterators(
         const std::vector<odk::StreamDescriptor>& stream_descriptor,
-        const odk::IfDataBlockList* block_list)
+        const odk::IfDataBlockList* block_list,
+        const std::shared_ptr<odk::DataRegions> data_regions = nullptr)
     {
-        const auto block_count = block_list->getBlockCount();
 
-        if(block_count == 0)
-        {
-            return {};
-        }
         std::map<uint64_t, odk::framework::StreamIterator> iterators;
 
         auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
@@ -49,6 +49,7 @@ namespace framework
 
         odk::framework::StreamReader stream_reader;
 
+        const auto block_count = block_list->getBlockCount();
         for (int i = 0; i < block_count; ++i)
         {
             auto block = odk::ptr(block_list->getBlock(i));
@@ -60,6 +61,14 @@ namespace framework
             if (!block_descriptor.m_block_channels.empty())
             {
                 stream_reader.addDataBlock(std::move(block_descriptor), block->data());
+            }
+        }
+
+        if(data_regions)
+        {
+            for(const auto& data_region : data_regions->m_data_regions)
+            {
+                stream_reader.addDataRegion(data_region);
             }
         }
 
@@ -76,6 +85,30 @@ namespace framework
         }
 
         return iterators;
+    }
+
+    SoftwareChannelInstance::InitResult SoftwareChannelInstance::init(const InitParams& params)
+    {
+        try
+        {
+            //default implementation for source code compatibility with old plugins
+            if (setup(params.m_properties))
+            {
+                init(params.m_input_channels);
+                InitResult r{ true };
+                r.m_channel_list_action = InitResult::ChannelListAction::SHOW_DETAILS_OF_FIRST_CHANNEL;
+                return r;
+            }
+        }
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'init': " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception duriong 'init'");
+        }
+        return { false };
     }
 
     std::vector<std::uint32_t> SoftwareChannelInstance::getChannelsToDelete(std::vector<std::uint32_t> requested_chanels)
@@ -114,24 +147,46 @@ namespace framework
 
     void SoftwareChannelInstance::initInstance(odk::IfHost* host)
     {
-        m_host = host;
-        auto channel = addOutputChannel("root");
-        channel->setLocalParent(nullptr);
-        channel->setDeletable(true);
+        try
+        {
+            m_host = host;
+            auto channel = addOutputChannel("root");
+            channel->setLocalParent(nullptr);
+            channel->setDeletable(true);
 
-        channel->setSampleFormat(
-            odk::ChannelDataformat::SampleOccurrence::NEVER,
-            odk::ChannelDataformat::SampleFormat::NONE,
-            0);
+            channel->setSampleFormat(
+                odk::ChannelDataformat::SampleOccurrence::NEVER,
+                odk::ChannelDataformat::SampleFormat::NONE,
+                0);
 
-        m_data_request_type = DataRequestType::STREAM;
+            m_data_request_type = DataRequestType::STREAM;
+            m_data_request_interval = 0.01;
 
-        create(m_host);
+            create(m_host);
+        }
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'initInstance': " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'initInstance'");
+        }
     }
 
     void SoftwareChannelInstance::setDataRequestType(DataRequestType type)
     {
         m_data_request_type = type;
+    }
+
+    void SoftwareChannelInstance::setDataRequestInterval(double seconds)
+    {
+        m_data_request_interval = seconds;
+    }
+
+    void SoftwareChannelInstance::synchronize()
+    {
+        m_plugin_channels->synchronize();
     }
 
     void SoftwareChannelInstance::setPluginChannels(PluginChannelsPtr plugin_channels)
@@ -143,65 +198,101 @@ namespace framework
     void SoftwareChannelInstance::onInitTimebases(odk::IfHost* host, std::uint64_t token)
     {
         ODK_UNUSED(token);
-
-        for(auto& input_channel : m_input_channel_proxies)
+        try
         {
-            input_channel->updateTimeBase();
-        }
+            for (auto& input_channel : m_input_channel_proxies)
+            {
+                input_channel->updateTimeBase();
+            }
 
-        initTimebases(host);
-        m_plugin_channels->synchronize(false);
+            initTimebases(host);
+            m_plugin_channels->synchronize(false);
+        }
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'initTimebases': " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'initTimebases'");
+        }
     }
 
     void SoftwareChannelInstance::onStartProcessing(odk::IfHost* host, std::uint64_t token)
     {
         ODK_UNUSED(token);
 
-        if (!m_input_channel_proxies.empty())
+        try
         {
-            setupDataRequest(host);
-
-            if(m_dataset_descriptor && m_data_request_type == DataRequestType::STREAM)
+            if (!m_input_channel_proxies.empty())
             {
-                PluginDataStartRequest req;
-                req.m_id = m_dataset_descriptor->m_id;
-                req.m_stream_type = StreamType::PULL;
-                req.m_ignore_regions = true;
-                req.m_block_duration = 0.01;
+                setupDataRequest(host);
 
-                auto msg = host->createValue<odk::IfXMLValue>();
-                msg->set(req.generate().c_str());
-                host->messageAsync(odk::host_msg::DATA_START_REQUEST, 0, msg.get());
+                if (m_dataset_descriptor && m_data_request_type == DataRequestType::STREAM)
+                {
+                    PluginDataStartRequest req;
+                    req.m_id = m_dataset_descriptor->m_id;
+                    req.m_stream_type = StreamType::PULL;
+                    req.m_ignore_regions = true;
+                    req.m_block_duration = m_data_request_interval;
+
+                    auto msg = host->createValue<odk::IfXMLValue>();
+                    msg->set(req.generate().c_str());
+                    host->messageAsync(odk::host_msg::DATA_START_REQUEST, 0, msg.get());
+                }
             }
-        }
 
-        prepareProcessing(host);
+            prepareProcessing(host);
+            return;
+        }
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'prepareProcessing': " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'prepareProcessing'");
+        }
+        throw odk::framework::CallbackError(odk::error_codes::UNHANDLED_EXCEPTION);
     }
 
     void SoftwareChannelInstance::onStopProcessing(odk::IfHost *host, std::uint64_t token)
     {
         ODK_UNUSED(token);
 
-        if (m_dataset_descriptor)
+        try
         {
-            if(m_data_request_type == DataRequestType::STREAM)
+            if (m_dataset_descriptor)
             {
-                PluginDataStopRequest req;
-                req.m_id = m_dataset_descriptor->m_id;
+                if (m_data_request_type == DataRequestType::STREAM)
+                {
+                    PluginDataStopRequest req;
+                    req.m_id = m_dataset_descriptor->m_id;
 
-                auto msg = host->createValue<odk::IfXMLValue>();
-                msg->set(req.generate().c_str());
-                host->messageAsync(odk::host_msg::DATA_STOP_REQUEST, 0, msg.get());
+                    auto msg = host->createValue<odk::IfXMLValue>();
+                    msg->set(req.generate().c_str());
+                    host->messageAsync(odk::host_msg::DATA_STOP_REQUEST, 0, msg.get());
+                }
+
+                auto msg = m_host->createValue<odk::IfUIntValue>();
+                msg->set(m_dataset_descriptor->m_id);
+                m_host->messageSync(odk::host_msg::DATA_GROUP_REMOVE, 0, msg.get(), nullptr);
+
+                m_dataset_descriptor = boost::none;
             }
 
-            auto msg = m_host->createValue<odk::IfUIntValue>();
-            msg->set(m_dataset_descriptor->m_id);
-            m_host->messageSync(odk::host_msg::DATA_GROUP_REMOVE, 0, msg.get(), nullptr);
-
-            m_dataset_descriptor = boost::none;
+            stopProcessing(host);
+            return;
         }
-
-        stopProcessing(host);
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'stopProcessing': " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'stopProcessing'");
+        }
+        throw odk::framework::CallbackError(odk::error_codes::UNHANDLED_EXCEPTION);
     }
 
     std::map<uint64_t, odk::framework::StreamIterator> SoftwareChannelInstance::getSamplesAt(double time)
@@ -230,17 +321,99 @@ namespace framework
         return {};
     }
 
-    void SoftwareChannelInstance::onProcess(odk::IfHost *host, std::uint64_t token)
+    void SoftwareChannelInstance::onProcess(odk::IfHost *host, std::uint64_t token, const odk::IfXMLValue* param)
     {
         ODK_UNUSED(token);
 
-        const auto master_timebase = getMasterTimestamp(host);
+        std::uint64_t ret = odk::error_codes::OK;
+        odk::AcquisitionTaskProcessTelegram telegram;
+        if (param)
+        {
+            telegram.parse(param->getValue());
+        }
 
         ProcessingContext context;
+        const auto master_timebase = getMasterTimestamp(host);
         context.m_master_timestamp = master_timebase;
 
-        if (m_dataset_descriptor && m_data_request_type == DataRequestType::STREAM)
+        if (m_dataset_descriptor && telegram.m_start.timestampValid() && telegram.m_end.timestampValid())
         {
+            std::shared_ptr<odk::DataRegions> data_regions;
+            {
+                auto xml_msg = host->createValue<odk::IfXMLValue>();
+                if (xml_msg)
+                {
+                    double start = telegram.m_start.m_ticks / telegram.m_start.m_frequency;
+                    double end = telegram.m_end.m_ticks / telegram.m_end.m_frequency;
+                    PluginDataRegionsRequest req(m_dataset_descriptor->m_id);
+                    req.m_data_window = PluginDataRegionsRequest::DataWindow(start, end);
+                    xml_msg->set(req.generate().c_str());
+                }
+
+                const odk::IfValue* data_regions_result = nullptr;
+                host->messageSync(odk::host_msg::DATA_REGIONS_READ, 0, xml_msg.get(), &data_regions_result);
+
+                const odk::IfXMLValue* data_regions_result_xml = odk::value_cast<odk::IfXMLValue>(data_regions_result);
+                if (data_regions_result)
+                {
+                    if (data_regions_result_xml)
+                    {
+                        data_regions.reset(new DataRegions());
+                        data_regions->parse(data_regions_result_xml->getValue());
+                    }
+                    data_regions_result->release();
+                }
+            }
+            auto xml_msg = host->createValue<odk::IfXMLValue>();
+            if (xml_msg)
+            {
+                double start = telegram.m_start.m_ticks / telegram.m_start.m_frequency;
+                double end = telegram.m_end.m_ticks / telegram.m_end.m_frequency;
+                PluginDataRequest req(m_dataset_descriptor->m_id, PluginDataRequest::DataWindow(start, end));
+                xml_msg->set(req.generate().c_str());
+            }
+
+            const odk::IfValue* response = nullptr;
+
+            if (0 != host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
+            {
+                return;
+            }
+
+            if (auto block_list = odk::value_cast<odk::IfDataBlockList>(response))
+            {
+                auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
+                BlockListDescriptor list_descriptor;
+                list_descriptor.parse(block_list_descriptor_xml->getValue());
+
+                if (list_descriptor.m_windows.empty())
+                {
+                    response->release();
+                    return;
+                }
+
+                context.m_window.first = list_descriptor.m_windows.front().m_begin;
+                context.m_window.second = list_descriptor.m_windows.back().m_end;
+
+                context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors,
+                                                                     block_list,
+                                                                     data_regions);
+
+                for(auto& iterator : context.m_channel_iterators)
+                {
+                    std::uint64_t first_tick = context.m_window.first * getInputChannelProxy(iterator.first)->getTimeBase().m_frequency;
+                    iterator.second.init(first_tick);
+                }
+
+                process(context, host);
+                response->release();
+            }
+        }
+        else if (m_dataset_descriptor && m_data_request_type == DataRequestType::STREAM)
+        {
+            const auto master_timebase = getMasterTimestamp(host);
+            context.m_master_timestamp = master_timebase;
+
             const double max_time = master_timebase.m_ticks / master_timebase.m_frequency;
             double current_time = 0.0;
             while (current_time < max_time)
@@ -253,13 +426,13 @@ namespace framework
                     xml_msg->set(req.generate().c_str());
                 }
 
-                const odk::IfValue* response = nullptr;
-                if (0 != host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
+                odk::MessageReturnValueHolder<odk::IfDataBlockList> block_list;
+                if (0 != host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), block_list.data()))
                 {
-                    return;
+                    throw odk::framework::CallbackError(odk::error_codes::INTERNAL_ERROR);
                 }
 
-                if (auto block_list = odk::value_cast<odk::IfDataBlockList>(response))
+                if (block_list.valid())
                 {
                     auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
                     BlockListDescriptor list_descriptor;
@@ -267,24 +440,49 @@ namespace framework
 
                     if (list_descriptor.m_windows.empty())
                     {
-                        response->release();
                         return;
                     }
 
                     context.m_window.first = list_descriptor.m_windows.front().m_begin;
                     context.m_window.second = list_descriptor.m_windows.back().m_end;
 
-                    context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors, block_list);
+                    context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors, block_list.ref());
 
-                    process(context, host);
+                    try
+                    {
+                        process(context, host);
+                    }
+                    catch (const std::exception& e)
+                    {
+                        ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
+                        ret = odk::error_codes::UNHANDLED_EXCEPTION;
+                    }
+                    catch (...)
+                    {
+                        ODKLOG_ERROR("Unhandled exception during 'process'");
+                        ret = odk::error_codes::UNHANDLED_EXCEPTION;
+                    }
+
                     current_time = context.m_window.second;
-                    response->release();
                 }
             }
         }
         else
         {
-            process(context, host);
+            try
+            {
+                process(context, host);
+            }
+            catch (const std::exception& e)
+            {
+                ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+            catch (...)
+            {
+                ODKLOG_ERROR("Unhandled exception during 'process'");
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
         }
 
         // free manually retrieved data block lists
@@ -292,9 +490,12 @@ namespace framework
         {
             block_list->release();
         }
-
         m_block_lists.clear();
 
+        if (ret != odk::error_codes::OK)
+        {
+            throw odk::framework::CallbackError(ret);
+        }
     }
 
     void SoftwareChannelInstance::onChannelConfigChanged(odk::IfHost* host, std::uint64_t token)
@@ -636,7 +837,7 @@ namespace framework
                     const auto property_name(property.getName());
                     if(!output_channel->getProperty(property_name))
                     {
-                        output_channel->addProperty(property_name, std::make_shared<RawPropertyHolder>());
+                        output_channel->addProperty(property_name, std::make_shared<RawPropertyHolder>(property));
                     }
                 }
 

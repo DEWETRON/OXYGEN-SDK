@@ -48,6 +48,7 @@ namespace odk
                 ARBITRARY_STRING,
                 CHANNEL_IDS,
                 VISIBLITY,
+                FILE_PATH
             };
 
             static Constraint makeOption(const odk::Property& value)
@@ -126,6 +127,20 @@ namespace odk
             {
                 Constraint r(VISIBLITY);
                 r.m_params.setProperty(odk::Property("visibility", visibility));
+                return r;
+            }
+
+            static Constraint makeFilePathConstraint(std::string& file_type,
+                const std::string& dialog_title, const std::string& default_path,
+                const std::vector<std::string>& name_filters, bool multi_select)
+            {
+                Constraint r(FILE_PATH);
+                r.m_params.setProperty(odk::Property("file_type", file_type, "DialogFileType"));
+                r.m_params.setProperty(odk::Property("dialog_title", dialog_title));
+                r.m_params.setProperty(odk::Property("default_path", default_path));
+                StringList sl(name_filters);
+                r.m_params.setProperty(odk::Property("name_filters", sl));
+                r.m_params.setProperty(odk::Property("multi_select", multi_select));
                 return r;
             }
 
@@ -208,6 +223,51 @@ namespace odk
                     throw std::runtime_error("constraint is not of type visibility");
                 }
                 return m_params.getPropertyByName("visibility").getStringValue();
+            }
+
+            std::string getFileType() const
+            {
+                if (m_type != FILE_PATH)
+                {
+                    throw std::runtime_error("constraint is not of type file path");
+                }
+                return m_params.getPropertyByName("file_type").getStringValue();
+            }
+
+            std::string getDialogTitle() const
+            {
+                if (m_type != FILE_PATH)
+                {
+                    throw std::runtime_error("constraint is not of type file path");
+                }
+                return m_params.getPropertyByName("dialog_title").getStringValue();
+            }
+
+            std::string getDefaultPath() const
+            {
+                if (m_type != FILE_PATH)
+                {
+                    throw std::runtime_error("constraint is not of type file path");
+                }
+                return m_params.getPropertyByName("default_path").getStringValue();
+            }
+
+            StringList getNameFilters() const
+            {
+                if (m_type != FILE_PATH)
+                {
+                    throw std::runtime_error("constraint is not of type file path");
+                }
+                return m_params.getPropertyByName("name_filters").getStringListValue();
+            }
+
+            bool getMultiSelect() const
+            {
+                if (m_type != FILE_PATH)
+                {
+                    throw std::runtime_error("constraint is not of type file path");
+                }
+                return m_params.getPropertyByName("multi_select").getBoolValue();
             }
 
             Constraint()
@@ -374,4 +434,7 @@ namespace odk
     UpdateConfigTelegram::Constraint makeRegExConstraint(const std::string& regex);
     UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max);
     UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis);
+    UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
+        const std::string& dialog_title, const std::string& path,
+        const std::vector<std::string>& name_filters, bool multi_select);
 }

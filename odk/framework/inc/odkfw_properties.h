@@ -103,13 +103,13 @@ namespace framework
     public:
         //TODO limit constraints
         explicit EditableFloatingPointProperty(const RawPropertyHolder& value);
-        explicit EditableFloatingPointProperty(const float value);
+        explicit EditableFloatingPointProperty(const double value);
 
-        float getValue() const;
+        double getValue() const;
 
-        void setValue(const float value);
+        void setValue(const double value);
 
-        void setMinMaxConstraint(float min = 1.0, float max = 0.0);
+        void setMinMaxConstraint(double min = 1.0, double max = 0.0);
 
         void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
@@ -118,9 +118,9 @@ namespace framework
         bool hasValidRange() const;
 
     private:
-        float m_value;
-        float m_min;
-        float m_max;
+        double m_value;
+        double m_min;
+        double m_max;
     };
 
     class EditableScalarProperty : public PropertyBase
@@ -149,6 +149,47 @@ namespace framework
         double m_min;
         double m_max;
         std::vector<double> m_options;
+    };
+
+    class EditableFilePathProperty : public PropertyBase
+    {
+    public:
+        enum class FileType : uint8_t
+        {
+            INPUT_FILE,
+            OUTPUT_FILE,
+            DIRECTORY
+        };
+
+        explicit EditableFilePathProperty(const RawPropertyHolder& value);
+        EditableFilePathProperty(FileType ft, const std::string& name = "",
+            const std::string& title = "", const std::string& path = "",
+            const std::vector<std::string>& filter = {});
+
+        static std::string toString(FileType ft);
+        FileType getFileType() const;
+        void setFiletype(const FileType ft);
+        std::string getFilename() const;
+        void setTitle(const std::string& fl);
+        std::string getTitle() const;
+        void setFilename(const std::string& fl);
+        std::string getDefaultPath() const;
+        void setDefaultPath(const std::string& path);
+        std::vector<std::string> getNameFilters() const;
+        void setNameFilters(const std::vector<std::string>& filter);
+
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+        bool update(const odk::Property& value) override;
+
+    private:
+        FileType m_file_type;
+        std::string m_filename;
+
+        std::string m_title;
+        std::string m_default_path;
+        std::vector<std::string> m_filters;
+        bool m_multi_select;
     };
 
     class EditableStringProperty : public PropertyBase

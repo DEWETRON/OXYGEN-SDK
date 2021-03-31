@@ -80,6 +80,12 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
+    DataRegion::DataRegion(std::uint64_t channel_id, const Interval<std::uint64_t>& region)
+        : m_channel_id(channel_id)
+        , m_region(region)
+    {
+    }
+
     BlockListDescriptor::BlockListDescriptor()
         : m_block_count(0)
         , m_windows()
@@ -109,6 +115,17 @@ namespace odk
                     auto end = boost::lexical_cast<double>(a_interval_node.attribute("end").value());
                     m_windows.emplace_back(begin, end);
                 }
+
+                auto channel_region_nodes = block_list_desc_node.select_nodes("InvalidRegions/DataRegion");
+                m_invalid_regions.reserve(channel_region_nodes.size());
+                for (auto a_region_node : channel_region_nodes)
+                {
+                    auto a_region_detail_node = a_region_node.node();
+                    auto channel_id = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("channel_id").value());
+                    auto begin = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("begin").value());
+                    auto end = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("end").value());
+                    m_invalid_regions.emplace_back(channel_id, Interval<uint64_t>(begin, end));
+                }
             }
             catch (const boost::bad_lexical_cast&)
             {
@@ -135,9 +152,67 @@ namespace odk
                 interval_node.append_attribute("end").set_value(interval.m_end);
             }
         }
+        if (!m_invalid_regions.empty())
+        {
+            auto regions_node = block_list_desc_node.append_child("InvalidRegions");
+
+            for (const auto& a_region : m_invalid_regions)
+            {
+                auto channel_region_node = regions_node.append_child("DataRegion");
+                channel_region_node.append_attribute("channel_id").set_value(a_region.m_channel_id);
+                channel_region_node.append_attribute("begin").set_value(a_region.m_region.m_begin);
+                channel_region_node.append_attribute("end").set_value(a_region.m_region.m_end);
+            }
+        }
 
         return xpugi::toXML(doc);
     }
 
+    bool DataRegions::parse(const char* xml_string)
+    {
+        pugi::xml_document doc;
+        m_data_regions.clear();
+
+        auto status = doc.load_string(xml_string);
+        if (status.status == pugi::status_ok)
+        {
+            try{
+
+                auto data_regions_node = doc.document_element();
+
+                auto channel_region_nodes = data_regions_node.select_nodes("DataRegion");
+                m_data_regions.reserve(channel_region_nodes.size());
+                for (auto a_region_node : channel_region_nodes)
+                {
+                    auto a_region_detail_node = a_region_node.node();
+                    auto channel_id = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("channel_id").value());
+                    auto begin = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("begin").value());
+                    auto end = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("end").value());
+                    m_data_regions.emplace_back(channel_id, Interval<uint64_t>(begin, end));
+                }
+            }
+            catch (const boost::bad_lexical_cast&)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    std::string DataRegions::generate() const
+    {
+        pugi::xml_document doc;
+        auto regions_node = doc.append_child("DataRegions");
+
+        for (const auto& a_region : m_data_regions)
+        {
+            auto channel_region_node = regions_node.append_child("DataRegion");
+            channel_region_node.append_attribute("channel_id").set_value(a_region.m_channel_id);
+            channel_region_node.append_attribute("begin").set_value(a_region.m_region.m_begin);
+            channel_region_node.append_attribute("end").set_value(a_region.m_region.m_end);
+        }
+
+        return xpugi::toXML(doc);
+    }
 }
 

@@ -322,6 +322,8 @@ namespace framework
                         odk::ChannelMappingTelegram<std::uint32_t> cm;
                         cm.m_channel_id_map.insert(id_map_root_channels.cbegin(), id_map_root_channels.cend());
 
+                        std::set<std::shared_ptr<SoftwareChannelInstance>> instances_to_remove;
+
                         for (auto instance : m_instances)
                         {
                             const auto instance_root_id = instance->getRootChannel()->getLocalId();
@@ -363,10 +365,25 @@ namespace framework
 
                                 id_map[original_root_id] = instance_root_id;
 
-                                instance->configure(instance_telegram, id_map);
-                                cm.m_channel_id_map.insert(id_map.cbegin(), id_map.cend());
+                                bool configuration_successful = instance->configure(instance_telegram, id_map);
+                                if(configuration_successful)
+                                {
+                                    cm.m_channel_id_map.insert(id_map.cbegin(), id_map.cend());
+                                }
+                                else
+                                {
+                                    cm.m_channel_id_map.erase(original_root_id);
+                                    instances_to_remove.insert(instance);
+                                }
                             }
                         }
+
+                        for(const auto& an_instance : instances_to_remove)
+                        {
+                            m_instances.erase(std::remove(m_instances.begin(), m_instances.end(), an_instance), m_instances.end());
+                        }
+
+                        instances_to_remove.clear();
 
                         getPluginChannels()->synchronize();
 

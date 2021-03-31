@@ -8,6 +8,9 @@
 #include <cmath>
 #include <regex>
 
+
+///TODO: notifyChanged when a constraint changes?
+
 namespace odk
 {
 namespace framework
@@ -33,6 +36,13 @@ namespace framework
     {
         ODK_UNUSED(telegram);
         ODK_UNUSED(property_name);
+        if (isLive())
+        {
+            auto prop = m_value;
+            prop.setName(property_name);
+            telegram.addProperty(prop);
+            addBaseConstraints(telegram, property_name);
+        }
     }
 
     odk::Property RawPropertyHolder::getProperty() const
@@ -136,17 +146,17 @@ namespace framework
             update(value.getProperty());
         }
     }
-    EditableFloatingPointProperty::EditableFloatingPointProperty(const float value)
+    EditableFloatingPointProperty::EditableFloatingPointProperty(const double value)
         : m_value(value)
         , m_min(1.0)
         , m_max(0.0)
     {
     }
-    float EditableFloatingPointProperty::getValue() const
+    double EditableFloatingPointProperty::getValue() const
     {
         return m_value;
     }
-    void EditableFloatingPointProperty::setValue(const float value)
+    void EditableFloatingPointProperty::setValue(const double value)
     {
         if (value != m_value)
         {
@@ -154,7 +164,7 @@ namespace framework
             notifyChanged();
         }
     }
-    void EditableFloatingPointProperty::setMinMaxConstraint(float min, float max)
+    void EditableFloatingPointProperty::setMinMaxConstraint(double min, double max)
     {
         m_min = min;
         m_max = max;
@@ -175,14 +185,14 @@ namespace framework
     }
     bool EditableFloatingPointProperty::update(const odk::Property& value)
     {
-        float v = std::numeric_limits<float>::quiet_NaN();
+        double v = std::numeric_limits<double>::quiet_NaN();
         switch (value.getType())
         {
-        case odk::Property::FLOATING_POINT_NUMBER:
-        {
-            double pv = value.getDoubleValue();
-            v = static_cast<float>(pv);
-        }
+            case odk::Property::FLOATING_POINT_NUMBER:
+            {
+                double pv = value.getDoubleValue();
+                v = pv;
+            }
         }
 
         if (hasValidRange())
@@ -314,6 +324,127 @@ namespace framework
     void EditableScalarProperty::addOption(double val)
     {
         m_options.push_back(val);
+    }
+
+    EditableFilePathProperty::EditableFilePathProperty(const RawPropertyHolder& value)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
+    EditableFilePathProperty::EditableFilePathProperty(EditableFilePathProperty::FileType ft,
+        const std::string& name, const std::string& title, const std::string& path,
+        const std::vector<std::string>& filters)
+        : m_file_type(ft)
+        , m_filename(name)
+        , m_title(title)
+        , m_default_path(path)
+        , m_filters(filters)
+        , m_multi_select(false)
+    {
+    }
+
+    std::string EditableFilePathProperty::getFilename() const
+    {
+        return m_filename;
+    }
+
+    void EditableFilePathProperty::setFilename(const std::string& name)
+    {
+        if (m_filename != name)
+        {
+            m_filename = name;
+            notifyChanged();
+        }
+    }
+
+    std::string EditableFilePathProperty::getTitle() const
+    {
+        return m_title;
+    }
+
+    void EditableFilePathProperty::setTitle(const std::string& title)
+    {
+        if (m_title != title)
+        {
+            m_title = title;
+            notifyChanged();
+        }
+    }
+
+    std::string EditableFilePathProperty::getDefaultPath() const
+    {
+        return m_default_path;
+    }
+
+    void EditableFilePathProperty::setDefaultPath(const std::string& path)
+    {
+        if (m_default_path != path)
+        {
+            m_default_path = path;
+            notifyChanged();
+        }
+    }
+
+    std::vector<std::string> EditableFilePathProperty::getNameFilters() const
+    {
+        return m_filters;
+    }
+
+    void EditableFilePathProperty::setNameFilters(const std::vector<std::string>& filters)
+    {
+        if (m_filters != filters)
+        {
+            m_filters = filters;
+            notifyChanged();
+        }
+    }
+
+    EditableFilePathProperty::FileType EditableFilePathProperty::getFileType() const
+    {
+        return m_file_type;
+    }
+
+    std::string EditableFilePathProperty::toString(FileType ft)
+    {
+        switch (ft)
+        {
+            case FileType::INPUT_FILE:
+                    return "Input";
+            case FileType::OUTPUT_FILE:
+                    return "Output";
+            default:;
+        }
+        return "Directory";
+    }
+
+    void EditableFilePathProperty::setFiletype(const EditableFilePathProperty::FileType ft)
+    {
+        m_file_type = ft;
+        notifyChanged();
+    }
+
+    void EditableFilePathProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram,
+        const std::string& property_name) const
+    {
+        if (isLive())
+        {
+            odk::Property property(property_name, m_filename);
+            telegram.addProperty(property);
+            auto ft = toString(m_file_type);
+            telegram.addConstraint(property_name,
+                odk::makeFilePathConstraint(ft, m_title, m_default_path, m_filters, m_multi_select));
+            telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
+            addBaseConstraints(telegram, property_name);
+        }
+    }
+
+    bool EditableFilePathProperty::update(const odk::Property& value)
+    {
+        m_filename = value.getStringValue();
+        return true;
     }
 
     EditableStringProperty::EditableStringProperty(const RawPropertyHolder& value)
@@ -673,7 +804,7 @@ namespace framework
     {
         for (const auto& option : m_options)
         {
-            if (value == option)
+            if (value.sameValue(option))
             {
                 setValue(value);
                 break;

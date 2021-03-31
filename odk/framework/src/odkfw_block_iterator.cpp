@@ -18,6 +18,7 @@ namespace framework
         : m_data(data)
         , m_data_stride(data_stride)
         , m_timestamp(nullptr)
+        , m_timestamp_stride(0)
         , m_timestamp_value(initial_timestamp)
     {
     }
@@ -28,55 +29,17 @@ namespace framework
         , m_data_stride(data_stride)
         , m_timestamp(timestamp)
         , m_timestamp_stride(timestamp_stride)
+        , m_timestamp_value(*timestamp)
     {
     }
 
-    BlockIterator& BlockIterator::operator++()
+    BlockIterator::BlockIterator(const std::uint64_t timestamp)
+        : m_data(nullptr)
+        , m_data_stride(0)
+        , m_timestamp(nullptr)
+        , m_timestamp_stride(0)
+        , m_timestamp_value(timestamp)
     {
-        if (m_data)
-        {
-            m_data = reinterpret_cast<const std::uint8_t*>(m_data) + m_data_stride;
-            if (m_timestamp)
-            {
-                m_timestamp = reinterpret_cast<const std::uint64_t*>(
-                    reinterpret_cast<const std::uint8_t*>(m_timestamp) + m_timestamp_stride);
-            }
-            else
-            {
-                ++m_timestamp_value;
-            }
-        }
-        return *this;
     }
-
-    BlockIterator& BlockIterator::operator--()
-    {
-        if (m_data)
-        {
-            m_data = reinterpret_cast<const std::uint8_t*>(m_data) - m_data_stride;
-            if (m_timestamp)
-            {
-                m_timestamp = reinterpret_cast<const std::uint64_t*>(
-                    reinterpret_cast<const std::uint8_t*>(m_timestamp) - m_timestamp_stride);
-            }
-            else
-            {
-                --m_timestamp_value;
-            }
-        }
-        return *this;
-    }
-
-    bool BlockIterator::operator==(const BlockIterator& other) const
-    {
-        // sufficient equality if the iterator points to the same data
-        return m_data == other.m_data;
-    }
-
-    bool BlockIterator::operator!=(const BlockIterator& other) const
-    {
-        return !(*this == other);
-    }
-
 }
 }

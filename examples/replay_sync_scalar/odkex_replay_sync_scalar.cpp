@@ -24,7 +24,7 @@ R"XML(<?xml version="1.0"?>
     <Vendor name="DEWETRON GmbH"/>
     <Description>SDK Example plugin implementing file replay into a synchronous scalar channel.</Description>
   </Info>
-  <Host minimum_version="5.3"/>
+  <Host minimum_version="5.3.2045"/>
   <UsesUIExtensions/>
 </OxygenPlugin>
 )XML";
@@ -76,12 +76,13 @@ public:
         telegram.m_display_group = "Data Sources";
         telegram.m_description = "Adds a synchronous channel that delivers samples read from a CSV file.";
         telegram.m_ui_item_add = "AddChannel";
+        telegram.m_analysis_capable = false;
         return telegram;
     }
 
-    bool setup(const std::vector<odk::Property>& properties) override
+    InitResult init(const InitParams& params) override
     {
-        odk::PropertyList props(properties);
+        odk::PropertyList props(params.m_properties);
 
         auto csv_file = props.getString("ODK_REPLAY_SYNC_SCALAR/CSVFile");
         if (!csv_file.empty())
@@ -90,7 +91,10 @@ public:
             update();
         }
 
-        return true;
+        InitResult r(true);
+        r.showChannelDetails(getRootChannel()->getLocalId());
+
+        return r;
     }
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override

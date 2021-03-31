@@ -83,6 +83,62 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
+    AcquisitionTaskProcessTelegram::AcquisitionTaskProcessTelegram()
+    {
+    }
+
+    bool AcquisitionTaskProcessTelegram::parse(const char* xml_string)
+    {
+        pugi::xml_document doc;
+        auto status = doc.load_string(xml_string);
+        if (status.status == pugi::status_ok)
+        {
+            try
+            {
+                auto acq_task_node = doc.document_element();
+
+                auto version = odk::getProtocolVersion(acq_task_node);
+                if (version != odk::Version(1,0))
+                {
+                    return false;
+                }
+
+                if(auto start_node = acq_task_node.child("Start"))
+                {
+                    m_start.parseTickFrequencyAttributes(start_node);
+                }
+
+                if(auto end_node = acq_task_node.child("End"))
+                {
+                    m_end.parseTickFrequencyAttributes(end_node);
+                }
+            }
+            catch (const boost::bad_lexical_cast&)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    std::string AcquisitionTaskProcessTelegram::generate() const
+    {
+        pugi::xml_document doc;
+        auto acq_task_node = doc.append_child("AcquisitionTaskProcess");
+
+        odk::setProtocolVersion(acq_task_node, odk::Version(1,0));
+
+        {
+            auto start_timestamp_node = acq_task_node.append_child("Start");
+            m_start.writeTickFrequencyAttributes(start_timestamp_node);
+        }
+
+        {
+            auto end_timestamp_node = acq_task_node.append_child("End");
+            m_end.writeTickFrequencyAttributes(end_timestamp_node);
+        }
+        return xpugi::toXML(doc);
+    }
 
 }
 

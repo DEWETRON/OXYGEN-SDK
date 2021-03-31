@@ -64,6 +64,7 @@ public:
         telegram.m_service_name = "DetectMinMaxBins";
         telegram.m_display_group = "Basic Math";
         telegram.m_description = "Detect min/max values and corresponding bins of a vector channel";
+        telegram.m_analysis_capable = true;
         return telegram;
     }
 
@@ -77,14 +78,15 @@ public:
         ODK_UNUSED(channel);
     }
 
-    void init(const std::vector<InputChannel::InputChannelData>& input_channel_data) override
+    InitResult init(const InitParams& params) override
     {
-        ODK_UNUSED(input_channel_data);
-
-        if (input_channel_data.size() >= 1)
+        if (params.m_input_channels.size() >= 1)
         {
-            m_input_channel->setValue(input_channel_data[0].m_channel_id);
+            m_input_channel->setValue(params.m_input_channels[0].m_channel_id);
         }
+        InitResult r { true };
+        r.m_channel_list_action = InitResult::ChannelListAction::SHOW_DETAILS_OF_FIRST_CHANNEL;
+        return r;
     }
 
     void updateMyOutputChannels(InputChannelPtr input_channel)

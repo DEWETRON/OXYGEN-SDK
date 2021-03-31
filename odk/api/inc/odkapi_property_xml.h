@@ -193,6 +193,7 @@ namespace odk
         std::string getNodeName() const;
 
         bool operator==(Property const& other) const;
+        bool sameValue(Property const& other) const;
 
         /**
          * Returns true, if the data in the property is valid

@@ -12,25 +12,67 @@
 
 #include "odkuni_assert.h"
 
+#include <cmath>
 #include <cstring>
 #include <vector>
 
 namespace odk
 {
+inline bool isAnalysisModeActive(odk::IfHost* host)
+{
+    auto analysis_active = host->getValue<odk::IfBooleanValue>(odk::queries::Oxygen, odk::queries::Oxygen_AnalysisModeActive);
+
+    if (!analysis_active)
+    {
+        return false;
+    }
+
+    return analysis_active->getValue();
+}
 
 inline odk::Timestamp getMasterTimestamp(odk::IfHost* host)
 {
-    auto master_timebase_xml = host->getValue<odk::IfXMLValue>(odk::queries::Oxygen, odk::queries::Oxygen_MasterTimebaseValue);
-
-    if (!master_timebase_xml)
+    if (!isAnalysisModeActive(host))
     {
-        ODK_ASSERT_FAIL("Unable to retrieve master timebase value");
+        auto master_timebase_xml = host->getValue<odk::IfXMLValue>(odk::queries::Oxygen, odk::queries::Oxygen_MasterTimebaseValue);
+
+        if (!master_timebase_xml)
+        {
+            ODK_ASSERT_FAIL("Unable to retrieve master timebase value");
+            return {};
+        }
+
+        odk::Timestamp master_timebase;
+        master_timebase.parse(master_timebase_xml->getValue());
+        return master_timebase;
+    }
+    return {};
+}
+
+inline odk::AbsoluteTime getAcquisitionStartTime(odk::IfHost* host)
+{
+    auto xml_value = host->getValue<odk::IfXMLValue>(odk::queries::OxygenAcqStartTime, odk::queries::OxygenAcqStartTime_AbsXML);
+    if (!xml_value)
+    {
+        ODK_ASSERT_FAIL("Unable to retrieve acquisition start time");
         return {};
     }
+    odk::AbsoluteTime time;
+    time.parse(xml_value->getValue());
+    return time;
+}
 
-    odk::Timestamp master_timebase;
-    master_timebase.parse(master_timebase_xml->getValue());
-    return master_timebase;
+inline odk::AbsoluteTime getMeasurementStartTime(odk::IfHost* host)
+{
+    auto xml_value = host->getValue<odk::IfXMLValue>(odk::queries::OxygenMeasStartTime, odk::queries::OxygenAcqStartTime_AbsXML);
+    if (!xml_value)
+    {
+        ODK_ASSERT_FAIL("Unable to retrieve measurement start time");
+        return {};
+    }
+    odk::AbsoluteTime time;
+    time.parse(xml_value->getValue());
+    return time;
 }
 
 inline void addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
@@ -89,4 +131,12 @@ inline std::uint64_t sendSyncXMLMessage(odk::IfHost* host, odk::MessageId msg_id
     return host->messageSync(msg_id, key, xml_msg.get(), ret);
 }
 
+inline std::uint64_t convertTimeToTickAtOrAfter(double time, double frequency)
+{
+    if (time == 0.0)
+    {
+        return 0;
+    }
+    return static_cast<std::uint64_t>(std::nextafter(std::nextafter(time, 0.0) * frequency, std::numeric_limits<double>::lowest())) + 1;
+}
 }

@@ -91,38 +91,7 @@ namespace framework
          * @param  params Initialization paramaters provided by the UI
          * @return        Status, additional parameters on how to proceed
          */
-        virtual InitResult init(const InitParams& params)
-        {
-            if (setup(params.m_properties))
-            {
-                init(params.m_input_channels);
-                InitResult r{ true };
-                r.m_channel_list_action = InitResult::ChannelListAction::SHOW_DETAILS_OF_FIRST_CHANNEL;
-                return r;
-            }
-            return { false };
-        }
-
-        /**
-         * Called after creation of a fresh instance for initialisation based on the user selection
-         * input channels can either be accepted or ignored, depending on their characteristics
-         * @deprected {use init(const InitParams& params)) instead of init() and setup()}
-         *
-         * @param  input_channel_data  Meta information about all input channels selected by user
-         */
-        virtual void init(
-            const std::vector<InputChannel::InputChannelData>& input_channel_data) { ODK_UNUSED(input_channel_data); };
-
-        /**
-         * Called after init, can be used to pass additional properties to the plugin instance
-         * @deprected {use init(const InitParams& params)) instead of init() and setup()}
-         *
-         * @param  properties List of additional properties to be passed to the instance
-         *
-         * @return  if passed proerties are valid, and creation of instance can continue
-         *
-         */
-        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
+        virtual InitResult init(const InitParams& params);
 
         /**
          * Called after creation of a loaded instance for initialisation based on the saved setup
@@ -213,6 +182,10 @@ namespace framework
          */
         void setDataRequestType(DataRequestType type);
 
+        void setDataRequestInterval(double seconds);
+
+        void synchronize();
+
         /**
          * Get samples of all input channels at the given time
          *
@@ -240,6 +213,27 @@ namespace framework
         std::string getKey(const PluginChannelPtr& channel) const;
 
     protected:
+
+        /**
+         * Called after creation of a fresh instance for initialisation based on the user selection
+         * input channels can either be accepted or ignored, depending on their characteristics
+         * @deprecated {implement init(const InitParams& params) instead of init() and setup()}
+         *
+         * @param  input_channel_data  Meta information about all input channels selected by user
+         */
+        virtual void init(
+            const std::vector<InputChannel::InputChannelData>& input_channel_data) { ODK_UNUSED(input_channel_data); };
+
+        /**
+         * Called after init, can be used to pass additional properties to the plugin instance
+         * @deprecated {implement init(const InitParams& params) instead of init() and setup()}
+         *
+         * @param  properties List of additional properties to be passed to the instance
+         *
+         * @return  if passed proerties are valid, and creation of instance can continue
+         *
+         */
+        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
 
         /**
          * Checks value type and occurence of input channels
@@ -383,7 +377,7 @@ namespace framework
 
         void onStopProcessing(odk::IfHost* host, std::uint64_t token) final;
 
-        void onProcess(odk::IfHost* host, std::uint64_t token) final;
+        void onProcess(odk::IfHost* host, std::uint64_t token, const odk::IfXMLValue* param) final;
 
         void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) final;
 
@@ -395,6 +389,7 @@ namespace framework
         PluginChannelsPtr m_plugin_channels;
         PluginTaskPtr m_task;
         DataRequestType m_data_request_type;
+        double m_data_request_interval;
         std::vector<InputChannelPtr> m_input_channel_proxies;
         boost::optional<DataSetDescriptor> m_dataset_descriptor;
         std::vector<const odk::IfDataBlockList*> m_block_lists;

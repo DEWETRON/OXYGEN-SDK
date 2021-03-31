@@ -14,6 +14,13 @@ namespace odk
     class RegisterExport
     {
     public:
+        enum StartExportAction
+        {
+            SELECT_FILE,
+            SELECT_DIRECTORY,
+            NONE
+        };
+
         RegisterExport();
 
         bool parse(const char* xml_string);
@@ -26,6 +33,8 @@ namespace odk
 
         std::string m_ui_item_small;
         std::string m_ui_item_full;
+
+        StartExportAction m_start_export_action;
     };
 
     class ExportProperties
@@ -44,7 +53,7 @@ namespace odk
         std::string generateNodeXML() const;
 
         std::vector<std::uint64_t> m_channels;
-        std::vector<odk::Interval> m_export_intervals;
+        std::vector<odk::Interval<double>> m_export_intervals;
         std::string m_filename;
         std::string m_format_id;
         odk::PropertyList m_custom_properties;

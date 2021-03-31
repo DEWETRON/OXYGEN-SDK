@@ -31,6 +31,7 @@ namespace queries
 
     READ_ONLY_PROPERTY( Oxygen,                     AcquisitionState,      IfEnumValue,          "Current acquisition state");
     READ_ONLY_PROPERTY( Oxygen,                     MasterTimebaseValue,   IfXMLValue,           "Current master time base value");
+    READ_ONLY_PROPERTY( Oxygen,                     AnalysisModeActive,    IfBooleanValue,       "Is currently in Analysis Mode currently");
 
     READ_ONLY_PROPERTY( OxygenAcqStartTime,         AbsISO,         IfStringValue,          "Returns the absolute time of acquisition start");
     READ_ONLY_PROPERTY( OxygenAcqStartTime,         AbsXML,         IfXMLValue,             "Returns the absolute time of acquisition start and timezone information in a verbose format");

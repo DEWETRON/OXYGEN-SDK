@@ -104,15 +104,51 @@ namespace framework
                     m_stream_reader.addDataBlock(std::move(block_descriptor), block->data());
                 }
             }
+
+            std::shared_ptr<odk::DataRegions> data_regions;
+            {
+                auto xml_msg = m_host->createValue<odk::IfXMLValue>();
+                if (xml_msg)
+                {
+                    PluginDataRegionsRequest req(m_dataset_descriptor.m_id);
+                    req.m_data_window = PluginDataRegionsRequest::DataWindow(m_current_position, next_position);
+                    xml_msg->set(req.generate().c_str());
+                }
+
+                const odk::IfValue* data_regions_result = nullptr;
+                m_host->messageSync(odk::host_msg::DATA_GROUP_ADD, 0, xml_msg.get(), &data_regions_result);
+
+                const odk::IfXMLValue* data_regions_result_xml = odk::value_cast<odk::IfXMLValue>(data_regions_result);
+                if (data_regions_result)
+                {
+                    if (data_regions_result_xml)
+                    {
+                        data_regions.reset(new DataRegions());
+                        data_regions->parse(data_regions_result_xml->getValue());
+                    }
+                    data_regions_result->release();
+                }
+            }
+
+            if(data_regions)
+            {
+                for(const auto& invalid_region : data_regions->m_data_regions)
+                {
+                    stream_reader.addDataRegion(invalid_region);
+                }
+            }
         }
     }
 
     void DataRequester::updateStreamIterator(StreamIterator* iterator)
     {
         iterator->clearRanges();
-        fetchMoreData();
-        uint64_t sample_count = 0;
-        m_stream_reader.updateStreamIterator(m_channel_id, *iterator, sample_count);
+        if (m_current_position != m_end_position)
+        {
+            fetchMoreData();
+            uint64_t sample_count = 0;
+            m_stream_reader.updateStreamIterator(m_channel_id, *iterator, sample_count);
+        }
     }
 
     std::shared_ptr<StreamIterator> DataRequester::getIterator(double start, double end)

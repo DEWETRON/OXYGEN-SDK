@@ -34,6 +34,11 @@ namespace framework
         m_blocks.emplace(block_descriptor.m_stream_id, std::make_tuple(std::move(block_descriptor), data));
     }
 
+    void StreamReader::addDataRegion(const odk::DataRegion& region)
+    {
+        m_data_regions[region.m_channel_id].emplace(region.m_region);
+    }
+
     const ChannelDescriptor* StreamReader::getChannelDescriptor(const std::uint64_t channel_id) const
     {
         auto channel_descriptor = std::find_if(
@@ -84,6 +89,7 @@ namespace framework
 
         auto blocks_begin = m_blocks.lower_bound(m_stream_descriptor.m_stream_id);
         auto blocks_end = m_blocks.upper_bound(m_stream_descriptor.m_stream_id);
+
         for (auto it_block = blocks_begin; it_block != blocks_end; ++it_block)
         {
             const BlockDescriptor& block_descriptor = std::get<0>(it_block->second);
@@ -91,8 +97,8 @@ namespace framework
 
             for (const auto& bcd : block_descriptor.m_block_channels)
             {
-                if (bcd.m_channel_id == channel_id)
-                {
+                if (bcd.m_channel_id == channel_id && bcd.m_count > 0)
+                {                    
                     ODK_ASSERT_EQUAL(bcd.m_offset % 8, 0);
 
                     auto offset_bytes = bcd.m_offset / 8;
@@ -110,25 +116,58 @@ namespace framework
 
                         // Explicit Timestamp field
                         BlockIterator it_block_begin(channel_data, data_stride_bytes, reinterpret_cast<const uint64_t*>(channel_data + timestamp_pos_bytes), data_stride_bytes);
-                        BlockIterator it_block_end(channel_data + data_stride_bytes * bcd.m_count, data_stride_bytes, reinterpret_cast<const std::uint64_t*>(channel_data + data_stride_bytes * bcd.m_count + timestamp_pos_bytes), data_stride_bytes);
-                        iterator.addRange(it_block_begin, it_block_end);
+                        BlockIterator it_block_end(channel_data + data_stride_bytes * (bcd.m_count - 1), data_stride_bytes, reinterpret_cast<const std::uint64_t*>(channel_data + data_stride_bytes * (bcd.m_count - 1) + timestamp_pos_bytes), data_stride_bytes);
+                        iterator.addRange(it_block_begin, it_block_end, 0);
                     }
                     else
                     {
                         // Implicit timestamps, incremented every sample
                         BlockIterator it_block_begin(channel_data, data_stride_bytes, bcd.m_first_sample_index);
-                        BlockIterator it_block_end(channel_data + data_stride_bytes * bcd.m_count, data_stride_bytes, bcd.m_first_sample_index + bcd.m_count);
-                        iterator.addRange(it_block_begin, it_block_end);
+                        BlockIterator it_block_end(channel_data + data_stride_bytes * (bcd.m_count - 1), data_stride_bytes, bcd.m_first_sample_index + (bcd.m_count - 1));
+                        iterator.addRange(it_block_begin, it_block_end, 0);
                     }
                     sample_count += bcd.m_count;
                 }
             }
         }
+
+        auto regions = m_data_regions.find(channel_id);
+
+        if(regions != m_data_regions.end())
+        {
+            std::uint64_t invalid_region_start = 0;
+            std::uint64_t invalid_region_end = std::numeric_limits<std::uint64_t>::max();
+
+            for(const auto& valid_region : regions->second)
+            {
+                invalid_region_end = valid_region.m_begin;
+
+                if(invalid_region_end > invalid_region_start)
+                {
+                    BlockIterator it_block_begin(invalid_region_start);
+                    BlockIterator it_block_end(invalid_region_end - 1);
+                    iterator.addRange(it_block_begin, it_block_end, 1);
+                }
+
+                invalid_region_start = valid_region.m_end + 1;
+            }
+
+            invalid_region_end = std::numeric_limits<std::uint64_t>::max();
+
+            if(invalid_region_end > invalid_region_start)
+            {
+                BlockIterator it_block_begin(invalid_region_start);
+                BlockIterator it_block_end(invalid_region_end - 1);
+                iterator.addRange(it_block_begin, it_block_end, 1);
+            }
+        }
+        iterator.init();
     }
 
     void StreamReader::clearBlocks()
     {
         m_blocks.clear();
+        m_data_regions.clear();
     }
 
 }

@@ -40,6 +40,7 @@ namespace framework
         auto f =
             [func](odk::IfHost* host, const odk::IfValue* param, const odk::IfValue** ret) -> std::uint64_t
             {
+            try {
                 odk::PropertyList param_list;
                 if (param)
                 {
@@ -55,6 +56,15 @@ namespace framework
                     *ret = odk::framework::utils::convertToXMLValue(host, ret_list);
                 }
                 return ret_code;
+            }
+            catch (const std::exception&)
+            {
+                return odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+            catch (...)
+            {
+                return odk::error_codes::UNHANDLED_EXCEPTION;
+            }
             };
         registerFunction(id, name, f);
     }
@@ -64,6 +74,7 @@ namespace framework
         auto f =
             [func](odk::IfHost* host, const odk::IfValue* param, const odk::IfValue** ret) -> std::uint64_t
             {
+            try {
                 odk::PropertyList param_list;
                 if (param)
                 {
@@ -79,6 +90,15 @@ namespace framework
                     *ret = xml.detach();
                 }
                 return ret_code;
+            }
+            catch (const std::exception&)
+            {
+                return odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+            catch (...)
+            {
+                return odk::error_codes::UNHANDLED_EXCEPTION;
+            }
             };
         registerFunction(id, name, f);
     }

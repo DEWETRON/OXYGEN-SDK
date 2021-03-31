@@ -19,6 +19,7 @@ set(HEADER_FILES
   inc/odkfw_channels.h
   inc/odkfw_custom_request_handler.h
   inc/odkfw_data_requester.h
+  inc/odkfw_exceptions.h
   inc/odkfw_export_instance.h
   inc/odkfw_export_plugin.h
   inc/odkfw_fwd.h

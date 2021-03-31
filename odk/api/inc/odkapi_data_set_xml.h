@@ -119,5 +119,35 @@ namespace odk
 
     };
 
+
+    class PluginDataRegionsRequest
+    {
+    public:
+        class DataWindow
+        {
+        public:
+
+            DataWindow() = delete;
+
+            DataWindow(double start, double stop)
+                : m_start(start)
+                  , m_stop(stop)
+            {}
+
+            double m_start;
+            double m_stop;
+        };
+
+        PluginDataRegionsRequest();
+
+        explicit PluginDataRegionsRequest(std::uint64_t id);
+
+        bool parse(const char* xml_string);
+
+        std::string generate() const;
+
+        std::uint64_t m_id;
+        boost::optional<DataWindow> m_data_window;
+    };
 }
 

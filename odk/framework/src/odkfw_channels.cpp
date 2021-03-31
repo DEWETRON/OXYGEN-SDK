@@ -1,10 +1,12 @@
 // Copyright DEWETRON GmbH 2019
 #include "odkfw_channels.h"
+#include "odkfw_exceptions.h"
 #include "odkfw_properties.h"
 #include "odkapi_utils.h"
 
 //TODO - other telegram
 #include "odkapi_channel_config_changed_xml.h"
+#include "odkapi_channel_list_xml.h"
 #include "odkapi_channel_dataformat_xml.h"
 #include "odkapi_channel_mapping_xml.h"
 
@@ -188,6 +190,22 @@ namespace framework
         m_properties.push_back(std::make_pair(name, prop_holder));
         if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
         return *this;
+    }
+
+    void PluginChannel::removeProperty(const std::string& name)
+    {
+        auto it = std::find_if(m_properties.begin(), m_properties.end(),
+            [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+            {
+                return a_property.first == name;
+            }
+        );
+        ODK_ASSERT(it != m_properties.end());
+        if (it != m_properties.end())
+        {
+            m_properties.erase(it);
+            if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        }
     }
 
     ChannelPropertyPtr PluginChannel::getProperty(const std::string& name) const
@@ -491,6 +509,7 @@ namespace framework
 
         m_channels.clear();
         m_ids.clear();
+        m_reseved_ids.clear();
         m_list_topology = {};
 
         m_channel_to_task.clear();
@@ -656,6 +675,17 @@ namespace framework
         return processInputChannelChange(channel_ids);
     }
 
+    uint64_t PluginChannels::reserveChannelIds(const odk::ChannelList& telegram)
+    {
+        m_reseved_ids.clear();
+        for (const auto a_channel_id : telegram.m_channels)
+        {
+            m_reseved_ids.insert(static_cast<std::uint32_t>(a_channel_id.m_channel_id));
+        }
+
+        return odk::error_codes::OK;
+    }
+
     void PluginChannels::onTaskChannelAdded(PluginTask* task, const PluginChannel* channel)
     {
         unregisterTask(*task);
@@ -692,7 +722,8 @@ namespace framework
         {
             while (true)
             {
-                if (m_ids.find(id) == m_ids.end())
+                if ((m_ids.find(id) == m_ids.end()) &&
+                    (m_reseved_ids.find(id) == m_reseved_ids.end()))
                 {
                     m_ids.insert(id);
                     break;
@@ -764,59 +795,78 @@ namespace framework
     std::uint64_t PluginChannels::pluginMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret)
     {
         ODK_UNUSED(ret);
-        switch (id)
+        try
         {
-        case odk::plugin_msg::ACQUISITION_TASK_INIT_TIMEBASES:
-            if (auto task = findTask(key))
+            switch (id)
             {
-                if (task->m_worker)
+            case odk::plugin_msg::ACQUISITION_TASK_INIT_TIMEBASES:
+                if (auto task = findTask(key))
                 {
-                    task->m_worker->onInitTimebases(m_host, task->m_token);
+                    if (task->m_worker)
+                    {
+                        task->m_worker->onInitTimebases(m_host, task->m_token);
+                        return odk::error_codes::OK;
+                    }
+                    else
+                    {
+                        return odk::error_codes::INVALID_INPUT_PARAMETER;
+                    }
                 }
-                return odk::error_codes::OK;
-            }
-            break;
-        case odk::plugin_msg::ACQUISITION_TASK_START_PROCESSING:
-            if (auto task = findTask(key))
-            {
-                if (task->m_worker)
+                break;
+            case odk::plugin_msg::ACQUISITION_TASK_START_PROCESSING:
+                if (auto task = findTask(key))
                 {
-                    task->m_worker->onStartProcessing(m_host, task->m_token);
+                    if (task->m_worker)
+                    {
+                        task->m_worker->onStartProcessing(m_host, task->m_token);
+                        return odk::error_codes::OK;
+                    }
+                    else
+                    {
+                        return odk::error_codes::INVALID_INPUT_PARAMETER;
+                    }
                 }
-                return odk::error_codes::OK;
-            }
-            break;
-        case odk::plugin_msg::ACQUISITION_TASK_STOP_PROCESSING:
-            if (auto task = findTask(key))
-            {
-                if (task->m_worker)
+                break;
+            case odk::plugin_msg::ACQUISITION_TASK_STOP_PROCESSING:
+                if (auto task = findTask(key))
                 {
-                    task->m_worker->onStopProcessing(m_host, task->m_token);
+                    if (task->m_worker)
+                    {
+                        task->m_worker->onStopProcessing(m_host, task->m_token);
+                        return odk::error_codes::OK;
+                    }
+                    else
+                    {
+                        return odk::error_codes::INVALID_INPUT_PARAMETER;
+                    }
                 }
-                return odk::error_codes::OK;
-            }
-            break;
-        case odk::plugin_msg::ACQUISITION_TASK_PROCESS:
-            if (auto task = findTask(key))
-            {
-                if (task->m_worker)
+                break;
+            case odk::plugin_msg::ACQUISITION_TASK_PROCESS:
+                if (auto task = findTask(key))
                 {
-                    task->m_worker->onProcess(m_host, task->m_token);
+                    if (task->m_worker)
+                    {
+                        auto process_xml = odk::value_cast<const odk::IfXMLValue>(param);
+                        task->m_worker->onProcess(m_host, task->m_token, process_xml);
+                        return odk::error_codes::OK;
+                    }
+                    else
+                    {
+                        return odk::error_codes::INVALID_INPUT_PARAMETER;
+                    }
                 }
-                return odk::error_codes::OK;
-            }
-            break;
-        case odk::plugin_msg::PLUGIN_CONFIGURATION_CHANGE_REQUEST:
-            if (auto change_xml = odk::value_cast<const odk::IfXMLValue>(param))
-            {
-                odk::UpdateConfigTelegram update_telegram;
-                if (update_telegram.parse(change_xml->getValue()))
+                break;
+            case odk::plugin_msg::PLUGIN_CONFIGURATION_CHANGE_REQUEST:
+                if (auto change_xml = odk::value_cast<const odk::IfXMLValue>(param))
                 {
-                    return processConfigUpdate(update_telegram);
+                    odk::UpdateConfigTelegram update_telegram;
+                    if (update_telegram.parse(change_xml->getValue()))
+                    {
+                        return processConfigUpdate(update_telegram);
+                    }
                 }
-            }
-            return odk::error_codes::INVALID_INPUT_PARAMETER;
-        case odk::plugin_msg::PLUGIN_CHANNEL_DATAFORMAT_CHANGED:
+                return odk::error_codes::INVALID_INPUT_PARAMETER;
+            case odk::plugin_msg::PLUGIN_CHANNEL_DATAFORMAT_CHANGED:
             {
                 odk::ChannelDataformatTelegram telegram;
                 if (parseXMLValue(param, telegram))
@@ -825,7 +875,7 @@ namespace framework
                 }
             }
             return odk::error_codes::INVALID_INPUT_PARAMETER;
-        case odk::plugin_msg::NOTIFY_CHANNEL_CONFIG_CHANGED:
+            case odk::plugin_msg::NOTIFY_CHANNEL_CONFIG_CHANGED:
             {
                 odk::ChannelConfigChangedTelegram telegram;
 
@@ -835,10 +885,35 @@ namespace framework
                 }
                 return odk::error_codes::INVALID_INPUT_PARAMETER;
             }
-        default:
+            case odk::plugin_msg::PLUGIN_RESERVE_CHANNEL_IDS:
+            {
+                odk::ChannelList telegram;
+                if (parseXMLValue(param, telegram))
+                {
+                    return reserveChannelIds(telegram);
+                }
+                return odk::error_codes::INVALID_INPUT_PARAMETER;
+
+            }
+            default:
+                return odk::error_codes::NOT_IMPLEMENTED;
+            }
             return odk::error_codes::NOT_IMPLEMENTED;
+
         }
-        return odk::error_codes::NOT_IMPLEMENTED;
+        catch (const odk::framework::CallbackError& e)
+        {
+            return e.getErrorCode();
+        }
+        catch (const std::exception& e)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'pluginMessage " << id << "' : " << e.what());
+        }
+        catch (...)
+        {
+            ODKLOG_ERROR("Unhandled exception during 'pluginMessage " << id << "'");
+        }
+        return odk::error_codes::UNHANDLED_EXCEPTION;
     }
 
 }

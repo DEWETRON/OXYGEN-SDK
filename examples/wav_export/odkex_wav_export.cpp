@@ -84,7 +84,7 @@ public:
         response.m_success = !no_export_possible;
     }
 
-    bool exportData(const ProcessingContext& context) const
+    bool exportData(const ProcessingContext& context)
     {
         WavFormatTag type = WavFormatTag::WAV_FORMAT_FLOAT;
         std::size_t sample_size = sizeof(float)*8;

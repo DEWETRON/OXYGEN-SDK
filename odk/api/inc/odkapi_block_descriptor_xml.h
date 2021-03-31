@@ -5,6 +5,7 @@
 #include "odkapi_types.h"
 #include "odkbase_if_value.h"
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -43,6 +44,16 @@ namespace odk
         std::vector<BlockChannelDescriptor> m_block_channels;
     };
 
+    class DataRegion
+    {
+    public:
+        DataRegion() = delete;
+        DataRegion(std::uint64_t channel_id, const Interval<std::uint64_t>& region);
+
+        std::uint64_t m_channel_id;
+        Interval<std::uint64_t> m_region;
+    };
+
     class BlockListDescriptor
     {
     public:
@@ -54,7 +65,19 @@ namespace odk
 
         std::uint32_t m_block_count;
 
-        std::vector<Interval> m_windows;
+        std::vector<Interval<double>> m_windows;
+        std::vector<DataRegion> m_invalid_regions;
+    };
+
+    class DataRegions
+    {
+    public:
+        DataRegions() = default;
+
+        bool parse(const char* xml_string);
+        std::string generate() const;
+
+        std::vector<DataRegion> m_data_regions;
     };
 
 }

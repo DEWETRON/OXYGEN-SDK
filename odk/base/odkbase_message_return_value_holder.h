@@ -3,6 +3,7 @@
 #pragma once
 
 #include "odkbase_if_value.h"
+#include "odkbase_api_object_ptr.h"
 
 namespace odk
 {
@@ -31,6 +32,15 @@ namespace odk
         {
             return static_cast<const T*>(m_value);
         }
+        const T* ref() const
+        {
+            return static_cast<const T*>(m_value);
+        }
+        odk::detail::ApiObjectPtr<const T> get() const
+        {
+            return { ref(), true };
+        }
+
         ~MessageReturnValueHolder()
         {
             if (m_value)

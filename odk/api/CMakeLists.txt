@@ -27,6 +27,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_marker_xml.h
     inc/odkapi_message_ids.h
     inc/odkapi_message_ids.inc
+    inc/odkapi_measurement_header_data_xml.h
     inc/odkapi_node_list_xml.h
     inc/odkapi_oxygen_queries.h
     inc/odkapi_property_xml.h
@@ -54,6 +55,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_data_set_descriptor_xml.cpp
     src/odkapi_export_xml.cpp
     src/odkapi_marker_xml.cpp
+    src/odkapi_measurement_header_data_xml.cpp
     src/odkapi_property_xml.cpp
     src/odkapi_property_list_xml.cpp
     src/odkapi_software_channel_xml.cpp

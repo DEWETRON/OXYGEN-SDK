@@ -21,9 +21,9 @@ Item
 
     function queryProperties()
     {
-        var props = {}
+        var props = plugin.createPropertyList();
 
-        props["ODK_REPLAY_SYNC_SCALAR/CSVFile"] = root.filename;
+        props.setString("ODK_REPLAY_SYNC_SCALAR/CSVFile", root.filename);
 
         return props;
     }

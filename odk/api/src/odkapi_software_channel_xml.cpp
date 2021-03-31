@@ -38,6 +38,8 @@ namespace
 namespace odk
 {
     RegisterSoftwareChannel::RegisterSoftwareChannel()
+        : m_analysis_capable(false)
+        , m_acquisition_capable(true)
     {}
 
     bool RegisterSoftwareChannel::parse(const char *xml_string)
@@ -71,6 +73,24 @@ namespace odk
         m_description = xpugi::getText(xpugi::getChildNodeByTagName(node, "Description"));
         m_display_group = xpugi::getText(xpugi::getChildNodeByTagName(node, "DisplayGroup"));
 
+        m_analysis_capable = [node]() {
+            const auto analysis_capability = node.select_node("AnalysisCapable").node();
+            if (analysis_capability && (xpugi::getText(analysis_capability) == "True"))
+            {
+                return true;
+            }
+            return false;
+        }();
+
+        m_acquisition_capable = [node]() {
+            const auto acquisition_capability = node.select_node("AcquisitionCapable").node();
+            if (acquisition_capability)
+            {
+                return (xpugi::getText(acquisition_capability) == "True");
+            }
+            return true; // backwards compatibility with < 5.5
+        }();
+
         auto ui_add_node = node.select_node("UIAdd").node();
         if (ui_add_node)
         {
@@ -94,6 +114,9 @@ namespace odk
         xpugi::setText(xpugi::xml_element(register_elem.append_child("ServiceName")), m_service_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("DisplayName")), m_display_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("DisplayGroup")), m_display_group);
+        xpugi::setText(xpugi::xml_element(register_elem.append_child("AnalysisCapable")), m_analysis_capable ? "True" : "False");
+        xpugi::setText(xpugi::xml_element(register_elem.append_child("AcquisitionCapable")), m_acquisition_capable ? "True" : "False");
+
         if (!m_description.empty())
         {
             xpugi::setText(xpugi::xml_element(register_elem.append_child("Description")), m_description);

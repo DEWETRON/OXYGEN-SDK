@@ -76,10 +76,15 @@ namespace odk
         return {"Property"};
     }
 
-    bool Property::operator==( Property const& other ) const
+    bool Property::operator==(Property const& other) const
     {
         return m_name == other.m_name
-            && m_type == other.m_type
+            && sameValue(other);
+    }
+
+    bool Property::sameValue(Property const& other) const
+    {
+        return m_type == other.m_type
             && m_enum_type == other.m_enum_type
             && m_string_value == other.m_string_value
             && (
@@ -87,7 +92,6 @@ namespace odk
                 ||
                 (m_value && other.m_value && true/* *m_value == *other.m_value*/) //FIXME
                 );
-
     }
 
     bool Property::isValid() const

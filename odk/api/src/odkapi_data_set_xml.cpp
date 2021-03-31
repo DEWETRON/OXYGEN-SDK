@@ -294,5 +294,58 @@ namespace odk
 
         return xpugi::toXML(doc);
     }
+
+    PluginDataRegionsRequest::PluginDataRegionsRequest()
+        : m_id(std::numeric_limits<std::uint64_t>::max())
+    {}
+
+    PluginDataRegionsRequest::PluginDataRegionsRequest(std::uint64_t id)
+        : m_id(id)
+    {
+    }
+
+    bool PluginDataRegionsRequest::parse(const char *xml_string)
+    {
+        pugi::xml_document doc;
+        auto status = doc.load_string(xml_string);
+        if (status.status == pugi::status_ok)
+        {
+            try
+            {
+                auto data_request_node = doc.document_element();
+                m_id = boost::lexical_cast<std::uint64_t>(data_request_node.attribute("data_set_key").value());
+
+                if(auto window_node = data_request_node.select_node("Window"))
+                {
+                    m_data_window = DataWindow(
+                        boost::lexical_cast<double>(window_node.node().attribute("start").value()),
+                        boost::lexical_cast<double>(window_node.node().attribute("end").value()));
+                }
+            }
+            catch (const boost::bad_lexical_cast&)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    std::string PluginDataRegionsRequest::generate() const
+    {
+        pugi::xml_document doc;
+        auto data_request_node = doc.append_child("DataRegionsRequest");
+
+        data_request_node.append_attribute("data_set_key").set_value(m_id);
+
+        if(m_data_window)
+        {
+            auto window_node = data_request_node.append_child("Window");
+            window_node.append_attribute("start").set_value(m_data_window->m_start);
+            window_node.append_attribute("end").set_value(m_data_window->m_stop);
+        }
+
+        return xpugi::toXML(doc);
+    }
+
 }
 

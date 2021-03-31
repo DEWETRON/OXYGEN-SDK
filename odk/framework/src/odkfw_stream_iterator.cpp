@@ -7,88 +7,201 @@ namespace odk
 namespace framework
 {
     StreamIterator::StreamIterator()
-        : m_block_index(-1)
-        , m_data_requester(nullptr)
+        : m_data_requester(nullptr)
+        , m_valid(false)
+        , m_signal_gaps(false)
+        , m_skip_gaps(true)
     {
     }
 
-    const void* StreamIterator::data() const
+    const StreamIterator::BlockIteratorRange* StreamIterator::selectBlock(std::uint64_t timestamp)
     {
-        return valid() ? m_current_iterator.data() : nullptr;
-    }
-
-    std::uint64_t StreamIterator::timestamp() const
-    {
-        return valid() ? m_current_iterator.timestamp() : 0;
-    }
-
-    StreamIterator& StreamIterator::operator++()
-    {
-        ++m_current_iterator;
-        if (m_current_iterator == m_blocks_ranges[m_block_index].second)
+        for(const auto& range_list : m_blocks_ranges)
         {
-            ++m_block_index;
-            if (m_block_index != m_blocks_ranges.size())
+            for(const auto& range : range_list.second)
             {
-                m_current_iterator = m_blocks_ranges[m_block_index].first;
-            }
-            else if(m_data_requester)
-            {
-                m_data_requester->updateStreamIterator(this);
-            }
-            else
-            {
-                m_block_index = -1;
+                if(timestamp >= range.first.timestamp() && timestamp <= range.second.timestamp())
+                {
+                    return &range;
+                }
             }
         }
-        return *this;
+        return nullptr;
     }
 
-    StreamIterator& StreamIterator::operator--()
+    const StreamIterator::BlockIteratorRange* StreamIterator::getNextBlock(std::uint64_t timestamp)
     {
-        if (m_current_iterator == m_blocks_ranges[m_block_index].first)
+        const BlockIteratorRange* next_range = nullptr;
+        for(const auto& range_list : m_blocks_ranges)
         {
-            --m_block_index;
-            if (m_block_index < 0)
+            for(auto it = range_list.second.begin(); it != range_list.second.end(); ++it)
             {
-                return *this;
-            }
-            else
-            {
-                m_current_iterator = m_blocks_ranges[m_block_index].second;
+                if (it->first.timestamp() > timestamp)
+                {
+                    if(!next_range || it->first.timestamp() < next_range->first.timestamp())
+                    {
+                        next_range = &(*it);
+                    }
+                    break;
+                }
             }
         }
-        --m_current_iterator;
-        return *this;
+        return next_range;
     }
 
-    bool StreamIterator::operator==(const StreamIterator& other) const
+    const StreamIterator::BlockIteratorRange* StreamIterator::getPreviousBlock(std::uint64_t timestamp)
     {
-        return m_block_index == other.m_block_index && m_current_iterator == other.m_current_iterator;
+        const BlockIteratorRange* previous_range = nullptr;
+        for(const auto& range_list : m_blocks_ranges)
+        {
+            for(auto it = range_list.second.rbegin(); it != range_list.second.rend(); ++it)
+            {
+                if (it->second.timestamp() < timestamp)
+                {
+                    if(!previous_range || it->second.timestamp() > previous_range->second.timestamp())
+                    {
+                        previous_range = &(*it);
+                    }
+                    break;
+                }
+            }
+        }
+        return previous_range;
     }
 
-    bool StreamIterator::operator!=(const StreamIterator& other) const
+    void StreamIterator::getNextBlock()
     {
-        return !(*this == other);
+        const auto timestamp = m_current_iterator.timestamp() + 1;
+        auto block = selectBlock(timestamp);
+
+        if(!block)
+        {
+            block = getNextBlock(timestamp);;
+        }
+
+        if(block)
+        {
+            m_previous_border = block->first.timestamp();
+            m_next_border = block->second.timestamp();
+
+            m_current_iterator = block->first;
+            if (m_current_iterator.timestamp() <= timestamp)
+            {
+                while (m_current_iterator.timestamp() <= timestamp)
+                {
+                    ++m_current_iterator;
+                }
+                --m_current_iterator;
+            }
+
+            auto next_block = getNextBlock(m_current_iterator.timestamp());
+            if(next_block && next_block->first.timestamp() <= m_next_border)
+            {
+                m_next_border = next_block->first.timestamp() - 1;
+            }
+        }
+        else if (m_data_requester)
+        {
+            m_data_requester->updateStreamIterator(this);
+        }
+        else
+        {
+            m_valid = false;
+        }
+
+        if(m_valid && m_current_iterator.data() == nullptr)
+        {
+            if(m_skip_gaps)
+            {
+                m_current_iterator = BlockIterator(m_next_border);
+                getNextBlock();
+            }
+            if(m_signal_gaps)
+            {
+                throw std::runtime_error("data gap occured");
+            }
+        }
     }
 
-    bool StreamIterator::valid() const
+    void StreamIterator::getPreviousBlock()
     {
-        return m_block_index >= 0;
+        const auto timestamp = m_current_iterator.timestamp() - 1;
+        auto block = selectBlock(timestamp);
+
+        if(!block)
+        {
+            block = getPreviousBlock(timestamp);
+        }
+
+        if(block)
+        {
+            m_previous_border = block->first.timestamp();
+            m_next_border = block->second.timestamp();
+
+            m_current_iterator = block->second;
+            if(m_current_iterator.timestamp() > timestamp)
+            {
+                while(m_current_iterator.timestamp() > timestamp)
+                {
+                    --m_current_iterator;
+                }
+            }
+
+            auto previous_block = getPreviousBlock(m_current_iterator.timestamp());
+            if (previous_block && previous_block->second.timestamp() >= m_next_border)
+            {
+                m_next_border = previous_block->second.timestamp() + 1;
+            }
+
+        }
+        else
+        {
+            m_valid = false;
+        }
+
+        if(m_valid && m_current_iterator.data() == nullptr)
+        {
+            if(m_skip_gaps)
+            {
+                m_current_iterator = BlockIterator(m_previous_border);
+                getPreviousBlock();
+            }
+            if(m_signal_gaps)
+            {
+                throw std::runtime_error("data gap occured");
+            }
+        }
     }
 
-    void StreamIterator::addRange(const BlockIterator& begin, const BlockIterator& end)
+    void StreamIterator::addRange(const BlockIterator& begin, const BlockIterator& end, std::uint32_t priority)
     {
-        m_blocks_ranges.emplace_back(begin, end);
-        m_block_index = 0;
-        m_current_iterator = m_blocks_ranges.front().first;
+        m_blocks_ranges[priority].emplace(begin, end);
+    }
+
+    void StreamIterator::init(std::uint64_t tick)
+    {
+        m_valid = true;
+        m_current_iterator = BlockIterator(tick - 1);
+        getNextBlock();
+    }
+
+    void StreamIterator::setSignalGaps(bool enabled)
+    {
+        m_signal_gaps = enabled;
+    }
+
+    void StreamIterator::setSkipGaps(bool enabled)
+    {
+        m_skip_gaps = enabled;
     }
 
     void StreamIterator::clearRanges()
     {
         m_blocks_ranges.clear();
-        m_block_index = -1;
+        m_next_border = 0;
+        m_previous_border = 0;
         m_current_iterator = BlockIterator();
+        m_valid = false;
     }
 
     void StreamIterator::setDataRequester(IfIteratorUpdater *requester)

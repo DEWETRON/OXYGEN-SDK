@@ -60,17 +60,19 @@ public:
         telegram.m_service_name = "AddSyncAsync";
         telegram.m_display_group = "Basic Math";
         telegram.m_description = "Adds a channel that calculates the sum of two input channels.";
+        telegram.m_analysis_capable = true;
         return telegram;
     }
 
-    void init(const std::vector<InputChannel::InputChannelData>& input_channel_data) override
+    InitResult init(const InitParams& params) override
     {
         std::vector<std::uint64_t> channel_ids;
-        for (const auto an_input_channel : input_channel_data)
+        for (const auto an_input_channel : params.m_input_channels)
         {
             channel_ids.push_back(an_input_channel.m_channel_id);
         }
         m_input_channels->setValue(odk::ChannelIDList(channel_ids));
+        return { true };
     }
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override
@@ -210,35 +212,31 @@ public:
         m_current_values.fill(std::numeric_limits<double>::quiet_NaN());
     }
 
-    std::uint64_t convertTimeToTickAtOrAfter(double time, double frequency)
-    {
-        if (time == 0.0)
-        {
-            return 0;
-        }
-        return static_cast<std::uint64_t>(std::nextafter(std::nextafter(time, 0.0) * frequency, std::numeric_limits<double>::lowest())) + 1;
-    }
-
     double convertTickToTime(std::uint64_t tick, double frequency)
     {
         return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
     }
-
 
     void process(ProcessingContext& context, odk::IfHost *host) override
     {
         std::array<std::pair<odk::framework::StreamIterator, odk::Timebase>, 2> iterators;
         {
             const auto channel_id = m_input_channels->getValue().m_values.at(0);
+            context.m_channel_iterators[channel_id].setSkipGaps(false);
+            std::uint64_t first_tick = odk::convertTimeToTickAtOrAfter(context.m_window.first, getInputChannelProxy(channel_id)->getTimeBase().m_frequency);
+            context.m_channel_iterators[channel_id].init(first_tick);
             iterators[0] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
         }
         {
             const auto channel_id = m_input_channels->getValue().m_values.at(1);
+            context.m_channel_iterators[channel_id].setSkipGaps(false);
+            std::uint64_t first_tick = odk::convertTimeToTickAtOrAfter(context.m_window.first, getInputChannelProxy(channel_id)->getTimeBase().m_frequency);
+            context.m_channel_iterators[channel_id].init(first_tick);
             iterators[1] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
         }
 
-        std::uint64_t start_sample = convertTimeToTickAtOrAfter(context.m_window.first, m_timebase_frequency);
-        std::uint64_t end_sample = convertTimeToTickAtOrAfter(context.m_window.second, m_timebase_frequency);
+        std::uint64_t start_sample = odk::convertTimeToTickAtOrAfter(context.m_window.first, m_timebase_frequency);
+        std::uint64_t end_sample = odk::convertTimeToTickAtOrAfter(context.m_window.second, m_timebase_frequency);
 
         auto sync_out_channel = getRootChannel();
         if (sync_out_channel->getUsedProperty()->getValue())
@@ -246,6 +244,7 @@ public:
             std::uint64_t sample_index = 0;
 
             std::vector<double> samples(end_sample - start_sample);
+            auto output_sample_index = sample_index;
 
             if (m_resampling_enabled)
             {
@@ -253,19 +252,22 @@ public:
                 {
                     double output_time = convertTickToTime((start_sample + sample_index), m_timebase_frequency);
                     int channel_index = 0;
+
                     for (auto& channel_iterator : iterators)
                     {
                         auto& iterator = channel_iterator.first;
                         const auto& timebase = channel_iterator.second;
                         while (iterator.valid() &&
-                           iterator.timestamp() / timebase.m_frequency <= output_time)
+                            iterator.timestamp() / timebase.m_frequency <= output_time)
                         {
                             m_current_values[channel_index] = iterator.value<double>();
                             ++iterator;
                         }
                         ++channel_index;
                     }
-                    samples[sample_index] = m_current_values[0] + m_current_values[1];
+
+                    samples[output_sample_index] = m_current_values[0] + m_current_values[1];
+                    ++output_sample_index;
                     ++sample_index;
                 }
 
@@ -273,7 +275,7 @@ public:
                 for (auto& channel_iterator : iterators)
                 {
                     auto& iterator = channel_iterator.first;
-                    while (iterator.valid())
+                    while (iterator.data())
                     {
                         m_current_values[channel_index] = iterator.value<double>();
                         ++iterator;
@@ -284,21 +286,27 @@ public:
             else
             {
                 while ((start_sample + sample_index) < end_sample)
-                {
-                    samples[sample_index] = iterators[0].first.value<double>() + iterators[1].first.value<double>();
+                {                   
+                    samples[output_sample_index] = iterators[0].first.value<double>() + iterators[1].first.value<double>();
                     ++iterators[0].first;
                     ++iterators[1].first;
+                    ++output_sample_index;
                     ++sample_index;
                 }
             }
 
-            if (sample_index > 0)
+            if (output_sample_index > 0)
             {
-                samples.resize(sample_index);
+                samples.resize(output_sample_index);
                 addSamples(host, sync_out_channel->getLocalId(), start_sample, samples.data(), sizeof(double) * samples.size());
             }
         }
+    }
 
+    void initTimebases(odk::IfHost* host) override
+    {
+        ODK_UNUSED(host);
+        updateNeedsResampling();
     }
 
 private:

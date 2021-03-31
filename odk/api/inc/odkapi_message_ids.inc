@@ -51,6 +51,8 @@ BEGIN_GROUP(plugin_msg)
 
     MSG_ID(NOTIFY_CHANNEL_CONFIG_CHANGED,       GENERAL_FUNCTIONS, 0x000509, "always 0", "<ChannelConfigChanged/> (oxy_plugin_common::ChannelConfigChangedTelegram) containing the changed properties", " ", "0: no error");
 
+    MSG_ID(PLUGIN_RESERVE_CHANNEL_IDS,          GENERAL_FUNCTIONS, 0x00050a, "always 0", "<ChannelID/> (List of channel IDs)", " ", "0: no error");
+
     // > Plugin
     // PLUGIN SUPPORT
     MSG_ID(NOTIFY_EVENT,               SUPPORT_FUNCTIONS, 0x000001, "Event ID", "event specific", "-",
@@ -139,6 +141,7 @@ BEGIN_GROUP(host_msg)
     MSG_ID(DATA_GROUP_ADD,              CHANNEL_DATA_ACCESS, 0x000001, " ", " ", " ", " ");
     MSG_ID(DATA_GROUP_REMOVE,           CHANNEL_DATA_ACCESS, 0x000002, "DataSetId", "DataSetId (optional, instead of key)", " ", " ");
     MSG_ID(DATA_READ,                   CHANNEL_DATA_ACCESS, 0x000003, " ", " ", " ", " ");
+    MSG_ID(DATA_REGIONS_READ,           CHANNEL_DATA_ACCESS, 0x000005, " ", " ", " ", " ");
 
     MSG_ID(ACQUISITION_TASK_ADD,         ACQUISITION_CONTROL, 0x000101, "always 0", "AddAcquisitionTaskTelegram", "-", "0: no error");
     MSG_ID(ACQUISITION_TASK_REMOVE ,     ACQUISITION_CONTROL, 0x000102, "AcquisitionTaskID", "-", "-", "0: no error");

@@ -29,6 +29,8 @@ namespace odk
         std::string m_display_name;
         std::string m_description;
         std::string m_ui_item_add;
+        bool m_analysis_capable;
+        bool m_acquisition_capable;
     };
 
     class CreateSoftwareChannel

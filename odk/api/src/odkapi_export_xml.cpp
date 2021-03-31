@@ -8,15 +8,27 @@
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
+#include <boost/assign/list_of.hpp>
+#include <boost/bimap.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <map>
 #include <vector>
 
+namespace
+{
+    typedef boost::bimap<odk::RegisterExport::StartExportAction, std::string> StartExportActionBiMap;
+    static const StartExportActionBiMap START_EXPORT_OPTION_MAP = boost::assign::list_of<StartExportActionBiMap::relation>
+        (odk::RegisterExport::StartExportAction::SELECT_FILE, "SELECT_FILE")
+        (odk::RegisterExport::StartExportAction::SELECT_DIRECTORY, "SELECT_DIRECTORY")
+        (odk::RegisterExport::StartExportAction::NONE, "NONE");
+}
+
 namespace odk
 {
     RegisterExport::RegisterExport()
+        : m_start_export_action(SELECT_FILE)
     {}
 
     bool RegisterExport::parse(const char* xml_string)
@@ -49,6 +61,12 @@ namespace odk
         m_format_id = xpugi::getText(xpugi::getChildNodeByTagName(node, "FormatId"));
         m_file_extension = xpugi::getText(xpugi::getChildNodeByTagName(node, "FileExtension"));
 
+        const auto action_node = xpugi::getChildElementByTagName(node, "StartAction");
+        if (!action_node.empty())
+        {
+            m_start_export_action = START_EXPORT_OPTION_MAP.right.at(xpugi::getText(action_node));
+        }
+
         auto ui_small_node = node.select_node("UISmall").node();
         if (ui_small_node)
         {
@@ -79,9 +97,11 @@ namespace odk
         auto register_elem = xpugi::xml_element(doc.append_child("RegisterExporter"));
         odk::setProtocolVersion(register_elem, odk::Version(1,0));
 
+
         xpugi::setText(xpugi::xml_element(register_elem.append_child("FormatName")), m_format_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("FormatId")), m_format_id);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("FileExtension")), m_file_extension);
+        xpugi::setText(xpugi::xml_element(register_elem.append_child("StartAction")), START_EXPORT_OPTION_MAP.left.at(m_start_export_action));
 
         if (!m_ui_item_small.empty())
         {
@@ -445,7 +465,8 @@ namespace odk
                     ch_error.append_attribute("path").set_value(xpath.str().c_str());
                     xpugi::setText(ch_error.append_child("Id"), std::to_string(channel.channel_id));
                     xpugi::setText(ch_error.append_child("ErrorCode"), std::to_string(channel.error_code));
-                    xpugi::setText(ch_error.append_child("ErrorMessage"), odk::error_codes::toString(channel.error_code));
+                    xpugi::setText(ch_error.append_child("ErrorMessage"), channel.error_message);
+                    //xpugi::setText(ch_error.append_child("ErrorMessage"), odk::error_codes::toString(channel.error_code));
                 }
             }
         }

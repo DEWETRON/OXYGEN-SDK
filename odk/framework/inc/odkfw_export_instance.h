@@ -48,7 +48,7 @@ namespace framework
         uint64_t getID() const;
 
         virtual void validate(const ValidationContext& context, odk::ValidateExportResponse& response) const = 0;
-        virtual bool exportData(const ProcessingContext& context) const = 0;
+        virtual bool exportData(const ProcessingContext& context) = 0;
         virtual void cancel() = 0;
 
     private:

@@ -11,6 +11,7 @@
 
 #include "odkapi_acquisition_task_xml.h"
 #include "odkapi_channel_config_changed_xml.h"
+#include "odkapi_channel_list_xml.h"
 #include "odkapi_channel_dataformat_xml.h"
 #include "odkapi_channel_mapping_xml.h"
 #include "odkapi_oxygen_queries.h"
@@ -63,6 +64,7 @@ namespace framework
 
         PluginChannel& addProperty(const std::string& name, ChannelPropertyPtr prop);
         PluginChannel& addProperty(const std::string& name, const odk::Property& prop);
+        void removeProperty(const std::string& name);
 
         ChannelPropertyPtr getProperty(const std::string& name) const;
         PluginChannel& replaceProperty(const std::string& name, ChannelPropertyPtr prop);
@@ -181,6 +183,8 @@ namespace framework
         std::uint64_t processInputChannelConfigChange(const odk::ChannelConfigChangedTelegram& telegram);
         std::uint64_t processInputChannelChange(const std::set<std::uint64_t>& channel_id);
 
+        uint64_t reserveChannelIds(const odk::ChannelList& telegram);
+
         std::uint64_t pluginMessage(
             odk::PluginMessageId id,
             std::uint64_t key,
@@ -209,6 +213,7 @@ namespace framework
 
         std::map<std::uint32_t, PluginChannelPtr> m_channels;
         std::set<std::uint32_t> m_ids;
+        std::set<std::uint32_t> m_reseved_ids;
         odk::UpdateChannelsTelegram::ChannelGroupInfo m_list_topology;
 
         std::map<uint64_t, PluginTaskPtr> m_tasks;

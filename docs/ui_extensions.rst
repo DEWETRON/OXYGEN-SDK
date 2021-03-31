@@ -117,9 +117,19 @@ Item interface
     This flag is ignored in Oxygen 5.3.0 but will be required in the next release.
 
 ``function queryProperties()``
-  This function has to return a JavaScript dictionary containing the settings
-  specified in the UI. These are forwarded to the plugin after the user presses
+  Starting from Oxygen 5.4.0 this function should return a
+  :ref:`PropertyList <property_list_type>` containing the settings
+  specified in the UI.
+  This object is forwarded to the plugin after the user presses
   the *Add* button.
+
+  .. note::
+    For backwards compatibility with Oxygen 5.3, a JavaScript dictionary can
+    be returned as well. The stored JavaScript values are converted to a
+    property list using heuristics which makes type safe access from C++
+    more difficult.
+    Using PropertyList directly is therefore recommended if version 5.3
+    does not have to be supported.
 
 
 

@@ -37,6 +37,8 @@ namespace framework
         void addDataBlock(const BlockDescriptor& block_descriptor, const void* data);
         void addDataBlock(BlockDescriptor&& block_descriptor, const void* data);
 
+        void addDataRegion(const odk::DataRegion& region);
+
         /**
          * Returns an iterator for a specific channel that iterates across all compatible blocks
          */
@@ -61,6 +63,7 @@ namespace framework
         using BlockDescriptorData = std::tuple<BlockDescriptor, const void*>;
         StreamDescriptor m_stream_descriptor;
         std::multimap<std::uint64_t, BlockDescriptorData> m_blocks;
+        std::map<std::uint64_t, std::set<odk::Interval<std::uint64_t>>> m_data_regions;
     };
 }
 }

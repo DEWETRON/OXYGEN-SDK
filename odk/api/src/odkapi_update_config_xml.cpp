@@ -264,6 +264,25 @@ namespace odk
             std::string vis = tree.attribute("visibility").as_string();
             return makeVisibility(vis);
         }
+        else if (element_name == "FilePathConstraint")
+        {
+            std::string ft = tree.attribute("file_type").as_string();
+            std::string dialog_title = tree.attribute("dialog_title").as_string();
+            std::string default_path = tree.attribute("default_path").as_string();
+
+            auto child = tree.child("NameFilters");
+            std::vector<std::string> filters;
+            if (child != nullptr)
+            {
+                for (auto& filter_node : child.children("Filter"))
+                {
+                    std::string filter = filter_node.attribute("name").as_string();
+                    filters.emplace_back(filter);
+                }
+            }
+            bool multi_select = tree.attribute("multi_select").as_bool();
+            return makeFilePathConstraint(ft, dialog_title, default_path, filters, multi_select);
+        }
 
         return {};
     }
@@ -316,6 +335,21 @@ namespace odk
             {
                 auto constraint_node = parent.append_child("VisibilityConstraint");
                 constraint_node.append_attribute("visibility").set_value(getVisibility().c_str());
+            } break;
+            case Constraint::FILE_PATH:
+            {
+                auto constraint_node = parent.append_child("FilePathConstraint");
+                constraint_node.append_attribute("file_type").set_value(getFileType().c_str());
+                constraint_node.append_attribute("dialog_title").set_value(getDialogTitle().c_str());
+                constraint_node.append_attribute("default_path").set_value(getDefaultPath().c_str());
+
+                auto nam_flt_node = constraint_node.append_child("NameFilters");
+                for (const auto& filter : getNameFilters().m_values)
+                {
+                    auto flt_node = nam_flt_node.append_child("Filter");
+                    flt_node.append_attribute("name").set_value(filter.c_str());
+                }
+                constraint_node.append_attribute("multi_select").set_value(getMultiSelect());
             } break;
             default:
                 ODK_ASSERT_FAIL("Unimplemented constraint type");
@@ -396,4 +430,11 @@ namespace odk
         return UpdateConfigTelegram::Constraint::makeVisibility(vis);
     }
 
+    UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
+        const std::string& dialog_title, const std::string& default_path,
+        const std::vector<std::string>& name_filters, bool multi_select)
+    {
+        return UpdateConfigTelegram::Constraint::makeFilePathConstraint(
+            file_type, dialog_title, default_path, name_filters, multi_select);
+    }
 }
