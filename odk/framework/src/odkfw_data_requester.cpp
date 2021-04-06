@@ -116,7 +116,7 @@ namespace framework
                 }
 
                 const odk::IfValue* data_regions_result = nullptr;
-                m_host->messageSync(odk::host_msg::DATA_GROUP_ADD, 0, xml_msg.get(), &data_regions_result);
+                m_host->messageSync(odk::host_msg::DATA_REGIONS_READ, 0, xml_msg.get(), &data_regions_result);
 
                 const odk::IfXMLValue* data_regions_result_xml = odk::value_cast<odk::IfXMLValue>(data_regions_result);
                 if (data_regions_result)
