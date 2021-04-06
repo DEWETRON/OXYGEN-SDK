@@ -58,10 +58,6 @@
 /// Value: Scalar
 #define ODK_CI_KEY_SAMPLE_RATE "SampleRate"
 
-/// Acquisition rate (=expected frequency of samples) of the channel as a configurable item
-/// Value: Scalar
-#define ODK_CI_KEY_ACQUISITION_RATE "AcquisitionRate"
-
 /// Sample dimension (=number of samples per scan) of the channel
 /// Value: Uint
 #define ODK_CI_KEY_SAMPLE_DIMENSION "SampleDimension"

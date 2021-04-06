@@ -58,13 +58,8 @@ public:
 
     ReplayChannel()
         : m_input_file(new EditableStringProperty(""))
-        , m_acquisition_rate(new EditableScalarProperty(1000, "Hz", 0.01, 10000000)) //SampleRate can be configured freely in a wide range (0.01 to 10000000 Hz)
         , m_next_tick(std::numeric_limits<uint64_t>::max())
     {
-        // add some proposed sample rates
-        m_acquisition_rate->addOption(1);
-        m_acquisition_rate->addOption(100);
-        m_acquisition_rate->addOption(1000);
     }
 
     // Describe how the software channel should be shown in the "Add Channel" dialog
@@ -144,7 +139,7 @@ public:
         getRootChannel()->setRange({range_min, range_max, "", ""});
         getRootChannel()->setValid(is_valid);
         getRootChannel()->getRangeProperty()->setLive(is_valid);
-        getRootChannel()->setSimpleTimebase(m_acquisition_rate->getValue().m_val);
+        getRootChannel()->setSimpleTimebase(m_sample_rate->getValue().m_val);
 
         return is_valid;
     }
@@ -153,15 +148,22 @@ public:
     {
         ODK_UNUSED(host);
 
+        getRootChannel()->setSamplerate({1000.0, "Hz"});
+        m_sample_rate = getRootChannel()->getSamplerateProperty();
+        m_sample_rate->setMinMaxConstraint(0.01, 10000000.0);
+        // add some proposed sample rates
+        m_sample_rate->addOption(1);
+        m_sample_rate->addOption(100);
+        m_sample_rate->addOption(1000);
+
         getRootChannel()->setDefaultName("Replay channel")
             .setSampleFormat(
                 odk::ChannelDataformat::SampleOccurrence::SYNC,
                 odk::ChannelDataformat::SampleFormat::DOUBLE,
                 1)
-            .setSimpleTimebase(m_acquisition_rate->getValue().m_val)
+            .setSimpleTimebase(m_sample_rate->getValue().m_val)
             .setDeletable(true)
-            .addProperty(KEY_INPUT_FILE, m_input_file)
-            .addProperty(ODK_CI_KEY_ACQUISITION_RATE, m_acquisition_rate);
+            .addProperty(KEY_INPUT_FILE, m_input_file);
     }
 
     bool configure(
@@ -175,7 +177,7 @@ public:
     void prepareProcessing(odk::IfHost* host) override
     {
         const auto ts = getMasterTimestamp(host);
-        const auto rate_factor = m_acquisition_rate->getValue().m_val / ts.m_frequency;
+        const auto rate_factor = m_sample_rate->getValue().m_val / ts.m_frequency;
         m_next_tick = static_cast<std::uint64_t>(ts.m_ticks* rate_factor);
     }
 
@@ -187,7 +189,7 @@ public:
         auto ts = getMasterTimestamp(host);
 
         auto tick = m_next_tick;
-        const auto rate_factor = m_acquisition_rate->getValue().m_val / ts.m_frequency;
+        const auto rate_factor = m_sample_rate->getValue().m_val / ts.m_frequency;
         std::uint64_t target_tick = static_cast<std::uint64_t>(ts.m_ticks * rate_factor);
         while (tick < target_tick)
         {
@@ -201,7 +203,7 @@ public:
 
 private:
     std::shared_ptr<EditableStringProperty> m_input_file;
-    std::shared_ptr<EditableScalarProperty> m_acquisition_rate;
+    std::shared_ptr<EditableScalarProperty> m_sample_rate;
     std::vector<double> m_values;
 
     std::uint64_t m_next_tick; // timestamp of the next sample that will be generated in doProcess()
