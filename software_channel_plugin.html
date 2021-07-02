@@ -1,40 +1,46 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Software Channel Plugins &mdash; Oxygen SDK 1.0 documentation</title>
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="_static/oxygen.ico"/>
   
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -79,6 +85,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -94,8 +101,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#output-channels">Output Channels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-channels">Input Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-o-channels">I/O-Channels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#softwarechannelinstance-lifecycle">SoftwareChannelInstance Lifecycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#data-processing">Data processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#channel-data-formats">Channel data formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#can-messages">CAN messages</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="export_plugin.html">Export Plugins</a></li>
@@ -114,6 +126,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -148,18 +161,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Software Channel Plugins</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -205,6 +220,22 @@ These configuration parameters are automatically available in Oxygen and get sto
 ChannelID (for single channel) or ChannelIDList (for multiple channels) config item.
 This channels will get fetched automatically and data will be provided in the process() call.</p>
 <p>Additionally, in case of a config change of one of the input channels, the instance will get the opportunity to react in an update() call.</p>
+</div>
+<div class="section" id="i-o-channels">
+<h2>I/O-Channels<a class="headerlink" href="#i-o-channels" title="Permalink to this headline">¶</a></h2>
+<p>In case an input channel is capable of receiving messages (e.g.: CAN channel), this can be done via
+<code class="docutils literal notranslate"><span class="pre">odk::host_msg::WRITE_TO_CHANNEL</span></code> as shown in the example below:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data_ptr</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">size</span><span class="p">;</span>
+
+<span class="k">auto</span> <span class="n">data</span> <span class="o">=</span> <span class="n">getHost</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">createValue</span><span class="o">&lt;</span><span class="n">odk</span><span class="o">::</span><span class="n">IfArbitraryBinaryValue</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">data_ptr</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+
+<span class="kt">uint64_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">getHost</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">messageSync</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">host_msg</span><span class="o">::</span><span class="n">WRITE_TO_CHANNEL</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">ChannelID</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#channel-data-formats"><span class="std std-ref">Data Formats</span></a> for a description on how output messages have to be formatted.</p>
 </div>
 <div class="section" id="softwarechannelinstance-lifecycle">
 <h2>SoftwareChannelInstance Lifecycle<a class="headerlink" href="#softwarechannelinstance-lifecycle" title="Permalink to this headline">¶</a></h2>
@@ -255,6 +286,48 @@ ProcessingContext provides current time information and all new data of the requ
 </dd>
 </dl>
 </div>
+<div class="section" id="channel-data-formats">
+<span id="id1"></span><h2>Channel data formats<a class="headerlink" href="#channel-data-formats" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="can-messages">
+<h3>CAN messages<a class="headerlink" href="#can-messages" title="Permalink to this headline">¶</a></h3>
+<p>Each CAN message is received as byte array. In addition to the data pointer the size of the array is also provided and can be
+accessed via the <code class="docutils literal notranslate"><span class="pre">odk::framework::StreamIterator</span></code> class.</p>
+<p>For sending CAN messages to the input channel the following structure has to be used:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">CAN Message Structure</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset (bytes)</p></th>
+<th class="head"><p>Length (bytes)</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>4</p></td>
+<td><p>uint32</p></td>
+<td><p>CAN Arbitration ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>1</p></td>
+<td><p>uint8</p></td>
+<td><p>Standard/Extended Message (0/1)</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><em>data size</em></p></td>
+<td><p>uint8*</p></td>
+<td><p>Data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 
@@ -262,29 +335,29 @@ ProcessingContext provides current time information and all new data of the requ
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="export_plugin.html" class="btn btn-neutral float-right" title="Export Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="build_instructions.html" class="btn btn-neutral float-left" title="Build Instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="export_plugin.html" class="btn btn-neutral float-right" title="Export Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="build_instructions.html" class="btn btn-neutral float-left" title="Build Instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, DEWETRON GmbH
+        &#169; Copyright 2021, DEWETRON GmbH.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -292,7 +365,6 @@ ProcessingContext provides current time information and all new data of the requ
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
