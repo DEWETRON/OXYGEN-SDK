@@ -31,31 +31,36 @@ namespace framework
         /// Start address of the sample
         inline const void* data() const
         {
-            return m_valid ? m_current_iterator.data() : nullptr;
+            return valid() ? m_current_iterator.data() : nullptr;
         }
 
         /// Timestamp of the sample
         inline std::uint64_t timestamp() const
         {
-            return m_valid ? m_current_iterator.timestamp() : 0;
+            return valid() ? m_current_iterator.timestamp() : 0;
+        }
+
+        inline std::size_t size() const
+        {
+            return valid() ? m_current_iterator.size() : 0;
         }
 
         template<class SampleFormat>
         inline SampleFormat value() const
         {
-            if(data())
+            if (const void* data_ptr = data())
             {
-                return *static_cast<const SampleFormat*>(data());
+                return *static_cast<const SampleFormat*>(data_ptr);
             }
             return std::numeric_limits<SampleFormat>::quiet_NaN();
         }
 
         inline bool valid() const
         {
-            return m_valid;
+            return m_block_index >= 0;
         }
 
-        void addRange(const BlockIterator& begin, const BlockIterator& end, std::uint32_t priority = 0);
+        void addRange(const BlockIterator& begin, const BlockIterator& end);
 
         void clearRanges();
 
@@ -63,27 +68,21 @@ namespace framework
 
         inline StreamIterator& operator++()
         {
-            if (m_current_iterator.timestamp() >= m_next_border)
+            ++m_current_iterator;
+            if (m_current_iterator == m_blocks_ranges[m_block_index].second)
             {
                 getNextBlock();
-            }
-            else
-            {
-                ++m_current_iterator;
             }
             return *this;
         }
 
         inline StreamIterator& operator--()
         {
-            if (m_current_iterator.timestamp() <= m_previous_border)
+            if (m_current_iterator == m_blocks_ranges[m_block_index].first)
             {
                 getPreviousBlock();
             }
-            else
-            {
-                --m_current_iterator;
-            }
+            --m_current_iterator;
             return *this;
         }
 
@@ -98,10 +97,10 @@ namespace framework
             return !(*this == other);
         }
 
-        void init(std::uint64_t tick = 0);
-
         void setSignalGaps(bool enabled);
         void setSkipGaps(bool enabled);
+
+        std::uint64_t getTotalSampleCount() const;
 
         using BlockIteratorRange = std::pair<BlockIterator, BlockIterator>;
 
@@ -109,17 +108,11 @@ namespace framework
         void getNextBlock();
         void getPreviousBlock();
 
-        const BlockIteratorRange* selectBlock(std::uint64_t timestamp);
-        const BlockIteratorRange* getNextBlock(std::uint64_t timestamp);
-        const BlockIteratorRange* getPreviousBlock(std::uint64_t timestamp);
-
     private:
-        std::map<uint32_t, std::set<BlockIteratorRange>, std::greater<uint32_t>> m_blocks_ranges;
-        std::uint64_t m_next_border;
-        std::uint64_t m_previous_border;
+        std::vector<BlockIteratorRange> m_blocks_ranges;
+        int m_block_index;
         BlockIterator m_current_iterator;
         IfIteratorUpdater* m_data_requester;
-        bool m_valid;
         bool m_signal_gaps;
         bool m_skip_gaps;
     };

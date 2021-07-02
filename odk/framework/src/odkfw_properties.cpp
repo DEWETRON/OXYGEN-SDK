@@ -309,6 +309,12 @@ namespace framework
                 telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
             }
 
+            for (const auto& str_option : m_string_options)
+            {
+                telegram.addConstraint(property_name,
+                    odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", str_option)));
+            }
+
             std::vector<odk::Property> options;
             for (const auto& option : m_options)
             {
@@ -318,12 +324,23 @@ namespace framework
             {
                 telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOptions(options));
             }
+
             addBaseConstraints(telegram, property_name);
         }
     }
     void EditableScalarProperty::addOption(double val)
     {
         m_options.push_back(val);
+    }
+
+    void EditableScalarProperty::clearOptions()
+    {
+        m_options.clear();
+    }
+
+    void EditableScalarProperty::addStringOption(const std::string& val)
+    {
+        m_string_options.push_back(val);
     }
 
     EditableFilePathProperty::EditableFilePathProperty(const RawPropertyHolder& value)
@@ -548,6 +565,11 @@ namespace framework
         m_is_a_arbitrary_string = state;
     }
 
+    void EditableStringProperty::clearOptions()
+    {
+        m_options.clear();
+    }
+
     void PropertyBase::setChangeListener(IfChannelPropertyChangeListener* l)
     {
         m_change_listener = l;
@@ -750,14 +772,31 @@ namespace framework
             odk::Property property(property_name);
             property.setValue(m_value);
             telegram.addProperty(property);
+
+            for (const auto& option : m_options)
+            {
+                telegram.addConstraint(property_name,
+                    odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
+            }
+
             addBaseConstraints(telegram, property_name);
         }
+    }
+
+    void RangeProperty::addOption(const odk::Range& val)
+    {
+        m_options.emplace_back(val);
     }
 
     bool RangeProperty::update(const odk::Property& value)
     {
         m_value = value.getRangeValue();
         return true;
+    }
+
+    void RangeProperty::clearOptions()
+    {
+        m_options.clear();
     }
 
 

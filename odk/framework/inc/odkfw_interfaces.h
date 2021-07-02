@@ -21,6 +21,7 @@ namespace framework
     public:
         virtual void onChannelSetupChanged(const PluginChannel* channel) = 0;
         virtual void onChannelPropertyChanged(const PluginChannel* channel, const std::string& name) = 0;
+        virtual bool configChangeAllowed() const = 0;
     protected:
         ~IfPluginChannelChangeListener() {}
     };

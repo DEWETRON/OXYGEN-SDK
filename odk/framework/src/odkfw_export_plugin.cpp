@@ -11,7 +11,7 @@ namespace odk
 {
 namespace framework
 {
-    static const char* REQUIRED_OXYGEN_VERSION = "5.3";
+    static const char* REQUIRED_OXYGEN_VERSION = "5.6";
 
     void ExportPluginBase::registerExport()
     {

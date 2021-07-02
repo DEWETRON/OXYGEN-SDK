@@ -67,20 +67,22 @@ namespace framework
         {
             double next_position = std::min(m_current_position + BLOCK_LENGTH, m_end_position);
 
-            auto xml_msg = m_host->createValue<odk::IfXMLValue>();
-            if (xml_msg)
             {
-                PluginDataRequest req(m_dataset_descriptor.m_id, PluginDataRequest::DataWindow(m_current_position, next_position));
-                xml_msg->set(req.generate().c_str());
-
-                const odk::IfValue* response = nullptr;
-                if (0 != m_host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
+                auto xml_msg = m_host->createValue<odk::IfXMLValue>();
+                if (xml_msg)
                 {
-                    return;
-                }
+                    PluginDataRequest req(m_dataset_descriptor.m_id, PluginDataRequest::DataWindow(m_current_position, next_position));
+                    xml_msg->set(req.generate().c_str());
 
-                m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
-                m_current_position = next_position;
+                    const odk::IfValue* response = nullptr;
+                    if (0 != m_host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
+                    {
+                        return;
+                    }
+
+                    m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
+                    m_current_position = next_position;
+                }
             }
 
             const auto block_count = m_data_block_list->getBlockCount();
@@ -146,8 +148,7 @@ namespace framework
         if (m_current_position != m_end_position)
         {
             fetchMoreData();
-            uint64_t sample_count = 0;
-            m_stream_reader.updateStreamIterator(m_channel_id, *iterator, sample_count);
+            m_stream_reader.updateStreamIterator(m_channel_id, *iterator, odk::Interval<std::uint64_t>(0, std::numeric_limits<std::uint64_t>::max()));
         }
     }
 

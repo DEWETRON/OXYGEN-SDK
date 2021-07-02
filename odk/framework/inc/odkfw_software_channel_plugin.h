@@ -4,6 +4,7 @@
 #define ODK_EXTENSION_FUNCTIONS
 
 #include "odkfw_channels.h"
+#include "odkfw_custom_request_handler.h"
 #include "odkfw_plugin_base.h"
 #include "odkfw_software_channel_instance.h"
 
@@ -37,19 +38,33 @@ namespace framework
         void registerSoftwareChannel();
         void unregisterSoftwareChannel();
 
+        void registerCustomRequest();
+
         virtual odk::RegisterSoftwareChannel getSoftwareChannelInfo() = 0;
 
         PluginChannelsPtr getPluginChannels();
+        std::shared_ptr<odk::framework::CustomRequestHandler> getCustomRequestHandler();
 
         bool checkOxygenCompatibility();
 
     private:
         PluginChannelsPtr m_plugin_channels;
+        std::shared_ptr<odk::framework::CustomRequestHandler> m_custom_requests;
     };
 
     template<class SoftwareChannelInstance>
     class SoftwareChannelPlugin : public SoftwareChannelPluginBase
     {
+
+    protected:
+        using SoftwareChannelInstanceRequestFunction = std::function<std::uint64_t(SoftwareChannelInstance* instance, const odk::PropertyList& params, odk::PropertyList& returns)>;
+
+        void registerCustomRequest(std::uint16_t id, const char* name, SoftwareChannelInstanceRequestFunction func)
+        {
+            namespace arg = std::placeholders;
+            auto wrappedFunction = std::bind(&SoftwareChannelPlugin::forwardCustomRequest, this, func, arg::_1, arg::_2);
+            getCustomRequestHandler()->registerFunction(id, name, wrappedFunction);
+        }
 
     private:
         odk::RegisterSoftwareChannel getSoftwareChannelInfo() final
@@ -433,6 +448,22 @@ namespace framework
             }
 
             return false;
+        }
+
+        std::uint64_t forwardCustomRequest(SoftwareChannelInstanceRequestFunction func, const odk::PropertyList& params, odk::PropertyList& return_list)
+        {
+            auto root_id = params.getChannelId("SoftwareChannelInstanceRootID");
+            for(auto& instance : m_instances)
+            {
+                if(instance->getRootChannel()->getLocalId() == root_id)
+                {
+                    instance->shutDown();
+                    func(instance.get(), params, return_list);
+                    break;
+                }
+            }
+            getPluginChannels()->synchronize();
+            return odk::error_codes::OK;
         }
 
     private:

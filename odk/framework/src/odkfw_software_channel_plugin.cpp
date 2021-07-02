@@ -8,12 +8,14 @@ namespace odk
 {
 namespace framework
 {
-    static const char* REQUIRED_OXYGEN_VERSION = "5.3";
+    static const char* REQUIRED_OXYGEN_VERSION = "5.6";
 
     SoftwareChannelPluginBase::SoftwareChannelPluginBase()
         : m_plugin_channels(std::make_shared<odk::framework::PluginChannels>())
+        , m_custom_requests(std::make_shared<odk::framework::CustomRequestHandler>())
     {
         addMessageHandler(m_plugin_channels);
+        addMessageHandler(m_custom_requests);
     }
 
     void SoftwareChannelPluginBase::registerSoftwareChannel()
@@ -52,6 +54,11 @@ namespace framework
     PluginChannelsPtr SoftwareChannelPluginBase::getPluginChannels()
     {
         return m_plugin_channels;
+    }
+
+    std::shared_ptr<CustomRequestHandler> SoftwareChannelPluginBase::getCustomRequestHandler()
+    {
+        return m_custom_requests;
     }
 
 }

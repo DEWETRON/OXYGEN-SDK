@@ -65,20 +65,19 @@ namespace framework
 
     StreamIterator StreamReader::createChannelIterator(std::uint64_t channel_id) const
     {
-        std::uint64_t dummy_num_of_samples = 0;
-        return createChannelIterator(channel_id, dummy_num_of_samples);
+        return createChannelIterator(channel_id, odk::Interval<std::uint64_t>(0, std::numeric_limits<std::uint64_t>::max()));
     }
-    StreamIterator StreamReader::createChannelIterator(std::uint64_t channel_id, std::uint64_t& sample_count) const
-    {
-        sample_count = 0;
 
+    StreamIterator StreamReader::createChannelIterator(std::uint64_t channel_id, const odk::Interval<std::uint64_t>& interval) const
+    {
         StreamIterator iterator;
-        updateStreamIterator(channel_id, iterator, sample_count);
+        updateStreamIterator(channel_id, iterator, interval);
         return iterator;
     }
 
-    void StreamReader::updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, std::uint64_t& sample_count) const
+    void StreamReader::updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, const odk::Interval<std::uint64_t>& interval) const
     {
+        std::uint64_t sample_count = 0;
         iterator.clearRanges();
 
         auto channel_descriptor = getChannelDescriptor(channel_id);
@@ -114,17 +113,37 @@ namespace framework
 
                         const auto timestamp_pos_bytes = *channel_descriptor->m_timestamp_position / 8;
 
-                        // Explicit Timestamp field
-                        BlockIterator it_block_begin(channel_data, data_stride_bytes, reinterpret_cast<const uint64_t*>(channel_data + timestamp_pos_bytes), data_stride_bytes);
-                        BlockIterator it_block_end(channel_data + data_stride_bytes * (bcd.m_count - 1), data_stride_bytes, reinterpret_cast<const std::uint64_t*>(channel_data + data_stride_bytes * (bcd.m_count - 1) + timestamp_pos_bytes), data_stride_bytes);
-                        iterator.addRange(it_block_begin, it_block_end, 0);
+                        if (channel_descriptor->m_sample_size_position)
+                        {
+                            ODK_ASSERT_EQUAL(*channel_descriptor->m_sample_size_position % 8, 0);
+
+                            const auto sample_size_bytes = *channel_descriptor->m_sample_size_position / 8;
+                            // Explicit Timestamp field and sample size field
+                            BlockIterator it_block_begin(channel_data, data_stride_bytes, reinterpret_cast<const uint64_t*>(channel_data + timestamp_pos_bytes), 
+                                data_stride_bytes, reinterpret_cast<const uint32_t*>(channel_data + sample_size_bytes), data_stride_bytes);
+
+                            const std::uint8_t* data_end = channel_data + block_descriptor.m_data_size;
+                            
+                            const std::uint64_t* ts_end = reinterpret_cast<const uint64_t*>(data_end + timestamp_pos_bytes);
+                            const std::uint32_t* size_end = reinterpret_cast<const uint32_t*>(data_end + sample_size_bytes);
+
+                            BlockIterator it_block_end(data_end, data_stride_bytes, ts_end, data_stride_bytes, size_end, data_stride_bytes);
+                            iterator.addRange(it_block_begin, it_block_end);
+                        }
+                        else
+                        {
+                            // Explicit Timestamp field
+                            BlockIterator it_block_begin(channel_data, data_stride_bytes, reinterpret_cast<const uint64_t*>(channel_data + timestamp_pos_bytes), data_stride_bytes);
+                            BlockIterator it_block_end(channel_data + data_stride_bytes * bcd.m_count, data_stride_bytes, reinterpret_cast<const std::uint64_t*>(channel_data + data_stride_bytes * bcd.m_count + timestamp_pos_bytes), data_stride_bytes);
+                            iterator.addRange(it_block_begin, it_block_end);
+                        }
                     }
                     else
                     {
                         // Implicit timestamps, incremented every sample
                         BlockIterator it_block_begin(channel_data, data_stride_bytes, bcd.m_first_sample_index);
-                        BlockIterator it_block_end(channel_data + data_stride_bytes * (bcd.m_count - 1), data_stride_bytes, bcd.m_first_sample_index + (bcd.m_count - 1));
-                        iterator.addRange(it_block_begin, it_block_end, 0);
+                        BlockIterator it_block_end(channel_data + data_stride_bytes * bcd.m_count, data_stride_bytes, bcd.m_first_sample_index + bcd.m_count);
+                        iterator.addRange(it_block_begin, it_block_end);
                     }
                     sample_count += bcd.m_count;
                 }
@@ -133,11 +152,11 @@ namespace framework
 
         auto regions = m_data_regions.find(channel_id);
 
+        std::uint64_t invalid_region_start = interval.m_begin;
+        std::uint64_t invalid_region_end = interval.m_end;
+
         if(regions != m_data_regions.end())
         {
-            std::uint64_t invalid_region_start = 0;
-            std::uint64_t invalid_region_end = std::numeric_limits<std::uint64_t>::max();
-
             for(const auto& valid_region : regions->second)
             {
                 invalid_region_end = valid_region.m_begin;
@@ -145,23 +164,24 @@ namespace framework
                 if(invalid_region_end > invalid_region_start)
                 {
                     BlockIterator it_block_begin(invalid_region_start);
-                    BlockIterator it_block_end(invalid_region_end - 1);
-                    iterator.addRange(it_block_begin, it_block_end, 1);
+                    BlockIterator it_block_end(invalid_region_end);
+                    iterator.addRange(it_block_begin, it_block_end);
                 }
 
-                invalid_region_start = valid_region.m_end + 1;
-            }
-
-            invalid_region_end = std::numeric_limits<std::uint64_t>::max();
-
-            if(invalid_region_end > invalid_region_start)
-            {
-                BlockIterator it_block_begin(invalid_region_start);
-                BlockIterator it_block_end(invalid_region_end - 1);
-                iterator.addRange(it_block_begin, it_block_end, 1);
+                invalid_region_start = valid_region.m_end;
             }
         }
-        iterator.init();
+
+        invalid_region_end = interval.m_end;
+
+        if (invalid_region_end > invalid_region_start)
+        {
+            BlockIterator it_block_begin(invalid_region_start);
+            BlockIterator it_block_end(invalid_region_end);
+            iterator.addRange(it_block_begin, it_block_end);
+        }
+
+        ODK_ASSERT(iterator.getTotalSampleCount() == sample_count);
     }
 
     void StreamReader::clearBlocks()

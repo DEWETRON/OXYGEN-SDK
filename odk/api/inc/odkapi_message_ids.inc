@@ -161,6 +161,8 @@ BEGIN_GROUP(host_msg)
     MSG_ID(ADD_SAMPLE, GENERAL_FUNCTIONS, 0x000601, "LocalChannelID", "ArbitraryBinaryValue", "?", "0: no error");
     MSG_ID(ADD_CONTIGUOUS_SAMPLES, GENERAL_FUNCTIONS, 0x000602, "LocalChannelID", "ArbitraryBinaryValue", "?", "0: no error");
     MSG_ID(UPDATE_CHANNEL_STATE, GENERAL_FUNCTIONS, 0x000603, "LocalChannelID", "IfUIntValue", "?", "0: no error");
+
+    MSG_ID(WRITE_TO_CHANNEL, GENERAL_FUNCTIONS, 0x000701, "ChannelID", "ArbitraryBinaryValue", "?", "0: no error");
 END_GROUP()
 
 BEGIN_GROUP(host_msg_async)

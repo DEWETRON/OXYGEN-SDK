@@ -143,12 +143,17 @@ namespace framework
 
         void addOption(double val);
 
+        void clearOptions();
+
+        void addStringOption(const std::string& val);
+
     private:
         double m_value;
         std::string m_unit;
         double m_min;
         double m_max;
         std::vector<double> m_options;
+        std::vector<std::string> m_string_options;
     };
 
     class EditableFilePathProperty : public PropertyBase
@@ -209,6 +214,8 @@ namespace framework
 
         void addOption(const std::string& val);
         void setArbitraryString(bool state);
+
+        void clearOptions();
     private:
         std::string m_value;
         std::string m_regex_str;
@@ -294,8 +301,13 @@ namespace framework
 
         bool update(const odk::Property& value) override;
 
+        void addOption(const odk::Range& val);
+
+        void clearOptions();
+
     private:
         odk::Range m_value;
+        std::vector<odk::Range> m_options;
     };
 
     class SelectableProperty : public PropertyBase

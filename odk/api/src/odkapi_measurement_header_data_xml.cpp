@@ -8,6 +8,7 @@
 
 namespace odk
 {
+
     MeasurementHeaderData::MeasurementHeaderData()
     {
     }
@@ -31,7 +32,9 @@ namespace odk
                 auto name_attr = child_node.attribute("name");
                 if (!name_attr.empty())
                 {
-                    Field field { name_attr.value(), "" };
+                    auto type_attr = child_node.attribute("type");
+
+                    Field field { name_attr.value(), "", type_attr.value() };
                     auto value_node = (child_node.child("DisplayValue"));
                     if (!value_node.empty())
                     {
@@ -55,7 +58,7 @@ namespace odk
             auto header_node = root_node.append_child("Header");
             ODK_ASSERT(header_node);
             header_node.append_attribute("name").set_value(dt.m_name.c_str());
-            header_node.append_attribute("type").set_value("TEXT");
+            header_node.append_attribute("type").set_value(dt.m_type.c_str());
 
             auto value_node = header_node.append_child("DisplayValue");
             ODK_ASSERT(value_node);

@@ -74,6 +74,8 @@ namespace odk
         /// Position of timestamp value relative to sample position
         boost::optional<std::int32_t> m_timestamp_position;
 
+        boost::optional<std::int32_t> m_sample_size_position;
+
         bool operator==(const ChannelDescriptor& other) const;
         bool operator!=(const ChannelDescriptor& other) const;
     };

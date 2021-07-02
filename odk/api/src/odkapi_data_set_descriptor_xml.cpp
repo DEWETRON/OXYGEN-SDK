@@ -129,6 +129,7 @@ namespace odk
         , m_type()
         , m_dimension()
         , m_timestamp_position()
+        , m_sample_size_position()
     {
     }
 
@@ -142,6 +143,7 @@ namespace odk
                m_type == other.m_type &&
                m_dimension == other.m_dimension &&
                m_timestamp_position == other.m_timestamp_position;
+               m_sample_size_position == other.m_sample_size_position;
     }
 
     bool ChannelDescriptor::operator!=(const ChannelDescriptor& other) const
@@ -224,6 +226,13 @@ namespace odk
                             channel_desc.m_timestamp_position = boost::lexical_cast<std::int32_t>(timestamp_node.node().attribute("position").value());
                         }
 
+                        auto sample_size_position_node = a_channel_desc_node.select_node("Samplesize");
+                        if (sample_size_position_node)
+                        {
+                            channel_desc.m_sample_size_position = boost::lexical_cast<std::int32_t>(sample_size_position_node.node().attribute("position").value());
+                        }
+
+
                         scan_desc.m_channel_descriptors.push_back(channel_desc);
                     }
 
@@ -275,6 +284,12 @@ namespace odk
                 {
                     auto timestamp_node = channel_descriptor_node.append_child("Timestamp");
                     timestamp_node.append_attribute("position").set_value(*channel_descriptor.m_timestamp_position);
+                }
+
+                if (channel_descriptor.m_sample_size_position)
+                {
+                    auto size_position_node = channel_descriptor_node.append_child("Samplesize");
+                    size_position_node.append_attribute("position").set_value(*channel_descriptor.m_sample_size_position);
                 }
             }
         }

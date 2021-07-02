@@ -12,6 +12,7 @@
 #include "odkfw_channels.h"
 #include "odkfw_exceptions.h"
 #include "odkfw_properties.h"
+#include "odkfw_property_list_utils.h"
 #include "odkfw_stream_reader.h"
 #include "odkuni_logger.h"
 
@@ -20,6 +21,7 @@ namespace odk
 namespace framework
 {
     static const char* INSTANCE_CHANNEL_KEY = "SoftwareChannelInstanceKey";
+    static const char* INSTANCE_ROOT_ID_KEY = "SoftwareChannelInstanceRootID";
 
     namespace
     {
@@ -34,10 +36,30 @@ namespace framework
 
     }
 
-    std::map<uint64_t, odk::framework::StreamIterator> createChannelIterators(
+    std::map<uint64_t, odk::framework::StreamIterator> SoftwareChannelInstance::createChannelIterators(
+        const std::vector<odk::StreamDescriptor>& stream_descriptor,
+        const odk::IfDataBlockList* block_list)
+    {
+        odk::DataRegions data_regions;
+
+        for (const auto& sd : stream_descriptor)
+        {
+            for (auto& channel : sd.m_channel_descriptors)
+            {
+                data_regions.m_data_regions.push_back(DataRegion(channel.m_channel_id, odk::Interval<std::uint64_t>(0, std::numeric_limits<std::uint64_t>::max())));
+            }
+        }
+        return createChannelIterators(stream_descriptor,
+                                      block_list,
+                                      odk::Interval<double>(0, std::numeric_limits<double>::max()),
+                                      data_regions);
+    }
+
+    std::map<uint64_t, odk::framework::StreamIterator> SoftwareChannelInstance::createChannelIterators(
         const std::vector<odk::StreamDescriptor>& stream_descriptor,
         const odk::IfDataBlockList* block_list,
-        const std::shared_ptr<odk::DataRegions> data_regions = nullptr)
+        const odk::Interval<double>& interval,
+        const odk::DataRegions& data_regions)
     {
 
         std::map<uint64_t, odk::framework::StreamIterator> iterators;
@@ -64,12 +86,9 @@ namespace framework
             }
         }
 
-        if(data_regions)
+        for(const auto& data_region : data_regions.m_data_regions)
         {
-            for(const auto& data_region : data_regions->m_data_regions)
-            {
-                stream_reader.addDataRegion(data_region);
-            }
+            stream_reader.addDataRegion(data_region);
         }
 
         // for every stream, create a reader on the data blocks and read the data
@@ -79,8 +98,13 @@ namespace framework
 
             for (auto& channel : sd.m_channel_descriptors)
             {
-                // for every channel, create a channel iterator and read all samples
-                iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id);
+                odk::Interval<std::uint64_t> channel_interval(0, std::numeric_limits<std::uint64_t>::max());
+                if(interval.m_begin >= 0.0 && interval.m_end < std::numeric_limits<double>::max())
+                {
+                    channel_interval.m_begin = convertTimeToTickAtOrAfter(interval.m_begin, getInputChannelProxy(channel.m_channel_id)->getTimeBase().m_frequency);
+                    channel_interval.m_end = convertTimeToTickAtOrAfter(interval.m_end, getInputChannelProxy(channel.m_channel_id)->getTimeBase().m_frequency);
+                }
+                iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id, channel_interval);
             }
         }
 
@@ -150,6 +174,7 @@ namespace framework
         try
         {
             m_host = host;
+
             auto channel = addOutputChannel("root");
             channel->setLocalParent(nullptr);
             channel->setDeletable(true);
@@ -338,7 +363,7 @@ namespace framework
 
         if (m_dataset_descriptor && telegram.m_start.timestampValid() && telegram.m_end.timestampValid())
         {
-            std::shared_ptr<odk::DataRegions> data_regions;
+            odk::DataRegions data_regions;
             {
                 auto xml_msg = host->createValue<odk::IfXMLValue>();
                 if (xml_msg)
@@ -358,8 +383,7 @@ namespace framework
                 {
                     if (data_regions_result_xml)
                     {
-                        data_regions.reset(new DataRegions());
-                        data_regions->parse(data_regions_result_xml->getValue());
+                        data_regions.parse(data_regions_result_xml->getValue());
                     }
                     data_regions_result->release();
                 }
@@ -397,13 +421,8 @@ namespace framework
 
                 context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors,
                                                                      block_list,
+                                                                     odk::Interval<double>(context.m_window.first, context.m_window.second),
                                                                      data_regions);
-
-                for(auto& iterator : context.m_channel_iterators)
-                {
-                    std::uint64_t first_tick = context.m_window.first * getInputChannelProxy(iterator.first)->getTimeBase().m_frequency;
-                    iterator.second.init(first_tick);
-                }
 
                 process(context, host);
                 response->release();
@@ -411,9 +430,6 @@ namespace framework
         }
         else if (m_dataset_descriptor && m_data_request_type == DataRequestType::STREAM)
         {
-            const auto master_timebase = getMasterTimestamp(host);
-            context.m_master_timestamp = master_timebase;
-
             const double max_time = master_timebase.m_ticks / master_timebase.m_frequency;
             double current_time = 0.0;
             while (current_time < max_time)
@@ -645,6 +661,14 @@ namespace framework
     {
         const auto& key_property = std::dynamic_pointer_cast<EditableStringProperty>(channel->getProperty(INSTANCE_CHANNEL_KEY));
         return key_property->getValue();
+    }
+
+    void SoftwareChannelInstance::enqueueRequest(uint16_t id, const PropertyList &params)
+    {
+        auto properties = params;
+        properties.setChannelId(INSTANCE_ROOT_ID_KEY, getRootChannel()->getLocalId());
+        auto value = odk::framework::utils::convertToXMLValue(getHost(), properties);
+        getHost()->messageAsync(odk::plugin_msg::CUSTOM_QML_REQUEST, id, value);
     }
 
     void SoftwareChannelInstance::fetchInputChannels()

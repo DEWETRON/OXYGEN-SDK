@@ -1,6 +1,7 @@
 // Copyright DEWETRON GmbH 2019
 #pragma once
 
+#include "odkapi_block_descriptor_xml.h"
 #include "odkapi_data_set_descriptor_xml.h"
 #include "odkapi_timestamp_xml.h"
 #include "odkapi_update_channels_xml.h"
@@ -212,6 +213,8 @@ namespace framework
 
         std::string getKey(const PluginChannelPtr& channel) const;
 
+        void enqueueRequest(std::uint16_t id, const odk::PropertyList& params);
+
     protected:
 
         /**
@@ -233,7 +236,7 @@ namespace framework
          * @return  if passed proerties are valid, and creation of instance can continue
          *
          */
-        virtual bool setup(const std::vector<odk::Property>& properties) { return true; }
+        virtual bool setup(const std::vector<odk::Property>& properties) { ODK_UNUSED(properties); return true; }
 
         /**
          * Checks value type and occurence of input channels
@@ -380,6 +383,16 @@ namespace framework
         void onProcess(odk::IfHost* host, std::uint64_t token, const odk::IfXMLValue* param) final;
 
         void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) final;
+
+        std::map<uint64_t, odk::framework::StreamIterator> createChannelIterators(
+            const std::vector<odk::StreamDescriptor>& stream_descriptor,
+            const odk::IfDataBlockList* block_list);
+
+        std::map<uint64_t, odk::framework::StreamIterator> createChannelIterators(
+            const std::vector<odk::StreamDescriptor>& stream_descriptor,
+            const odk::IfDataBlockList* block_list,
+            const odk::Interval<double>& covered_interval,
+            const odk::DataRegions& data_regions);
 
     protected:
         odk::IfHost* getHost();

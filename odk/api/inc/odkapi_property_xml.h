@@ -59,6 +59,7 @@ namespace odk
         Range(const double& min, const double& max, const std::string& unit);
 
         bool operator==(Range const& other) const;
+        bool operator!=(Range const& other) const;
 
         double m_min;
         double m_max;

@@ -21,6 +21,7 @@ namespace odk
             {
                 std::string m_name;
                 std::string m_value;
+                std::string m_type = "TEXT";
             };
 
             MeasurementHeaderData();

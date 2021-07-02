@@ -43,13 +43,13 @@ namespace framework
          * Returns an iterator for a specific channel that iterates across all compatible blocks
          */
         StreamIterator createChannelIterator(std::uint64_t channel_id) const;
-        /**
-        * Returns an iterator for a specific channel that iterates across all compatible blocks
-        * and sets sample count for given channel
-        */
-        StreamIterator createChannelIterator(std::uint64_t channel_id, std::uint64_t& sample_count) const;
 
-        void updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, std::uint64_t& sample_count) const;
+        /**
+         * Returns an iterator for a specific channel that iterates across all compatible blocks
+         */
+        StreamIterator createChannelIterator(std::uint64_t channel_id, const odk::Interval<std::uint64_t>& interval) const;
+
+        void updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, const odk::Interval<std::uint64_t>& interval) const;
         /**
          * Returns true if the channel is included in the stream descriptor
          */

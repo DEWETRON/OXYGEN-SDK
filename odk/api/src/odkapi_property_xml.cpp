@@ -1634,4 +1634,9 @@ namespace odk
             && (m_max_unit == other.m_max_unit);
     }
 
+    bool Range::operator!=(Range const& other) const
+    {
+        return !operator==(other);
+    }
+
 } // namespace neoncfg

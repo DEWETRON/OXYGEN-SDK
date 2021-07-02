@@ -57,29 +57,38 @@ namespace framework
     PluginChannel& PluginChannel::setSampleFormat(
         odk::ChannelDataformat::SampleOccurrence occurrence, odk::ChannelDataformat::SampleFormat format, std::uint32_t dimension)
     {
-        m_channel_info.setSampleFormat(occurrence, format, dimension);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setSampleFormat(occurrence, format, dimension);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
 
     PluginChannel& PluginChannel::setSimpleTimebase(double frequency)
     {
-        m_channel_info.setSimpleTimebase(frequency);
-
-        if (m_channel_info.m_dataformat_info.m_sample_occurrence ==
-            ChannelDataformat::SampleOccurrence::SYNC)
+        if (m_change_listener && m_change_listener->configChangeAllowed())
         {
-            setSamplerate(odk::Scalar(frequency, "Hz"));
-        }
+            m_channel_info.setSimpleTimebase(frequency);
 
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+            if (m_channel_info.m_dataformat_info.m_sample_occurrence ==
+                ChannelDataformat::SampleOccurrence::SYNC)
+            {
+                setSamplerate(odk::Scalar(frequency, "Hz"));
+            }
+
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
 
     PluginChannel& PluginChannel::setDefaultName(const std::string& name)
     {
-        m_channel_info.setDefaultName(name);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setDefaultName(name);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
     std::string PluginChannel::getDefaultName() const
@@ -89,8 +98,11 @@ namespace framework
 
     PluginChannel& PluginChannel::setDomain(const std::string& name)
     {
-        m_channel_info.setDomain(name);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setDomain(name);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
     std::string PluginChannel::getDomain() const
@@ -100,37 +112,46 @@ namespace framework
 
     PluginChannel& PluginChannel::setValid(const bool valid)
     {
-        m_channel_info.setValid(valid);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setValid(valid);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
 
     PluginChannel &PluginChannel::setRange(const odk::Range& range)
     {
-        auto range_property = getRangeProperty();
-        if(range_property)
+        if (m_change_listener && m_change_listener->configChangeAllowed())
         {
-            range_property->setValue(range);
-        }
-        else
-        {
-            addProperty("Range", std::make_shared<RangeProperty>(range));
+            auto range_property = getRangeProperty();
+            if (range_property)
+            {
+                range_property->setValue(range);
+            }
+            else
+            {
+                addProperty("Range", std::make_shared<RangeProperty>(range));
+            }
         }
         return *this;
     }
 
     PluginChannel& PluginChannel::setSamplerate(const odk::Scalar& sample_rate)
     {
-        auto sr_property = getSamplerateProperty();
-        if (sr_property)
+        if (m_change_listener && m_change_listener->configChangeAllowed())
         {
-            sr_property->setValue(sample_rate);
-        }
-        else
-        {
-            auto prop = std::make_shared<EditableScalarProperty>(sample_rate.m_val, sample_rate.m_unit);
-            prop->setVisiblity("");
-            addProperty("SampleRate", prop);
+            auto sr_property = getSamplerateProperty();
+            if (sr_property)
+            {
+                sr_property->setValue(sample_rate);
+            }
+            else
+            {
+                auto prop = std::make_shared<EditableScalarProperty>(sample_rate.m_val, sample_rate.m_unit);
+                prop->setVisiblity("");
+                addProperty("SampleRate", prop);
+            }
         }
 
         return *this;
@@ -138,22 +159,29 @@ namespace framework
 
     PluginChannel &PluginChannel::setUnit(const std::string& unit)
     {
-        auto unit_property = getUnitProperty();
-        if(unit_property)
+        if (m_change_listener && m_change_listener->configChangeAllowed())
         {
-            unit_property->setValue(unit);
+            auto unit_property = getUnitProperty();
+            if (unit_property)
+            {
+                unit_property->setValue(unit);
+            }
+            else
+            {
+                addProperty("Unit", std::make_shared<EditableStringProperty>(unit));
+            }
         }
-        else
-        {
-            addProperty("Unit", std::make_shared<EditableStringProperty>(unit));
-        }
+
         return *this;
     }
 
     PluginChannel& PluginChannel::setDeletable(bool deletable)
     {
-        m_channel_info.setDeletable(deletable);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setDeletable(deletable);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
 
@@ -169,42 +197,54 @@ namespace framework
 
     PluginChannel& PluginChannel::setLocalParent(PluginChannelPtr ch)
     {
-        m_local_parent = ch;
-        m_channel_info.setLocalParent(ch ? ch->getLocalId() : -1);
-        if (m_change_listener) m_change_listener->onChannelSetupChanged(this);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_local_parent = ch;
+            m_channel_info.setLocalParent(ch ? ch->getLocalId() : -1);
+            m_change_listener->onChannelSetupChanged(this);
+        }
         return *this;
     }
 
     PluginChannel& PluginChannel::addProperty(const std::string& name, ChannelPropertyPtr prop)
     {
-        prop->setChangeListener(this);
-        m_properties.push_back(std::make_pair(name, prop));
-        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            prop->setChangeListener(this);
+            m_properties.push_back(std::make_pair(name, prop));
+            m_change_listener->onChannelPropertyChanged(this, name);
+        }
         return *this;
     }
 
     PluginChannel& PluginChannel::addProperty(const std::string& name, const odk::Property& prop)
     {
-        auto prop_holder = std::make_shared<RawPropertyHolder>(prop);
-        std::dynamic_pointer_cast<IfChannelProperty>(prop_holder)->setChangeListener(this);
-        m_properties.push_back(std::make_pair(name, prop_holder));
-        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            auto prop_holder = std::make_shared<RawPropertyHolder>(prop);
+            std::dynamic_pointer_cast<IfChannelProperty>(prop_holder)->setChangeListener(this);
+            m_properties.push_back(std::make_pair(name, prop_holder));
+            m_change_listener->onChannelPropertyChanged(this, name);
+        }
         return *this;
     }
 
     void PluginChannel::removeProperty(const std::string& name)
     {
-        auto it = std::find_if(m_properties.begin(), m_properties.end(),
-            [name](std::pair<std::string, ChannelPropertyPtr> a_property)
-            {
-                return a_property.first == name;
-            }
-        );
-        ODK_ASSERT(it != m_properties.end());
-        if (it != m_properties.end())
+        if (m_change_listener && m_change_listener->configChangeAllowed())
         {
-            m_properties.erase(it);
-            if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+            auto it = std::find_if(m_properties.begin(), m_properties.end(),
+                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+                {
+                    return a_property.first == name;
+                }
+            );
+            ODK_ASSERT(it != m_properties.end());
+            if (it != m_properties.end())
+            {
+                m_properties.erase(it);
+                m_change_listener->onChannelPropertyChanged(this, name);
+            }
         }
     }
 
@@ -231,15 +271,18 @@ namespace framework
                     return a_property.first == name;
                 }) != m_properties.end());
 
-        prop->setChangeListener(this);
-        std::replace_if(
-            m_properties.begin(), m_properties.end(),
-            [name](std::pair<std::string, ChannelPropertyPtr> a_property)
-            {
-                return a_property.first == name;
-            },
-            std::make_pair(name, prop));
-        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            prop->setChangeListener(this);
+            std::replace_if(
+                m_properties.begin(), m_properties.end(),
+                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+                {
+                    return a_property.first == name;
+                },
+                std::make_pair(name, prop));
+            m_change_listener->onChannelPropertyChanged(this, name);
+        }
 
         return *this;
     }
@@ -517,6 +560,11 @@ namespace framework
         m_channels_dirty = true;
 
         synchronize();
+    }
+
+    bool PluginChannels::configChangeAllowed() const
+    {
+        return true;
     }
 
     void PluginChannels::pauseTask(PluginTaskPtr& task)

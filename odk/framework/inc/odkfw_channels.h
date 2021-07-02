@@ -195,6 +195,8 @@ namespace framework
 
         void onChannelPropertyChanged(const PluginChannel* channel, const std::string& name) override;
 
+        bool configChangeAllowed() const override;
+
         void onTaskChannelAdded(PluginTask* task, const PluginChannel* channel) override;
         void onTaskChannelRemoved(PluginTask* task, const PluginChannel* channel) override;
         void onTaskInputChannelsChanged(PluginTask* task) override;

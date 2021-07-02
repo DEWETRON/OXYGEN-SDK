@@ -7,182 +7,78 @@ namespace odk
 namespace framework
 {
     StreamIterator::StreamIterator()
-        : m_data_requester(nullptr)
-        , m_valid(false)
+        : m_block_index(-1)
+        , m_data_requester(nullptr)
         , m_signal_gaps(false)
         , m_skip_gaps(true)
     {
     }
 
-    const StreamIterator::BlockIteratorRange* StreamIterator::selectBlock(std::uint64_t timestamp)
-    {
-        for(const auto& range_list : m_blocks_ranges)
-        {
-            for(const auto& range : range_list.second)
-            {
-                if(timestamp >= range.first.timestamp() && timestamp <= range.second.timestamp())
-                {
-                    return &range;
-                }
-            }
-        }
-        return nullptr;
-    }
-
-    const StreamIterator::BlockIteratorRange* StreamIterator::getNextBlock(std::uint64_t timestamp)
-    {
-        const BlockIteratorRange* next_range = nullptr;
-        for(const auto& range_list : m_blocks_ranges)
-        {
-            for(auto it = range_list.second.begin(); it != range_list.second.end(); ++it)
-            {
-                if (it->first.timestamp() > timestamp)
-                {
-                    if(!next_range || it->first.timestamp() < next_range->first.timestamp())
-                    {
-                        next_range = &(*it);
-                    }
-                    break;
-                }
-            }
-        }
-        return next_range;
-    }
-
-    const StreamIterator::BlockIteratorRange* StreamIterator::getPreviousBlock(std::uint64_t timestamp)
-    {
-        const BlockIteratorRange* previous_range = nullptr;
-        for(const auto& range_list : m_blocks_ranges)
-        {
-            for(auto it = range_list.second.rbegin(); it != range_list.second.rend(); ++it)
-            {
-                if (it->second.timestamp() < timestamp)
-                {
-                    if(!previous_range || it->second.timestamp() > previous_range->second.timestamp())
-                    {
-                        previous_range = &(*it);
-                    }
-                    break;
-                }
-            }
-        }
-        return previous_range;
-    }
-
     void StreamIterator::getNextBlock()
     {
-        const auto timestamp = m_current_iterator.timestamp() + 1;
-        auto block = selectBlock(timestamp);
+        bool skip = true;
 
-        if(!block)
+        while(skip)
         {
-            block = getNextBlock(timestamp);;
-        }
+            ++m_block_index;
 
-        if(block)
-        {
-            m_previous_border = block->first.timestamp();
-            m_next_border = block->second.timestamp();
-
-            m_current_iterator = block->first;
-            if (m_current_iterator.timestamp() <= timestamp)
+            if (m_block_index != m_blocks_ranges.size())
             {
-                while (m_current_iterator.timestamp() <= timestamp)
-                {
-                    ++m_current_iterator;
-                }
-                --m_current_iterator;
+                m_current_iterator = m_blocks_ranges[m_block_index].first;
+            }
+            else if(m_data_requester)
+            {
+                m_data_requester->updateStreamIterator(this);
+            }
+            else
+            {
+                m_block_index = -1;
             }
 
-            auto next_block = getNextBlock(m_current_iterator.timestamp());
-            if(next_block && next_block->first.timestamp() <= m_next_border)
-            {
-                m_next_border = next_block->first.timestamp() - 1;
-            }
-        }
-        else if (m_data_requester)
-        {
-            m_data_requester->updateStreamIterator(this);
-        }
-        else
-        {
-            m_valid = false;
-        }
-
-        if(m_valid && m_current_iterator.data() == nullptr)
-        {
-            if(m_skip_gaps)
-            {
-                m_current_iterator = BlockIterator(m_next_border);
-                getNextBlock();
-            }
-            if(m_signal_gaps)
-            {
-                throw std::runtime_error("data gap occured");
-            }
+            skip = valid() && m_skip_gaps && data() == nullptr;
         }
     }
 
     void StreamIterator::getPreviousBlock()
     {
-        const auto timestamp = m_current_iterator.timestamp() - 1;
-        auto block = selectBlock(timestamp);
+        bool skip = true;
 
-        if(!block)
+        while(skip)
         {
-            block = getPreviousBlock(timestamp);
-        }
-
-        if(block)
-        {
-            m_previous_border = block->first.timestamp();
-            m_next_border = block->second.timestamp();
-
-            m_current_iterator = block->second;
-            if(m_current_iterator.timestamp() > timestamp)
+            --m_block_index;
+            if (m_block_index >= 0)
             {
-                while(m_current_iterator.timestamp() > timestamp)
-                {
-                    --m_current_iterator;
-                }
+                m_current_iterator = m_blocks_ranges[m_block_index].second;
             }
-
-            auto previous_block = getPreviousBlock(m_current_iterator.timestamp());
-            if (previous_block && previous_block->second.timestamp() >= m_next_border)
-            {
-                m_next_border = previous_block->second.timestamp() + 1;
-            }
-
-        }
-        else
-        {
-            m_valid = false;
-        }
-
-        if(m_valid && m_current_iterator.data() == nullptr)
-        {
-            if(m_skip_gaps)
-            {
-                m_current_iterator = BlockIterator(m_previous_border);
-                getPreviousBlock();
-            }
-            if(m_signal_gaps)
-            {
-                throw std::runtime_error("data gap occured");
-            }
+            skip = valid() && m_skip_gaps && data() == nullptr;
         }
     }
 
-    void StreamIterator::addRange(const BlockIterator& begin, const BlockIterator& end, std::uint32_t priority)
+    void StreamIterator::addRange(const BlockIterator& begin, const BlockIterator& end)
     {
-        m_blocks_ranges[priority].emplace(begin, end);
+        auto predecessor = m_blocks_ranges.rbegin();
+        while(predecessor != m_blocks_ranges.rend())
+        {
+            if(predecessor->first.timestamp() < begin.timestamp())
+            {
+                break;
+            }
+            ++predecessor;
+        }
+        m_blocks_ranges.emplace(predecessor.base(), begin, end);
+        m_block_index = 0;
+        m_current_iterator = m_blocks_ranges.front().first;
+        if (m_skip_gaps && data() == nullptr)
+        {
+            getNextBlock();
+        }
     }
 
-    void StreamIterator::init(std::uint64_t tick)
+    void StreamIterator::clearRanges()
     {
-        m_valid = true;
-        m_current_iterator = BlockIterator(tick - 1);
-        getNextBlock();
+        m_blocks_ranges.clear();
+        m_block_index = -1;
+        m_current_iterator = BlockIterator();
     }
 
     void StreamIterator::setSignalGaps(bool enabled)
@@ -193,20 +89,31 @@ namespace framework
     void StreamIterator::setSkipGaps(bool enabled)
     {
         m_skip_gaps = enabled;
-    }
 
-    void StreamIterator::clearRanges()
-    {
-        m_blocks_ranges.clear();
-        m_next_border = 0;
-        m_previous_border = 0;
-        m_current_iterator = BlockIterator();
-        m_valid = false;
+        if(!m_blocks_ranges.empty())
+        {
+            m_block_index = 0;
+            m_current_iterator = m_blocks_ranges.front().first;
+            if (m_skip_gaps && data() == nullptr)
+            {
+                getNextBlock();
+            }
+        }
     }
 
     void StreamIterator::setDataRequester(IfIteratorUpdater *requester)
     {
         m_data_requester = requester;
+    }
+
+    std::uint64_t StreamIterator::getTotalSampleCount() const
+    {
+        std::uint64_t sample_count = 0;
+        for(const auto& block_range : m_blocks_ranges)
+        {
+            sample_count += block_range.first.distanceTo(block_range.second);
+        }
+        return sample_count;
     }
 }
 }
