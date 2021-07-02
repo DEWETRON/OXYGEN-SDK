@@ -44,6 +44,26 @@ This channels will get fetched automatically and data will be provided in the pr
 
 Additionally, in case of a config change of one of the input channels, the instance will get the opportunity to react in an update() call.
 
+````````````
+I/O-Channels
+````````````
+
+In case an input channel is capable of receiving messages (e.g.: CAN channel), this can be done via
+``odk::host_msg::WRITE_TO_CHANNEL`` as shown in the example below:
+
+.. code-block:: cpp
+
+    const uint8_t* data_ptr;
+    int size;
+
+    auto data = getHost()->createValue<odk::IfArbitraryBinaryValue>();
+
+    data->set(data_ptr, size);
+
+    uint64_t ret = getHost()->messageSync(odk::host_msg::WRITE_TO_CHANNEL, <ChannelID>, data);
+
+See :ref:`Data Formats<channel_data_formats>` for a description on how output messages have to be formatted.
+
 `````````````````````````````````
 SoftwareChannelInstance Lifecycle 
 `````````````````````````````````
@@ -106,3 +126,38 @@ process
 
 stopProcessing
     Called once per acquisition run, used to clean up the instance
+
+.. _channel_data_formats:
+
+````````````````````
+Channel data formats
+````````````````````
+CAN messages
+------------
+Each CAN message is received as byte array. In addition to the data pointer the size of the array is also provided and can be
+accessed via the ``odk::framework::StreamIterator`` class.
+
+For sending CAN messages to the input channel the following structure has to be used:
+
+.. list-table:: CAN Message Structure
+    :header-rows: 1
+
+    * - Offset (bytes)
+      - Length (bytes)
+      - Data Type
+      - Description
+
+    * - 0
+      - 4
+      - uint32
+      - CAN Arbitration ID
+
+    * - 4
+      - 1
+      - uint8
+      - Standard/Extended Message (0/1)
+
+    * - 5
+      - *data size*
+      - uint8*
+      - Data
