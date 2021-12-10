@@ -223,15 +223,11 @@ public:
         {
             const auto channel_id = m_input_channels->getValue().m_values.at(0);
             context.m_channel_iterators[channel_id].setSkipGaps(false);
-            std::uint64_t first_tick = odk::convertTimeToTickAtOrAfter(context.m_window.first, getInputChannelProxy(channel_id)->getTimeBase().m_frequency);
-            context.m_channel_iterators[channel_id].init(first_tick);
             iterators[0] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
         }
         {
             const auto channel_id = m_input_channels->getValue().m_values.at(1);
             context.m_channel_iterators[channel_id].setSkipGaps(false);
-            std::uint64_t first_tick = odk::convertTimeToTickAtOrAfter(context.m_window.first, getInputChannelProxy(channel_id)->getTimeBase().m_frequency);
-            context.m_channel_iterators[channel_id].init(first_tick);
             iterators[1] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
         }
 
