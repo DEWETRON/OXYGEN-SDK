@@ -140,17 +140,17 @@ if(UNIX)
   set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -rdynamic")
 
   # set build id via linker
-  if (NOT CMAKE_CROSSCOMPILING)
-    if (NOT HG_COMMIT)
-      execute_process(COMMAND hg id -i
-        OUTPUT_VARIABLE HG_COMMIT_DATA
-        WORKING_DIRECTORY ${SW_APP_ROOT}
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-      string(REGEX MATCH "[0-9a-f]+" HG_COMMIT ${HG_COMMIT_DATA})
-    endif()
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id=0x${HG_COMMIT}")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--build-id=0x${HG_COMMIT}")
-  endif()
+  #if (NOT CMAKE_CROSSCOMPILING)
+  #  if (NOT HG_COMMIT)
+  #    execute_process(COMMAND hg id -i
+  #      OUTPUT_VARIABLE HG_COMMIT_DATA
+  #      WORKING_DIRECTORY ${SW_APP_ROOT}
+  #      OUTPUT_STRIP_TRAILING_WHITESPACE)
+  #    string(REGEX MATCH "[0-9a-f]+" HG_COMMIT ${HG_COMMIT_DATA})
+  #  endif()
+  #  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--build-id=0x${HG_COMMIT}")
+  #  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--build-id=0x${HG_COMMIT}")
+  #endif()
 
   option(USE_GOLD_LINKER "speed up build by using GNU gold linker")
   if(USE_GOLD_LINKER)
