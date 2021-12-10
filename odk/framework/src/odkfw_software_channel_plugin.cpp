@@ -26,6 +26,14 @@ namespace framework
         getHost()->messageSync(odk::host_msg::SOFTWARE_CHANNEL_REGISTER, 0, xml_msg.get(), nullptr);
     }
 
+    void SoftwareChannelPluginBase::updateSoftwareChannel()
+    {
+        const auto telegram = getSoftwareChannelInfo();
+        auto xml_msg = getHost()->template createValue<odk::IfXMLValue>();
+        xml_msg->set(telegram.generate().c_str());
+        getHost()->messageSync(odk::host_msg::SOFTWARE_CHANNEL_UPDATE, 0, xml_msg.get(), nullptr);
+    }
+
     void SoftwareChannelPluginBase::unregisterSoftwareChannel()
     {
         auto channel_id = getHost()->template createValue<odk::IfStringValue>();

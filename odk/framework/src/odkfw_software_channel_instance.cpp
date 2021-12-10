@@ -156,7 +156,15 @@ namespace framework
 
     SoftwareChannelInstance::~SoftwareChannelInstance()
     {
-        m_plugin_channels->removeTask(m_task);
+        if (!m_plugin_channels)
+        {
+            return;
+        }
+
+        if (m_task)
+        {
+            m_plugin_channels->removeTask(m_task);
+        }
         for(const auto& channel : m_output_channels)
         {
             m_plugin_channels->removeChannel(channel);
@@ -166,7 +174,10 @@ namespace framework
 
     void SoftwareChannelInstance::shutDown()
     {
-        m_plugin_channels->pauseTask(m_task);
+        if (m_task)
+        {
+            m_plugin_channels->pauseTask(m_task);
+        }
     }
 
     void SoftwareChannelInstance::initInstance(odk::IfHost* host)
@@ -521,7 +532,8 @@ namespace framework
 
         fetchInputChannels();
         handleConfigChange();
-        m_plugin_channels->synchronize();
+        constexpr bool register_task = false; // the task needs to be registered by the caller
+        m_plugin_channels->synchronize(register_task);
     }
 
     void SoftwareChannelInstance::setupDataRequest(odk::IfHost *host)
@@ -533,7 +545,7 @@ namespace framework
         request.m_data_mode = DataSetMode::NORMAL;
         request.m_policy = StreamPolicy::EXACT;
 
-        for(const auto channel : m_input_channel_proxies)
+        for(const auto& channel : m_input_channel_proxies)
         {
             request.m_channels.push_back(channel->getChannelId());
         }
@@ -686,10 +698,8 @@ namespace framework
                 }
                 else if(auto channel_list_property = std::dynamic_pointer_cast<EditableChannelIDListProperty>(property.second))
                 {
-                    for (const auto& channel_id : channel_list_property->getValue().m_values)
-                    {
-                        all_input_channels.insert(channel_id);
-                    }
+                    const auto& values = channel_list_property->getValue().m_values;
+                    all_input_channels.insert(values.begin(), values.end());
                 }
             }
         }
@@ -703,7 +713,7 @@ namespace framework
     bool SoftwareChannelInstance::checkInputChannelFormats(const std::set<odk::ChannelDataformat::SampleValueType>& allowed_value_types,
                                     const std::set<odk::ChannelDataformat::SampleOccurrence>& allowed_occurence)
     {
-        for (auto an_input_channel : getInputChannelProxies())
+        for (const auto& an_input_channel : getInputChannelProxies())
         {
             if (an_input_channel->updateDataFormat())
             {
@@ -823,7 +833,8 @@ namespace framework
         for (auto &requested_channel : request.m_channels)
         {
             const std::string key = requested_channel.m_channel_config.getProperty(INSTANCE_CHANNEL_KEY)->getStringValue();
-            if(!getOutputChannelByKey(key))
+            const auto ch = getOutputChannelByKey(key);
+            if(!ch)
             {
                 const auto original_parent_id = requested_channel.m_local_parent_id;
                 const auto parent_id_it = channel_id_map.find(original_parent_id);
@@ -844,6 +855,11 @@ namespace framework
                 {
                     ODK_ASSERT_FAIL("Unable to determine Parent");
                 }
+            }
+            else
+            {
+                // rebuild mapping (Arnaud)
+                channel_id_map[requested_channel.m_local_id] = ch->getLocalId();
             }
         }
     }

@@ -103,6 +103,7 @@ namespace odk
                 m_nanoseconds_since_1970 = boost::lexical_cast<std::uint64_t>(absolute_time_node.attribute("nanoseconds_since_1970").value());
 
                 m_timezone_name = absolute_time_node.attribute("tz_name").value();
+                m_timezone_location = absolute_time_node.attribute("tz_location").value();
                 m_timezone_utc_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_utc_offset_seconds").value());
                 m_timezone_std_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_std_offset_seconds").value());
                 m_timezone_dst_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_dst_offset_seconds").value());
@@ -137,6 +138,8 @@ namespace odk
 
         timestamp_node.append_attribute("tz_name")
             .set_value(m_timezone_name.c_str());
+        timestamp_node.append_attribute("tz_location")
+            .set_value(m_timezone_location.c_str());
         timestamp_node.append_attribute("tz_utc_offset_seconds")
             .set_value(boost::lexical_cast<std::string>(m_timezone_utc_offset_seconds).c_str());
         timestamp_node.append_attribute("tz_std_offset_seconds")

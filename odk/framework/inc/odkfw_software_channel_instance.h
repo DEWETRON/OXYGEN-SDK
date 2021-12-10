@@ -111,11 +111,9 @@ namespace framework
             std::map<uint32_t, uint32_t>& channel_id_map)
             = 0;
 
-        virtual void updatePropertyTypes(const PluginChannelPtr& output_channel)
-            = 0;
+        virtual void updatePropertyTypes(const PluginChannelPtr& output_channel) { ODK_UNUSED(output_channel); }
 
-        virtual void updateStaticPropertyConstraints(const PluginChannelPtr& channel)
-            = 0;
+        virtual void updateStaticPropertyConstraints(const PluginChannelPtr& channel) { ODK_UNUSED(channel); }
 
         virtual void loadFinished() {};
 

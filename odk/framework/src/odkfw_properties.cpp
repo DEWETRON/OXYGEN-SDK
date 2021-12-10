@@ -5,6 +5,7 @@
 
 #include "odkuni_assert.h"
 
+#include <boost/lexical_cast.hpp>
 #include <cmath>
 #include <regex>
 
@@ -32,17 +33,11 @@ namespace framework
         return true;
     }
 
-    void RawPropertyHolder::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void RawPropertyHolder::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        ODK_UNUSED(telegram);
-        ODK_UNUSED(property_name);
-        if (isLive())
-        {
-            auto prop = m_value;
-            prop.setName(property_name);
-            telegram.addProperty(prop);
-            addBaseConstraints(telegram, property_name);
-        }
+        auto prop = m_value;
+        prop.setName(property_name);
+        telegram.addProperty(prop);
     }
 
     odk::Property RawPropertyHolder::getProperty() const
@@ -82,13 +77,33 @@ namespace framework
     }
     void EditableUnsignedProperty::setMinMaxConstraint(unsigned int min, unsigned int max)
     {
-        m_min = min;
-        m_max = max;
+        if (m_min != min || m_max != max)
+        {
+            m_min = min;
+            m_max = max;
+            notifyChanged();
+        }
     }
     bool EditableUnsignedProperty::hasValidRange() const
     {
         return m_min <= m_max;
     }
+
+    void EditableUnsignedProperty::clearOptions()
+    {
+        if (!m_options.empty())
+        {
+            m_options.clear();
+            notifyChanged();
+        }
+    }
+
+    void EditableUnsignedProperty::addOption(unsigned int val)
+    {
+        m_options.push_back(val);
+        notifyChanged();
+    }
+
     bool EditableUnsignedProperty::update(const odk::Property& value)
     {
         //TBD: is it necessary to accept/convert compatible property types?
@@ -110,6 +125,18 @@ namespace framework
                 return false;
             }
         } break;
+        case odk::Property::STRING:
+        {
+            try
+            {
+                v = boost::lexical_cast<unsigned int>(value.getStringValue());
+            }
+            catch (boost::bad_lexical_cast&)
+            {
+                return false;
+            }
+            break;
+        }
         default:
             return false;
         }
@@ -123,16 +150,18 @@ namespace framework
         m_value = v;
         return true;
     }
-    void EditableUnsignedProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableUnsignedProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        telegram.addProperty<std::uint32_t>(property_name, m_value);
+        if (hasValidRange())
         {
-            telegram.addProperty<std::uint32_t>(property_name, m_value);
-            if (hasValidRange())
-            {
-                telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
-            }
-            addBaseConstraints(telegram, property_name);
+            telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
+        }
+
+        for (std::uint32_t option : m_options)
+        {
+            telegram.addConstraint(property_name,
+                odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
         }
     }
 
@@ -169,18 +198,14 @@ namespace framework
         m_min = min;
         m_max = max;
     }
-    void EditableFloatingPointProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableFloatingPointProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        odk::Property property(property_name);
+        property.setValue(m_value);
+        telegram.addProperty(property);
+        if (hasValidRange())
         {
-            odk::Property property(property_name);
-            property.setValue(m_value);
-            telegram.addProperty(property);
-            if (hasValidRange())
-            {
-                telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
-            }
-            addBaseConstraints(telegram, property_name);
+            telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
         }
     }
     bool EditableFloatingPointProperty::update(const odk::Property& value)
@@ -254,8 +279,12 @@ namespace framework
     }
     void EditableScalarProperty::setMinMaxConstraint(double min, double max)
     {
-        m_min = min;
-        m_max = max;
+        if (m_min != min || m_max != max)
+        {
+            m_min = min;
+            m_max = max;
+            notifyChanged();
+        }
     }
     bool EditableScalarProperty::hasValidRange() const
     {
@@ -299,33 +328,28 @@ namespace framework
         m_value = v;
         return true;
     }
-    void EditableScalarProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableScalarProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        telegram.addProperty(property_name, odk::Scalar(m_value, m_unit));
+        if (hasValidRange())
         {
-            telegram.addProperty(property_name, odk::Scalar(m_value, m_unit));
-            if (hasValidRange())
-            {
-                telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
-            }
+            telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
+        }
 
-            for (const auto& str_option : m_string_options)
-            {
-                telegram.addConstraint(property_name,
-                    odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", str_option)));
-            }
+        for (const auto& str_option : m_string_options)
+        {
+            telegram.addConstraint(property_name,
+                odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", str_option)));
+        }
 
-            std::vector<odk::Property> options;
-            for (const auto& option : m_options)
-            {
-                 options.emplace_back("", odk::Scalar(option, m_unit));
-            }
-            if (!options.empty())
-            {
-                telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOptions(options));
-            }
-
-            addBaseConstraints(telegram, property_name);
+        std::vector<odk::Property> options;
+        for (const auto& option : m_options)
+        {
+             options.emplace_back("", odk::Scalar(option, m_unit));
+        }
+        if (!options.empty())
+        {
+            telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOptions(options));
         }
     }
     void EditableScalarProperty::addOption(double val)
@@ -443,19 +467,15 @@ namespace framework
         notifyChanged();
     }
 
-    void EditableFilePathProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram,
+    void EditableFilePathProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram,
         const std::string& property_name) const
     {
-        if (isLive())
-        {
-            odk::Property property(property_name, m_filename);
-            telegram.addProperty(property);
-            auto ft = toString(m_file_type);
-            telegram.addConstraint(property_name,
-                odk::makeFilePathConstraint(ft, m_title, m_default_path, m_filters, m_multi_select));
-            telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
-            addBaseConstraints(telegram, property_name);
-        }
+        odk::Property property(property_name, m_filename);
+        telegram.addProperty(property);
+        auto ft = toString(m_file_type);
+        telegram.addConstraint(property_name,
+            odk::makeFilePathConstraint(ft, m_title, m_default_path, m_filters, m_multi_select));
+        telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
     }
 
     bool EditableFilePathProperty::update(const odk::Property& value)
@@ -464,8 +484,47 @@ namespace framework
         return true;
     }
 
-    EditableStringProperty::EditableStringProperty(const RawPropertyHolder& value)
+    StringProperty::StringProperty(const RawPropertyHolder& value)
         : m_value{}
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
+    StringProperty::StringProperty(const std::string& val)
+        : m_value(val)
+    {
+    }
+
+    std::string StringProperty::getValue() const
+    {
+        return m_value;
+    }
+
+    void StringProperty::setValue(const std::string& str)
+    {
+        if (str != m_value)
+        {
+            m_value = str;
+            notifyChanged();
+        }
+    }
+
+    void StringProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        telegram.addProperty<std::string>(property_name, m_value);
+    }
+
+    bool StringProperty::update(const odk::Property& value)
+    {
+        m_value = value.getStringValue();
+        return true;
+    }
+
+    EditableStringProperty::EditableStringProperty(const RawPropertyHolder& value)
+        : StringProperty()
         , m_is_a_arbitrary_string(true)
     {
         if (value.getProperty().isValid())
@@ -475,22 +534,11 @@ namespace framework
     }
 
     EditableStringProperty::EditableStringProperty(const std::string& val)
-        : m_value(val)
+        : StringProperty(val)
         , m_is_a_arbitrary_string(true)
     {
     }
-    std::string EditableStringProperty::getValue() const
-    {
-        return m_value;
-    }
-    void EditableStringProperty::setValue(const std::string& str)
-    {
-        if (str != m_value)
-        {
-            m_value = str;
-            notifyChanged();
-        }
-    }
+
     void EditableStringProperty::setRegEx(const std::string& regex)
     {
         if (!regex.empty())
@@ -511,11 +559,11 @@ namespace framework
     }
     bool EditableStringProperty::update(const odk::Property& value)
     {
-        auto v = value.getStringValue();
         if (!m_regex_str.empty())
         {
             try
             {
+                const auto& v = value.getStringValue();
                 const auto valid = std::regex_match(v, m_regex);
                 if (!valid)
                 {
@@ -527,31 +575,26 @@ namespace framework
                 ODK_ASSERT_FAIL("Invalid Regex");
             }
         }
-        m_value = v;
-        return true;
+        return StringProperty::update(value);
     }
-    void EditableStringProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableStringProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        StringProperty::doAddToTelegram(telegram, property_name);
+
+        if (m_is_a_arbitrary_string)
         {
-            telegram.addProperty<std::string>(property_name, m_value);
-            if (m_is_a_arbitrary_string)
-            {
-                telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
-            }
+            telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
+        }
 
-            if (! m_regex_str.empty())
-            {
-                telegram.addConstraint(property_name, odk::makeRegExConstraint(m_regex_str.c_str()));
-            }
+        if (! m_regex_str.empty())
+        {
+            telegram.addConstraint(property_name, odk::makeRegExConstraint(m_regex_str.c_str()));
+        }
 
-            for (const auto& option : m_options)
-            {
-                telegram.addConstraint(property_name,
-                    odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
-            }
-
-            addBaseConstraints(telegram, property_name);
+        for (const auto& option : m_options)
+        {
+            telegram.addConstraint(property_name,
+                odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
         }
     }
 
@@ -605,16 +648,12 @@ namespace framework
         }
     }
 
-    void EditableChannelIDProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableChannelIDProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
-        {
-            odk::Property property(property_name);
-            property.setChannelIDValue(m_value);
-            telegram.addProperty(property);
-            telegram.addConstraint(property_name, odk::makeChannelIdsConstraint(1));
-            addBaseConstraints(telegram, property_name);
-        }
+        odk::Property property(property_name);
+        property.setChannelIDValue(m_value);
+        telegram.addProperty(property);
+        telegram.addConstraint(property_name, odk::makeChannelIdsConstraint(1));
     }
 
     bool EditableChannelIDProperty::update(const odk::Property& value)
@@ -625,6 +664,9 @@ namespace framework
 
     EditableChannelIDListProperty::EditableChannelIDListProperty()
         : m_value()
+        , m_filter_type(ChannelType::ALL)
+        , m_filter_dimensions(-1)
+        , m_max_channels(0)
     {
     }
 
@@ -633,7 +675,7 @@ namespace framework
         return m_value;
     }
 
-    void EditableChannelIDListProperty::setValue(odk::ChannelIDList value)
+    void EditableChannelIDListProperty::setValue(const odk::ChannelIDList& value)
     {
         if (!(value == m_value))
         {
@@ -642,16 +684,45 @@ namespace framework
         }
     }
 
-    void EditableChannelIDListProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void EditableChannelIDListProperty::setChannelType(ChannelType type)
     {
-        if (isLive())
+        if (type != m_filter_type)
         {
-            odk::Property property(property_name);
-            property.setChannelIDListValue(m_value);
-            telegram.addProperty(property);
-            telegram.addConstraint(property_name, odk::makeChannelIdsConstraint(0));
-            addBaseConstraints(telegram, property_name);
+            m_filter_type = type;
+            notifyChanged();
         }
+    }
+
+    void EditableChannelIDListProperty::setMaxDimension(int dims)
+    {
+        if (dims != m_filter_dimensions)
+        {
+            m_filter_dimensions = dims;
+            notifyChanged();
+        }
+    }
+
+    void EditableChannelIDListProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        odk::Property property(property_name);
+        property.setChannelIDListValue(m_value);
+        telegram.addProperty(property);
+
+        std::string type;
+        switch (m_filter_type)
+        {
+        case ChannelType::SYNC:
+            type = "SYNC";
+            break;
+        case ChannelType::ASYNC:
+            type = "ASYNC";
+            break;
+        default:
+            type = "ALL";
+            break;
+        }
+
+        telegram.addConstraint(property_name, odk::makeChannelIdsConstraint(m_max_channels, m_filter_dimensions, type));
     }
 
     bool EditableChannelIDListProperty::update(const odk::Property& value)
@@ -665,12 +736,21 @@ namespace framework
     {
     }
 
-    const bool& BooleanProperty::getValue() const
+    BooleanProperty::BooleanProperty(const RawPropertyHolder& value)
+        : m_value(false)
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
+    bool BooleanProperty::getValue() const
     {
         return m_value;
     }
 
-    void BooleanProperty::setValue(const bool& value)
+    void BooleanProperty::setValue(bool value)
     {
         if (value != m_value)
         {
@@ -679,14 +759,18 @@ namespace framework
         }
     }
 
-    void BooleanProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void BooleanProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        odk::Property property(property_name);
+        property.setValue(m_value);
+        telegram.addProperty(property);
+
+        if(m_editable)
         {
-            odk::Property property(property_name);
-            property.setValue(m_value);
-            telegram.addProperty(property);
-            addBaseConstraints(telegram, property_name);
+            std::vector<odk::Property> options{
+                odk::Property("", false),
+                odk::Property("", true) };
+            telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOptions(options));
         }
     }
 
@@ -696,45 +780,20 @@ namespace framework
         return true;
     }
 
+    void BooleanProperty::setEditable(bool editable)
+    {
+        m_editable = editable;
+    }
+
+    EditableBooleanProperty::EditableBooleanProperty(const RawPropertyHolder& value)
+        : BooleanProperty(value)
+    {
+    }
+
     EditableBooleanProperty::EditableBooleanProperty(bool value)
-        : m_value(value)
+        : BooleanProperty(value)
     {
-    }
-
-    const bool& EditableBooleanProperty::getValue() const
-    {
-        return m_value;
-    }
-
-    void EditableBooleanProperty::setValue(const bool& value)
-    {
-        if (value != m_value)
-        {
-            m_value = value;
-            notifyChanged();
-        }
-    }
-
-    void EditableBooleanProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
-    {
-        if (isLive())
-        {
-            odk::Property property(property_name);
-            property.setValue(m_value);
-            telegram.addProperty(property);
-
-            std::vector<odk::Property> options{
-                odk::Property("", false),
-                odk::Property("", true) };
-            telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOptions(options));
-            addBaseConstraints(telegram, property_name);
-        }
-    }
-
-    bool EditableBooleanProperty::update(const odk::Property& value)
-    {
-        m_value = value.getBoolValue();
-        return true;
+        setEditable(true);
     }
 
     RangeProperty::RangeProperty(const RawPropertyHolder& value)
@@ -751,12 +810,12 @@ namespace framework
     {
     }
 
-    const odk::Range& RangeProperty::getValue() const
+    odk::Range RangeProperty::getValue() const
     {
         return m_value;
     }
 
-    void RangeProperty::setValue(const odk::Range& value)
+    void RangeProperty::setValue(odk::Range value)
     {
         if (!(value == m_value))
         {
@@ -765,21 +824,16 @@ namespace framework
         }
     }
 
-    void RangeProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void RangeProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        odk::Property property(property_name);
+        property.setValue(m_value);
+        telegram.addProperty(property);
+
+        for (const auto& option : m_options)
         {
-            odk::Property property(property_name);
-            property.setValue(m_value);
-            telegram.addProperty(property);
-
-            for (const auto& option : m_options)
-            {
-                telegram.addConstraint(property_name,
-                    odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
-            }
-
-            addBaseConstraints(telegram, property_name);
+            telegram.addConstraint(property_name,
+                odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", option)));
         }
     }
 
@@ -824,18 +878,15 @@ namespace framework
         }
     }
 
-    void SelectableProperty::addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    void SelectableProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        if (isLive())
+        odk::Property property = m_property;
+        property.setName(property_name);
+        telegram.addProperty(property);
+        addBaseConstraints(telegram, property_name);
+        for (const auto& option : m_options)
         {
-            odk::Property property = m_property;
-            property.setName(property_name);
-            telegram.addProperty(property);
-            addBaseConstraints(telegram, property_name);
-            for (const auto& option : m_options)
-            {
-                telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOption(option));
-            }
+            telegram.addConstraint(property_name, odk::UpdateConfigTelegram::Constraint::makeOption(option));
         }
     }
 
@@ -865,6 +916,33 @@ namespace framework
     std::uint32_t SelectableProperty::count() const
     {
         return static_cast<std::uint32_t>(m_options.size());
+    }
+
+    StringList StringListProperty::getValue() const
+    {
+        return m_value;
+    }
+
+    void StringListProperty::setValue(const StringList &value)
+    {
+        if(m_value != value)
+        {
+            m_value = value;
+            notifyChanged();
+        }
+    }
+
+    void StringListProperty::doAddToTelegram(UpdateConfigTelegram::ChannelConfig &telegram, const std::string &property_name) const
+    {
+        odk::Property property(property_name);
+        property.setValue(m_value);
+        telegram.addProperty(property);
+    }
+
+    bool StringListProperty::update(const Property& value)
+    {
+        m_value = value.getStringListValue();
+        return true;
     }
 
 

@@ -31,6 +31,7 @@ namespace odk
         std::string m_ui_item_add;
         bool m_analysis_capable;
         bool m_acquisition_capable;
+        bool m_is_licensed;
     };
 
     class CreateSoftwareChannel

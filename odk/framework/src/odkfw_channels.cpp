@@ -262,24 +262,19 @@ namespace framework
 
     PluginChannel& PluginChannel::replaceProperty(const std::string& name, ChannelPropertyPtr prop)
     {
-        ODK_ASSERT(getProperty(name));
-        ODK_ASSERT(
-            std::find_if(
-                m_properties.begin(), m_properties.end(),
-                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+        auto property_matcher = [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
                 {
                     return a_property.first == name;
-                }) != m_properties.end());
+        };
+        ODK_ASSERT(getProperty(name));
+        ODK_ASSERT(std::find_if(m_properties.begin(), m_properties.end(), property_matcher) != m_properties.end());
 
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             prop->setChangeListener(this);
             std::replace_if(
                 m_properties.begin(), m_properties.end(),
-                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
-                {
-                    return a_property.first == name;
-                },
+                property_matcher,
                 std::make_pair(name, prop));
             m_change_listener->onChannelPropertyChanged(this, name);
         }
@@ -335,8 +330,13 @@ namespace framework
 
     void PluginChannel::onChannelPropertyChanged(const IfChannelProperty* channel)
     {
+        if (!m_change_listener)
+        {
+            return;
+        }
+
         std::string name;
-        for (const auto p : m_properties)
+        for (const auto& p : m_properties)
         {
             if (p.second.get() == channel)
             {
@@ -344,7 +344,7 @@ namespace framework
                 break;
             }
         }
-        if (m_change_listener) m_change_listener->onChannelPropertyChanged(this, name);
+        m_change_listener->onChannelPropertyChanged(this, name);
     }
 
     PluginTask::PluginTask(std::uint64_t id, IfPluginTaskChangeListener* l, std::shared_ptr<IfTaskWorker> worker, std::uint64_t token)
@@ -489,11 +489,6 @@ namespace framework
 
     void PluginChannels::synchronize(bool register_tasks)
     {
-        if (!register_tasks)
-        {
-            ODK_ASSERT(m_properties_dirty.empty());
-        }
-
         ODK_ASSERT(m_host);
         if (m_channels_dirty)
         {
@@ -672,11 +667,8 @@ namespace framework
         for (const auto& affected_task : affected_tasks)
         {
             affected_task->m_worker->onChannelConfigChanged(m_host, affected_task->m_token);
-            if (affected_task->isValid())
-            {
                 registerTask(*affected_task);
             }
-        }
 
         return odk::error_codes::OK;
     }

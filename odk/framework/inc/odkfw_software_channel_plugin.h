@@ -13,6 +13,8 @@
 #include "odkapi_software_channel_xml.h"
 #include "odkapi_utils.h"
 
+#include <type_traits>
+
 namespace odk
 {
 namespace framework
@@ -36,6 +38,7 @@ namespace framework
         SoftwareChannelPluginBase();
 
         void registerSoftwareChannel();
+        void updateSoftwareChannel();
         void unregisterSoftwareChannel();
 
         void registerCustomRequest();
@@ -67,9 +70,31 @@ namespace framework
         }
 
     private:
+
+        // see: https://stackoverflow.com/questions/52520276/is-decltype-of-a-non-static-member-function-ill-formed
+        template<class> struct type_sink { typedef void type; };
+        template<class T> using type_sink_t = typename type_sink<T>::type;
+        template<class T, class = void> struct has_advanced_init : std::false_type {};
+        template<class T> struct has_advanced_init<T, type_sink_t< decltype(T::getSoftwareChannelInfoEx) >> : std::true_type {};
+
+        template<typename T>
+        typename std::enable_if< has_advanced_init<T>::value, odk::RegisterSoftwareChannel >::type
+        getSoftwareChannelInfoHelper()
+        {
+            return T::getSoftwareChannelInfoEx(getHost());
+        }
+
+        template<typename T>
+        typename std::enable_if< !has_advanced_init<T>::value, odk::RegisterSoftwareChannel >::type
+        getSoftwareChannelInfoHelper()
+        {
+            return T::getSoftwareChannelInfo();
+        }
+
         odk::RegisterSoftwareChannel getSoftwareChannelInfo() final
         {
-            return SoftwareChannelInstance::getSoftwareChannelInfo();
+            // choose which function (getSoftwareChannelInfo or getSoftwareChannelInfoEx) to call at compile time
+            return getSoftwareChannelInfoHelper<SoftwareChannelInstance>();
         }
 
         std::uint64_t init(std::string& error_message) final
@@ -414,7 +439,7 @@ namespace framework
 
             case odk::plugin_msg::PLUGIN_LOAD_FINISH:
             {
-                for (auto instance : m_instances)
+                for (const auto& instance : m_instances)
                 {
                     instance->fetchInputChannels();
                     instance->handleConfigChange();
@@ -433,16 +458,21 @@ namespace framework
                     std::map<std::uint64_t, std::uint64_t> mapped_channels;
                     if (mapRemovedChannels(mapped_channels))
                     {
-                        for (auto instance : m_instances)
+                        getPluginChannels()->pauseTasks();
+                        for (const auto& instance : m_instances)
                         {
                             instance->updateInternalInputChannelIDs(mapped_channels);
                             instance->updateInputChannelIDs(mapped_channels);
                             instance->handleConfigChange();
-                            getPluginChannels()->synchronize();
                         }
+                        getPluginChannels()->synchronize();
                     }
                     return true;
                 }
+
+                case odk::EventIds::EVENT_ID_LICENSE_CHANGED:
+                    updateSoftwareChannel();
+                    return true;
                 }
             }
             }
@@ -470,7 +500,6 @@ namespace framework
         std::vector<std::shared_ptr<SoftwareChannelInstance>> m_instances;
         odk::ChannelList m_all_channels;
     };
-
 }
 }
 

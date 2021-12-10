@@ -9,7 +9,7 @@
 #include "odkapi_property_xml.h"
 #include "odkapi_timebase_xml.h"
 #include "odkapi_oxygen_queries.h"
-
+#include "odkapi_update_config_xml.h"
 
 #include "odkuni_xpugixml.h"
 
@@ -42,35 +42,44 @@ namespace framework
             , m_host(host)
         {}
 
-        virtual ~InputChannel() {}
+        virtual ~InputChannel() = default;
 
         void setChannelId(std::uint64_t id);
 
-        std::uint64_t getChannelId();
+        std::uint64_t getChannelId() const;
 
-        bool isUsable();
+        bool isUsable() const;
 
-        bool isIdValid();
+        bool isIdValid() const;
 
-        odk::ChannelDataformat getDataFormat();
+        odk::ChannelDataformat getDataFormat() const;
 
-        odk::Timebase getTimeBase();
+        odk::Timebase getTimeBase() const;
 
         bool updateTimeBase();
 
         bool updateDataFormat();
 
-        const odk::Range getRange();
+        odk::Range getRange() const;
 
-        const odk::Scalar getSampleRate();
+        odk::Scalar getSampleRate() const;
 
-        const std::string getUnit();
+        std::string getUnit() const;
 
-        const std::string getName();
+        std::string getName() const;
+
+        std::string getLongName() const;
+
+        std::string getDefaultName() const;
+
+        Property getConfigProperty(const std::string& key) const;
+        void setConfigProperty(const std::string& key, const Property& property);
+
+        std::vector<odk::UpdateConfigTelegram::Constraint> getConfigPropertyConstraints(const std::string& key) const;
 
     private:
         template <class T>
-        odk::detail::ApiObjectPtr<const T> getInputChannelParam(const char* const key)
+        odk::detail::ApiObjectPtr<const T> getInputChannelParam(const char* const key) const
         {
             if (isIdValid())
             {
@@ -84,7 +93,7 @@ namespace framework
         }
 
         template <class T>
-        odk::detail::ApiObjectPtr<const T> getInputChannelConfigParam(const char* const key)
+        odk::detail::ApiObjectPtr<const T> getInputChannelConfigParam(const char* const key) const
         {
             if (isIdValid())
             {

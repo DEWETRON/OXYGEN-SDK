@@ -36,6 +36,15 @@ namespace framework
             return m_visibility;
         }
 
+        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override
+        {
+            if(isLive())
+            {
+                doAddToTelegram(telegram, property_name);
+                addBaseConstraints(telegram, property_name);
+            }
+        }
+
     protected:
         PropertyBase()
             : m_live(true)
@@ -48,6 +57,8 @@ namespace framework
         void notifyChanged();
 
         void addBaseConstraints(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const;
+
+        virtual void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const = 0;
 
     private:
         bool m_live;
@@ -66,9 +77,10 @@ namespace framework
 
         bool update(const odk::Property& value) override;
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         odk::Property getProperty() const;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         odk::Property m_value;
@@ -86,16 +98,22 @@ namespace framework
 
         void setMinMaxConstraint(unsigned int min = 1, unsigned int max = 0);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
 
         bool hasValidRange() const;
+
+        void addOption(unsigned int val);
+
+        void clearOptions();
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         unsigned int m_value;
         unsigned int m_min;
         unsigned int m_max;
+        std::vector<unsigned int> m_options;
     };
 
     class EditableFloatingPointProperty : public PropertyBase
@@ -111,11 +129,12 @@ namespace framework
 
         void setMinMaxConstraint(double min = 1.0, double max = 0.0);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
 
         bool hasValidRange() const;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         double m_value;
@@ -135,8 +154,6 @@ namespace framework
 
         void setMinMaxConstraint(double min = 1, double max = 0);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
 
         bool hasValidRange() const;
@@ -146,6 +163,9 @@ namespace framework
         void clearOptions();
 
         void addStringOption(const std::string& val);
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         double m_value;
@@ -183,9 +203,10 @@ namespace framework
         std::vector<std::string> getNameFilters() const;
         void setNameFilters(const std::vector<std::string>& filter);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         FileType m_file_type;
@@ -197,18 +218,32 @@ namespace framework
         bool m_multi_select;
     };
 
-    class EditableStringProperty : public PropertyBase
+    class StringProperty : public PropertyBase
+    {
+    public:
+        StringProperty() = default;
+        explicit StringProperty(const RawPropertyHolder& value);
+        explicit StringProperty(const std::string& val);
+
+        std::string getValue() const;
+        void setValue(const std::string& str);
+
+        bool update(const odk::Property& value) override;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+    private:
+        std::string m_value;
+    };
+
+    class EditableStringProperty : public StringProperty
     {
     public:
         explicit EditableStringProperty(const RawPropertyHolder& value);
         explicit EditableStringProperty(const std::string& val);
 
-        std::string getValue() const;
-        void setValue(const std::string& str);
-
         void setRegEx(const std::string& regex);
-
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
         bool update(const odk::Property& value) override;
 
@@ -216,8 +251,11 @@ namespace framework
         void setArbitraryString(bool state);
 
         void clearOptions();
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
     private:
-        std::string m_value;
         std::string m_regex_str;
         std::regex m_regex;
         std::vector<std::string> m_options;
@@ -232,9 +270,10 @@ namespace framework
         odk::ChannelID getValue() const;
         void setValue(odk::ChannelID ch_id);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         odk::ChannelID m_value;
@@ -243,49 +282,59 @@ namespace framework
     class EditableChannelIDListProperty : public PropertyBase
     {
     public:
+        enum class ChannelType : uint8_t
+        {
+            ALL,
+            SYNC,
+            ASYNC,
+        };
+
         explicit EditableChannelIDListProperty();
 
         odk::ChannelIDList getValue() const;
-        void setValue(odk::ChannelIDList value);
-
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+        void setValue(const odk::ChannelIDList& value);
 
         bool update(const odk::Property& value) override;
 
+        void setChannelType(ChannelType type);
+        void setMaxDimension(int max_dimensions);
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
     private:
         odk::ChannelIDList m_value;
+        ChannelType m_filter_type;
+        int m_filter_dimensions;
+        uint32_t m_max_channels;
     };
 
     class BooleanProperty : public PropertyBase
     {
     public:
         explicit BooleanProperty(bool value);
+        explicit BooleanProperty(const RawPropertyHolder& value);
 
-        const bool& getValue() const;
-        void setValue(const bool& value);
-
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+        bool getValue() const;
+        void setValue(bool value);
 
         bool update(const odk::Property& value) override;
 
+        void setEditable(bool editable);
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
     private:
         bool m_value;
+        bool m_editable;
     };
 
-    class EditableBooleanProperty : public PropertyBase
+    class EditableBooleanProperty : public BooleanProperty
     {
     public:
+        explicit EditableBooleanProperty(const RawPropertyHolder& value);
         explicit EditableBooleanProperty(bool value);
-
-        const bool& getValue() const;
-        void setValue(const bool& value);
-
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
-        bool update(const odk::Property& value) override;
-
-    private:
-        bool m_value;
     };
 
     class RangeProperty : public PropertyBase
@@ -294,16 +343,17 @@ namespace framework
         explicit RangeProperty(const RawPropertyHolder& value);
         explicit RangeProperty(const odk::Range& value);
 
-        const odk::Range& getValue() const;
-        void setValue(const odk::Range& value);
-
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+        odk::Range getValue() const;
+        void setValue(odk::Range value);
 
         bool update(const odk::Property& value) override;
 
         void addOption(const odk::Range& val);
 
         void clearOptions();
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
 
     private:
         odk::Range m_value;
@@ -319,17 +369,36 @@ namespace framework
         odk::Property getValue() const;
         void setValue(odk::Property);
 
-        void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
-
         bool update(const odk::Property& value) override;
 
         void addOption(odk::Property);
         void clearOptions();
 
         std::uint32_t count() const;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
     private:
         odk::Property m_property;
         std::vector<odk::Property> m_options;
+    };
+
+    class StringListProperty : public PropertyBase
+    {
+    public:
+        explicit StringListProperty() = default;
+
+        odk::StringList getValue() const;
+        void setValue(const odk::StringList& value);
+
+        bool update(const odk::Property& value) override;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+    private:
+        odk::StringList m_value;
     };
 
 /*    class SelectableProperty : public PropertyBase

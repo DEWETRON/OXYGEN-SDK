@@ -21,6 +21,7 @@ namespace odk
         EVENT_ID_RECORDING_INACTIVE,         //< sent after recording has been stopped or paused
         EVENT_ID_OUT_OF_DISK_SPACE_ACTIVE,   //< sent after a low disk space exception
         EVENT_ID_OUT_OF_DISK_SPACE_INACTIVE, //< sent after a low disk space exception
+        EVENT_ID_LICENSE_CHANGED,            //< sent after a the license was changed
     };
 }
 

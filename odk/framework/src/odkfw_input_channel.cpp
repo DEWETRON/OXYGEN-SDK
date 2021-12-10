@@ -10,12 +10,12 @@ namespace framework
         m_input_channel_data.m_channel_id = id;
     }
 
-    std::uint64_t InputChannel::getChannelId()
+    std::uint64_t InputChannel::getChannelId() const
     {
         return m_input_channel_data.m_channel_id;
     }
 
-    bool InputChannel::isUsable()
+    bool InputChannel::isUsable() const
     {
         const auto is_usable = getInputChannelParam<odk::IfBooleanValue>("Usable");
         if (is_usable)
@@ -26,17 +26,17 @@ namespace framework
         return false;
     }
 
-    bool InputChannel::isIdValid()
+    bool InputChannel::isIdValid() const
     {
         return getChannelId() != std::numeric_limits<std::uint64_t>::max();
     }
 
-    odk::ChannelDataformat InputChannel::getDataFormat()
+    odk::ChannelDataformat InputChannel::getDataFormat() const
     {
         return m_input_channel_data.dataformat;
     }
 
-    odk::Timebase InputChannel::getTimeBase()
+    odk::Timebase InputChannel::getTimeBase() const
     {
         return m_input_channel_data.m_time_base;
     }
@@ -85,7 +85,7 @@ namespace framework
         return true;
     }
 
-    const odk::Range InputChannel::getRange()
+    odk::Range InputChannel::getRange() const
     {
         if (m_input_channel_data.dataformat.m_sample_value_type ==
             odk::ChannelDataformat::SampleValueType::SAMPLE_VALUE_SCALAR)
@@ -123,7 +123,7 @@ namespace framework
         return {};
     }
 
-    const odk::Scalar InputChannel::getSampleRate()
+    odk::Scalar InputChannel::getSampleRate() const
     {
         if (m_input_channel_data.dataformat.m_sample_occurrence ==
             odk::ChannelDataformat::SampleOccurrence::SYNC)
@@ -136,7 +136,7 @@ namespace framework
         return {};
     }
 
-    const std::string InputChannel::getUnit()
+    std::string InputChannel::getUnit() const
     {
         if (const auto unit = getInputChannelParam<odk::IfStringValue>("Unit"))
         {
@@ -145,9 +145,113 @@ namespace framework
         return {};
     }
 
-    const std::string InputChannel::getName()
+    std::string InputChannel::getName() const
     {
         if (const auto name = getInputChannelParam<odk::IfStringValue>("Name"))
+        {
+            return name->getValue();
+        }
+        return {};
+    }
+
+    Property InputChannel::getConfigProperty(const std::string &key) const
+    {
+        if (isIdValid())
+        {
+            std::string channel_context = odk::queries::OxygenChannels;
+            channel_context += "#";
+            channel_context += std::to_string(getChannelId());
+            channel_context += "#Config#";
+            channel_context += key;
+
+            auto xml_value = m_host->getValue<odk::IfXMLValue>(channel_context.c_str(), "ValueXML");
+
+            if(xml_value)
+            {
+                pugi::xml_document doc;
+
+                auto status = doc.load_string(xml_value->getValue());
+                if (status.status == pugi::status_ok)
+                {
+                    Property property;
+                    if(property.readValue(doc.document_element(), {}))
+                    {
+                        return property;
+                    }
+                }
+            }
+        }
+        return {};
+    }
+
+    std::vector<UpdateConfigTelegram::Constraint> InputChannel::getConfigPropertyConstraints(const std::string &key) const
+    {
+        std::vector<UpdateConfigTelegram::Constraint> constraints;
+
+        if (isIdValid())
+        {
+            std::string channel_context = odk::queries::OxygenChannels;
+            channel_context += "#";
+            channel_context += std::to_string(getChannelId());
+            channel_context += "#Config#";
+            channel_context += key;
+
+            auto xml_value = m_host->getValue<odk::IfXMLValue>(channel_context.c_str(), "ConstraintsXML");
+
+            if(xml_value)
+            {
+                pugi::xml_document doc;
+
+                auto status = doc.load_string(xml_value->getValue());
+                if (status.status == pugi::status_ok)
+                {
+                    if (strcmp(doc.document_element().name(), "Constraints") == 0)
+                    {
+                        for (const auto& constraint_node : doc.document_element().children())
+                        {
+                            auto constraint = UpdateConfigTelegram::Constraint::fromXML(constraint_node);
+                            if(constraint.getType() != UpdateConfigTelegram::Constraint::UNKNOWN)
+                            {
+                                constraints.push_back(constraint);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return constraints;
+    }
+
+    void InputChannel::setConfigProperty(const std::string &key, const Property &property)
+    {
+        if (isIdValid())
+        {
+            std::string channel_context = odk::queries::OxygenChannels;
+            channel_context += "#";
+            channel_context += std::to_string(getChannelId());
+            channel_context += "#Config#";
+            channel_context += key;
+
+            pugi::xml_document doc;
+            property.appendValue(doc);
+            auto xml_string = xpugi::toXML(doc);
+
+            m_host->queryXML(channel_context.c_str(), "ValueXML", xml_string.c_str(), xml_string.size());
+        }
+    }
+
+    std::string InputChannel::getLongName() const
+    {
+        if (const auto name = getInputChannelParam<odk::IfStringValue>("LongName"))
+        {
+            return name->getValue();
+        }
+        return {};
+    }
+
+    std::string InputChannel::getDefaultName() const
+    {
+        if (const auto name = getInputChannelParam<odk::IfStringValue>("DefaultName"))
         {
             return name->getValue();
         }
@@ -171,7 +275,7 @@ namespace framework
                 return data_format_xml_str;
             }
         }
-        return "";
+        return {};
     }
 }
 }

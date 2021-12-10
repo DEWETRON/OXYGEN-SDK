@@ -12,6 +12,43 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
+namespace
+{
+
+    std::string stringFormatToString(odk::Property::StringFormat f)
+    {
+        switch (f)
+        {
+            case odk::Property::STRING_MULTILINE: return "MULTI";
+            case odk::Property::STRING_RST: return "RST";
+            case odk::Property::STRING_XML: return "XML";
+            case odk::Property::STRING_PLAIN: return "";
+        }
+        return "";
+    }
+
+    odk::Property::StringFormat parseStringFormat(const std::string& fmt)
+    {
+        if (fmt == "MULTI")
+        {
+            return odk::Property::STRING_MULTILINE;
+        }
+        if (fmt == "XML")
+        {
+            return odk::Property::STRING_XML;
+        }
+        if (fmt == "RST")
+        {
+            return odk::Property::STRING_RST;
+        }
+        else
+        {
+            return odk::Property::STRING_PLAIN;
+        }
+    }
+
+}
+
 namespace odk
 {
     Property::Property()
@@ -64,6 +101,21 @@ namespace odk
     {
         setValue(value);
     }
+
+    Property::Property(const std::string& name, int value)
+        : m_name(name)
+        , m_type(UNKNOWN)
+    {
+        setValue(value);
+    }
+
+    Property::Property(const std::string& name, unsigned int value)
+        : m_name(name)
+        , m_type(UNKNOWN)
+    {
+        setValue(value);
+    }
+
     Property::Property(const std::string& name, Type type, const std::string& value)
         : m_name(name)
         , m_type(type)
@@ -114,10 +166,28 @@ namespace odk
         return m_type;
     }
 
+    Property::StringFormat Property::getStringFormat() const
+    {
+        if (m_type == STRING)
+        {
+            return parseStringFormat(m_enum_type);
+        }
+        return STRING_UNKNOWN;
+    }
+
     void Property::setValue(const std::string& value)
     {
         m_type = STRING;
         m_string_value = value;
+        m_enum_type.clear();
+        m_value.reset();
+    }
+
+    void Property::setValue(const std::string& value, StringFormat format)
+    {
+        m_type = STRING;
+        m_string_value = value;
+        m_enum_type = stringFormatToString(format);
         m_value.reset();
     }
 
@@ -306,7 +376,11 @@ namespace odk
         return *std::static_pointer_cast<Range>(m_value);
     }
 
+#if ODK_CPLUSPLUS >= 201703L
+    void Property::setEnumValue(std::string_view value, std::string_view enum_type)
+#else
     void Property::setEnumValue(const std::string& value, const std::string& enum_type)
+#endif
     {
         m_type = ENUM;
         m_string_value = value;
@@ -561,6 +635,10 @@ namespace odk
         {
             case STRING:
             {
+                if (!m_enum_type.empty())
+                {
+                    type.append_attribute("format").set_value(m_enum_type.c_str());
+                }
                 // string property uses quotes to preserve whitespaces
                 const std::string& single_value = "\"" + m_string_value + "\"";
                 xpugi::setText(type, single_value);
@@ -676,6 +754,7 @@ namespace odk
                     setValue(text);
                     ret = true;
                 }
+                m_enum_type = type_node.attribute("format").value();
                 break;
             }
             case INTEGER:

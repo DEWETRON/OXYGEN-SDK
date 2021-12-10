@@ -42,7 +42,7 @@ namespace framework
         double BLOCK_LENGTH = 0.1;
 
     public:
-        DataRequester(odk::IfHost *host, std::uint64_t channel_id);
+        DataRequester(odk::IfHost *host, std::uint64_t channel_id, bool user_reduced = false);
 
         DataRequester(const DataRequester& ) = delete;
 
@@ -65,6 +65,8 @@ namespace framework
         odk::detail::ApiObjectPtr<const IfDataBlockList> m_data_block_list;
         odk::framework::StreamReader m_stream_reader;
         std::shared_ptr<StreamIterator> m_iterator;
+        bool m_is_single_value;
+        bool m_user_reduced;
     };
 }
 }

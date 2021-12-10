@@ -84,9 +84,7 @@ namespace framework
         virtual std::uint64_t init(std::string& error_message) = 0;
         virtual bool deinit() = 0;
 
-        virtual ~PluginBase()
-        {
-        }
+        virtual ~PluginBase() = default;
 
     protected:
         odk::IfHost* getHost()
@@ -99,8 +97,8 @@ namespace framework
             return m_host;
         }
 
-        void addTranslation(const char* translation_xml);
-        void addQtResources(const void* rcc, std::uint64_t rcc_size);
+        bool addTranslation(const char* translation_xml);
+        bool addQtResources(const void* rcc, std::uint64_t rcc_size);
 
         void PLUGIN_API setPluginHost(odk::IfHost* host) override
         {

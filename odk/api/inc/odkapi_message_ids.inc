@@ -76,7 +76,7 @@ BEGIN_GROUP(plugin_msg)
             "0 if okay; 1 for internal error; 2 for compatibility error");
     MSG_ID(EXPORT_CANCEL,                 DATA_EXPORT, 0x000204, "Plugin UNIQUE", "<reason?>", "-",
             "0 if okay; 1 for internal error; 2 for compatibility error");
-    MSG_ID(EXPORT_FINALIZE,            DATA_EXPORT, 0x000205, "Plugin UNIQUE", "<reason?>", "-",
+    MSG_ID(EXPORT_FINALIZE,               DATA_EXPORT, 0x000205, "Plugin UNIQUE", "<reason?>", "-",
             "0 if okay; 1 for internal error; 2 for compatibility error");
 
 
@@ -106,6 +106,9 @@ BEGIN_GROUP(host_msg)
            "0 if okay; 1 for internal error; 2 for compatibility error; 3 already registered ...");
     MSG_ID(SOFTWARE_CHANNEL_UNREGISTER,       SOFTWARE_CHANNEL, 0x000002, "0", "<REASON>", "-",
            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(SOFTWARE_CHANNEL_UPDATE,           SOFTWARE_CHANNEL, 0x000005, "0", "<XML>",
+           "<xml special settings?>",
+           "0 if okay; 1 for internal error; 2 for compatibility error");
 
     //     EXPORT_REGISTER name, format+version, file extensions,...
     //     EXPORT_UNREGISTER
@@ -126,6 +129,12 @@ BEGIN_GROUP(host_msg)
             "-", "0 if okay; 1 for internal error; 2 for compatibility error");
     MSG_ID(EXPORT_PROGRESS,            DATA_EXPORT, 0x000104, "TransactionKey", "<filename, progress>",
             "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+
+    MSG_ID(SET_AUTO_EXPORT,            DATA_EXPORT, 0x000105, "0", "<reason>",
+            "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(AUTO_EXPORT_FOLDER,         DATA_EXPORT, 0x000106, "0", "<reason?>",
+            "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+
 
     // DATA_REQUEST key, settings - blocking
     // DATA_STOP_REQUEST key, settings (now; @TS) - blocking

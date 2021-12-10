@@ -77,24 +77,26 @@ inline odk::AbsoluteTime getMeasurementStartTime(odk::IfHost* host)
 
 inline void addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
 {
+    const std::uint8_t* timestamp_bytes = reinterpret_cast<const std::uint8_t*>(&timestamp);
+    const std::uint8_t* data_bytes = reinterpret_cast<const std::uint8_t*>(data);
+
     std::vector<std::uint8_t> sample;
-    sample.resize(8 + data_size);
-    std::uint64_t* dst = reinterpret_cast<std::uint64_t*>(sample.data());
-    *dst = timestamp;
-    ++dst;
-    std::memcpy(dst, data, data_size);
+    sample.reserve(sizeof(std::uint64_t) + data_size); // reserve but do not fill with 0
+    sample.insert(sample.end(), timestamp_bytes, timestamp_bytes + sizeof(std::uint64_t));
+    sample.insert(sample.end(), data_bytes, data_bytes + data_size);
 
     host->messageSyncData(odk::host_msg::ADD_CONTIGUOUS_SAMPLES, local_channel_id, sample.data(), sample.size(), nullptr);
 }
 
 inline void addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
 {
+    const std::uint8_t* timestamp_bytes = reinterpret_cast<const std::uint8_t*>(&timestamp);
+    const std::uint8_t* data_bytes = reinterpret_cast<const std::uint8_t*>(data);
+
     std::vector<std::uint8_t> sample;
-    sample.resize(8 + data_size);
-    std::uint64_t* dst = reinterpret_cast<std::uint64_t*>(sample.data());
-    *dst = timestamp;
-    ++dst;
-    std::memcpy(dst, data, data_size);
+    sample.reserve(sizeof(std::uint64_t) + data_size); // reserve but do not fill with 0
+    sample.insert(sample.end(), timestamp_bytes, timestamp_bytes + sizeof(std::uint64_t));
+    sample.insert(sample.end(), data_bytes, data_bytes + data_size);
 
     host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
 }

@@ -251,8 +251,10 @@ namespace odk
         }
         else if (element_name == "ChannelIdsConstraint")
         {
-            auto max_items = tree.attribute("max_items").as_uint();
-            return makeChannelIds(max_items);
+            auto max_items = tree.attribute("max_items").as_uint(0);
+            int max_dimension = tree.attribute("max_dimension").as_int(-1);
+            const std::string type = tree.attribute("channel_type").as_string("ALL");
+            return makeChannelIds(max_items, max_dimension, type);
         }
         else if (element_name == "RegularExpressionConstraint")
         {
@@ -325,6 +327,8 @@ namespace odk
             {
                 auto constraint_node = parent.append_child("ChannelIdsConstraint");
                 constraint_node.append_attribute("max_items").set_value(getMaxItems());
+                constraint_node.append_attribute("max_dimension").set_value(getMaxDimension());
+                constraint_node.append_attribute("channel_type").set_value(getChannelType().c_str());
             } break;
             case Constraint::REGEX:
             {
@@ -420,9 +424,9 @@ namespace odk
         return UpdateConfigTelegram::Constraint::makeRegEx(regex);
     }
 
-    UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max)
+    UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max_items, int max_dimension, const std::string& type)
     {
-        return UpdateConfigTelegram::Constraint::makeChannelIds(max);
+        return UpdateConfigTelegram::Constraint::makeChannelIds(max_items, max_dimension, type);
     }
 
     UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis)

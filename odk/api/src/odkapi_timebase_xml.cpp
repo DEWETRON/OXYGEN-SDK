@@ -1,8 +1,10 @@
 // Copyright DEWETRON GmbH 2019
 
 #include "odkapi_timebase_xml.h"
+#include "odkuni_xpugixml.h"
 
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -45,6 +47,19 @@ namespace odk
             timebase_node.append_attribute(XML_ATTR_FREQUENCY).set_value(m_frequency);
         }
         return true;
+    }
+
+    std::string Timebase::generate() const
+    {
+        pugi::xml_document doc;
+        if (store(doc))
+        {
+            return xpugi::toXML(doc);
+        }
+        else
+        {
+            return {};
+        }
     }
 
     bool Timebase::parse(pugi::xml_node timebase)

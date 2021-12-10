@@ -1,6 +1,8 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkfw_data_requester.h"
+#include "odkapi_oxygen_queries.h"
+#include "odkapi_channel_dataformat_xml.h"
 
 namespace odk
 {
@@ -8,10 +10,12 @@ namespace framework
 {
     uint64_t DataRequestIDManager::m_next_id = 0;
 
-    DataRequester::DataRequester(IfHost *host, uint64_t channel_id)
+    DataRequester::DataRequester(IfHost *host, uint64_t channel_id, bool user_reduced)
         : m_host(host)
         , m_current_position(-1)
         , m_channel_id(channel_id)
+        , m_is_single_value(false)
+        , m_user_reduced(user_reduced)
     {
         setupDataRequest();
     }
@@ -28,7 +32,7 @@ namespace framework
         PluginDataSet request;
         request.m_id = DataRequestIDManager::getNextID();
         request.m_data_set_type = DataSetType::SCALED;
-        request.m_data_mode = DataSetMode::NORMAL;
+        request.m_data_mode = m_user_reduced ? DataSetMode::REDUCED : DataSetMode::NORMAL;
         request.m_policy = StreamPolicy::EXACT;
         request.m_channels.push_back(m_channel_id);
 
@@ -55,6 +59,14 @@ namespace framework
         {
             m_stream_reader.setStreamDescriptor(m_dataset_descriptor.m_stream_descriptors.at(0));
         }
+
+        std::string channel_context = odk::queries::OxygenChannels + ("#" + std::to_string(m_channel_id));
+        auto data_format_xml = m_host->getValue<IfXMLValue>(channel_context.c_str(), "DataFormat");
+        odk::ChannelDataformat dataformat;
+        if (dataformat.parse(data_format_xml->getValue()))
+        {
+            m_is_single_value = dataformat.m_sample_occurrence == odk::ChannelDataformat::SampleOccurrence::SINGLE_VALUE;
+        }
     }
 
     void DataRequester::fetchMoreData()
@@ -67,12 +79,18 @@ namespace framework
         {
             double next_position = std::min(m_current_position + BLOCK_LENGTH, m_end_position);
 
+            if (auto xml_msg = m_host->createValue<odk::IfXMLValue>())
             {
-                auto xml_msg = m_host->createValue<odk::IfXMLValue>();
-                if (xml_msg)
+                if (m_is_single_value)
+                {
+                    PluginDataRequest req(m_dataset_descriptor.m_id, odk::PluginDataRequest::SingleValue(std::numeric_limits<double>::max()));
+                    xml_msg->set(req.generate().c_str());
+                }
+                else
                 {
                     PluginDataRequest req(m_dataset_descriptor.m_id, PluginDataRequest::DataWindow(m_current_position, next_position));
                     xml_msg->set(req.generate().c_str());
+                }
 
                     const odk::IfValue* response = nullptr;
                     if (0 != m_host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
@@ -83,7 +101,6 @@ namespace framework
                     m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
                     m_current_position = next_position;
                 }
-            }
 
             const auto block_count = m_data_block_list->getBlockCount();
 

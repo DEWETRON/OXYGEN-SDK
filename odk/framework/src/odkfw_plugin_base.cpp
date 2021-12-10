@@ -44,7 +44,7 @@ std::uint64_t PLUGIN_API odk::framework::PluginBase::pluginMessage(odk::PluginMe
     return std::numeric_limits<uint64_t>::max();
 }
 
-void odk::framework::PluginBase::addTranslation(const char* translation_xml)
+bool odk::framework::PluginBase::addTranslation(const char* translation_xml)
 {
     odk::MessageReturnValueHolder<odk::IfErrorValue> ret_error;
     if (sendSyncXMLMessage(getHost(), odk::host_msg::ADD_TRANSLATION, 0, translation_xml, strlen(translation_xml) + 1, ret_error.data()))
@@ -54,10 +54,12 @@ void odk::framework::PluginBase::addTranslation(const char* translation_xml)
             auto error_message = ret_error->getDescription();
             ODK_UNUSED(error_message);
         }
+        return false;
     }
+    return true;
 }
 
-void odk::framework::PluginBase::addQtResources(const void* rcc_data, std::uint64_t rcc_size)
+bool odk::framework::PluginBase::addQtResources(const void* rcc_data, std::uint64_t rcc_size)
 {
     odk::MessageReturnValueHolder<odk::IfErrorValue> ret_error;
 
@@ -68,7 +70,9 @@ void odk::framework::PluginBase::addQtResources(const void* rcc_data, std::uint6
             auto error_message = ret_error->getDescription();
             ODK_UNUSED(error_message);
         }
+        return false;
     }
+    return true;
 }
 
 

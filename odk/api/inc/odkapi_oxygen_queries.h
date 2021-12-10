@@ -77,6 +77,9 @@ namespace queries
     READ_ONLY_PROPERTY(OxygenPaths, RecordingDir,       IfStringValue, "Absolute path of the configured oxygen recording folder ");
     READ_ONLY_PROPERTY(OxygenPaths, SetupDir,           IfStringValue, "Absolute path of the oxygen setup folder ");
 
+    STATIC_CONTEXT(OxygenExport, "#Oxygen#Export", "Standard Export for Oxygen");
+    READ_WRITE_PROPERTY(OxygenExport, AutoExportDir,          IfStringValue, "Absolute path of the auto export data folder");
+    READ_WRITE_PROPERTY(OxygenExport, AutoExport,             IfBooleanValue, "Enable/disable auto export");
 }
 }
 

@@ -23,16 +23,13 @@ namespace odk
             if (strcmp(channels_node.name(), "Channels") != 0)
                 return false;
 
-            for (const auto channel_node : channels_node.children())
+            for (const auto channel_node : channels_node.children("Channel"))
             {
-                if (strcmp(channel_node.name(), "Channel") == 0)
-                {
-                    auto channel_id = channel_node.attribute("channel_id").as_ullong(std::numeric_limits<uint64_t>::max());
-                    if (channel_id == -1)
-                        return false;
-                    std::string status_str = channel_node.attribute("status").value();
-                    m_channels.push_back({channel_id, status_str });
-                }
+                auto channel_id = channel_node.attribute("channel_id").as_ullong(std::numeric_limits<uint64_t>::max());
+                if (channel_id == -1)
+                    return false;
+                std::string status_str = channel_node.attribute("status").as_string();
+                m_channels.emplace_back(channel_id, status_str);
             }
             return true;
         }
@@ -48,10 +45,10 @@ namespace odk
         {
             auto channel_node = request_node.append_child("Channel");
 
-            channel_node.append_attribute("channel_id").set_value(boost::lexical_cast<std::string>(channel.m_channel_id).c_str());
+            channel_node.append_attribute("channel_id") = static_cast<uint64_t>(channel.m_channel_id);
             if (!channel.m_status.empty())
             {
-                channel_node.append_attribute("status").set_value(channel.m_status.c_str());
+                channel_node.append_attribute("status") = channel.m_status.c_str();
             }
         }
 

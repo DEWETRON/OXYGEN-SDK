@@ -112,14 +112,13 @@ namespace odk
                 }
             }
 
-            // max == 1 means single channel id item for now
-            static Constraint makeChannelIds(std::uint32_t max)
+            // max_items == 1 means single channel id item for now
+            static Constraint makeChannelIds(std::uint32_t max_items, int max_dimension, const std::string& type)
             {
                 Constraint r(CHANNEL_IDS);
-                odk::Property max_items_prop;
-                max_items_prop.setName("max_items");
-                max_items_prop.setValue(max);
-                r.m_params.setProperty(max_items_prop);
+                r.m_params.setProperty(odk::Property("max_items", max_items));
+                r.m_params.setProperty(odk::Property("max_dimension", max_dimension));
+                r.m_params.setProperty(odk::Property("channel_type", type));
                 return r;
             }
 
@@ -284,6 +283,24 @@ namespace odk
                 return m_params.getPropertyByName("max_items").getUnsignedIntValue();
             }
 
+            int getMaxDimension() const
+            {
+                if (m_type != CHANNEL_IDS)
+                {
+                    throw std::runtime_error("constraint is not of type channel_ids");
+                }
+                return m_params.getPropertyByName("max_dimension").getIntValue();
+            }
+
+            std::string getChannelType() const
+            {
+                if (m_type != CHANNEL_IDS)
+                {
+                    throw std::runtime_error("constraint is not of type channel_ids");
+                }
+                return m_params.getPropertyByName("channel_type").getStringValue();
+            }
+
             bool operator==(const Constraint& other) const
             {
                 return m_type == other.m_type
@@ -432,7 +449,7 @@ namespace odk
     UpdateConfigTelegram::Constraint makeRangeConstraint(double low, double high);
     UpdateConfigTelegram::Constraint makeArbitraryStringConstraint();
     UpdateConfigTelegram::Constraint makeRegExConstraint(const std::string& regex);
-    UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max);
+    UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max_items, int max_dimension = -1, const std::string& type_filter = "ALL");
     UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis);
     UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
         const std::string& dialog_title, const std::string& path,

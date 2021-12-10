@@ -4,13 +4,9 @@
 
 #define ODK_EXTENSION_FUNCTIONS
 
-#include "odkapi_block_descriptor_xml.h"
-#include "odkapi_data_set_xml.h"
+#include "odkapi_error_codes.h"
 #include "odkapi_message_ids.h"
-#include "odkapi_utils.h"
-#include "odkfw_channels.h"
-#include "odkfw_properties.h"
-#include "odkfw_stream_reader.h"
+#include "odkfw_data_requester.h"
 
 namespace odk
 {
@@ -30,12 +26,12 @@ namespace framework
     {
         ValidationContext context;
         context.m_properties = validate_telegram.m_properties;
-        for(const auto& channel_id : validate_telegram.m_properties.m_channels)
+        for (const auto& channel_id : validate_telegram.m_properties.m_channels)
         {
             auto new_input_channel = std::make_shared<InputChannel>(m_host, channel_id);
             new_input_channel->updateDataFormat();
             new_input_channel->updateTimeBase();
-            context.m_channels.insert(std::make_pair(channel_id, new_input_channel));
+            context.m_channels.emplace(channel_id, std::move(new_input_channel));
         }
 
         validate(context, response);
@@ -46,7 +42,7 @@ namespace framework
         m_host = host;
     }
 
-    odk::IfHost* ExportInstance::getHost() const
+    odk::IfHost* ExportInstance::getHost() const noexcept
     {
         return m_host;
     }
@@ -58,7 +54,7 @@ namespace framework
         validate.m_properties = start_telegram.m_properties;
         handleValidate(validate, response);
 
-        if(!response.m_success)
+        if (!response.m_success)
         {
             this->notifyError();
             return;
@@ -67,26 +63,55 @@ namespace framework
         m_telegram = start_telegram;
         m_context.m_properties = start_telegram.m_properties;
 
+        bool export_waveform = true;
+        bool export_statistic = false;
+
+        if (m_context.m_properties.m_custom_properties.containsProperty("WAVEFORM"))
+        {
+            export_waveform = m_context.m_properties.m_custom_properties.getBool("WAVEFORM");
+        }
+        if (m_context.m_properties.m_custom_properties.containsProperty("STATISTIC"))
+        {
+            export_statistic = m_context.m_properties.m_custom_properties.getBool("STATISTIC");
+        }
+
         for(const auto& channel_id : start_telegram.m_properties.m_channels)
         {
             auto new_input_channel = std::make_shared<InputChannel>(m_host, channel_id);
             new_input_channel->updateDataFormat();
             new_input_channel->updateTimeBase();
-            m_context.m_channels.insert(std::make_pair(channel_id, new_input_channel));
+            m_context.m_channels.emplace(channel_id, std::move(new_input_channel));
 
-            auto requester = std::make_shared<DataRequester>(getHost(), channel_id);
-            m_data_requester.push_back(requester);
+            auto& first_interval = start_telegram.m_properties.m_export_intervals.front();
 
-            auto first_interval = start_telegram.m_properties.m_export_intervals[0];
-
+            if (export_waveform)
+            {
+                auto raw_requester = std::make_shared<DataRequester>(getHost(), channel_id);
+                m_data_requester.push_back(raw_requester);
             try
             {
                 m_context.m_channel_iterators[channel_id] =
-                    requester->getIterator(first_interval.m_begin, first_interval.m_end);
+                        raw_requester->getIterator(first_interval.m_begin, first_interval.m_end);
             }
             catch (const std::exception&)
             {
                 // no valid data
+            }
+        }
+
+            if (export_statistic)
+            {
+                auto reduced_requester = std::make_shared<DataRequester>(getHost(), channel_id, true);
+                m_reduced_requester.push_back(reduced_requester);
+                try
+                {
+                    m_context.m_reduced_channel_iterators[channel_id] =
+                        reduced_requester->getIterator(first_interval.m_begin, first_interval.m_end);
+                }
+                catch (const std::exception&)
+                {
+                    // no valid data
+                }
             }
         }
 
@@ -97,13 +122,13 @@ namespace framework
             {
                 success = this->exportData(this->m_context);
             }
-            catch(std::runtime_error&)
+            catch(const std::exception&)
             {
                 this->cancel();
                 success = false;
             }
 
-            if(success)
+            if (success)
             {
                 this->notifyDone();
             }
@@ -117,7 +142,7 @@ namespace framework
 
     void ExportInstance::setCanceled()
     {
-        m_canceled.store(true);
+        m_canceled.store(true, std::memory_order_release);
         waitForDone();
     }
 
@@ -136,12 +161,12 @@ namespace framework
 
     void ExportInstance::notifyProgress(uint64_t progress) const
     {
-        if(m_canceled.load())
+        if (m_canceled.load(std::memory_order_acquire))
         {
             throw std::runtime_error("transaction canceled");
         }
 
-        auto p = getHost()->createValue<odk::IfUIntValue>();
+        auto p = m_host->createValue<odk::IfUIntValue>();
         p->set(progress);
         m_host->messageSync(odk::host_msg::EXPORT_PROGRESS, m_telegram.m_transaction_id, p.get(), nullptr);
     }
@@ -160,4 +185,3 @@ namespace framework
     }
 }
 }
-

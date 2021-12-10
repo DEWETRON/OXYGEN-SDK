@@ -44,6 +44,7 @@ namespace odk
         std::uint64_t m_nanoseconds_since_1970;
 
         std::string m_timezone_name;
+        std::string m_timezone_location;
 
         int m_timezone_utc_offset_seconds;
         int m_timezone_std_offset_seconds;

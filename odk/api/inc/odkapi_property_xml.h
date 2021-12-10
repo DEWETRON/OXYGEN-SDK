@@ -4,13 +4,19 @@
 
 #include "odkapi_types.h"
 #include "odkapi_version_xml.h"
+#include "odkuni_defines.h"
 
+#include <boost/lexical_cast.hpp>
 #include <boost/rational.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <cstdint>
 #include <memory>
 #include <vector>
+
+#if ODK_CPLUSPLUS >= 201703L
+#include <string_view>
+#endif
 
 namespace odk
 {
@@ -117,6 +123,11 @@ namespace odk
             return true;
         }
 
+        bool operator!=(ValueList<ValueType> const& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
         ListType m_values;
     };
     typedef ValueList<double> DoubleList;
@@ -161,6 +172,14 @@ namespace odk
             INTEGER64 = 23,
         };
 
+        enum StringFormat {
+            STRING_UNKNOWN,
+            STRING_PLAIN,
+            STRING_XML,
+            STRING_MULTILINE,
+            STRING_RST,
+        };
+
         static Type getPropertyTypeFromValue(const Scalar&) { return SCALAR; }
         static Type getPropertyTypeFromValue(const DecoratedNumber&) { return DECORATED_NUMBER; }
         static Type getPropertyTypeFromValue(const Range&) { return RANGE; }
@@ -171,6 +190,13 @@ namespace odk
         static Type getPropertyTypeFromValue(const Rational&) { return RATIONAL; }
         static Type getPropertyTypeFromValue(const ChannelIDList&) { return CHANNEL_ID_LIST; }
         static Type getPropertyTypeFromValue(const PropertyList&) { return PROPERTY_LIST; }
+        static Type getPropertyTypeFromValue(const std::string&) { return STRING; }
+        static Type getPropertyTypeFromValue(const unsigned int&) { return UNSIGNED_INTEGER; }
+        static Type getPropertyTypeFromValue(const bool&) { return BOOLEAN; }
+        static Type getPropertyTypeFromValue(const int&) { return INTEGER; }
+        static Type getPropertyTypeFromValue(const std::int64_t&) { return INTEGER64; }
+        static Type getPropertyTypeFromValue(const std::uint64_t&) { return UNSIGNED_INTEGER64; }
+        static Type getPropertyTypeFromValue(const double&) { return FLOATING_POINT_NUMBER; }
 
         Property();
         Property(const Property& other);
@@ -179,9 +205,10 @@ namespace odk
         Property(const std::string& name, const std::string& string_value);
         Property(const std::string& name, const char* const string_value);
         Property(const std::string& name, bool value);
+        Property(const std::string& name, int value);
+        Property(const std::string& name, unsigned int value);
         Property(const std::string& name, const std::string& value, const std::string& enum_type);
         Property(const std::string& name, Type type, const std::string& value);
-
 
         template <class T>
         Property(const std::string& name, T value)
@@ -195,6 +222,70 @@ namespace odk
 
         bool operator==(Property const& other) const;
         bool sameValue(Property const& other) const;
+
+        template <typename T, typename=void>
+        struct IsLexCastable : std::false_type {};
+
+        template <typename T>
+        struct IsLexCastable<T,
+                             decltype(void(std::declval<std::ostream&>() << std::declval<T>()))>
+            : std::true_type {};
+
+        template<class PROPERTY_TYPE>
+        typename std::enable_if<IsLexCastable<PROPERTY_TYPE>::value, PROPERTY_TYPE>::type cast() const
+        {
+            try
+            {
+
+                if(m_type == BOOLEAN)
+                {
+                    return boost::lexical_cast<PROPERTY_TYPE>(getBoolValue());
+                }
+                if(m_value)
+                {
+                    return *std::static_pointer_cast<PROPERTY_TYPE>(m_value);
+                }
+                else
+                {
+                    return boost::lexical_cast<PROPERTY_TYPE>(m_string_value);
+                }
+            }
+            catch(...)
+            {
+                throw std::runtime_error("");
+            }
+        }
+
+        template<class PROPERTY_TYPE>
+        typename std::enable_if<!IsLexCastable<PROPERTY_TYPE>::value, PROPERTY_TYPE>::type cast() const
+        {
+            if(m_value)
+            {
+                return *std::static_pointer_cast<PROPERTY_TYPE>(m_value);
+            }
+            throw std::runtime_error("");
+        }
+
+        template<class PROPERTY_TYPE>
+        PROPERTY_TYPE getValueStrict() const
+        {
+            if (m_type != getPropertyTypeFromValue(PROPERTY_TYPE()))
+            {
+                throw std::runtime_error("");
+            }
+            return cast<PROPERTY_TYPE>();
+        }
+
+        template<class PROPERTY_TYPE>
+        PROPERTY_TYPE getValue() const
+        {
+            if (m_value && m_type != getPropertyTypeFromValue(PROPERTY_TYPE()))
+            {
+                throw std::runtime_error("");
+            }
+            return cast<PROPERTY_TYPE>();
+        }
+
 
         /**
          * Returns true, if the data in the property is valid
@@ -214,10 +305,14 @@ namespace odk
          */
         Type getType() const;
 
+        StringFormat getStringFormat() const;
+
         /**
          * Sets the value of this property as string
          */
         void setValue(const std::string& value);
+        void setValue(const std::string& value, StringFormat format);
+
         /**
          * Returns the value of this property as string
          * This method always returns the property as string, regardless of it's type
@@ -225,7 +320,7 @@ namespace odk
         const std::string& getStringValue() const;
 
         /**
-         * Returns the value of this property as const char
+         * Sets the value of this property as const char
          */
         void setValue(const char* value);
 
@@ -323,7 +418,12 @@ namespace odk
         /**
          * Sets the value of this property as enum
          */
+#if ODK_CPLUSPLUS >= 201703L
+        void setEnumValue(std::string_view value, std::string_view enum_type);
+#else
         void setEnumValue(const std::string& value, const std::string& enum_type);
+#endif
+
         /**
          * Returns the value of this property as string
          * If this property is not of type ENUM, an exception is thrown
@@ -456,7 +556,7 @@ namespace odk
 
         std::string m_name;
         Type m_type;
-        std::string m_enum_type;
+        std::string m_enum_type; //enum type or (optional) format specification (e.g. for string)
         //only one of m_string_value or m_value may contain a value
         std::string m_string_value;
         std::shared_ptr<void> m_value;

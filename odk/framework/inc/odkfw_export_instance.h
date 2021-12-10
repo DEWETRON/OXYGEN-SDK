@@ -1,23 +1,25 @@
 // Copyright DEWETRON GmbH 2020
 #pragma once
 
-#include "odkapi_data_set_descriptor_xml.h"
 #include "odkapi_export_xml.h"
-#include "odkapi_timestamp_xml.h"
 #include "odkbase_basic_values.h"
-#include "odkfw_data_requester.h"
 #include "odkfw_input_channel.h"
 #include "odkfw_interfaces.h"
 #include "odkfw_stream_iterator.h"
+#include "odkuni_defines.h"
 
 #include <atomic>
-#include <set>
+#include <map>
+#include <memory>
 #include <thread>
+#include <stdint.h>
 
 namespace odk
 {
 namespace framework
 {
+    class DataRequester;
+
     class ExportInstance
     {
     public:
@@ -32,8 +34,8 @@ namespace framework
         {
         public:
             std::map<uint64_t, std::shared_ptr<odk::framework::StreamIterator>> m_channel_iterators;
+            std::map<uint64_t, std::shared_ptr<odk::framework::StreamIterator>> m_reduced_channel_iterators;
         };
-
 
         ExportInstance();
         virtual ~ExportInstance();
@@ -60,7 +62,7 @@ namespace framework
         void notifyError() const;
 
     protected:
-        odk::IfHost* getHost() const;
+        odk::IfHost* getHost() const noexcept;
 
         void notifyProgress(uint64_t progress) const;
 
@@ -69,10 +71,9 @@ namespace framework
         std::thread m_worker_thread;
         std::atomic<bool> m_canceled;
         std::vector<std::shared_ptr<DataRequester>> m_data_requester;
+        std::vector<std::shared_ptr<DataRequester>> m_reduced_requester;
         ProcessingContext m_context;
         odk::StartExport m_telegram;
     };
-
 }
 }
-

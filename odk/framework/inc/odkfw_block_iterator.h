@@ -111,12 +111,27 @@ namespace framework
             auto end_pos = reinterpret_cast<const std::uint8_t*>(other.m_data);
             auto start_pos = reinterpret_cast<const std::uint8_t*>(this->m_data);
 
-            if(end_pos <= start_pos || this->m_data_stride != other.m_data_stride)
+            if(!end_pos || !start_pos || end_pos < start_pos || this->m_data_stride != other.m_data_stride)
             {
                 return 0;
             }
 
-            return (end_pos - start_pos) / this->m_data_stride;
+            if(m_sample_size)
+            {
+                auto copy = *this;
+
+                std::uint64_t count = 0;
+                while(copy != other)
+                {
+                    ++copy;
+                    ++count;
+                }
+                return count;
+            }
+            else
+            {
+                return (end_pos - start_pos) / this->m_data_stride;
+            }
         }
 
     private:

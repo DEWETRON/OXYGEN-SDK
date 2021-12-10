@@ -19,12 +19,11 @@ namespace
 
         odk::ChannelList list_generator;
 
-        for (const auto a_channel : channels)
+        for (const auto& a_channel : channels)
         {
             list_generator.addChannel(a_channel.channel_id);
         }
 
-        pugi::xml_document channel_id_doc;
         const auto channel_id_xml_string = list_generator.generate();
 
         if (channel_id_xml_string.empty())
@@ -40,6 +39,7 @@ namespace odk
     RegisterSoftwareChannel::RegisterSoftwareChannel()
         : m_analysis_capable(false)
         , m_acquisition_capable(true)
+        , m_is_licensed(true)
     {}
 
     bool RegisterSoftwareChannel::parse(const char *xml_string)
@@ -68,33 +68,38 @@ namespace odk
             return false;
         }
 
-        m_service_name = xpugi::getText(xpugi::getChildNodeByTagName(node, "ServiceName"));
-        m_display_name = xpugi::getText(xpugi::getChildNodeByTagName(node, "DisplayName"));
-        m_description = xpugi::getText(xpugi::getChildNodeByTagName(node, "Description"));
-        m_display_group = xpugi::getText(xpugi::getChildNodeByTagName(node, "DisplayGroup"));
+        m_service_name = xpugi::getText(node.child("ServiceName"));
+        m_display_name = xpugi::getText(node.child("DisplayName"));
+        m_description = xpugi::getText(node.child("Description"));
+        m_display_group = xpugi::getText(node.child("DisplayGroup"));
 
         m_analysis_capable = [node]() {
-            const auto analysis_capability = node.select_node("AnalysisCapable").node();
-            if (analysis_capability && (xpugi::getText(analysis_capability) == "True"))
+            if (auto analysis_capability = node.child("AnalysisCapable"))
             {
-                return true;
+                return xpugi::getText(analysis_capability) == "True";
             }
             return false;
         }();
 
         m_acquisition_capable = [node]() {
-            const auto acquisition_capability = node.select_node("AcquisitionCapable").node();
-            if (acquisition_capability)
+            if (auto acquisition_capability = node.child("AcquisitionCapable"))
             {
-                return (xpugi::getText(acquisition_capability) == "True");
+                return xpugi::getText(acquisition_capability) == "True";
             }
             return true; // backwards compatibility with < 5.5
         }();
 
-        auto ui_add_node = node.select_node("UIAdd").node();
-        if (ui_add_node)
+        m_is_licensed = [node]() {
+            if (const auto licensed = node.child("IsLicensed"))
+            {
+                return xpugi::getText(licensed) == "True";
+            }
+            return true; // backwards compatibility with < 5.7
+        }();
+
+        if (auto ui_add_node = node.child("UIAdd"))
         {
-            m_ui_item_add = xpugi::getText(xpugi::getChildNodeByTagName(ui_add_node, "ItemName"));
+            m_ui_item_add = xpugi::getText(ui_add_node.child("ItemName"));
         }
         else
         {
@@ -116,6 +121,7 @@ namespace odk
         xpugi::setText(xpugi::xml_element(register_elem.append_child("DisplayGroup")), m_display_group);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("AnalysisCapable")), m_analysis_capable ? "True" : "False");
         xpugi::setText(xpugi::xml_element(register_elem.append_child("AcquisitionCapable")), m_acquisition_capable ? "True" : "False");
+        xpugi::setText(xpugi::xml_element(register_elem.append_child("IsLicensed")), m_is_licensed ? "True" : "False");
 
         if (!m_description.empty())
         {
@@ -208,30 +214,29 @@ namespace odk
 
         if (!appendChannelList(register_elem, m_all_selected_channels_data))
         {
-            return "";
+            return {};
         }
 
-        const auto channels_node = xpugi::getChildNodeByTagName(register_elem, "Channels");
-        if (channels_node)
+        if (const auto channels_node = register_elem.child("Channels"))
         {
-            for (const auto a_channel : m_all_selected_channels_data)
+            for (const auto& a_channel : m_all_selected_channels_data)
             {
                 auto channel_id_str = std::to_string(a_channel.channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
                 auto ch_node = channels_node.select_node(xpath.c_str());
                 if (!ch_node)
                 {
-                    return "";
+                    return {};
                 }
 
                 if (!a_channel.data_format.store(ch_node.node()))
                 {
-                    return "";
+                    return {};
                 }
             }
         }
 
-        for (const auto prop : m_properties)
+        for (const auto& prop : m_properties)
         {
             prop.appendTo(register_elem);
         }
@@ -267,11 +272,10 @@ namespace odk
             return false;
         }
 
-        m_message = xpugi::getText(xpugi::getChildNodeByTagName(node, "Message"));
+        m_message = xpugi::getText(node.child("Message"));
 
         bool success = true;
-        const auto channels_node = xpugi::getChildNodeByTagName(node, "CreatedChannels");
-        if (channels_node)
+        if (const auto channels_node = node.child("CreatedChannels"))
         {
             for (auto ch : channels_node.select_nodes("Channel"))
             {
@@ -391,10 +395,9 @@ namespace odk
             return "";
         }
 
-        const auto channels_node = xpugi::getChildNodeByTagName(register_elem, "Channels");
-        if (channels_node)
+        if (auto channels_node = register_elem.child("Channels"))
         {
-            for (const auto a_channel : m_all_selected_channels_data)
+            for (const auto& a_channel : m_all_selected_channels_data)
             {
                 auto channel_id_str = std::to_string(a_channel.channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
@@ -439,14 +442,12 @@ namespace odk
             return false;
         }
 
-        const auto valid_node = xpugi::getChildNodeByTagName(node, "Valid");
-        if (valid_node)
+        if (auto valid_node = node.child("Valid"))
         {
             m_valid = valid_node.attribute("is_valid").as_bool(false);
         }
 
-        const auto channels_node = xpugi::getChildNodeByTagName(node, "Channels");
-        if (channels_node)
+        if (const auto channels_node = node.child("Channels"))
         {
             odk::ChannelList list_telegram;
             list_telegram.parse(xpugi::toXML(channels_node).c_str());
