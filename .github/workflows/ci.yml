@@ -13,9 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     # install dependencies
     - name: boost
-      run: sudo apt-get update && sudo apt-get install -yq libboost1.74-dev
-    - name: mkdir
-      run: mkdir build && cd build
-    - name: cmake build
-      run: cmake ..
+      run: sudo apt-get update && sudo apt-get install -yq libboost-dev
+    - name: run cmake
+      run: mkdir build && cd build && cmake ..
 
