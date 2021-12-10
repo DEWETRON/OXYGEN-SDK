@@ -10,15 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
     # install dependencies
-    - name: Install boost
-      run: sudo apt-get update && sudo apt-get install -yq libboost-dev
-    - name: Install QT5
+    - name: Update dependencies
+      run: sudo apt-get update
+    - name: Install Boost
+      run: sudo apt-get install -yq libboost-dev
+    - name: Install Qt
       #uses: jurplel/install-qt-action@v2
-      run: sudo apt-get install qt5-default
+      run: sudo apt-get install -yq qt5-default
+    - uses: actions/checkout@v2
     - name: run cmake
       run: mkdir build && cd build && cmake ..
     - name: build
-      run: cmake --build . --target all
+      run: make
 
