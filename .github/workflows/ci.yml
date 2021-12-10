@@ -22,5 +22,5 @@ jobs:
     - name: run cmake
       run: cmake -Bbuild -H.
     - name: build API
-      run: cmake --build build/ --target odk_api
+      run: cmake --build build/ --target all
 
