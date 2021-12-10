@@ -15,7 +15,10 @@ jobs:
     - name: Install boost
       run: sudo apt-get update && sudo apt-get install -yq libboost-dev
     - name: Install QT5
-      uses: jurplel/install-qt-action@v2
+      #uses: jurplel/install-qt-action@v2
+      run: sudo apt-get install qt5-default
     - name: run cmake
       run: mkdir build && cd build && cmake ..
+    - name: build
+      run: cmake --build . --target all
 
