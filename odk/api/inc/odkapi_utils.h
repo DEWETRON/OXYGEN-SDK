@@ -11,9 +11,11 @@
 #include "odkapi_timestamp_xml.h"
 
 #include "odkuni_assert.h"
+#include "odkuni_defines.h"
 
 #include <cmath>
 #include <cstring>
+#include <limits>
 #include <vector>
 
 namespace odk
@@ -140,5 +142,17 @@ inline std::uint64_t convertTimeToTickAtOrAfter(double time, double frequency)
         return 0;
     }
     return static_cast<std::uint64_t>(std::nextafter(std::nextafter(time, 0.0) * frequency, std::numeric_limits<double>::lowest())) + 1;
+}
+
+/**
+ * Convert from tick values to time in seconds
+ * 
+ * @param tick      sample position in ticks
+ * @param frequency sample rate in Hz
+ * @return          tick value converted to seconds
+ */
+ODK_NODISCARD inline double convertTickToTime(std::uint64_t tick, double frequency)
+{
+    return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
 }
 }

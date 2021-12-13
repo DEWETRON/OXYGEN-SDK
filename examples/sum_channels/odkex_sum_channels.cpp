@@ -115,8 +115,9 @@ public:
             sample_rate_max = 100.0;
         }
 
-        auto channel = getOutputChannels().at(0);
-        channel->setRange({range_min, range_max, unit, unit})
+        // Configure the output channel (we only have one output, so the root channel is our output channel)
+        auto channel = getRootChannel();
+        channel->setRange(odk::Range(range_min, range_max, unit, unit))
             .setUnit(unit)
             .setSimpleTimebase(sample_rate_max)
             ;
@@ -256,7 +257,7 @@ public:
             for (auto sample_index = start_sample; sample_index < end_sample; ++sample_index)
             {
                 // Compute output time in seconds
-                const double output_time = convertTickToTime(sample_index, m_timebase_frequency);
+                const double output_time = odk::convertTickToTime(sample_index, m_timebase_frequency);
 
                 // Read all input channels up until output_time (channels with slower sample rate might reuse the old value when no newer sample is available)
                 for (std::size_t channel_index = 0; channel_index < 2; ++channel_index)
@@ -315,14 +316,6 @@ public:
     }
 
 private:
-    /**
-     * Convert from tick values to time in seconds
-     */
-    ODK_NODISCARD static double convertTickToTime(std::uint64_t tick, double frequency)
-    {
-        return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
-    }
-
     /**
      * Perform the actual calculation with the current sample values
      */

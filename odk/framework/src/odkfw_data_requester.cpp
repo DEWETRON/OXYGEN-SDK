@@ -92,15 +92,15 @@ namespace framework
                     xml_msg->set(req.generate().c_str());
                 }
 
-                    const odk::IfValue* response = nullptr;
-                    if (0 != m_host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
-                    {
-                        return;
-                    }
-
-                    m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
-                    m_current_position = next_position;
+                const odk::IfValue* response = nullptr;
+                if (0 != m_host->messageSync(odk::host_msg::DATA_READ, 0, xml_msg.get(), &response))
+                {
+                    return;
                 }
+
+                m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
+                m_current_position = next_position;
+            }
 
             const auto block_count = m_data_block_list->getBlockCount();
 

@@ -263,8 +263,8 @@ namespace framework
     PluginChannel& PluginChannel::replaceProperty(const std::string& name, ChannelPropertyPtr prop)
     {
         auto property_matcher = [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
-                {
-                    return a_property.first == name;
+        {
+            return a_property.first == name;
         };
         ODK_ASSERT(getProperty(name));
         ODK_ASSERT(std::find_if(m_properties.begin(), m_properties.end(), property_matcher) != m_properties.end());
@@ -667,8 +667,8 @@ namespace framework
         for (const auto& affected_task : affected_tasks)
         {
             affected_task->m_worker->onChannelConfigChanged(m_host, affected_task->m_token);
-                registerTask(*affected_task);
-            }
+            registerTask(*affected_task);
+        }
 
         return odk::error_codes::OK;
     }

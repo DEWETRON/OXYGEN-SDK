@@ -88,16 +88,16 @@ namespace framework
             {
                 auto raw_requester = std::make_shared<DataRequester>(getHost(), channel_id);
                 m_data_requester.push_back(raw_requester);
-            try
-            {
-                m_context.m_channel_iterators[channel_id] =
+                try
+                {
+                    m_context.m_channel_iterators[channel_id] =
                         raw_requester->getIterator(first_interval.m_begin, first_interval.m_end);
+                }
+                catch (const std::exception&)
+                {
+                    // no valid data
+                }
             }
-            catch (const std::exception&)
-            {
-                // no valid data
-            }
-        }
 
             if (export_statistic)
             {
