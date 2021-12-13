@@ -1,4 +1,4 @@
-// Copyright DEWETRON GmbH 2019
+// Copyright DEWETRON GmbH 2019-2021
 
 #include "odkfw_properties.h"
 #include "odkfw_software_channel_plugin.h"
@@ -49,10 +49,15 @@ public:
 
     MyExampleSoftwareChannelInstance()
         : m_input_channels(new EditableChannelIDListProperty())
+        , m_current_values({ std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() })
     {
+        // make property m_input_channels visible in the GUI
         m_input_channels->setVisiblity("PUBLIC");
     }
 
+    /**
+     * Return the information that is used to display the software channel in the calculation list in the GUI
+     */
     static odk::RegisterSoftwareChannel getSoftwareChannelInfo()
     {
         odk::RegisterSoftwareChannel telegram;
@@ -64,46 +69,49 @@ public:
         return telegram;
     }
 
+    /**
+     * This method is called when the user creates an instance of this calculation
+     * In this case, copy the channel-ids from the selected channels and store them in m_input_channels
+     */
     InitResult init(const InitParams& params) override
     {
-        std::vector<std::uint64_t> channel_ids;
-        for (const auto an_input_channel : params.m_input_channels)
+        odk::ChannelIDList channel_ids;
+        for (const auto& an_input_channel : params.m_input_channels)
         {
-            channel_ids.push_back(an_input_channel.m_channel_id);
+            channel_ids.m_values.push_back(an_input_channel.m_channel_id);
         }
-        m_input_channels->setValue(odk::ChannelIDList(channel_ids));
+        m_input_channels->setValue(channel_ids);
         return { true };
     }
 
-    void updatePropertyTypes(const PluginChannelPtr& output_channel) override
-    {
-        ODK_UNUSED(output_channel);
-    }
-
-    void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
-    {
-        ODK_UNUSED(channel);
-    }
-
+    /**
+     * This method is called when the configuration changes. Evaluate the input channels and update the output channel and return if the configuration is valid
+     */
     bool update() override
     {
         std::string unit;
         double range_min = 0.0;
         double range_max = 0.0;
         double sample_rate_max = 0.0;
-        for(const auto& input_channel : getInputChannelProxies())
+        for (const auto& input_channel : getInputChannelProxies())
         {
-            const auto& input_range = input_channel->getRange();
+            const odk::Range input_range = input_channel->getRange();
             range_min = range_min + input_range.m_min;
             range_max = range_max + input_range.m_max;
-            unit = input_channel->getUnit();
 
-            const auto sampe_rate = input_channel->getSampleRate();
-            sample_rate_max = std::max(sample_rate_max, sampe_rate.m_val);
+            if (unit.empty())
+            {
+                // Store the unit of the first channel (ignore the unit of other channels)
+                unit = input_channel->getUnit();
+            }
+
+            const odk::Scalar sample_rate = input_channel->getSampleRate();
+            sample_rate_max = std::max(sample_rate_max, sample_rate.m_val);
         }
 
         if (sample_rate_max == 0.0)
         {
+            // if no valid sample rate was set, assume 100 Hz
             sample_rate_max = 100.0;
         }
 
@@ -116,25 +124,25 @@ public:
         m_timebase_frequency = sample_rate_max;
         updateNeedsResampling();
 
-        const auto current_channel_ids(m_input_channels->getValue().m_values);
-        auto is_valid(current_channel_ids.size() == 2);
-
-        auto all_input_channels(getInputChannelProxies());
-
-        int sync_input_cnt = 0;
-        int async_input_cnt = 0;
-
-        for (auto input_channel_id : current_channel_ids)
+        // Verify that all configured input channels can be used to compute an output
+        const auto current_channel_ids = m_input_channels->getValue().m_values;
+        bool is_valid = true;
+        if (current_channel_ids.size() != 2)
         {
-            if (is_valid)
+            is_valid = false;
+        }
+        else
+        {
+            std::size_t sync_input_cnt = 0;
+            std::size_t async_input_cnt = 0;
+            for (auto input_channel_id : current_channel_ids)
             {
                 auto an_input_channel = getInputChannelProxy(input_channel_id);
                 if (an_input_channel->updateDataFormat())
                 {
                     const auto dataformat = an_input_channel->getDataFormat();
 
-                    is_valid &= (dataformat.m_sample_value_type ==
-                        odk::ChannelDataformat::SampleValueType::SAMPLE_VALUE_SCALAR);
+                    is_valid &= (dataformat.m_sample_value_type == odk::ChannelDataformat::SampleValueType::SAMPLE_VALUE_SCALAR);
 
                     switch (dataformat.m_sample_occurrence)
                     {
@@ -147,21 +155,23 @@ public:
                             break;
 
                         default:
+                            // Any channel that is neither SYNC nor ASYNC is currently not supported
                             is_valid = false;
+                            break;
                     }
                 }
-            }
 
-            if (!is_valid)
-            {
-                break;
+                if (!is_valid)
+                {
+                    break;
+                }
             }
+#ifndef DONT_ENFORCE_SYNC_AND_ASYNC
+            is_valid &= (sync_input_cnt == 1);
+            is_valid &= (async_input_cnt == 1);
+#endif
         }
 
-#ifndef DONT_ENFORCE_SYNC_AND_ASYNC
-        is_valid &= (sync_input_cnt == 1);
-        is_valid &= (async_input_cnt == 1);
-#endif
         return is_valid;
     }
 
@@ -171,18 +181,21 @@ public:
 
         //the channels have already been mapped by base-class
         //remove all channel_ids that are invalid (not done by base-class)
-        const auto current_channel_ids(m_input_channels->getValue().m_values);
-        std::vector<std::uint64_t> channel_ids;
-        for (auto input_channel_id : current_channel_ids)
+        const auto current_channel_ids(m_input_channels->getValue());
+        odk::ChannelIDList channel_ids;
+        for (auto input_channel_id : current_channel_ids.m_values)
         {
             if (input_channel_id != -1)
             {
-                channel_ids.push_back(input_channel_id);
+                channel_ids.m_values.push_back(input_channel_id);
             }
         }
-        m_input_channels->setValue(odk::ChannelIDList(channel_ids));
+        m_input_channels->setValue(channel_ids);
     }
 
+    /**
+     * Initialize the configuration and format of this calculation
+     */
     void create(odk::IfHost* host) override
     {
         ODK_UNUSED(host);
@@ -212,90 +225,86 @@ public:
         m_current_values.fill(std::numeric_limits<double>::quiet_NaN());
     }
 
-    double convertTickToTime(std::uint64_t tick, double frequency)
-    {
-        return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
-    }
-
     void process(ProcessingContext& context, odk::IfHost *host) override
     {
-        std::array<std::pair<odk::framework::StreamIterator, odk::Timebase>, 2> iterators;
-        {
-            const auto channel_id = m_input_channels->getValue().m_values.at(0);
-            context.m_channel_iterators[channel_id].setSkipGaps(false);
-            iterators[0] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
-        }
-        {
-            const auto channel_id = m_input_channels->getValue().m_values.at(1);
-            context.m_channel_iterators[channel_id].setSkipGaps(false);
-            iterators[1] = { context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase() };
-        }
-
-        std::uint64_t start_sample = odk::convertTimeToTickAtOrAfter(context.m_window.first, m_timebase_frequency);
-        std::uint64_t end_sample = odk::convertTimeToTickAtOrAfter(context.m_window.second, m_timebase_frequency);
-
         auto sync_out_channel = getRootChannel();
-        if (sync_out_channel->getUsedProperty()->getValue())
+        if (!sync_out_channel->getUsedProperty()->getValue())
         {
-            std::uint64_t sample_index = 0;
+            return;
+        }
 
-            std::vector<double> samples(end_sample - start_sample);
-            auto output_sample_index = sample_index;
+        auto prepare_iterator = [this, &context](std::size_t index) -> std::pair<odk::framework::StreamIterator, double>
+        {
+            const std::uint64_t channel_id = m_input_channels->getValue().m_values.at(index);
+            context.m_channel_iterators[channel_id].setSkipGaps(false);
+            return std::make_pair(context.m_channel_iterators[channel_id], getInputChannelProxy(channel_id)->getTimeBase().m_frequency);
+        };
 
-            if (m_resampling_enabled)
+        std::array<std::pair<odk::framework::StreamIterator, double>, 2> iterators = {
+            prepare_iterator(0),
+            prepare_iterator(1)
+        };
+
+        std::uint64_t start_sample = odk::convertTimeToTickAtOrAfter(context.m_window.first,  m_timebase_frequency);
+        std::uint64_t end_sample =   odk::convertTimeToTickAtOrAfter(context.m_window.second, m_timebase_frequency);
+
+        std::vector<double> samples(end_sample - start_sample);
+        std::size_t output_sample_index = 0;
+
+        if (m_resampling_enabled)
+        {
+            for (auto sample_index = start_sample; sample_index < end_sample; ++sample_index)
             {
-                while ((start_sample + sample_index) < end_sample)
+                // Compute output time in seconds
+                const double output_time = convertTickToTime(sample_index, m_timebase_frequency);
+
+                // Read all input channels up until output_time (channels with slower sample rate might reuse the old value when no newer sample is available)
+                for (std::size_t channel_index = 0; channel_index < 2; ++channel_index)
                 {
-                    double output_time = convertTickToTime((start_sample + sample_index), m_timebase_frequency);
-                    int channel_index = 0;
-
-                    for (auto& channel_iterator : iterators)
-                    {
-                        auto& iterator = channel_iterator.first;
-                        const auto& timebase = channel_iterator.second;
-                        while (iterator.valid() &&
-                            iterator.timestamp() / timebase.m_frequency <= output_time)
-                        {
-                            m_current_values[channel_index] = iterator.value<double>();
-                            ++iterator;
-                        }
-                        ++channel_index;
-                    }
-
-                    samples[output_sample_index] = m_current_values[0] + m_current_values[1];
-                    ++output_sample_index;
-                    ++sample_index;
-                }
-
-                int channel_index = 0;
-                for (auto& channel_iterator : iterators)
-                {
-                    auto& iterator = channel_iterator.first;
-                    while (iterator.data())
+                    auto& iterator = iterators[channel_index].first;
+                    const double timebase_frequency = iterators[channel_index].second;
+                    while (iterator.valid() &&
+                        iterator.timestamp() / timebase_frequency <= output_time)
                     {
                         m_current_values[channel_index] = iterator.value<double>();
                         ++iterator;
                     }
-                    ++channel_index;
                 }
-            }
-            else
-            {
-                while ((start_sample + sample_index) < end_sample)
-                {                   
-                    samples[output_sample_index] = iterators[0].first.value<double>() + iterators[1].first.value<double>();
-                    ++iterators[0].first;
-                    ++iterators[1].first;
-                    ++output_sample_index;
-                    ++sample_index;
-                }
+
+                samples[output_sample_index++] = computeOutput();
             }
 
-            if (output_sample_index > 0)
+            // Read remaining samples to prevent missing samples in the next call of process
+            for (std::size_t channel_index = 0; channel_index < 2; ++channel_index)
             {
-                samples.resize(output_sample_index);
-                addSamples(host, sync_out_channel->getLocalId(), start_sample, samples.data(), sizeof(double) * samples.size());
+                auto& iterator = iterators[channel_index].first;
+                while (iterator.data())
+                {
+                    m_current_values[channel_index] = iterator.value<double>();
+                    ++iterator;
+                }
             }
+        }
+        else
+        {
+            // no resampling required, read every sample from both input channels and compute an output sample
+            for (auto sample_index = start_sample; sample_index < end_sample; ++sample_index)
+            {
+                for (std::size_t channel_index = 0; channel_index < 2; ++channel_index)
+                {
+                    auto& iterator = iterators[channel_index].first;
+                    m_current_values[channel_index] = iterator.value<double>();
+                    ++iterator;
+                }
+
+                samples[output_sample_index++] = computeOutput();
+            }
+        }
+
+        if (output_sample_index > 0)
+        {
+            // write "output_sample_index" samples to the output channel
+            addSamples(host, sync_out_channel->getLocalId(), start_sample, samples.data(), sizeof(double) * output_sample_index);
         }
     }
 
@@ -306,26 +315,41 @@ public:
     }
 
 private:
+    /**
+     * Convert from tick values to time in seconds
+     */
+    ODK_NODISCARD static double convertTickToTime(std::uint64_t tick, double frequency)
+    {
+        return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
+    }
+
+    /**
+     * Perform the actual calculation with the current sample values
+     */
+    ODK_NODISCARD inline double computeOutput() const
+    {
+        return m_current_values[0] + m_current_values[1];
+    }
+
+    /**
+     * If all channels are synchronous and have the same sample rate, we can directly sum the input values. Otherwise, we need to resample. 
+     */
     void updateNeedsResampling()
     {
-        m_resampling_enabled = false;
-
         for (auto& input_channel : getInputChannelProxies())
         {
             const auto sample_format = input_channel->getDataFormat();
             const auto timebase = input_channel->getTimeBase();
 
-            if (!m_resampling_enabled)
+            if (sample_format.m_sample_occurrence != odk::ChannelDataformat::SampleOccurrence::SYNC ||
+                timebase.m_frequency != m_timebase_frequency)
             {
-                m_resampling_enabled = sample_format.m_sample_occurrence != odk::ChannelDataformat::SampleOccurrence::SYNC
-                    || timebase.m_frequency != m_timebase_frequency;
-
-                if (m_resampling_enabled)
-                {
-                    break;
-                }
+                m_resampling_enabled = true;
+                return;
             }
         }
+
+        m_resampling_enabled = false;
     }
 
     // move to base?
@@ -343,8 +367,6 @@ public:
         addTranslation(TRANSLATION_EN);
         addTranslation(TRANSLATION_DE);
     }
-
 };
 
 OXY_REGISTER_PLUGIN1("ODK_SUM_CHANNELS", PLUGIN_MANIFEST, MyExamplePlugin);
-
