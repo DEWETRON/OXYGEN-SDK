@@ -76,7 +76,9 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
       unit_test_framework
     )
   else()
-    set(BOOST_MODULES)
+    set(BOOST_MODULES
+      unit_test_framework
+    )
   endif()
 
   find_package(Boost     REQUIRED COMPONENTS

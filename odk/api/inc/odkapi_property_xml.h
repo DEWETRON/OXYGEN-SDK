@@ -23,10 +23,14 @@ namespace odk
     class PropertyList;
     struct Scalar
     {
-        Scalar();
-        Scalar(const double& val, const std::string& unit);
+        Scalar() noexcept;
+#if ODK_CPLUSPLUS >= 201703L
+        Scalar(double val, std::string_view unit);
+#else
+        Scalar(double val, const std::string& unit);
+#endif
 
-        bool operator==(Scalar const& other) const;
+        ODK_NODISCARD bool operator==(Scalar const& other) const;
 
         double m_val;
         std::string m_unit;

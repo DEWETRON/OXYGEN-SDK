@@ -14,13 +14,13 @@ jobs:
     - name: Update dependencies
       run: sudo apt-get update
     - name: Install Boost
-      run: sudo apt-get install -yq libboost-dev
+      run: sudo apt-get install -yq libboost-dev libboost-test-dev
     - name: Install Qt
       #uses: jurplel/install-qt-action@v2
       run: sudo apt-get install -yq qt5-default
     - uses: actions/checkout@v2
     - name: run cmake
-      run: cmake -Bbuild -H.
+      run: cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release
     - name: build API
-      run: cmake --build build/ --target all
+      run: cmake --build build/ --target all --parallel
 

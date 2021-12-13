@@ -1627,12 +1627,16 @@ namespace odk
         }
     }
 
-    Scalar::Scalar()
+    Scalar::Scalar() noexcept
         : m_val(0.0)
         , m_unit()
     {}
 
-    Scalar::Scalar(const double& val, const std::string & unit)
+#if ODK_CPLUSPLUS >= 201703L
+    Scalar::Scalar(double val, std::string_view unit)
+#else
+    Scalar::Scalar(double val, const std::string & unit)
+#endif
         : m_val(val)
         , m_unit(unit)
     {
