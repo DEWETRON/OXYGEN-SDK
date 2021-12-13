@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-    # install dependencies
     - name: Update dependencies
       run: sudo apt-get update
     - name: Install Boost
@@ -20,7 +19,9 @@ jobs:
       run: sudo apt-get install -yq qt5-default
     - uses: actions/checkout@v2
     - name: run cmake
-      run: cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release
+      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
     - name: build API
       run: cmake --build build/ --target all --parallel
+    - name: Run CTest
+      run: cd build && ctest && cd ..
 

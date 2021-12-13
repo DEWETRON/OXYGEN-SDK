@@ -60,7 +60,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   SetBoostOptions() # set static, dynamic ...
 
   set(UNIT_TEST_SUFFIX test)
-
+  enable_testing()
 
   if (NOT GITHUB_REPO)
     set(BOOST_MODULES
