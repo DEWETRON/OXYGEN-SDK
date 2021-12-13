@@ -10,6 +10,8 @@
 #include "odkapi_channel_dataformat_xml.h"
 #include "odkapi_channel_mapping_xml.h"
 
+#include "odkuni_assert.h"
+
 namespace
 {
     template <class T>

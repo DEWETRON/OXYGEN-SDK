@@ -2,6 +2,7 @@
 
 #include "odkapi_utils.h"
 #include "odkbase_basic_values.h"
+#include "odkbase_if_host.h"
 #include "odkbase_message_return_value_holder.h"
 
 std::uint64_t PLUGIN_API odk::framework::PluginBase::pluginMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret)

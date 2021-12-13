@@ -35,7 +35,7 @@ namespace
             : Chunk("RIFF", size + sizeof(this->wave))
         {
             BOOST_STATIC_ASSERT(sizeof(*this) == 12);
-            std::strncpy(this->wave, "WAVE", sizeof(this->wave));
+            memcpy(this->wave, "WAVE", sizeof(this->wave));
         }
         char wave[4];
     };

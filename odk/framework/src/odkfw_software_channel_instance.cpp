@@ -15,6 +15,7 @@
 #include "odkfw_property_list_utils.h"
 #include "odkfw_stream_reader.h"
 #include "odkuni_logger.h"
+#include "odkuni_assert.h"
 
 namespace odk
 {

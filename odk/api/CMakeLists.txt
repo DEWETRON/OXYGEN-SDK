@@ -64,6 +64,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_types.cpp
     src/odkapi_update_channels_xml.cpp
     src/odkapi_update_config_xml.cpp
+    src/odkapi_utils.cpp
     src/odkapi_version_xml.cpp
 )
 source_group("Source Files" FILES ${ODK_API_SOURCE_FILES})
