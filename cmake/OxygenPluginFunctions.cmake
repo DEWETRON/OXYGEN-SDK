@@ -64,7 +64,7 @@ endmacro()
 
 macro(AddTranslationResources TGT SRC_DIR OUT_PATH)
     get_filename_component(ABS_SRC_DIR ${SRC_DIR} ABSOLUTE)
-    
+
     file(GLOB _TS_FILES CONFIGURE_DEPENDS "${ABS_SRC_DIR}/*.ts")
     message("Translation = ${_TS_FILES}")
     foreach(_TS_FILE ${_TS_FILES})
@@ -105,7 +105,6 @@ macro(AddUpdateTranslations TGT SRC_DIR PRIMARY_LANGUAGE)
 				WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${LANG_CODE}
 				)
 			set_target_properties(update_translation_${_LANG_CODE} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-			#set_target_properties(update_translation_${LANG_CODE} PROPERTIES FOLDER "odk_examples/ex_wav_export")
 		endforeach()
 	endif()
 endmacro()
@@ -120,13 +119,16 @@ macro(AddTranslationList TGT SRC_DIR PRIMARY_LANGUAGE OUT_PATH)
 
 	#Write header
 	file(APPEND ${OUTPUT_HEADER} "#pragma once\n")
+	file(APPEND ${OUTPUT_HEADER} "#include \"odkbase_if_host_fwd.h\"\n")
     file(APPEND ${OUTPUT_HEADER} "namespace plugin_resources {\n")
     file(APPEND ${OUTPUT_HEADER} "  bool addAllTranslations(odk::IfHost* host);\n")
     file(APPEND ${OUTPUT_HEADER} "}\n")
 
 	#Write source
+	file(APPEND ${OUTPUT_FILE} "#include \"all_translations.h\"\n")
+	file(APPEND ${OUTPUT_FILE} "#include \"odkapi_message_ids.h\"\n")
 	file(APPEND ${OUTPUT_FILE} "#include \"odkapi_utils.h\"\n")
-	
+
 	get_filename_component(_OUTPUT_BASENAME ${PRIMARY_TS} NAME)
 	file(APPEND ${OUTPUT_FILE} "#include \"${_OUTPUT_BASENAME}.h\"\n")
 
@@ -145,7 +147,7 @@ macro(AddTranslationList TGT SRC_DIR PRIMARY_LANGUAGE OUT_PATH)
     file(APPEND ${OUTPUT_FILE} "    return true;\n")
 	file(APPEND ${OUTPUT_FILE} "  }\n")
     file(APPEND ${OUTPUT_FILE} "}\n")
-	
+
 
     file(APPEND ${OUTPUT_FILE} "namespace plugin_resources {\n")
 
