@@ -13,6 +13,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   # studio project name
   project(ODK)
 
+  option(WITH_TEST "Enable Unit Tests" OFF)
 
   if( MSVC )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
@@ -59,8 +60,13 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   
   SetBoostOptions() # set static, dynamic ...
 
-  set(UNIT_TEST_SUFFIX test)
-  enable_testing()
+  if (WITH_TESTS)
+    set(UNIT_TEST_SUFFIX test)
+    enable_testing()
+    set(TEST_LIBS unit_test_framework)
+  else()
+    set(TEST_LIBS)
+  endif(WITH_TESTS)
 
   if (NOT GITHUB_REPO)
     set(BOOST_MODULES
@@ -73,11 +79,11 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
       regex
       system
       thread
-      unit_test_framework
+      ${TEST_LIBS}
     )
   else()
     set(BOOST_MODULES
-      unit_test_framework
+      ${TEST_LIBS}
     )
   endif()
 

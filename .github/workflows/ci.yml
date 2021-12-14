@@ -19,7 +19,7 @@ jobs:
       run: sudo apt-get install -yq qt5-default
     - uses: actions/checkout@v2
     - name: run cmake
-      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
+      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=Release -DWITH_TESTS=ON
     - name: build API
       run: cmake --build build/ --target all --parallel
     - name: Run CTest

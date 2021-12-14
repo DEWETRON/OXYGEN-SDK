@@ -83,4 +83,6 @@ target_include_directories(${LIBNAME} INTERFACE
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
 
 # Unit Tests
-add_subdirectory(unit_tests)
+if (WITH_TESTS)
+  add_subdirectory(unit_tests)
+endif (WITH_TESTS)
