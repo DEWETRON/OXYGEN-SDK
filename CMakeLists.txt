@@ -80,10 +80,10 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     message(STATUS "Building with ODK unit tests")
     set(BOOST_MODULES ${BOOST_MODULES} unit_test_framework)
   endif()
+
   find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
 
   if (WITH_ODK_TESTS)
-    message(STATUS "Building with ODK unit tests")
     set(UNIT_TEST_SUFFIX test)
     enable_testing()
   endif()
