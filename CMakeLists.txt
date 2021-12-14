@@ -13,8 +13,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   # studio project name
   project(ODK)
 
-  option(WITH_TEST "Enable Unit Tests" OFF)
-
   if( MSVC )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   else()
@@ -57,16 +55,10 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   endif()
 
   message(STATUS "GITHUB_REPO = ${GITHUB_REPO}")
-  
+
   SetBoostOptions() # set static, dynamic ...
 
-  if (WITH_TESTS)
-    set(UNIT_TEST_SUFFIX test)
-    enable_testing()
-    set(TEST_LIBS unit_test_framework)
-  else()
-    set(TEST_LIBS)
-  endif(WITH_TESTS)
+  option(WITH_ODK_TESTS "Enable Unit Tests" OFF)
 
   if (NOT GITHUB_REPO)
     set(BOOST_MODULES
@@ -79,17 +71,22 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
       regex
       system
       thread
-      ${TEST_LIBS}
     )
   else()
-    set(BOOST_MODULES
-      ${TEST_LIBS}
-    )
+    set(BOOST_MODULES)
   endif()
 
-  find_package(Boost     REQUIRED COMPONENTS
-    ${BOOST_MODULES}
-    )
+  if (WITH_ODK_TESTS)
+    message(STATUS "Building with ODK unit tests")
+    set(BOOST_MODULES ${BOOST_MODULES} unit_test_framework)
+  endif()
+  find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
+
+  if (WITH_ODK_TESTS)
+    message(STATUS "Building with ODK unit tests")
+    set(UNIT_TEST_SUFFIX test)
+    enable_testing()
+  endif()
 
   if (EXISTS "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts")
     AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
@@ -104,9 +101,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   endif()
 
   find_package(SDKQt REQUIRED)
-
 endif()
 
 add_subdirectory(odk)
 add_subdirectory(examples)
-
