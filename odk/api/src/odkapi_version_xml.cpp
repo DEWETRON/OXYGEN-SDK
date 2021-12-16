@@ -5,7 +5,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
-#include <string>
 #include <vector>
 
 namespace odk
@@ -26,20 +25,20 @@ namespace odk
         node.append_attribute("protocol_version").set_value(version.generate().c_str());
     }
 
-    Version::Version(unsigned major, unsigned minor)
+    Version::Version(unsigned major, unsigned minor) noexcept
         : m_major(major)
         , m_minor(minor)
     {
     }
 
-    bool Version::isValid() const
+    bool Version::isValid() const noexcept
     {
         return m_major != 0;
     }
 
     std::string Version::generate() const
     {
-        return boost::lexical_cast<std::string>(m_major) + "." + boost::lexical_cast<std::string>(m_minor);
+        return std::to_string(m_major) + "." + std::to_string(m_minor);
     }
 
     Version Version::parse(const char* str)
@@ -70,25 +69,25 @@ namespace odk
         return Version(major, minor);
     }
 
-    bool Version::operator!=(const Version& other) const
+    bool Version::operator!=(const Version& other) const noexcept
     {
         return m_major != other.m_major
             || m_minor != other.m_minor;
     }
 
-    bool Version::operator==(const Version& other) const
+    bool Version::operator==(const Version& other) const noexcept
     {
         return m_major == other.m_major
             && m_minor == other.m_minor;
     }
 
-    bool Version::operator<=(const Version& other) const
+    bool Version::operator<=(const Version& other) const noexcept
     {
         return m_major < other.m_major
             || (m_major == other.m_major && m_minor <= other.m_minor);
     }
 
-    bool Version::operator>=(const Version& other) const
+    bool Version::operator>=(const Version& other) const noexcept
     {
         return m_major > other.m_major
             || (m_major == other.m_major && m_minor >= other.m_minor);

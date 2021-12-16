@@ -11,7 +11,9 @@ include_directories(
 )
 
 set(ODKAPI_TEST_SOURCES
+  odkapi_acquisition_task_test.cpp
   odkapi_property_test.cpp
+  odkapi_version_test.cpp
   test_module.cpp
 )
 source_group("Test Sources" FILES ${ODKAPI_TEST_SOURCES})

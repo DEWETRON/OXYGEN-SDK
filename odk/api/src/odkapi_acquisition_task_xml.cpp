@@ -83,10 +83,6 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    AcquisitionTaskProcessTelegram::AcquisitionTaskProcessTelegram()
-    {
-    }
-
     bool AcquisitionTaskProcessTelegram::parse(const char* xml_string)
     {
         pugi::xml_document doc;

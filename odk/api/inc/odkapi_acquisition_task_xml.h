@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkapi_timestamp_xml.h"
+#include "odkuni_defines.h"
 
 #include <cstdint>
 #include <string>
@@ -16,7 +17,7 @@ namespace odk
 
         bool parse(const char* xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
         std::vector<std::uint64_t> m_input_channels;
@@ -26,11 +27,9 @@ namespace odk
     class AcquisitionTaskProcessTelegram
     {
     public:
-        AcquisitionTaskProcessTelegram();
-
         bool parse(const char* xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         odk::Timestamp m_start;
         odk::Timestamp m_end;
