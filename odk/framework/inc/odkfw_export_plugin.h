@@ -98,7 +98,7 @@ namespace framework
                     if (ret)
                     {
                         auto error_xml = response.generate();
-                        auto result = getHost()->createValue<odk::IfXMLValue>();
+                        auto result = getHost()->template createValue<odk::IfXMLValue>();
                         result->set(error_xml.c_str());
                         *ret = result.detach();
                     }

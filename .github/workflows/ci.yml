@@ -6,9 +6,17 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  BUILD_TYPE: Release
+
 jobs:
   build:
     runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        cc: [g++, clang++]
+
     steps:
     - name: Update dependencies
       run: sudo apt-get update
@@ -18,9 +26,9 @@ jobs:
       #uses: jurplel/install-qt-action@v2
       run: sudo apt-get install -yq qt5-default
     - uses: actions/checkout@v2
-    - name: run cmake
-      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=Release -DWITH_ODK_TESTS=ON
-    - name: build API
+    - name: Run CMake
+      run: cmake -Bbuild -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_COMPILER=${{ matrix.cc }} -DWITH_ODK_TESTS=ON
+    - name: Build API
       run: cmake --build build/ --target all --parallel
     - name: Run CTest
       run: cd build && ctest && cd ..
