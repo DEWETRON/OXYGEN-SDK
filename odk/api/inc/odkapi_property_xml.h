@@ -23,12 +23,8 @@ namespace odk
     class PropertyList;
     struct Scalar
     {
-        Scalar() noexcept;
-#if ODK_CPLUSPLUS >= 201703L
-        Scalar(double val, std::string_view unit);
-#else
-        Scalar(double val, const std::string& unit);
-#endif
+        Scalar() noexcept : m_val(0) {}
+        Scalar(double val, std::string unit);
 
         ODK_NODISCARD bool operator==(Scalar const& other) const;
 
@@ -195,19 +191,19 @@ namespace odk
         static Type getPropertyTypeFromValue(const ChannelIDList&) { return CHANNEL_ID_LIST; }
         static Type getPropertyTypeFromValue(const PropertyList&) { return PROPERTY_LIST; }
         static Type getPropertyTypeFromValue(const std::string&) { return STRING; }
-        static Type getPropertyTypeFromValue(const unsigned int&) { return UNSIGNED_INTEGER; }
-        static Type getPropertyTypeFromValue(const bool&) { return BOOLEAN; }
-        static Type getPropertyTypeFromValue(const int&) { return INTEGER; }
-        static Type getPropertyTypeFromValue(const std::int64_t&) { return INTEGER64; }
-        static Type getPropertyTypeFromValue(const std::uint64_t&) { return UNSIGNED_INTEGER64; }
-        static Type getPropertyTypeFromValue(const double&) { return FLOATING_POINT_NUMBER; }
+        static Type getPropertyTypeFromValue(const char*) { return STRING; }
+        static Type getPropertyTypeFromValue(unsigned int) { return UNSIGNED_INTEGER; }
+        static Type getPropertyTypeFromValue(bool) { return BOOLEAN; }
+        static Type getPropertyTypeFromValue(int) { return INTEGER; }
+        static Type getPropertyTypeFromValue(std::int64_t) { return INTEGER64; }
+        static Type getPropertyTypeFromValue(std::uint64_t) { return UNSIGNED_INTEGER64; }
+        static Type getPropertyTypeFromValue(double) { return FLOATING_POINT_NUMBER; }
 
-        Property();
-        Property(const Property& other);
-        explicit Property(const std::string& name);
+        Property() noexcept;
+        Property(std::string name) noexcept;
 
-        Property(const std::string& name, const std::string& string_value);
-        Property(const std::string& name, const char* const string_value);
+        Property(std::string name, std::string string_value) noexcept;
+        Property(std::string name, const char* string_value);
         Property(const std::string& name, bool value);
         Property(const std::string& name, int value);
         Property(const std::string& name, unsigned int value);
@@ -215,10 +211,10 @@ namespace odk
         Property(const std::string& name, Type type, const std::string& value);
 
         template <class T>
-        Property(const std::string& name, T value)
-            : m_name(name)
+        Property(std::string name, T value)
+            : m_name(std::move(name))
             , m_type(getPropertyTypeFromValue(value))
-            , m_value(std::make_shared<T>(value))
+            , m_value(std::make_shared<T>(std::move(value)))
         {
         }
 

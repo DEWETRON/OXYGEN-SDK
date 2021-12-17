@@ -51,37 +51,26 @@ namespace
 
 namespace odk
 {
-    Property::Property()
-        : m_name("")
-        , m_type(UNKNOWN)
-        , m_value()
+    Property::Property() noexcept
+        : m_type(UNKNOWN)
     {
     }
 
-    Property::Property(const Property& other)
-        : m_name(other.m_name)
-        , m_type(other.m_type)
-        , m_enum_type(other.m_enum_type)
-        , m_string_value(other.m_string_value)
-        , m_value(other.m_value)
-    {
-    }
-
-    Property::Property(const std::string& name)
-        : m_name(name)
+    Property::Property(std::string name) noexcept
+        : m_name(std::move(name))
         , m_type(UNKNOWN)
     {
     }
 
-    Property::Property(const std::string& name, const std::string& string_value)
-        : m_name(name)
+    Property::Property(std::string name, std::string string_value) noexcept
+        : m_name(std::move(name))
         , m_type(STRING)
-        , m_string_value(string_value)
+        , m_string_value(std::move(string_value))
     {
     }
 
-    Property::Property(const std::string& name, const char* const string_value)
-        : m_name(name)
+    Property::Property(std::string name, const char* string_value)
+        : m_name(std::move(name))
         , m_type(STRING)
         , m_string_value(string_value)
     {
@@ -125,7 +114,7 @@ namespace odk
 
     std::string Property::getNodeName() const
     {
-        return {"Property"};
+        return "Property";
     }
 
     bool Property::operator==(Property const& other) const
@@ -1506,7 +1495,7 @@ namespace odk
     {
         if (unit_string.empty())
         {
-            return "";
+            return {};
         }
         return " " + unit_string;
     }
@@ -1627,18 +1616,9 @@ namespace odk
         }
     }
 
-    Scalar::Scalar() noexcept
-        : m_val(0.0)
-        , m_unit()
-    {}
-
-#if ODK_CPLUSPLUS >= 201703L
-    Scalar::Scalar(double val, std::string_view unit)
-#else
-    Scalar::Scalar(double val, const std::string & unit)
-#endif
+    Scalar::Scalar(double val, std::string unit)
         : m_val(val)
-        , m_unit(unit)
+        , m_unit(std::move(unit))
     {
     }
 

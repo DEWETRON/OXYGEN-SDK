@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "odkapi_version_xml.h"
+#include "odkuni_defines.h"
 #include "odkuni_logger.h"
 #include "odkuni_string_util.h"
+#include "odkapi_version_xml.h"
 #include "pugixml.hpp"
 
 #include <string>
@@ -20,19 +21,24 @@ namespace odk
     class NodeList
     {
     public:
-        size_t size() const
+        ODK_NODISCARD size_t size() const noexcept
         {
             return m_nodes.size();
         }
 
-        bool empty() const
+        ODK_NODISCARD bool empty() const noexcept
         {
-            return m_nodes.size() == 0;
+            return m_nodes.empty();
         }
 
         void append(const T& property)
         {
             m_nodes.push_back(property);
+        }
+
+        void append(T&& property)
+        {
+            m_nodes.push_back(std::move(property));
         }
 
         void insert(size_t idx, const T& property)
