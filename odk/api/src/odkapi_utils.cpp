@@ -103,6 +103,7 @@ namespace odk
 
     std::uint64_t sendSyncXMLMessage(odk::IfHost* host, odk::MessageId msg_id, std::uint64_t key, const char* param_data, size_t param_size, const odk::IfValue** ret)
     {
+        ODK_UNUSED(param_size);
         auto xml_msg = host->createValue<odk::IfXMLValue>();
         xml_msg->set(param_data);
         ODK_ASSERT_EQUAL(xml_msg->getLength(), param_size - 1);

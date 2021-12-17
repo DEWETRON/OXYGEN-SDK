@@ -217,6 +217,7 @@ namespace odk
             , m_value(std::make_shared<T>(std::move(value)))
         {
         }
+        virtual ~Property() = default;
 
         std::string getNodeName() const;
 
