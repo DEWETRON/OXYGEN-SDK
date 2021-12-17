@@ -1,7 +1,7 @@
 # DEWETRON OXYGEN SDK
 Develop your own plugins for DEWETRON Oxygen Software! The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
-The following functionality is currently supported in the SDK and 'Oxygen 5.4':
+The following functionality is currently supported in the SDK and 'Oxygen 6.0':
 - Read and Write data from/to numeric channels (Scalar and Vector)
 - Create channels
 - Create config items for setup save/load and user config 
@@ -30,7 +30,9 @@ If you are interested in one of the non-implemented features, please contact us!
 
 
 # What is DEWETRON Oxygen Software?
-The OXYGEN measurement software is the most intuitive and easy-to-use software in the data acquisition sector, designed to be operated via touchscreen or classic mouse and keyboard. Its nice instruments and controls make it fun to navigate through tons of data. 100 % Made in Austria by DEWETRON.
+The OXYGEN measurement software is the most intuitive and easy-to-use software in the data acquisition sector, designed to be operated via touchscreen or classic mouse and keyboard.
+Its nice instruments and controls make it fun to navigate through tons of data.
+100% Made in Austria by DEWETRON.
 
 Check out https://www.dewetron.com/products/oxygen-measurement-software/ for more information.
 
@@ -41,7 +43,7 @@ The current version of Oxygen for SDK users can be downloaded from the customer 
 - Create a user account
 - Navigate to DOWNLOADS -> SOFTWARE & TOOLS -> OXYGEN
 (https://ccc.dewetron.com/pl/oxygen)
-- Click on the latesr DEWETRON Oxygen R5.X.X installer.
+- Click on the latest DEWETRON Oxygen R6.X.X installer.
 
 
 # Contact
@@ -70,7 +72,7 @@ gunther.laure@dewetron.com
 # License
 MIT License
 
-Copyright (c) 2020 DEWETRON
+Copyright (c) 2021 DEWETRON
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

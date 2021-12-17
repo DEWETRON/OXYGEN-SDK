@@ -34,14 +34,13 @@ we provide a minimal archive (qt_resource_compiler.zip) in the Releases section.
 Quick Summary for Experienced C++ Developers
 --------------------------------------------
 
-  * Boost has to be extracted to to find the header files at
+  * Boost has to be extracted to find the header files at
     {repo-root}\\3rdparty\\boost_1_*\\boost
 
   * Optionally: Qt 5.12.x has to be installed on the system.
     This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.12.6\\msvc2017_64)
 
-  * Alternative: extract qt_resource_compiler.zip to the SDK workspace
-
+  * Alternative: extract `qt_resource_compiler.zip` to the SDK workspace (this file can be found in the github releases (https://github.com/DEWETRON/OXYGEN-SDK/releases))
 
   * Main CMakeLists.txt file in root directory of the repository
     references the SDK and all example plugins.
@@ -110,4 +109,3 @@ to c:\\OXYGEN-SDK.
 
     This can be verified by looking at
     'System Settings' -> 'Extensions and Plugins' -> 'Overview'
-
