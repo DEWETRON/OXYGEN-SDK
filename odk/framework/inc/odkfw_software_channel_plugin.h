@@ -222,9 +222,10 @@ namespace framework
                 if (parseXMLValue(param, telegram))
                 {
                     std::vector<InputChannel::InputChannelData> input_channel_data;
+                    input_channel_data.reserve(telegram.m_all_selected_channels_data.size());
                     for (const auto& a_channel : telegram.m_all_selected_channels_data)
                     {
-                        input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format });
+                        input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format, odk::Timebase() });
                     }
 
                     odk::QuerySoftwareChannelActionResponse response;
@@ -254,9 +255,10 @@ namespace framework
                     instance->initInstance(getHost());
 
                     std::vector<InputChannel::InputChannelData> input_channel_data;
+                    input_channel_data.reserve(telegram.m_all_selected_channels_data.size());
                     for (const auto& a_channel : telegram.m_all_selected_channels_data)
                     {
-                        input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format });
+                        input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format, odk::Timebase() });
                     }
 
                     odk::framework::SoftwareChannelInstance::InitParams init_params{input_channel_data, telegram.m_properties};
