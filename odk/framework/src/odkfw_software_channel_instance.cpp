@@ -147,7 +147,7 @@ namespace framework
         //if any selected, all are meant (original behaviour)
         std::vector < std::uint32_t> channels_to_delete;
         const auto all_channels = getOutputChannels();
-        for (const auto a_channel : all_channels)
+        for (const auto& a_channel : all_channels)
         {
             channels_to_delete.push_back(a_channel->getLocalId());
         }
@@ -939,7 +939,7 @@ namespace framework
             bool recursive,
             std::vector<PluginChannelPtr>& children)
         {
-            for (const auto a_channel : all_output_channels)
+            for (const auto& a_channel : all_output_channels)
             {
                 auto output_parent = a_channel->getLocalParent();
                 if (output_parent)

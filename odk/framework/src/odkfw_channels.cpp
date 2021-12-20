@@ -596,7 +596,7 @@ namespace framework
     std::set<PluginTaskPtr> PluginChannels::getAffectedTasks(std::uint64_t input_channel_id)
     {
         std::set<PluginTaskPtr> affected_tasks;
-        for (const auto a_task : m_tasks)
+        for (const auto& a_task : m_tasks)
         {
             const auto input_chn_it = std::find(
                 a_task.second->m_input_channels.cbegin(),
@@ -720,7 +720,7 @@ namespace framework
     uint64_t PluginChannels::reserveChannelIds(const odk::ChannelList& telegram)
     {
         m_reseved_ids.clear();
-        for (const auto a_channel_id : telegram.m_channels)
+        for (const auto& a_channel_id : telegram.m_channels)
         {
             m_reseved_ids.insert(static_cast<std::uint32_t>(a_channel_id.m_channel_id));
         }

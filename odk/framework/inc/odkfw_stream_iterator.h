@@ -21,6 +21,7 @@ namespace framework
     {
     public:
         virtual void updateStreamIterator(StreamIterator* iterator) = 0;
+        virtual ~IfIteratorUpdater() = default;
     };
 
     class StreamIterator

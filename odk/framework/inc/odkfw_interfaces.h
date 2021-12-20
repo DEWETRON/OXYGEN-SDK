@@ -23,7 +23,7 @@ namespace framework
         virtual void onChannelPropertyChanged(const PluginChannel* channel, const std::string& name) = 0;
         virtual bool configChangeAllowed() const = 0;
     protected:
-        ~IfPluginChannelChangeListener() {}
+        virtual ~IfPluginChannelChangeListener() = default;
     };
 
     class IfChannelPropertyChangeListener
@@ -31,7 +31,7 @@ namespace framework
     public:
         virtual void onChannelPropertyChanged(const IfChannelProperty* channel) = 0;
     protected:
-        ~IfChannelPropertyChangeListener() {}
+        virtual ~IfChannelPropertyChangeListener() = default;
     };
 
     class IfPluginTaskChangeListener
@@ -41,7 +41,7 @@ namespace framework
         virtual void onTaskChannelRemoved(PluginTask* task, const PluginChannel* channel) = 0;
         virtual void onTaskInputChannelsChanged(PluginTask* task) = 0;
     protected:
-        ~IfPluginTaskChangeListener() {}
+        virtual ~IfPluginTaskChangeListener() = default;
     };
 
 
@@ -52,7 +52,7 @@ namespace framework
         virtual void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const = 0;
         virtual bool update(const odk::Property& value) = 0;
     protected:
-        ~IfChannelProperty() {}
+        virtual ~IfChannelProperty() = default;
     };
 
     class IfTaskWorker
@@ -66,7 +66,7 @@ namespace framework
 
         virtual void onChannelDataformatChanged(std::uint64_t channel_id) { ODK_UNUSED(channel_id); };
     protected:
-        ~IfTaskWorker() {}
+        virtual ~IfTaskWorker() = default;
     };
 
 }
