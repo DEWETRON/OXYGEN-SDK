@@ -76,30 +76,30 @@ namespace odk
     {
     }
 
-    Property::Property(const std::string& name, const std::string& value, const std::string& enum_type)
-        : m_name(name)
+    Property::Property(std::string name, std::string value, std::string enum_type) noexcept
+        : m_name(std::move(name))
         , m_type(ENUM)
-        , m_enum_type(enum_type)
-        , m_string_value(value)
+        , m_enum_type(std::move(enum_type))
+        , m_string_value(std::move(value))
     {
     }
 
-    Property::Property(const std::string& name, bool value)
-        : m_name(name)
+    Property::Property(std::string name, bool value)
+        : m_name(std::move(name))
         , m_type(UNKNOWN)
     {
         setValue(value);
     }
 
-    Property::Property(const std::string& name, int value)
-        : m_name(name)
+    Property::Property(std::string name, int value)
+        : m_name(std::move(name))
         , m_type(UNKNOWN)
     {
         setValue(value);
     }
 
-    Property::Property(const std::string& name, unsigned int value)
-        : m_name(name)
+    Property::Property(std::string name, unsigned int value)
+        : m_name(std::move(name))
         , m_type(UNKNOWN)
     {
         setValue(value);
@@ -140,9 +140,9 @@ namespace odk
         return m_type != UNKNOWN;
     }
 
-    void Property::setName(const std::string& name)
+    void Property::setName(std::string name) noexcept
     {
-        m_name = name;
+        m_name = std::move(name);
     }
 
     const std::string& Property::getName() const
@@ -365,16 +365,12 @@ namespace odk
         return *std::static_pointer_cast<Range>(m_value);
     }
 
-#if ODK_CPLUSPLUS >= 201703L
-    void Property::setEnumValue(std::string_view value, std::string_view enum_type)
-#else
-    void Property::setEnumValue(const std::string& value, const std::string& enum_type)
-#endif
+    void Property::setEnumValue(std::string value, std::string enum_type)
     {
         m_type = ENUM;
-        m_string_value = value;
+        m_string_value = std::move(value);
         m_value.reset();
-        m_enum_type = enum_type;
+        m_enum_type = std::move(enum_type);
     }
 
     const std::string& Property::getEnumValue() const
@@ -629,7 +625,7 @@ namespace odk
                     type.append_attribute("format").set_value(m_enum_type.c_str());
                 }
                 // string property uses quotes to preserve whitespaces
-                const std::string& single_value = "\"" + m_string_value + "\"";
+                const std::string single_value = '\"' + m_string_value + '\"';
                 xpugi::setText(type, single_value);
                 break;
             }
@@ -644,8 +640,7 @@ namespace odk
             case CHANNEL_ID:
             case GEO_COORDINATE:
             {
-                const std::string& single_value = m_string_value;
-                xpugi::setText(type, single_value);
+                xpugi::setText(type, m_string_value);
                 break;
             }
             case Property::RANGE:
@@ -670,8 +665,7 @@ namespace odk
             }
             case Property::ENUM:
             {
-                const std::string& single_value = m_string_value;
-                xpugi::setText(type, single_value);
+                xpugi::setText(type, m_string_value);
                 xpugi::setNewAttribute(type, "enum", m_enum_type);
                 break;
             }
@@ -1560,7 +1554,7 @@ namespace odk
                 std::uint32_t num_of_elems = static_cast<std::uint32_t>(list.size());
                 std::uint32_t index = 0;
                 std::string ret_string{};
-                for (Property prop : list)
+                for (const Property& prop : list)
                 {
                     ret_string.append(prop.valueToString());
                     ++index;
@@ -1578,7 +1572,7 @@ namespace odk
                 std::uint32_t index = 0;
                 std::string ret_string{};
                 ret_string.append("(");
-                for (PointList::ValueType point : list.m_values)
+                for (const PointList::ValueType& point : list.m_values)
                 {
                     ret_string.append("[");
                     ret_string.append(boost::lexical_cast<std::string>(point.first));

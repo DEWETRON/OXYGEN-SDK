@@ -14,10 +14,6 @@
 #include <memory>
 #include <vector>
 
-#if ODK_CPLUSPLUS >= 201703L
-#include <string_view>
-#endif
-
 namespace odk
 {
     class PropertyList;
@@ -204,10 +200,10 @@ namespace odk
 
         Property(std::string name, std::string string_value) noexcept;
         Property(std::string name, const char* string_value);
-        Property(const std::string& name, bool value);
-        Property(const std::string& name, int value);
-        Property(const std::string& name, unsigned int value);
-        Property(const std::string& name, const std::string& value, const std::string& enum_type);
+        Property(std::string name, bool value);
+        Property(std::string name, int value);
+        Property(std::string name, unsigned int value);
+        Property(std::string name, std::string value, std::string enum_type) noexcept;
         Property(const std::string& name, Type type, const std::string& value);
 
         template <class T>
@@ -219,10 +215,10 @@ namespace odk
         }
         virtual ~Property() = default;
 
-        std::string getNodeName() const;
+        ODK_NODISCARD std::string getNodeName() const;
 
-        bool operator==(Property const& other) const;
-        bool sameValue(Property const& other) const;
+        ODK_NODISCARD bool operator==(Property const& other) const;
+        ODK_NODISCARD bool sameValue(Property const& other) const;
 
         template <typename T, typename=void>
         struct IsLexCastable : std::false_type {};
@@ -291,22 +287,23 @@ namespace odk
         /**
          * Returns true, if the data in the property is valid
          */
-        bool isValid() const;
+        ODK_NODISCARD bool isValid() const;
 
         /**
          * Sets the name of this property as string
          */
-        void setName(const std::string& name);
+        void setName(std::string name) noexcept;
         /**
          * Returns the name of this property as string
          */
-        const std::string& getName() const;
+        ODK_NODISCARD const std::string& getName() const;
+
         /**
          * Returns the type of this property
          */
-        Type getType() const;
+        ODK_NODISCARD Type getType() const;
 
-        StringFormat getStringFormat() const;
+        ODK_NODISCARD StringFormat getStringFormat() const;
 
         /**
          * Sets the value of this property as string
@@ -318,7 +315,7 @@ namespace odk
          * Returns the value of this property as string
          * This method always returns the property as string, regardless of it's type
          */
-        const std::string& getStringValue() const;
+        ODK_NODISCARD const std::string& getStringValue() const;
 
         /**
          * Sets the value of this property as const char
@@ -333,7 +330,7 @@ namespace odk
          * Returns the value of this property as int
          * If this property is not of type INTEGER, an exception is thrown
          */
-        int getIntValue() const;
+        ODK_NODISCARD int getIntValue() const;
 
         /**
          * Sets the value of this property as unsigned int
@@ -343,7 +340,7 @@ namespace odk
          * Returns the value of this property as int
          * If this property is not of type UNSIGNED_INTEGER, an exception is thrown
          */
-        unsigned int getUnsignedIntValue() const;
+        ODK_NODISCARD unsigned int getUnsignedIntValue() const;
 
         /**
          * Sets the value of this property as unsigned int 64 bit
@@ -353,7 +350,7 @@ namespace odk
          * Returns the value of this property as uint64
          * If this property is not of type UNSIGNED_INTEGER[64], an exception is thrown
          */
-        std::uint64_t getUnsignedInt64Value() const;
+        ODK_NODISCARD std::uint64_t getUnsignedInt64Value() const;
 
         /**
          * Sets the value of this property as signed int 64 bit
@@ -363,7 +360,7 @@ namespace odk
          * Returns the value of this property as sint64
          * If this property is not of type INTEGER[64], an exception is thrown
          */
-        std::int64_t getInt64Value() const;
+        ODK_NODISCARD std::int64_t getInt64Value() const;
 
         /**
          * Sets the value of this property as double
@@ -374,7 +371,7 @@ namespace odk
          * Returns the value of this property as double
          * If this property is not of type FLOATING_POINT_NUMBER, an exception is thrown
          */
-        double getDoubleValue() const;
+        ODK_NODISCARD double getDoubleValue() const;
 
         /**
          * Sets the value of this property as bool
@@ -384,7 +381,7 @@ namespace odk
          * Returns the value of this property as bool
          * If this property is not of type BOOLEAN, an exception is thrown
          */
-        bool getBoolValue() const;
+        ODK_NODISCARD bool getBoolValue() const;
 
         /**
          * Sets the value of this property as scalar
@@ -395,7 +392,7 @@ namespace odk
          * Returns the value of this property as Scalar
          * If this property is not of type SCALAR, an exception is thrown
          */
-        const Scalar& getScalarValue() const;
+        ODK_NODISCARD const Scalar& getScalarValue() const;
 
         void setValue(const DecoratedNumber& value);
 
@@ -403,7 +400,7 @@ namespace odk
          * Returns the value of this property as DecoratedNumber
          * If this property is not of type DECORATED_NUMBER, an exception is thrown
          */
-        const DecoratedNumber& getDecoratedNumberValue() const;
+        ODK_NODISCARD const DecoratedNumber& getDecoratedNumberValue() const;
 
         /**
          * Sets the value of this property as range
@@ -414,27 +411,23 @@ namespace odk
          * Returns the value of this property as Range
          * If this property is not of type RANGE, an exception is thrown
          */
-        const Range& getRangeValue() const;
+        ODK_NODISCARD const Range& getRangeValue() const;
 
         /**
          * Sets the value of this property as enum
          */
-#if ODK_CPLUSPLUS >= 201703L
-        void setEnumValue(std::string_view value, std::string_view enum_type);
-#else
-        void setEnumValue(const std::string& value, const std::string& enum_type);
-#endif
+        void setEnumValue(std::string value, std::string enum_type);
 
         /**
          * Returns the value of this property as string
          * If this property is not of type ENUM, an exception is thrown
          */
-        const std::string& getEnumValue() const;
+        ODK_NODISCARD const std::string& getEnumValue() const;
         /**
          * Returns the enum type of this property as string
          * If this property is not of type ENUM, an exception is thrown
          */
-        const std::string& getEnumType()const;
+        ODK_NODISCARD const std::string& getEnumType()const;
 
         /**
          * Sets the value of this property as PropertyList
@@ -450,7 +443,7 @@ namespace odk
         * Returns the value of this property as DoubleList
         * If this property is not of type FLOATING_POINT_NUMBER_LIST, an exception is thrown
         */
-        DoubleList getDoubleListValue() const;
+        ODK_NODISCARD DoubleList getDoubleListValue() const;
 
         /**
          * Sets the value of this property as StringList
@@ -461,14 +454,14 @@ namespace odk
          * Returns the value of this property as StringList
          * If this property is not of type STRING_LIST, an exception is thrown
          */
-        StringList getStringListValue() const;
+        ODK_NODISCARD StringList getStringListValue() const;
 
         /**
          * Sets the value of this property as Point
          */
         void setValue(const Point& value);
 
-        const Point& getPointValue() const;
+        ODK_NODISCARD const Point& getPointValue() const;
 
         /**
          * Sets the value of this property as PointList
@@ -480,15 +473,15 @@ namespace odk
          */
         void setValue(const Rational& value);
 
-        const Rational& getRationalValue() const;
+        ODK_NODISCARD const Rational& getRationalValue() const;
 
         void setChannelIDValue(const ChannelID& value);
 
-        ChannelID getChannelIDValue() const;
+        ODK_NODISCARD ChannelID getChannelIDValue() const;
 
         void setChannelIDListValue(const ChannelIDList& value);
 
-        ChannelIDList getChannelIDListValue() const;
+        ODK_NODISCARD ChannelIDList getChannelIDListValue() const;
 
         void setDateValue(const std::string& date);
         void setDateTimeValue(const std::string& date_time);
@@ -498,13 +491,13 @@ namespace odk
          * Returns the value of this property as string
          * If this property is not of type POINT_LIST, an exception is thrown
          */
-        PointList getPointListValue() const;
+        ODK_NODISCARD PointList getPointListValue() const;
 
         /**
          * Returns the value of this property as PropertyList
          * If this property is not of type PROPERTY_LIST, an exception is thrown
          */
-        const PropertyList& getPropertyListValue() const;
+        ODK_NODISCARD const PropertyList& getPropertyListValue() const;
 
         virtual pugi::xml_node appendTo(pugi::xml_node parent) const;
         virtual bool readFrom(const pugi::xml_node& tree, const Version& version);
@@ -515,7 +508,7 @@ namespace odk
         /**
         * @brief returns a representable string of the value
         */
-        std::string valueToString() const;
+        ODK_NODISCARD std::string valueToString() const;
 
     private:
         std::string toXMLType(Type type) const;
