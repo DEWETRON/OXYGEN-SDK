@@ -23,7 +23,8 @@ namespace
             : size(static_cast<std::uint32_t>(size))
         {
             BOOST_STATIC_ASSERT(sizeof(*this) == 8);
-            std::strncpy(this->id, id, sizeof(this->id));
+            ODK_ASSERT(std::strlen(id) == 4);
+            std::memcpy(this->id, id, sizeof(this->id));
         }
         char id[4];
         std::uint32_t size;
