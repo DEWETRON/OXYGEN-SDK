@@ -128,8 +128,8 @@ BOOST_AUTO_TEST_CASE(EnumProperty)
     BOOST_CHECK_EQUAL(p2.getStringValue(), "Value");
 
     odk::Property p_notanenum;
-    BOOST_CHECK_THROW(p_notanenum.getEnumType(), std::runtime_error);
-    BOOST_CHECK_THROW(p_notanenum.getEnumValue(), std::runtime_error);
+    BOOST_CHECK_THROW(auto t = p_notanenum.getEnumType(), std::runtime_error);
+    BOOST_CHECK_THROW(auto v = p_notanenum.getEnumValue(), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
