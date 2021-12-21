@@ -31,5 +31,5 @@ jobs:
     - name: Build API
       run: cmake --build build/ --target all --parallel
     - name: Run CTest
-      run: cd build && ctest && cd ..
+      run: cd build && valgrind ctest && cd ..
 
