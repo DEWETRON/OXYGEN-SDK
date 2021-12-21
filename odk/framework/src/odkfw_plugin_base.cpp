@@ -75,5 +75,3 @@ bool odk::framework::PluginBase::addQtResources(const void* rcc_data, std::uint6
     }
     return true;
 }
-
-

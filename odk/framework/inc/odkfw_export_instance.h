@@ -2,9 +2,8 @@
 #pragma once
 
 #include "odkapi_export_xml.h"
-#include "odkbase_basic_values.h"
+#include "odkbase_if_host_fwd.h"
 #include "odkfw_input_channel.h"
-#include "odkfw_interfaces.h"
 #include "odkfw_stream_iterator.h"
 #include "odkuni_defines.h"
 
@@ -47,7 +46,7 @@ namespace framework
 
         void waitForDone();
 
-        uint64_t getID() const;
+        ODK_NODISCARD uint64_t getID() const;
 
         virtual void validate(const ValidationContext& context, odk::ValidateExportResponse& response) const = 0;
         virtual bool exportData(const ProcessingContext& context) = 0;
@@ -62,7 +61,7 @@ namespace framework
         void notifyError() const;
 
     protected:
-        odk::IfHost* getHost() const noexcept;
+        ODK_NODISCARD odk::IfHost* getHost() const noexcept;
 
         void notifyProgress(uint64_t progress) const;
 

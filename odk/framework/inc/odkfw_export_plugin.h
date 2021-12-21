@@ -10,6 +10,7 @@
 #include "odkapi_event_ids.h"
 #include "odkapi_export_xml.h"
 #include "odkapi_utils.h"
+#include "odkuni_defines.h"
 
 namespace odk
 {
@@ -22,6 +23,9 @@ namespace framework
 
         virtual void registerTranslations() {};
         virtual void registerResources() { registerTranslations(); }
+
+        std::uint64_t init(std::string& error_message) final;
+        bool deinit() final;
 
     protected:
 
@@ -41,25 +45,6 @@ namespace framework
         odk::RegisterExport getExportInfo() final
         {
             return ExportInstance::getExportInfo();
-        }
-
-        std::uint64_t init(std::string& error_message) final
-        {
-            if (!checkOxygenCompatibility())
-            {
-                error_message = "Current version of Oxygen is not supported.";
-                return odk::error_codes::UNSUPPORTED_VERSION;
-            }
-
-            registerResources();
-            registerExport();
-            return odk::error_codes::OK;
-        }
-
-        bool deinit() final
-        {
-            unregisterExport();
-            return true;
         }
 
         std::shared_ptr<ExportInstance> getTransaction(uint64_t id)

@@ -80,4 +80,4 @@ target_include_directories(
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
 
 # Unit Tests
-#add_subdirectory(unit_tests)
+add_subdirectory(unit_tests)

@@ -294,7 +294,7 @@ namespace odk
         }
 
         auto format_id_node = export_props_node.append_child("FormatId");
-        format_id_node.append_attribute("mode").set_value(m_format_id.c_str());
+        format_id_node.append_attribute("format").set_value(m_format_id.c_str());
 
         auto filename_node = export_props_node.append_child("Filename");
         filename_node.append_attribute("name").set_value(m_filename.c_str());

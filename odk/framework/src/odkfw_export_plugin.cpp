@@ -45,6 +45,26 @@ namespace framework
         }
         return false;
     }
+
+    std::uint64_t ExportPluginBase::init(std::string& error_message)
+    {
+        if (!checkOxygenCompatibility())
+        {
+            error_message = "Current version of Oxygen is not supported.";
+            return odk::error_codes::UNSUPPORTED_VERSION;
+        }
+
+        registerResources();
+        registerExport();
+        return odk::error_codes::OK;
+    }
+
+    bool ExportPluginBase::deinit()
+    {
+        unregisterExport();
+        return true;
+    }
+
 }
 }
 

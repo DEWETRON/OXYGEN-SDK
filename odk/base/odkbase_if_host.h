@@ -86,7 +86,7 @@ namespace odk
         virtual const IfValue* PLUGIN_API queryXML(const char* context, const char* item, const char* xml, std::uint64_t xml_size) = 0;
 
     protected:
-        ~IfHost() {} // no virtual destructor to keep the vtable clean
+        virtual ~IfHost() = default;
 
 
 #ifdef ODK_EXTENSION_FUNCTIONS
