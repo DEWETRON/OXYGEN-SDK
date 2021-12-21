@@ -38,8 +38,8 @@ namespace framework
 
     class DataRequester : public IfIteratorUpdater
     {
-        uint64_t BLOCK_SIZE = 1000;
-        double BLOCK_LENGTH = 0.1;
+        static constexpr uint64_t BLOCK_SIZE = 1000;
+        static constexpr double BLOCK_LENGTH = 0.1;
 
     public:
         DataRequester(odk::IfHost *host, std::uint64_t channel_id, bool user_reduced = false);

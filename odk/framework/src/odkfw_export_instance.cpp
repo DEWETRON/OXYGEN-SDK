@@ -86,8 +86,7 @@ namespace framework
 
             if (export_waveform)
             {
-                auto raw_requester = std::make_shared<DataRequester>(getHost(), channel_id);
-                m_data_requester.push_back(raw_requester);
+                auto raw_requester = std::make_unique<DataRequester>(getHost(), channel_id);
                 try
                 {
                     m_context.m_channel_iterators[channel_id] =
@@ -97,12 +96,12 @@ namespace framework
                 {
                     // no valid data
                 }
+                m_data_requester.push_back(std::move(raw_requester));
             }
 
             if (export_statistic)
             {
-                auto reduced_requester = std::make_shared<DataRequester>(getHost(), channel_id, true);
-                m_reduced_requester.push_back(reduced_requester);
+                auto reduced_requester = std::make_unique<DataRequester>(getHost(), channel_id, true);
                 try
                 {
                     m_context.m_reduced_channel_iterators[channel_id] =
@@ -112,6 +111,7 @@ namespace framework
                 {
                     // no valid data
                 }
+                m_reduced_requester.push_back(std::move(reduced_requester));
             }
         }
 
@@ -163,7 +163,7 @@ namespace framework
     {
         if (m_canceled.load(std::memory_order_acquire))
         {
-            throw std::runtime_error("transaction canceled");
+            throw std::runtime_error("transaction cancelled");
         }
 
         auto p = m_host->createValue<odk::IfUIntValue>();
