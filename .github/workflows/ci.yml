@@ -20,11 +20,8 @@ jobs:
     steps:
     - name: Update dependencies
       run: sudo apt-get update
-    - name: Install Boost
-      run: sudo apt-get install -yq libboost-dev libboost-test-dev
-    - name: Install Qt
-      #uses: jurplel/install-qt-action@v2
-      run: sudo apt-get install -yq qt5-default
+    - name: Install Requirements
+      run: sudo apt-get install -yq libboost-dev libboost-test-dev qt5-default valgrind
     - uses: actions/checkout@v2
     - name: Run CMake
       run: cmake -Bbuild -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_COMPILER=${{ matrix.cc }} -DWITH_ODK_TESTS=ON
