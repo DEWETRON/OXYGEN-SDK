@@ -4,6 +4,7 @@
 #include "odkapi_data_set_descriptor_xml.h"
 #include "odkapi_block_descriptor_xml.h"
 #include "odkfw_stream_iterator.h"
+#include "odkuni_defines.h"
 
 #include <cstddef>
 #include <map>
@@ -42,18 +43,18 @@ namespace framework
         /**
          * Returns an iterator for a specific channel that iterates across all compatible blocks
          */
-        StreamIterator createChannelIterator(std::uint64_t channel_id) const;
+        ODK_NODISCARD StreamIterator createChannelIterator(std::uint64_t channel_id) const;
 
         /**
          * Returns an iterator for a specific channel that iterates across all compatible blocks
          */
-        StreamIterator createChannelIterator(std::uint64_t channel_id, const odk::Interval<std::uint64_t>& interval) const;
+        ODK_NODISCARD StreamIterator createChannelIterator(std::uint64_t channel_id, const odk::Interval<std::uint64_t>& interval) const;
 
         void updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, const odk::Interval<std::uint64_t>& interval) const;
         /**
          * Returns true if the channel is included in the stream descriptor
          */
-        bool hasChannel(std::uint64_t channel_id) const;
+        ODK_NODISCARD bool hasChannel(std::uint64_t channel_id) const;
 
         void clearBlocks();
 
