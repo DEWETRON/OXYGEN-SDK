@@ -46,7 +46,7 @@ namespace odk
 
             bool isChannel() const
             {
-                return m_channel_id != -1;
+                return m_channel_id != std::numeric_limits<uint32_t>::max();
             }
 
             ChannelGroupInfo& appendChannel(std::uint32_t local_id)
@@ -91,7 +91,7 @@ namespace odk
 
             odk::UpdateConfigTelegram::ChannelConfig m_channel_config;
 
-            explicit PluginChannelInfo(std::uint32_t local_id = -1)
+            explicit PluginChannelInfo(std::uint32_t local_id = std::numeric_limits<uint32_t>::max())
                 : m_local_id(local_id)
                 , m_channel_config(odk::UpdateConfigTelegram::PluginChannelInfo(local_id))
             {

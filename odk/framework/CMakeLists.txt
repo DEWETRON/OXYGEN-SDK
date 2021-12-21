@@ -66,6 +66,11 @@ add_library(${LIBNAME} STATIC
   ${SOURCE_FILES}
 )
 
+if (UNIX)
+  set(LINK_DEPENDENCIES ${LINK_DEPENDENCIES} libpthread.so.0)
+  set_property(TARGET ${LIBNAME} APPEND PROPERTY COMPILE_FLAGS -pthread)
+endif()
+
 target_link_libraries(${LIBNAME}
   ${LINK_DEPENDENCIES}
 )
@@ -80,4 +85,6 @@ target_include_directories(
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
 
 # Unit Tests
-add_subdirectory(unit_tests)
+if (WITH_ODK_TESTS)
+  add_subdirectory(unit_tests)
+endif()

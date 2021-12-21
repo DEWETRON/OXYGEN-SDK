@@ -27,6 +27,7 @@ public:
 
     const odk::IfValue* PLUGIN_API queryXML(const char* context, const char* item, const char* xml, std::uint64_t xml_size) override
     {
+        ODK_UNUSED(xml_size);
         auto xml_param = new XmlValue(xml);
         auto ret = query(context, item, xml_param);
         xml_param->release();

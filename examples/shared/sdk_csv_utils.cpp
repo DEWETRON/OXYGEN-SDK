@@ -5,6 +5,7 @@
 #include <boost/algorithm/hex.hpp>
 
 #include <algorithm>
+#include <limits>
 #include <cctype>
 #include <cstdlib>
 #include <sstream>

@@ -24,10 +24,9 @@ namespace framework
         virtual void registerTranslations() {};
         virtual void registerResources() { registerTranslations(); }
 
+    protected:
         std::uint64_t init(std::string& error_message) final;
         bool deinit() final;
-
-    protected:
 
         void registerExport();
         void unregisterExport();

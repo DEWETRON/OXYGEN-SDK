@@ -127,7 +127,7 @@ namespace
             for (const auto node : request_node.children("Channel"))
             {
                 std::uint32_t local_id = node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
-                if (local_id != -1)
+                if (local_id != std::numeric_limits<uint32_t>::max())
                 {
                     auto& ch = addChannel(local_id);
 
@@ -193,7 +193,7 @@ namespace
                             channel) == sorted_channels.end()
                         ) &&
                         (
-                            (channel.m_local_parent_id == std::uint32_t(-1)) ||
+                            (channel.m_local_parent_id == std::numeric_limits<uint32_t>::max()) ||
                             (std::find_if(
                                 sorted_channels.cbegin(),
                                 sorted_channels.cend(),
@@ -256,7 +256,7 @@ namespace
                 ch.m_timebase.store(channel_node);
             }
 
-            if (ch.m_local_parent_id != -1)
+            if (ch.m_local_parent_id != std::numeric_limits<uint32_t>::max())
             {
                 auto parent_node = channel_node.append_child("Parent");
                 parent_node.append_attribute("local_id").set_value(ch.m_local_parent_id);
@@ -289,7 +289,7 @@ namespace
         std::vector<std::uint32_t> ret;
         for (auto& ch : t.m_channels)
         {
-            if (ch.m_local_parent_id == -1)
+            if (ch.m_local_parent_id == std::numeric_limits<uint32_t>::max())
             {
                 ret.push_back(ch.m_local_id);
             }

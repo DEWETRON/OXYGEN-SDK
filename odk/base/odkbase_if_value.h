@@ -74,7 +74,7 @@ namespace odk
 
     protected:
         IfValue() = default;
-        ~IfValue() = default;
+        virtual ~IfValue() = default;
     };
 
     template <class T, class O>

@@ -16,6 +16,12 @@ namespace
 
         std::uint64_t PLUGIN_API messageSync(odk::MessageId msg_id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret) override
         {
+            ODK_UNUSED(key);
+            if (ret)
+            {
+                *ret = nullptr;
+            }
+
             switch (msg_id)
             {
             case odk::host_msg::EXPORT_REGISTER:
@@ -44,18 +50,27 @@ namespace
 
         std::uint64_t PLUGIN_API messageSyncData(odk::MessageId msg_id, std::uint64_t key, const void* param, std::uint64_t param_size, const odk::IfValue** ret) override
         {
+            ODK_UNUSED(msg_id);
+            ODK_UNUSED(key);
+            ODK_UNUSED(param);
+            ODK_UNUSED(param_size);
+            ODK_UNUSED(ret);
             BOOST_FAIL("Unexpected message");
             return 0;
         }
     
         std::uint64_t PLUGIN_API messageAsync(odk::MessageId msg_id, std::uint64_t key, const odk::IfValue* param) override
         {
+            ODK_UNUSED(msg_id);
+            ODK_UNUSED(key);
+            ODK_UNUSED(param);
             BOOST_FAIL("Unexpected message");
             return 0;
         }
 
         const odk::IfValue* PLUGIN_API query(const char* context, const char* item, const odk::IfValue* param) override
         {
+            ODK_UNUSED(param);
             if (boost::algorithm::equals(context, "#PluginHost"))
             {
                 if (boost::algorithm::equals(item, odk::queries::PluginHost_Name))
@@ -121,7 +136,7 @@ namespace
             response.m_channel_warnings.emplace_back(1, odk::error_codes::INVALID_MODE);
         }
 
-        bool exportData(const ProcessingContext& context) override
+        bool exportData(const ProcessingContext&) override
         {
             return false;
         }
@@ -139,12 +154,12 @@ namespace
         {
             setPluginHost(&m_fixture_host);
             std::string error;
-            static_cast<PluginBase*>(this)->init(error);
+            init(error);
         }
 
         ~Fixture()
         {
-            static_cast<PluginBase*>(this)->deinit();
+            deinit();
         }
 
         FixtureHost m_fixture_host;
