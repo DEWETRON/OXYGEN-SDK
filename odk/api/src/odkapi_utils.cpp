@@ -106,7 +106,7 @@ namespace odk
         ODK_UNUSED(param_size);
         auto xml_msg = host->createValue<odk::IfXMLValue>();
         xml_msg->set(param_data);
-        ODK_ASSERT_EQUAL(xml_msg->getLength(), param_size - 1);
+        ODK_ASSERT_EQUAL(static_cast<std::size_t>(xml_msg->getLength()), param_size - 1);
         return host->messageSync(msg_id, key, xml_msg.get(), ret);
     }
 }

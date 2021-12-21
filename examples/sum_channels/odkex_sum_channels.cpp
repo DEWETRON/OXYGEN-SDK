@@ -186,7 +186,7 @@ public:
         odk::ChannelIDList channel_ids;
         for (auto input_channel_id : current_channel_ids.m_values)
         {
-            if (input_channel_id != -1)
+            if (input_channel_id != std::numeric_limits<uint64_t>::max())
             {
                 channel_ids.m_values.push_back(input_channel_id);
             }

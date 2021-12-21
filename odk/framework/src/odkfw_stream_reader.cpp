@@ -77,7 +77,6 @@ namespace framework
 
     void StreamReader::updateStreamIterator(std::uint64_t channel_id, StreamIterator& iterator, const odk::Interval<std::uint64_t>& interval) const
     {
-        std::uint64_t sample_count = 0;
         iterator.clearRanges();
 
         auto channel_descriptor = getChannelDescriptor(channel_id);
@@ -145,7 +144,6 @@ namespace framework
                         BlockIterator it_block_end(channel_data + data_stride_bytes * bcd.m_count, data_stride_bytes, bcd.m_first_sample_index + bcd.m_count);
                         iterator.addRange(it_block_begin, it_block_end);
                     }
-                    sample_count += bcd.m_count;
                 }
             }
         }
@@ -181,7 +179,7 @@ namespace framework
             iterator.addRange(it_block_begin, it_block_end);
         }
 
-        ODK_ASSERT(iterator.getTotalSampleCount() == sample_count);
+        ODK_ASSERT_EQUAL(iterator.getTotalSampleCount(), sample_count);
     }
 
     void StreamReader::clearBlocks()

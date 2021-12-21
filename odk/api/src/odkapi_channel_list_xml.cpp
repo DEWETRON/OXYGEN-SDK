@@ -26,7 +26,7 @@ namespace odk
             for (const auto channel_node : channels_node.children("Channel"))
             {
                 auto channel_id = channel_node.attribute("channel_id").as_ullong(std::numeric_limits<uint64_t>::max());
-                if (channel_id == -1)
+                if (channel_id == std::numeric_limits<uint64_t>::max())
                     return false;
                 std::string status_str = channel_node.attribute("status").as_string();
                 m_channels.emplace_back(channel_id, status_str);
@@ -59,7 +59,7 @@ namespace odk
     {
         for (const auto& channel : m_channels)
         {
-            if (channel.m_channel_id == -1)
+            if (channel.m_channel_id == std::numeric_limits<uint64_t>::max())
                 return false;
             if (with_status == channel.m_status.empty())
                 return false;

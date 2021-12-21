@@ -5,6 +5,7 @@
 
 #include "odkuni_xpugixml.h"
 
+#include <limits>
 
 namespace odk
 {
@@ -34,7 +35,7 @@ namespace odk
                 if (strcmp(channel_node.name(), "Channel") == 0)
                 {
                     std::uint64_t chn_id = channel_node.attribute("id").as_ullong(std::numeric_limits<uint64_t>::max());
-                    if (chn_id != -1)
+                    if (chn_id != std::numeric_limits<uint64_t>::max())
                     {
                         auto& ch = addChannel(chn_id);
                         ch.readProperties(channel_node);

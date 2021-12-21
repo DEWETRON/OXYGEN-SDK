@@ -117,7 +117,7 @@ public:
                 WavWriter writer(context.m_properties.m_filename.c_str());
                 writer.writeHeader(type, sample_size, static_cast<std::uint32_t>(sample_rate), num_channels, num_samples);
 
-                for(int i = 0; i < num_samples; ++i)
+                for(std::size_t i = 0; i < num_samples; ++i)
                 {
                     if(i % 1000 == 0)
                     {

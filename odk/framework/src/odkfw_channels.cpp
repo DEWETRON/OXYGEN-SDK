@@ -659,6 +659,8 @@ namespace framework
             }
         }
 
+        ODK_UNUSED(unknown_property);
+
         if (!response.m_channel_configs.empty())
         {
             auto xml_msg = m_host->createValue<odk::IfXMLValue>();

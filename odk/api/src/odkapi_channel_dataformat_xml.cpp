@@ -210,7 +210,7 @@ namespace odk
         }
 
         channel_id = channel_node.attribute(XML_NAME_ID_ATTRIBUTE).as_ullong(std::numeric_limits<uint64_t>::max());
-        if (channel_id != -1)
+        if (channel_id != std::numeric_limits<uint64_t>::max())
         {
             return data_format.extract(channel_node);
         }

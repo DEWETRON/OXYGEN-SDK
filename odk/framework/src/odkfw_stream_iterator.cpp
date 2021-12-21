@@ -22,7 +22,7 @@ namespace framework
         {
             ++m_block_index;
 
-            if (m_block_index != m_blocks_ranges.size())
+            if (m_block_index != static_cast<int>(m_blocks_ranges.size()))
             {
                 m_current_iterator = m_blocks_ranges[m_block_index].first;
             }

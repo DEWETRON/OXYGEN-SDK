@@ -142,7 +142,7 @@ namespace odk
                m_size == other.m_size &&
                m_type == other.m_type &&
                m_dimension == other.m_dimension &&
-               m_timestamp_position == other.m_timestamp_position;
+               m_timestamp_position == other.m_timestamp_position &&
                m_sample_size_position == other.m_sample_size_position;
     }
 
