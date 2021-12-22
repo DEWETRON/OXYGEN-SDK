@@ -33,7 +33,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   #
   # Get general cmake settings
   include(CMakeSettings)
-  include(CTest)
 
   #
   # Set static runtime
@@ -81,7 +80,13 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   if (WITH_ODK_TESTS)
     message(STATUS "Building with ODK unit tests")
+
     set(BOOST_MODULES ${BOOST_MODULES} unit_test_framework)
+    set(UNIT_TEST_SUFFIX test)
+
+    include(CTest)
+    enable_testing()
+
     if (UNIX)
       find_program(MEMORYCHECK_COMMAND valgrind)
       set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
@@ -89,11 +94,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   endif()
 
   find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
-
-  if (WITH_ODK_TESTS)
-    set(UNIT_TEST_SUFFIX test)
-    enable_testing()
-  endif()
 
   if (EXISTS "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts")
     AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
