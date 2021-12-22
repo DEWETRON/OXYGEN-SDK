@@ -37,6 +37,9 @@ namespace framework
     protected:
         SoftwareChannelPluginBase();
 
+        std::uint64_t init(std::string& error_message) final;
+        bool deinit() override;
+
         void registerSoftwareChannel();
         void updateSoftwareChannel();
         void unregisterSoftwareChannel();
@@ -69,6 +72,13 @@ namespace framework
             getCustomRequestHandler()->registerFunction(id, name, wrappedFunction);
         }
 
+        bool deinit() final
+        {
+            SoftwareChannelPluginBase::deinit();
+            m_instances.clear();
+            return true;
+        }
+
     private:
 
         // see: https://stackoverflow.com/questions/52520276/is-decltype-of-a-non-static-member-function-ill-formed
@@ -95,27 +105,6 @@ namespace framework
         {
             // choose which function (getSoftwareChannelInfo or getSoftwareChannelInfoEx) to call at compile time
             return getSoftwareChannelInfoHelper<SoftwareChannelInstance>();
-        }
-
-        std::uint64_t init(std::string& error_message) final
-        {
-            if (!checkOxygenCompatibility())
-            {
-                error_message = "Current version of Oxygen is not supported.";
-                return odk::error_codes::UNSUPPORTED_VERSION;
-            }
-
-            registerResources();
-            registerSoftwareChannel();
-            return odk::error_codes::OK;
-        }
-
-        bool deinit() final
-        {
-            getPluginChannels()->pauseTasks();
-            m_instances.clear();
-            unregisterSoftwareChannel();
-            return true;
         }
 
         bool deleteChannels(std::vector<std::uint32_t> channels_requested)

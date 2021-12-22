@@ -18,6 +18,26 @@ namespace framework
         addMessageHandler(m_custom_requests);
     }
 
+    std::uint64_t SoftwareChannelPluginBase::init(std::string& error_message)
+    {
+        if (!checkOxygenCompatibility())
+        {
+            error_message = "Current version of Oxygen is not supported.";
+            return odk::error_codes::UNSUPPORTED_VERSION;
+        }
+
+        registerResources();
+        registerSoftwareChannel();
+        return odk::error_codes::OK;
+    }
+
+    bool SoftwareChannelPluginBase::deinit()
+    {
+        getPluginChannels()->pauseTasks();
+        unregisterSoftwareChannel();
+        return true;
+    }
+
     void SoftwareChannelPluginBase::registerSoftwareChannel()
     {
         const auto telegram = getSoftwareChannelInfo();
