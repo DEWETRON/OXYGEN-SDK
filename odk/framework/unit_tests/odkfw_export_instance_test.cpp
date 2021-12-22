@@ -116,7 +116,7 @@ namespace
 
     };
 
-    class Fixture 
+    class Fixture
     {
     public:
         Fixture()

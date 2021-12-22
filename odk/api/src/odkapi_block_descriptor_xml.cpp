@@ -5,6 +5,7 @@
 #include "odkuni_xpugixml.h"
 
 #include <boost/lexical_cast.hpp>
+#include <cstring>
 
 namespace odk
 {
@@ -19,11 +20,13 @@ namespace odk
     }
 
 
-    BlockDescriptor::BlockDescriptor()
+    BlockDescriptor::BlockDescriptor() noexcept
+        : m_stream_id(0)
+        , m_data_size(0)
     {
     }
 
-    BlockDescriptor::BlockDescriptor(BlockDescriptor&& other)
+    BlockDescriptor::BlockDescriptor(BlockDescriptor&& other) noexcept
         : m_stream_id(other.m_stream_id)
         , m_data_size(other.m_data_size)
         , m_block_channels(std::move(other.m_block_channels))
@@ -31,11 +34,20 @@ namespace odk
     }
 
 
-    bool BlockDescriptor::parse(const char* xml_string)
+    bool BlockDescriptor::parse(const char* xml_string, std::size_t xml_length)
     {
+        if (xml_string == nullptr)
+        {
+            return false;
+        }
+        if (xml_length == 0)
+        {
+            xml_length = std::strlen(xml_string);
+        }
+
         pugi::xml_document doc;
         m_block_channels.clear();
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             auto block_desc_node = doc.document_element();

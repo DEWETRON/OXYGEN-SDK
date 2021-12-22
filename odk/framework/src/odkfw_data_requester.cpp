@@ -116,7 +116,7 @@ namespace framework
                 auto block_descriptor_xml = odk::ptr(block->getBlockDescription());
 
                 BlockDescriptor block_descriptor;
-                block_descriptor.parse(block_descriptor_xml->getValue());
+                block_descriptor.parse(block_descriptor_xml->getValue(), block_descriptor_xml->getLength());
 
                 if (!block_descriptor.m_block_channels.empty())
                 {

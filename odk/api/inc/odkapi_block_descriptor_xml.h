@@ -4,6 +4,7 @@
 #include "odkapi_block_descriptor_xml_fwd.h"
 #include "odkapi_types.h"
 #include "odkbase_if_value.h"
+#include "odkuni_defines.h"
 
 #include <map>
 #include <string>
@@ -29,15 +30,15 @@ namespace odk
     class BlockDescriptor
     {
     public:
-        BlockDescriptor();
+        BlockDescriptor() noexcept;
         BlockDescriptor(const BlockDescriptor& bd) = default;
-        BlockDescriptor(BlockDescriptor&&);
+        BlockDescriptor(BlockDescriptor&&) noexcept;
 
         BlockDescriptor& operator=(const BlockDescriptor& bd) = default;
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_stream_id;
         std::uint64_t m_data_size; ///< size of the complete data block in bytes
