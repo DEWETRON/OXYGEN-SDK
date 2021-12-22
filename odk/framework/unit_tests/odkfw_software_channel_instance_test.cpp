@@ -124,15 +124,15 @@ namespace
         }
     };
 
-    class Fixture : public odk::framework::SoftwareChannelPlugin<TestInstance>
+    class Fixture
     {
     public:
         Fixture()
         {
-            setPluginHost(&m_fixture_host);
+            static_cast<odk::IfPlugin*>(&plugin)->setPluginHost(&host);
 
             const odk::IfValue* init_result = nullptr;
-            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::INIT, 0, nullptr, &init_result);
+            auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::INIT, 0, nullptr, &init_result);
             BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
             BOOST_CHECK_EQUAL(init_result, nullptr);
         }
@@ -140,12 +140,13 @@ namespace
         ~Fixture()
         {
             const odk::IfValue* deinit_result = nullptr;
-            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::DEINIT, 0, nullptr, &deinit_result);
+            auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::DEINIT, 0, nullptr, &deinit_result);
             BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
             BOOST_CHECK_EQUAL(deinit_result, nullptr);
         }
 
-        FixtureHost m_fixture_host;
+        FixtureHost host;
+        odk::framework::SoftwareChannelPlugin<TestInstance> plugin;
     };
 }
 
@@ -165,10 +166,10 @@ BOOST_AUTO_TEST_CASE(CreateChannel)
     ch1.data_format.m_sample_reduced_format = odk::ChannelDataformat::SampleReducedFormat::UNKNOWN;
     csc.m_all_selected_channels_data.push_back(ch1);
 
-    auto start_xml = static_cast<odk::IfXMLValue*>(m_fixture_host.createValue(odk::IfXMLValue::type_index));
+    auto start_xml = static_cast<odk::IfXMLValue*>(host.createValue(odk::IfXMLValue::type_index));
     start_xml->set(csc.generate().c_str());
     const odk::IfValue* result = nullptr;
-    auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::SOFTWARE_CHANNEL_CREATE, 123, start_xml, &result);
+    auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::SOFTWARE_CHANNEL_CREATE, 123, start_xml, &result);
     BOOST_CHECK_EQUAL(odk::error_codes::OK, ret);
     start_xml->release();
     start_xml = nullptr;

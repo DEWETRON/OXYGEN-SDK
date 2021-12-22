@@ -116,15 +116,15 @@ namespace
 
     };
 
-    class Fixture : public odk::framework::ExportPlugin<TestInstance>
+    class Fixture 
     {
     public:
         Fixture()
         {
-            setPluginHost(&m_fixture_host);
+            static_cast<odk::IfPlugin*>(&plugin)->setPluginHost(&host);
 
             const odk::IfValue* init_result = nullptr;
-            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::INIT, 0, nullptr, &init_result);
+            auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::INIT, 0, nullptr, &init_result);
             BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
             BOOST_CHECK_EQUAL(init_result, nullptr);
         }
@@ -132,12 +132,13 @@ namespace
         ~Fixture()
         {
             const odk::IfValue* deinit_result = nullptr;
-            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::DEINIT, 0, nullptr, &deinit_result);
+            auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::DEINIT, 0, nullptr, &deinit_result);
             BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
             BOOST_CHECK_EQUAL(deinit_result, nullptr);
         }
 
-        FixtureHost m_fixture_host;
+        FixtureHost host;
+        odk::framework::ExportPlugin<TestInstance> plugin;
     };
 }
 
@@ -158,10 +159,10 @@ BOOST_AUTO_TEST_CASE(Validate)
     validate_telegram.m_properties.m_channels.push_back(1);
     validate_telegram.m_properties.m_channels.push_back(2);
 
-    auto start_xml = static_cast<odk::IfXMLValue*>(m_fixture_host.createValue(odk::IfXMLValue::type_index));
+    auto start_xml = static_cast<odk::IfXMLValue*>(host.createValue(odk::IfXMLValue::type_index));
     start_xml->set(validate_telegram.generate().c_str());
     const odk::IfValue* validation_result = nullptr;
-    auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::EXPORT_VALIDATE_SETTINGS, 123, start_xml, &validation_result);
+    auto ret = static_cast<odk::IfPlugin*>(&plugin)->pluginMessage(odk::plugin_msg::EXPORT_VALIDATE_SETTINGS, 123, start_xml, &validation_result);
     BOOST_CHECK_EQUAL(odk::error_codes::OK, ret);
     start_xml->release();
     start_xml = nullptr;
