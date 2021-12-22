@@ -122,13 +122,19 @@ namespace
         Fixture()
         {
             setPluginHost(&m_fixture_host);
-            std::string error;
-            init(error);
+
+            const odk::IfValue* init_result = nullptr;
+            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::INIT, 0, nullptr, &init_result);
+            BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
+            BOOST_CHECK_EQUAL(init_result, nullptr);
         }
 
         ~Fixture()
         {
-            deinit();
+            const odk::IfValue* deinit_result = nullptr;
+            auto ret = static_cast<IfPlugin*>(this)->pluginMessage(odk::plugin_msg::DEINIT, 0, nullptr, &deinit_result);
+            BOOST_CHECK_EQUAL(ret, odk::error_codes::OK);
+            BOOST_CHECK_EQUAL(deinit_result, nullptr);
         }
 
         FixtureHost m_fixture_host;
