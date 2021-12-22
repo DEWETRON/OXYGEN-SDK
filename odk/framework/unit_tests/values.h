@@ -9,6 +9,9 @@ class ValueBase : public I
 public:
     ValueBase() : m_ref(1) {}
     virtual ~ValueBase() = default;
+    ValueBase(const ValueBase&) = delete;
+    ValueBase(ValueBase&&) = delete;
+
     void PLUGIN_API addRef() const final
     {
          m_ref.fetch_add(1, std::memory_order_relaxed);
@@ -21,7 +24,7 @@ public:
             delete this;
         }
     }
-    odk::IfValue::Type PLUGIN_API getType() const final { return I::type_index; }
+    constexpr odk::IfValue::Type PLUGIN_API getType() const final { return I::type_index; }
     const char* PLUGIN_API getDebugString() const override { return ""; }
 private:
     mutable std::atomic<int> m_ref;

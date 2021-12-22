@@ -49,26 +49,6 @@ namespace
             }
         }
 
-        std::uint64_t PLUGIN_API messageSyncData(odk::MessageId msg_id, std::uint64_t key, const void* param, std::uint64_t param_size, const odk::IfValue** ret) override
-        {
-            ODK_UNUSED(msg_id);
-            ODK_UNUSED(key);
-            ODK_UNUSED(param);
-            ODK_UNUSED(param_size);
-            ODK_UNUSED(ret);
-            BOOST_FAIL("Unexpected message");
-            return 0;
-        }
-    
-        std::uint64_t PLUGIN_API messageAsync(odk::MessageId msg_id, std::uint64_t key, const odk::IfValue* param) override
-        {
-            ODK_UNUSED(msg_id);
-            ODK_UNUSED(key);
-            ODK_UNUSED(param);
-            BOOST_FAIL("Unexpected message");
-            return 0;
-        }
-
         const odk::IfValue* PLUGIN_API query(const char* context, const char* item, const odk::IfValue* param) override
         {
             if (boost::algorithm::starts_with(context, "#Oxygen#Channels#"))

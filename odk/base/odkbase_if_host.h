@@ -10,6 +10,8 @@
 #include "odkbase_api_object_ptr.h"
 #endif
 
+#include "odkuni_defines.h"
+
 #include <cstdint>
 
 namespace odk
@@ -27,7 +29,7 @@ namespace odk
          * @param  type Select the kind of value that should be created. @see odk::IfValue::Type for supported constants.
          * @return      A new, mutable value instance of the request type with reference count set to 1 (or nullptr if the call failed)
          */
-        virtual IfValue* PLUGIN_API createValue(IfValue::Type type) const = 0;
+        ODK_NODISCARD virtual IfValue* PLUGIN_API createValue(IfValue::Type type) const = 0;
 
         /**
          * Generic function for sending predefined messages to the host and receive a synchronous result.
@@ -96,7 +98,7 @@ namespace odk
          * Same functionality as IfHost::createValue(type), but returns a properly casted value wrapped in a smart pointer.
          */
         template <class T>
-        detail::ApiObjectPtr<T> createValue()
+        ODK_NODISCARD detail::ApiObjectPtr<T> createValue()
         {
             auto val = odk::ptr(createValue(T::type_index));
             return odk::api_ptr_cast<T>(val);
@@ -114,14 +116,11 @@ namespace odk
             {
                 return {};
             }
-            else if (val->getType() == T::type_index)
+            if (val->getType() == T::type_index)
             {
                 return odk::api_ptr_cast<const T>(val);
             }
-            else
-            {
-                return {};
-            }
+            return {};
         }
 #endif
     };
