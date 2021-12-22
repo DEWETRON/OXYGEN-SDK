@@ -74,7 +74,7 @@ namespace odk
 
     protected:
         IfValue() = default;
-        virtual ~IfValue() = default;
+        ~IfValue() = default; // no virtual destructor to keep the vtable clean
     };
 
     template <class T, class O>
