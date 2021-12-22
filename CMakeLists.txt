@@ -33,10 +33,13 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   #
   # Get general cmake settings
   include(CMakeSettings)
+  include(CTest)
 
   #
   # Set static runtime
-  SetLinkStaticRuntime()
+  if(WIN32)
+    SetLinkStaticRuntime()
+  endif(WIN32)
 
   #
   # Set the output directory so that all artefacts will be at the same place
@@ -79,6 +82,10 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   if (WITH_ODK_TESTS)
     message(STATUS "Building with ODK unit tests")
     set(BOOST_MODULES ${BOOST_MODULES} unit_test_framework)
+    if (UNIX)
+      find_program(MEMORYCHECK_COMMAND valgrind)
+      set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+    endif(UNIX)
   endif()
 
   find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
