@@ -166,6 +166,18 @@ BOOST_AUTO_TEST_CASE(CreateChannel)
     BOOST_CHECK_EQUAL(odk::error_codes::OK, ret);
     start_xml->release();
     start_xml = nullptr;
+
+    const odk::IfXMLValue* response = dynamic_cast<const odk::IfXMLValue*>(result);
+    BOOST_REQUIRE(response);
+    odk::CreateSoftwareChannelResponse csc_response;
+    BOOST_REQUIRE(csc_response.parse(response->getValue()));
+    response->release();
+    response = nullptr;
+
+    BOOST_REQUIRE_EQUAL(csc_response.m_channels.size(), 1);
+    BOOST_CHECK_EQUAL(csc_response.m_channels.front(), 0);
+    BOOST_CHECK_EQUAL(csc_response.m_detail_channel, 0);
+    BOOST_CHECK_EQUAL(csc_response.m_show_channel_details, true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

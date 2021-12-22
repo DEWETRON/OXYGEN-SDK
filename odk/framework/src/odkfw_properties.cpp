@@ -733,11 +733,13 @@ namespace framework
 
     BooleanProperty::BooleanProperty(bool value)
         : m_value(value)
+        , m_editable(false)
     {
     }
 
     BooleanProperty::BooleanProperty(const RawPropertyHolder& value)
         : m_value(false)
+        , m_editable(false)
     {
         if (value.getProperty().isValid())
         {
