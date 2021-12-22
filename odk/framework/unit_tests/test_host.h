@@ -2,35 +2,15 @@
 #pragma once
 
 #include "odkbase_if_host.h"
-#include "values.h"
-
-#include <boost/test/unit_test.hpp>
 
 class TestHost : public odk::IfHost
 {
 public:
     TestHost() = default;
 
-    odk::IfValue* PLUGIN_API createValue(odk::IfValue::Type type) const override
-    {
-        switch (type)
-        {
-        case odk::IfValue::Type::TYPE_STRING:
-            return new StringValue({});
-        case odk::IfValue::Type::TYPE_XML:
-            return new XmlValue({});
-        default:
-            BOOST_FAIL("Unsupported type");
-            return nullptr;
-        }
-    }
+    odk::IfValue* PLUGIN_API createValue(odk::IfValue::Type type) const override;
 
-    const odk::IfValue* PLUGIN_API queryXML(const char* context, const char* item, const char* xml, std::uint64_t xml_size) override
-    {
-        ODK_UNUSED(xml_size);
-        auto xml_param = new XmlValue(xml);
-        auto ret = query(context, item, xml_param);
-        xml_param->release();
-        return ret;
-    }
+    const odk::IfValue* PLUGIN_API query(const char* context, const char* item, const odk::IfValue* param) override;
+
+    const odk::IfValue* PLUGIN_API queryXML(const char* context, const char* item, const char* xml, std::uint64_t xml_size) override;
 };

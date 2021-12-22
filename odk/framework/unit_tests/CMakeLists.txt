@@ -14,6 +14,7 @@ set(ODKFW_TEST_SOURCES
   odkfw_export_instance_test.cpp
   test_module.cpp
   test_host.h
+  test_host.cpp
   values.h
 )
 source_group("Test Sources" FILES ${ODKFW_TEST_SOURCES})

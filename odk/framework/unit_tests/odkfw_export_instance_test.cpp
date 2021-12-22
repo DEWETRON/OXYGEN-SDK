@@ -3,6 +3,7 @@
 #include "odkfw_export_plugin.h"
 #include "odkapi_export_xml.h"
 #include "test_host.h"
+#include "values.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/test/unit_test.hpp>
@@ -70,19 +71,7 @@ namespace
 
         const odk::IfValue* PLUGIN_API query(const char* context, const char* item, const odk::IfValue* param) override
         {
-            ODK_UNUSED(param);
-            if (boost::algorithm::equals(context, "#PluginHost"))
-            {
-                if (boost::algorithm::equals(item, odk::queries::PluginHost_Name))
-                {
-                    return new StringValue("Oxygen");
-                }
-                if (boost::algorithm::equals(item, odk::queries::PluginHost_VersionString))
-                {
-                    return new StringValue("5.6");
-                }
-            }
-            else if (boost::algorithm::starts_with(context, "#Oxygen#Channels#"))
+            if (boost::algorithm::starts_with(context, "#Oxygen#Channels#"))
             {
                 int channel_index = std::atoi(context + std::strlen("#Oxygen#Channels#"));
                 BOOST_REQUIRE_GE(channel_index, 1);
@@ -105,7 +94,7 @@ namespace
                     return new XmlValue(timebase.generate());
                 }
             }
-            return nullptr;
+            return TestHost::query(context, item, param);
         }
     };
 
