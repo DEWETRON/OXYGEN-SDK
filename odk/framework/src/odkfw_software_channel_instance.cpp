@@ -366,7 +366,7 @@ namespace framework
         odk::AcquisitionTaskProcessTelegram telegram;
         if (param)
         {
-            telegram.parse(param->getValue());
+            telegram.parse(param->getValue(), param->getLength());
         }
 
         ProcessingContext context;

@@ -15,7 +15,7 @@ namespace odk
     public:
         AddAcquisitionTaskTelegram();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -27,7 +27,7 @@ namespace odk
     class AcquisitionTaskProcessTelegram
     {
     public:
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
         ODK_NODISCARD std::string generate() const;
 

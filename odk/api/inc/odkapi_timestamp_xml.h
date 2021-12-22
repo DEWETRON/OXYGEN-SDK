@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkuni_xpugixml_fwd.h"
+#include "odkuni_defines.h"
 #include <cstdint>
 #include <string>
 
@@ -10,16 +11,16 @@ namespace odk
     class Timestamp
     {
     public:
-        Timestamp();
-        Timestamp(std::uint64_t ticks, double frequency);
+        Timestamp() noexcept;
+        Timestamp(std::uint64_t ticks, double frequency) noexcept;
 
-        bool parse(const char* xml_string);
-        std::string generate() const;
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
+        ODK_NODISCARD std::string generate() const;
 
         bool parseTickFrequencyAttributes(const pugi::xml_node& node);
         void writeTickFrequencyAttributes(pugi::xml_node& node) const;
 
-        bool timestampValid() const;
+        ODK_NODISCARD bool timestampValid() const noexcept;
 
         std::uint64_t m_ticks;
         double m_frequency;
@@ -30,8 +31,8 @@ namespace odk
     public:
         AbsoluteTime();
 
-        bool parse(const char* xml_string);
-        std::string generate() const;
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
+        ODK_NODISCARD std::string generate() const;
 
         int m_year;
         int m_month;

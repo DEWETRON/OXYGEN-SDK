@@ -5,28 +5,34 @@
 #include "odkuni_xpugixml.h"
 
 #include <boost/lexical_cast.hpp>
+#include <cstring>
 
 namespace odk
 {
-    Timestamp::Timestamp()
+    Timestamp::Timestamp() noexcept
         : m_ticks(0)
         , m_frequency(0.0)
     {}
 
-    Timestamp::Timestamp(std::uint64_t ticks, double frequency)
+    Timestamp::Timestamp(std::uint64_t ticks, double frequency) noexcept
         : m_ticks(ticks)
         , m_frequency(frequency)
     {}
 
-    bool Timestamp::timestampValid() const
+    bool Timestamp::timestampValid() const noexcept
     {
         return m_frequency > 0;
     }
 
-    bool Timestamp::parse(const char *xml_string)
+    bool Timestamp::parse(const char *xml_string, std::size_t xml_length)
     {
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             auto node = doc.document_element();
@@ -81,13 +87,29 @@ namespace odk
     }
 
     AbsoluteTime::AbsoluteTime()
+        : m_year(0)
+        , m_month(0)
+        , m_day(0)
+        , m_hour(0)
+        , m_minute(0)
+        , m_second(0)
+        , m_nanosecond(0)
+        , m_nanoseconds_since_1970(0)
+        , m_timezone_utc_offset_seconds(0)
+        , m_timezone_std_offset_seconds(0)
+        , m_timezone_dst_offset_seconds(0)
     {
     }
 
-    bool AbsoluteTime::parse(const char *xml_string)
+    bool AbsoluteTime::parse(const char *xml_string, std::size_t xml_length)
     {
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             if (auto absolute_time_node = doc.select_node("AbsoluteTime").node())
