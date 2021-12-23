@@ -19,7 +19,7 @@ namespace framework
         /**
          * Creates a stream reader with no stream descriptor
          */
-        StreamReader();
+        StreamReader() = default;
 
         /**
          * Creates a stream reader with a stream descriptor

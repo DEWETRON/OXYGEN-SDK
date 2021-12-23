@@ -9,11 +9,6 @@ namespace odk
 {
 namespace framework
 {
-    StreamReader::StreamReader()
-        : m_stream_descriptor()
-    {
-    }
-
     StreamReader::StreamReader(const StreamDescriptor& stream_descriptor)
         : m_stream_descriptor(stream_descriptor)
     {
@@ -86,8 +81,9 @@ namespace framework
             throw std::runtime_error("Invalid channel ID");
         }
 
-        auto blocks_begin = m_blocks.lower_bound(m_stream_descriptor.m_stream_id);
-        auto blocks_end = m_blocks.upper_bound(m_stream_descriptor.m_stream_id);
+        std::multimap<std::uint64_t, BlockDescriptorData>::const_iterator blocks_begin;
+        std::multimap<std::uint64_t, BlockDescriptorData>::const_iterator blocks_end;
+        std::tie(blocks_begin, blocks_end) = m_blocks.equal_range(m_stream_descriptor.m_stream_id);
 
         for (auto it_block = blocks_begin; it_block != blocks_end; ++it_block)
         {

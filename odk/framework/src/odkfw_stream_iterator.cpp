@@ -6,7 +6,7 @@ namespace odk
 {
 namespace framework
 {
-    StreamIterator::StreamIterator()
+    StreamIterator::StreamIterator() noexcept
         : m_block_index(-1)
         , m_data_requester(nullptr)
         , m_signal_gaps(false)
@@ -74,14 +74,14 @@ namespace framework
         }
     }
 
-    void StreamIterator::clearRanges()
+    void StreamIterator::clearRanges() noexcept
     {
         m_blocks_ranges.clear();
         m_block_index = -1;
-        m_current_iterator = BlockIterator();
+        m_current_iterator = {};
     }
 
-    void StreamIterator::setSignalGaps(bool enabled)
+    void StreamIterator::setSignalGaps(bool enabled) noexcept
     {
         m_signal_gaps = enabled;
     }
@@ -101,12 +101,12 @@ namespace framework
         }
     }
 
-    void StreamIterator::setDataRequester(IfIteratorUpdater *requester)
+    void StreamIterator::setDataRequester(IfIteratorUpdater *requester) noexcept
     {
         m_data_requester = requester;
     }
 
-    std::uint64_t StreamIterator::getTotalSampleCount() const
+    std::uint64_t StreamIterator::getTotalSampleCount() const noexcept
     {
         std::uint64_t sample_count = 0;
         for(const auto& block_range : m_blocks_ranges)

@@ -54,7 +54,7 @@ namespace odk
     {
     public:
 
-        ChannelDescriptor();
+        ChannelDescriptor() noexcept;
 
         /// Unique channel identifier
         std::uint64_t m_channel_id;
@@ -83,7 +83,7 @@ namespace odk
     class StreamDescriptor
     {
     public:
-        StreamDescriptor();
+        StreamDescriptor() noexcept;
 
         std::uint64_t m_stream_id;
         std::vector<ChannelDescriptor> m_channel_descriptors;

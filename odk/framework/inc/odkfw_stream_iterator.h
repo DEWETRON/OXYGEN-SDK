@@ -4,6 +4,7 @@
 #include "odkapi_data_set_descriptor_xml.h"
 #include "odkapi_types.h"
 #include "odkfw_block_iterator.h"
+#include "odkuni_defines.h"
 
 #include <cstddef>
 #include <limits>
@@ -15,40 +16,32 @@ namespace odk
 {
 namespace framework
 {
-
-    class StreamIterator;
-
-    class IfIteratorUpdater
-    {
-    public:
-        virtual void updateStreamIterator(StreamIterator* iterator) = 0;
-        virtual ~IfIteratorUpdater() = default;
-    };
+    class IfIteratorUpdater;
 
     class StreamIterator
     {
     public:
-        StreamIterator();
+        StreamIterator() noexcept;
 
         /// Start address of the sample
-        inline const void* data() const
+        ODK_NODISCARD inline const void* data() const noexcept
         {
             return valid() ? m_current_iterator.data() : nullptr;
         }
 
         /// Timestamp of the sample
-        inline std::uint64_t timestamp() const
+        ODK_NODISCARD inline std::uint64_t timestamp() const noexcept
         {
             return valid() ? m_current_iterator.timestamp() : 0;
         }
 
-        inline std::size_t size() const
+        ODK_NODISCARD inline std::size_t size() const noexcept
         {
             return valid() ? m_current_iterator.size() : 0;
         }
 
         template<class SampleFormat>
-        inline SampleFormat value() const
+        ODK_NODISCARD inline SampleFormat value() const noexcept
         {
             if (const void* data_ptr = data())
             {
@@ -57,16 +50,16 @@ namespace framework
             return std::numeric_limits<SampleFormat>::quiet_NaN();
         }
 
-        inline bool valid() const
+        ODK_NODISCARD inline bool valid() const noexcept
         {
             return m_block_index >= 0;
         }
 
         void addRange(const BlockIterator& begin, const BlockIterator& end);
 
-        void clearRanges();
+        void clearRanges() noexcept;
 
-        void setDataRequester(IfIteratorUpdater* requester);
+        void setDataRequester(IfIteratorUpdater* requester) noexcept;
 
         inline StreamIterator& operator++()
         {
@@ -89,20 +82,20 @@ namespace framework
         }
 
 
-        inline bool operator==(const StreamIterator& other) const
+        ODK_NODISCARD inline bool operator==(const StreamIterator& other) const noexcept
         {
             return m_current_iterator == other.m_current_iterator;
         };
 
-        inline bool operator!=(const StreamIterator& other) const
+        ODK_NODISCARD inline bool operator!=(const StreamIterator& other) const noexcept
         {
             return !(*this == other);
         }
 
-        void setSignalGaps(bool enabled);
+        void setSignalGaps(bool enabled) noexcept;
         void setSkipGaps(bool enabled);
 
-        std::uint64_t getTotalSampleCount() const;
+        ODK_NODISCARD std::uint64_t getTotalSampleCount() const noexcept;
 
         using BlockIteratorRange = std::pair<BlockIterator, BlockIterator>;
 
@@ -118,6 +111,14 @@ namespace framework
         bool m_signal_gaps;
         bool m_skip_gaps;
     };
+
+    class IfIteratorUpdater
+    {
+    public:
+        virtual void updateStreamIterator(StreamIterator* iterator) = 0;
+        virtual ~IfIteratorUpdater() = default;
+    };
+
 }
 
 }

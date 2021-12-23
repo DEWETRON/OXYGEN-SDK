@@ -120,7 +120,7 @@ namespace odk
         return !(*this == other);
     }
 
-    ChannelDescriptor::ChannelDescriptor()
+    ChannelDescriptor::ChannelDescriptor() noexcept
         : m_channel_id()
         , m_stride()
         , m_scaling()
@@ -151,7 +151,7 @@ namespace odk
         return !(*this == other);
     }
 
-    StreamDescriptor::StreamDescriptor()
+    StreamDescriptor::StreamDescriptor() noexcept
         : m_stream_id()
         , m_channel_descriptors()
     {
