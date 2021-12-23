@@ -13,11 +13,16 @@ namespace framework
     class BlockIterator
     {
     public:
+        /// Tag that prevents the Iterator from reading values from data or timestamp/sample_size pointers during construction
+        class no_value_read {};
+
         BlockIterator() noexcept;
         BlockIterator(const void* data, std::size_t data_stride, std::uint64_t initial_timestamp) noexcept;
         BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride) noexcept;
+        BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, no_value_read) noexcept;
         BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, const std::uint32_t* sample_size, std::size_t sample_size_stride) noexcept;
-        BlockIterator(const std::uint64_t timestamp) noexcept;
+        BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, const std::uint32_t* sample_size, std::size_t sample_size_stride, no_value_read) noexcept;
+        BlockIterator(std::uint64_t timestamp) noexcept;
 
         /// Start address of the sample
         ODK_NODISCARD inline const void* data() const noexcept { return m_data; }

@@ -44,6 +44,19 @@ namespace framework
     }
 
     BlockIterator::BlockIterator(const void* data, std::size_t data_stride,
+        const std::uint64_t* timestamp, std::size_t timestamp_stride, no_value_read) noexcept
+        : m_data(data)
+        , m_data_stride(data_stride)
+        , m_timestamp(timestamp)
+        , m_timestamp_stride(timestamp_stride)
+        , m_timestamp_value(0) // use default value
+        , m_sample_size(nullptr)
+        , m_sample_size_stride(0)
+        , m_sample_size_value(0)
+    {
+    }
+
+    BlockIterator::BlockIterator(const void* data, std::size_t data_stride,
                                  const std::uint64_t* timestamp, std::size_t timestamp_stride,
                                  const std::uint32_t* sample_size, std::size_t sample_size_stride) noexcept
         : m_data(data)
@@ -54,6 +67,20 @@ namespace framework
         , m_sample_size(sample_size)
         , m_sample_size_stride(sample_size_stride)
         , m_sample_size_value(*sample_size)
+    {
+    }
+
+    BlockIterator::BlockIterator(const void* data, std::size_t data_stride,
+        const std::uint64_t* timestamp, std::size_t timestamp_stride,
+        const std::uint32_t* sample_size, std::size_t sample_size_stride, no_value_read) noexcept
+        : m_data(data)
+        , m_data_stride(data_stride)
+        , m_timestamp(timestamp)
+        , m_timestamp_stride(timestamp_stride)
+        , m_timestamp_value(0) // use default value
+        , m_sample_size(sample_size)
+        , m_sample_size_stride(sample_size_stride)
+        , m_sample_size_value(0) // use default value
     {
     }
 

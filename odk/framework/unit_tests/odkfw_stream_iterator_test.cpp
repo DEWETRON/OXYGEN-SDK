@@ -21,7 +21,7 @@ template<class ValueType>
 void addAsyncDataRange(StreamIterator& it, const std::vector<ValueType>& data, const std::vector<std::uint64_t>& timestamp_data)
 {
     it.addRange(BlockIterator(data.data(), sizeof(ValueType), timestamp_data.data(), sizeof(std::uint64_t)),
-                BlockIterator(data.data() + data.size(), sizeof(ValueType), timestamp_data.data() + timestamp_data.size(), sizeof(std::uint64_t)));
+                BlockIterator(data.data() + data.size(), sizeof(ValueType), timestamp_data.data() + timestamp_data.size(), sizeof(std::uint64_t), BlockIterator::no_value_read()));
 }
 
 template<class ValueType>
@@ -30,7 +30,7 @@ void addAsyncVariableDataRange(StreamIterator& it, const std::vector<ValueType>&
                                const std::vector<std::uint32_t>& size_data)
 {
     it.addRange(BlockIterator(data.data(), 0, timestamp_data.data(), 0, size_data.data(), 0),
-                BlockIterator(data.data() + data.size(), 0, timestamp_data.data() + timestamp_data.size(), 0, size_data.data() + size_data.size(), 0));
+                BlockIterator(data.data() + data.size(), 0, timestamp_data.data() + timestamp_data.size(), 0, size_data.data() + size_data.size(), 0, BlockIterator::no_value_read()));
 }
 
 BOOST_AUTO_TEST_CASE(empty_stream_iterator_test)
