@@ -3,6 +3,7 @@
 
 #include "odkapi_property_list_xml.h"
 #include "odkapi_types.h"
+#include "odkuni_defines.h"
 #include "odkuni_xpugixml.h"
 
 #include <map>
@@ -23,9 +24,9 @@ namespace odk
 
         RegisterExport();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::string m_format_name;
         std::string m_format_id;
@@ -42,15 +43,15 @@ namespace odk
     public:
         ExportProperties();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
         bool parse(pugi::xml_node export_properties_node);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         /*
         * creates XML without header to reuse in another xml document
         */
-        std::string generateNodeXML() const;
+        ODK_NODISCARD std::string generateNodeXML() const;
 
         std::vector<std::uint64_t> m_channels;
         std::vector<odk::Interval<double>> m_export_intervals;
@@ -64,9 +65,9 @@ namespace odk
     public:
         StartExport();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         /* transaction id must be > 0!!*/
         std::uint64_t m_transaction_id;
@@ -78,9 +79,9 @@ namespace odk
     public:
         ValidateExport();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         ExportProperties m_properties;
     };
@@ -100,13 +101,12 @@ namespace odk
     public:
         ValidateExportResponse();
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         bool m_success;
         std::vector<ChannelError> m_channel_errors;
         std::vector<ChannelError> m_channel_warnings;
     };
 }
-

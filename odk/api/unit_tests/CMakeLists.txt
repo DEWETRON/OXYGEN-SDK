@@ -13,6 +13,7 @@ include_directories(
 set(ODKAPI_TEST_SOURCES
   odkapi_acquisition_task_test.cpp
   odkapi_block_descriptor_test.cpp
+  odkapi_export_properties_test.cpp
   odkapi_property_test.cpp
   odkapi_version_test.cpp
   test_module.cpp

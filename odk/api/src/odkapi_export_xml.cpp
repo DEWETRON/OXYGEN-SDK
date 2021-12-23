@@ -13,6 +13,7 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <cstring>
 #include <map>
 #include <vector>
 
@@ -31,10 +32,15 @@ namespace odk
         : m_start_export_action(SELECT_FILE)
     {}
 
-    bool RegisterExport::parse(const char* xml_string)
+    bool RegisterExport::parse(const char* xml_string, std::size_t xml_length)
     {
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status != pugi::status_ok)
         {
             return false;
@@ -127,12 +133,18 @@ namespace odk
 
     }
 
-    bool StartExport::parse(const char* xml_string)
+    bool StartExport::parse(const char* xml_string, std::size_t xml_length)
     {
-        pugi::xml_document doc;
         m_transaction_id = 0;
         m_properties = {};
-        auto status = doc.load_string(xml_string);
+
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
+        pugi::xml_document doc;
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
@@ -170,15 +182,13 @@ namespace odk
         auto transaction_id_node = start_export_node.append_child("TransactionId");
         transaction_id_node.append_attribute("transaction_id").set_value(m_transaction_id);
 
+        std::string properties = m_properties.generate();
         pugi::xml_document props_doc;
-        props_doc.load_string(m_properties.generate().c_str());
+        props_doc.load_buffer_inplace(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
         start_export_node.append_copy(props_doc.document_element());
 
         return xpugi::toXML(doc);
     }
-
-
-
 
     ExportProperties::ExportProperties()
         : m_channels()
@@ -186,14 +196,17 @@ namespace odk
           , m_format_id()
           , m_custom_properties()
     {
-
     }
 
-
-    bool ExportProperties::parse(const char* xml_string)
+    bool ExportProperties::parse(const char* xml_string, std::size_t xml_length)
     {
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             return parse(doc.document_element());
@@ -304,24 +317,31 @@ namespace odk
 
     std::string ExportProperties::generateNodeXML() const
     {
-        pugi::xml_document doc;
-        doc.load_string(generate().c_str());
-        auto root = doc.document_element();
-        return xpugi::toXML(root);
+        std::string serialized = generate();
+        auto end_pi_tag = serialized.find("?>");
+        if (end_pi_tag != std::string::npos)
+        {
+            return serialized.substr(end_pi_tag + 2);
+        }
+        return serialized;
     }
-
-
 
     ValidateExport::ValidateExport()
         : m_properties()
     {
     }
 
-    bool ValidateExport::parse(const char* xml_string)
+    bool ValidateExport::parse(const char* xml_string, std::size_t xml_length)
     {
         m_properties = {};
+
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
@@ -344,8 +364,9 @@ namespace odk
         pugi::xml_document doc;
         auto start_export_node = doc.append_child("ValidateExportSettings");
 
+        std::string properties = m_properties.generate();
         pugi::xml_document props_doc;
-        props_doc.load_string(m_properties.generate().c_str());
+        props_doc.load_buffer_inplace(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
         start_export_node.append_copy(props_doc.document_element());
 
         return xpugi::toXML(doc);
@@ -353,14 +374,14 @@ namespace odk
 
     ChannelError::ChannelError(std::uint64_t channel_id, std::uint64_t error_code)
         : channel_id(channel_id)
-          , error_code(error_code)
-          , error_message()
+        , error_code(error_code)
+        , error_message()
     {}
 
     ChannelError::ChannelError(std::uint64_t channel_id, std::uint64_t error_code, const std::string& error_message)
         : channel_id(channel_id)
-          , error_code(error_code)
-          , error_message(error_message)
+        , error_code(error_code)
+        , error_message(error_message)
     {}
 
     ValidateExportResponse::ValidateExportResponse()
@@ -368,23 +389,29 @@ namespace odk
     {
     }
 
-    bool ValidateExportResponse::parse(const char* xml_string)
+    bool ValidateExportResponse::parse(const char* xml_string, std::size_t xml_length)
     {
         m_success = false;
         m_channel_errors.clear();
 
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
         pugi::xml_document doc;
-        if (doc.load_string(xml_string).status == pugi::status_ok)
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        if (status.status == pugi::status_ok)
         {
             try{
-                if (auto success_node = doc.select_node("ValidationSuccess").node())
+                if (auto success_node = doc.child("ValidationSuccess"))
                 {
                     m_success = true;
                     for (auto ch : success_node.select_nodes("Channels/Channel"))
                     {
-                        auto channel_id = xpugi::getText(ch.node().select_node("Id"));
-                        auto channel_code = xpugi::getText(ch.node().select_node("ErrorCode"));
-                        auto channel_msg = xpugi::getText(ch.node().select_node("ErrorMessage"));
+                        auto channel_id = xpugi::getText(ch.node().child("Id"));
+                        auto channel_code = xpugi::getText(ch.node().child("ErrorCode"));
+                        auto channel_msg = xpugi::getText(ch.node().child("ErrorMessage"));
 
                         try
                         {
@@ -400,14 +427,14 @@ namespace odk
 
                     return true;
                 }
-                else if (auto failure_node = doc.select_node("ValidationFailed").node())
+                else if (auto failure_node = doc.child("ValidationFailed"))
                 {
                     m_success = false;
                     for (auto ch : failure_node.select_nodes("Channels/Channel"))
                     {
-                        auto channel_id = xpugi::getText(ch.node().select_node("Id"));
-                        auto channel_code = xpugi::getText(ch.node().select_node("ErrorCode"));
-                        auto channel_msg = xpugi::getText(ch.node().select_node("ErrorMessage"));
+                        auto channel_id = xpugi::getText(ch.node().child("Id"));
+                        auto channel_code = xpugi::getText(ch.node().child("ErrorCode"));
+                        auto channel_msg = xpugi::getText(ch.node().child("ErrorMessage"));
 
                         try
                         {
