@@ -13,23 +13,18 @@ namespace framework
     class BlockIterator
     {
     public:
-        /// Tag that prevents the Iterator from reading values from data or timestamp/sample_size pointers during construction
-        class no_value_read {};
-
         BlockIterator() noexcept;
         BlockIterator(const void* data, std::size_t data_stride, std::uint64_t initial_timestamp) noexcept;
         BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride) noexcept;
-        BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, no_value_read) noexcept;
         BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, const std::uint32_t* sample_size, std::size_t sample_size_stride) noexcept;
-        BlockIterator(const void* data, std::size_t data_stride, const std::uint64_t* timestamp, std::size_t timestamp_stride, const std::uint32_t* sample_size, std::size_t sample_size_stride, no_value_read) noexcept;
         BlockIterator(std::uint64_t timestamp) noexcept;
 
         /// Start address of the sample
         ODK_NODISCARD inline const void* data() const noexcept { return m_data; }
         /// Timestamp of the sample
-        ODK_NODISCARD inline std::uint64_t timestamp() const noexcept { return m_timestamp_value;}
-        
-        ODK_NODISCARD inline std::size_t size() const noexcept { return m_sample_size_value; }
+        ODK_NODISCARD inline std::uint64_t timestamp() const noexcept { return m_timestamp ? *m_timestamp : m_timestamp_value;}
+        /// Dynamic sample size of the sample (0 if it has a static size)
+        ODK_NODISCARD inline std::size_t size() const noexcept { return m_sample_size ? *m_sample_size : m_sample_size_value; }
 
         BlockIterator& operator++();
         BlockIterator& operator--();
@@ -67,12 +62,18 @@ namespace framework
         const void* m_data;
         std::size_t m_data_stride;
         const std::uint64_t* m_timestamp;
-        std::size_t   m_timestamp_stride;
-        std::uint64_t m_timestamp_value;
+        union
+        {
+            std::size_t   m_timestamp_stride;
+            std::uint64_t m_timestamp_value;
+        };
 
         const std::uint32_t* m_sample_size;
-        std::size_t m_sample_size_stride;
-        std::uint32_t m_sample_size_value;
+        union
+        {
+            std::size_t m_sample_size_stride;
+            std::size_t m_sample_size_value;
+        };
     };
 }
 }
