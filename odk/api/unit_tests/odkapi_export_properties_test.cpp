@@ -3,7 +3,7 @@
 #include "odkapi_types.h"
 #include "odkapi_export_xml.h"
 
-#include "xpugixml.h"
+#include "odkuni_xpugixml.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/version.hpp>
 
