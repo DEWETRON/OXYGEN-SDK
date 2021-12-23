@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <map>
+#include <set>
 
 namespace odk
 {

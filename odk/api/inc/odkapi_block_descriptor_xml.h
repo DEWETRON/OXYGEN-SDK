@@ -3,7 +3,6 @@
 
 #include "odkapi_block_descriptor_xml_fwd.h"
 #include "odkapi_types.h"
-#include "odkbase_if_value.h"
 #include "odkuni_defines.h"
 
 #include <map>
@@ -15,7 +14,7 @@ namespace odk
     class BlockChannelDescriptor
     {
     public:
-        BlockChannelDescriptor();
+        BlockChannelDescriptor() noexcept;
 
         std::uint32_t m_offset;             ///< bit offset of first sample, stride from scan descriptor
         std::uint64_t m_channel_id;
@@ -59,9 +58,9 @@ namespace odk
     {
     public:
 
-        BlockListDescriptor();
+        BlockListDescriptor() noexcept;
 
-        bool parse(const char* xml_string);
+        bool parse(const char* xml_string, std::size_t xml_length = 0);
         std::string generate() const;
 
         std::uint32_t m_block_count;

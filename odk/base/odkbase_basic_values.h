@@ -3,6 +3,7 @@
 #define __ODKBASE_BASIC_VALUES__
 
 #include "odkbase_if_value.h"
+#include "odkuni_defines.h"
 #include <cstdint>
 #include <string>
 
@@ -24,7 +25,7 @@ namespace odk
     class IfBooleanValue : public IfValue
     {
     public:
-        virtual bool PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual bool PLUGIN_API getValue() const = 0;
         virtual void PLUGIN_API set(bool value) = 0;
 
     public:
@@ -34,7 +35,7 @@ namespace odk
     class IfUIntValue : public IfValue
     {
     public:
-        virtual std::uint64_t PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual std::uint64_t PLUGIN_API getValue() const = 0;
         virtual void PLUGIN_API set(std::uint64_t value) = 0;
 
     public:
@@ -44,7 +45,7 @@ namespace odk
     class IfSIntValue : public IfValue
     {
     public:
-        virtual std::int64_t PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual std::int64_t PLUGIN_API getValue() const = 0;
         virtual void PLUGIN_API set(std::int64_t value) = 0;
 
     public:
@@ -54,7 +55,7 @@ namespace odk
     class IfFloatingPointValue : public IfValue
     {
     public:
-        virtual double PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getValue() const = 0;
         virtual void PLUGIN_API set(double value) = 0;
 
     public:
@@ -64,8 +65,8 @@ namespace odk
     class IfComplexValue : public IfValue
     {
     public:
-        virtual double PLUGIN_API getReal() const = 0;
-        virtual double PLUGIN_API getImaginary() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getReal() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getImaginary() const = 0;
         virtual void PLUGIN_API set(double real, double imag) = 0;
 
     public:
@@ -75,8 +76,8 @@ namespace odk
     class IfPointValue : public IfValue
     {
     public:
-        virtual double PLUGIN_API getX() const = 0;
-        virtual double PLUGIN_API getY() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getX() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getY() const = 0;
         virtual void PLUGIN_API set(double x, double y) = 0;
 
     public:
@@ -87,8 +88,8 @@ namespace odk
     class IfEnumValue : public IfValue
     {
     public:
-        virtual const char* PLUGIN_API getEnumName() const = 0;
-        virtual const char* PLUGIN_API getEnumValue() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getEnumName() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getEnumValue() const = 0;
         virtual bool PLUGIN_API set(const char* enum_type, const char* enum_value) = 0;
 
     public:
@@ -102,8 +103,8 @@ namespace odk
     class IfStringValue : public IfValue
     {
     public:
-        virtual const char* PLUGIN_API getValue() const = 0;
-        virtual int PLUGIN_API getLength() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual int PLUGIN_API getLength() const = 0;
         virtual void PLUGIN_API set(const char* value) = 0;
 
     public:
@@ -126,8 +127,8 @@ namespace odk
     class IfScalarValue : public IfValue
     {
     public:
-        virtual double PLUGIN_API getValue() const = 0;
-        virtual const char* PLUGIN_API getUnit() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getUnit() const = 0;
         virtual void PLUGIN_API set(double value, const char* unit) = 0;
 
     public:
@@ -142,10 +143,10 @@ namespace odk
     class IfScalarRange : public IfValue
     {
     public:
-        virtual double PLUGIN_API getMin() const = 0;
-        virtual double PLUGIN_API getMax() const = 0;
-        virtual const char* PLUGIN_API getMinUnit() const = 0;
-        virtual const char* PLUGIN_API getMaxUnit() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getMin() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getMax() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getMinUnit() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getMaxUnit() const = 0;
         virtual void PLUGIN_API set(double min, double max, const char* min_unit, const char* max_unit) = 0;
 
     public:
@@ -160,9 +161,9 @@ namespace odk
     {
     public:
         //TODO: add getValue() that converts rational to double?
-        virtual std::int64_t PLUGIN_API getNumerator() const = 0;
-        virtual std::int64_t PLUGIN_API getDenominator() const = 0;
-        virtual const char* PLUGIN_API getUnit() const = 0;
+        ODK_NODISCARD virtual std::int64_t PLUGIN_API getNumerator() const = 0;
+        ODK_NODISCARD virtual std::int64_t PLUGIN_API getDenominator() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getUnit() const = 0;
         virtual void PLUGIN_API set(std::int64_t num, std::int64_t den, const char* unit) = 0;
 
     public:
@@ -175,9 +176,9 @@ namespace odk
     class IfDecoratedNumberValue : public IfValue
     {
     public:
-        virtual double PLUGIN_API getValue() const = 0;
-        virtual const char* PLUGIN_API getPrefix() const = 0;
-        virtual const char* PLUGIN_API getSuffix() const = 0;
+        ODK_NODISCARD virtual double PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getPrefix() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getSuffix() const = 0;
         virtual void PLUGIN_API set(double value, const char* prefix, const char* suffix) = 0;
 
     public:
@@ -187,8 +188,8 @@ namespace odk
     class IfErrorValue : public IfValue
     {
     public:
-        virtual std::uint64_t PLUGIN_API getCode() const = 0;
-        virtual const char* PLUGIN_API getDescription() const = 0;
+        ODK_NODISCARD virtual std::uint64_t PLUGIN_API getCode() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getDescription() const = 0;
 
         virtual void PLUGIN_API set(std::uint64_t code, const char* str) = 0;
     public:
@@ -198,8 +199,8 @@ namespace odk
     class IfXMLValue : public IfValue
     {
     public:
-        virtual const char* PLUGIN_API getValue() const = 0;
-        virtual int PLUGIN_API getLength() const = 0;
+        ODK_NODISCARD virtual const char* PLUGIN_API getValue() const = 0;
+        ODK_NODISCARD virtual int PLUGIN_API getLength() const = 0;
         virtual void PLUGIN_API set(const char* value) = 0;
 
     public:
@@ -217,8 +218,8 @@ namespace odk
     class IfArbitraryBinaryValue : public IfValue
     {
     public:
-        virtual int PLUGIN_API getSize() const = 0;
-        virtual const std::uint8_t* PLUGIN_API refData() const = 0;
+        ODK_NODISCARD virtual int PLUGIN_API getSize() const = 0;
+        ODK_NODISCARD virtual const std::uint8_t* PLUGIN_API refData() const = 0;
         virtual void PLUGIN_API set(const std::uint8_t* data, int length) = 0;
     public:
         static const Type type_index = Type::TYPE_ARBITRARY_DATA;
@@ -230,9 +231,9 @@ namespace odk
     class IfDataBlock : public IfValue
     {
     public:
-        virtual IfXMLValue* PLUGIN_API getBlockDescription() const = 0;
-        virtual int PLUGIN_API dataSize() const = 0;
-        virtual const std::uint8_t* PLUGIN_API data() const = 0;
+        ODK_NODISCARD virtual IfXMLValue* PLUGIN_API getBlockDescription() const = 0;
+        ODK_NODISCARD virtual int PLUGIN_API dataSize() const = 0;
+        ODK_NODISCARD virtual const std::uint8_t* PLUGIN_API data() const = 0;
 
         virtual void PLUGIN_API set(IfXMLValue* descr, const std::uint8_t* data, std::uint32_t length) = 0;
     public:
@@ -245,9 +246,9 @@ namespace odk
     class IfDataBlockList : public IfValue
     {
     public:
-        virtual IfXMLValue* PLUGIN_API getBlockListDescription() const = 0;
-        virtual int PLUGIN_API getBlockCount() const = 0;
-        virtual IfDataBlock* PLUGIN_API getBlock(int index) const = 0;
+        ODK_NODISCARD virtual IfXMLValue* PLUGIN_API getBlockListDescription() const = 0;
+        ODK_NODISCARD virtual int PLUGIN_API getBlockCount() const = 0;
+        ODK_NODISCARD virtual IfDataBlock* PLUGIN_API getBlock(int index) const = 0;
 
         virtual void PLUGIN_API set(IfXMLValue* descr, IfDataBlock** data, std::uint32_t length) = 0;
     public:

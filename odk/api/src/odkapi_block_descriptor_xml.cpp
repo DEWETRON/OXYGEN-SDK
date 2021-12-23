@@ -9,7 +9,7 @@
 
 namespace odk
 {
-    BlockChannelDescriptor::BlockChannelDescriptor()
+    BlockChannelDescriptor::BlockChannelDescriptor() noexcept
         : m_offset()
         , m_channel_id()
         , m_timestamp()
@@ -98,18 +98,23 @@ namespace odk
     {
     }
 
-    BlockListDescriptor::BlockListDescriptor()
+    BlockListDescriptor::BlockListDescriptor() noexcept
         : m_block_count(0)
         , m_windows()
     {
     }
 
-    bool BlockListDescriptor::parse(const char* xml_string)
+    bool BlockListDescriptor::parse(const char* xml_string, std::size_t xml_length)
     {
-        pugi::xml_document doc;
         m_windows.clear();
 
-        auto status = doc.load_string(xml_string);
+        if (xml_string == nullptr)
+            return false;
+        if (xml_length == 0)
+            xml_length = std::strlen(xml_string);
+
+        pugi::xml_document doc;
+        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{

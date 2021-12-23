@@ -106,7 +106,7 @@ namespace framework
 
             auto block_list_descriptor_xml = odk::ptr(m_data_block_list->getBlockListDescription());
             BlockListDescriptor list_descriptor;
-            list_descriptor.parse(block_list_descriptor_xml->getValue());
+            list_descriptor.parse(block_list_descriptor_xml->getValue(), block_list_descriptor_xml->getLength());
 
             odk::framework::StreamReader stream_reader;
 
