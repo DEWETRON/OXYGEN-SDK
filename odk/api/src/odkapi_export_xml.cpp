@@ -184,7 +184,11 @@ namespace odk
 
         std::string properties = m_properties.generate();
         pugi::xml_document props_doc;
+#if ODK_CPLUSPLUS >= 201703L
         props_doc.load_buffer_inplace(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
+#else
+        props_doc.load_buffer(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
+#endif
         start_export_node.append_copy(props_doc.document_element());
 
         return xpugi::toXML(doc);
@@ -366,7 +370,11 @@ namespace odk
 
         std::string properties = m_properties.generate();
         pugi::xml_document props_doc;
+#if ODK_CPLUSPLUS >= 201703L
         props_doc.load_buffer_inplace(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
+#else
+        props_doc.load_buffer(properties.data(), properties.size(), pugi::parse_default, pugi::encoding_utf8);
+#endif
         start_export_node.append_copy(props_doc.document_element());
 
         return xpugi::toXML(doc);

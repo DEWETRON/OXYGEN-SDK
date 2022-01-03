@@ -3,8 +3,10 @@
 
 #include "odkapi_data_set_descriptor_xml_fwd.h"
 #include "odkbase_if_value.h"
+#include "odkuni_defines.h"
 
 #include <boost/optional.hpp>
+#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -32,17 +34,17 @@ namespace odk
     class Scaling
     {
     public:
-        Scaling();
-        Scaling(ScalingType type);
-        Scaling(ScalingType type, double factor, double offset);
+        Scaling() noexcept;
+        Scaling(ScalingType type) noexcept;
+        Scaling(ScalingType type, double factor, double offset) noexcept;
 
         ScalingType m_type;
 
         double m_factor;
         double m_offset;
 
-        bool operator==(const Scaling& other) const;
-        bool operator!=(const Scaling& other) const;
+        ODK_NODISCARD bool operator==(const Scaling& other) const noexcept;
+        ODK_NODISCARD bool operator!=(const Scaling& other) const noexcept;
     };
 
     enum class TimeStampFormat
@@ -76,8 +78,8 @@ namespace odk
 
         boost::optional<std::int32_t> m_sample_size_position;
 
-        bool operator==(const ChannelDescriptor& other) const;
-        bool operator!=(const ChannelDescriptor& other) const;
+        ODK_NODISCARD bool operator==(const ChannelDescriptor& other) const;
+        ODK_NODISCARD bool operator!=(const ChannelDescriptor& other) const;
     };
 
     class StreamDescriptor
@@ -88,9 +90,8 @@ namespace odk
         std::uint64_t m_stream_id;
         std::vector<ChannelDescriptor> m_channel_descriptors;
 
-        bool operator==(const StreamDescriptor& other) const;
-        bool operator!=(const StreamDescriptor& other) const;
-
+        ODK_NODISCARD bool operator==(const StreamDescriptor& other) const;
+        ODK_NODISCARD bool operator!=(const StreamDescriptor& other) const;
     };
 
     /**
@@ -99,17 +100,16 @@ namespace odk
     class DataSetDescriptor
     {
     public:
-        DataSetDescriptor();
+        DataSetDescriptor() noexcept;
 
-        bool parse(const char* xml_string);
+        bool parse(boost::string_view xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
         std::vector<StreamDescriptor> m_stream_descriptors;
 
-        bool operator==(const DataSetDescriptor& other) const;
-        bool operator!=(const DataSetDescriptor& other) const;
+        ODK_NODISCARD bool operator==(const DataSetDescriptor& other) const;
+        ODK_NODISCARD bool operator!=(const DataSetDescriptor& other) const;
     };
 }
-

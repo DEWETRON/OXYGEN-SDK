@@ -545,6 +545,7 @@ namespace framework
         request.m_data_mode = DataSetMode::NORMAL;
         request.m_policy = StreamPolicy::EXACT;
 
+        request.m_channels.reserve(m_input_channel_proxies.size());
         for(const auto& channel : m_input_channel_proxies)
         {
             request.m_channels.push_back(channel->getChannelId());
@@ -569,7 +570,7 @@ namespace framework
             if (group_add_result_xml)
             {
                 m_dataset_descriptor = DataSetDescriptor();
-                m_dataset_descriptor->parse(group_add_result_xml->getValue());
+                m_dataset_descriptor->parse({ group_add_result_xml->getValue(), static_cast<std::size_t>(group_add_result_xml->getLength()) });
             }
             group_add_result->release();
         }

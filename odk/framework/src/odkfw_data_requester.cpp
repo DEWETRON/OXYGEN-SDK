@@ -52,7 +52,7 @@ namespace framework
         if (group_add_result.valid())
         {
             m_dataset_descriptor = DataSetDescriptor();
-            m_dataset_descriptor.parse(group_add_result->getValue());
+            m_dataset_descriptor.parse({ group_add_result->getValue(), static_cast<std::size_t>(group_add_result->getLength()) });
         }
 
         if(m_dataset_descriptor.m_stream_descriptors.size() == 1)

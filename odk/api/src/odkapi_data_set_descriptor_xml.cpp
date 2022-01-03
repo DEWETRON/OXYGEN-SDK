@@ -87,35 +87,35 @@ namespace odk
         }
     }
 
-    Scaling::Scaling()
+    Scaling::Scaling() noexcept
         : m_type(ScalingType::LINEAR)
         , m_factor(1)
         , m_offset(0)
     {
     }
 
-    Scaling::Scaling(ScalingType type)
+    Scaling::Scaling(ScalingType type) noexcept
         : m_type(type)
         , m_factor(1)
         , m_offset(0)
     {
     }
 
-    Scaling::Scaling(ScalingType type, double factor, double offset)
+    Scaling::Scaling(ScalingType type, double factor, double offset) noexcept
         : m_type(type)
         , m_factor(factor)
         , m_offset(offset)
     {      
     }
 
-    bool Scaling::operator==(const Scaling& other) const
+    bool Scaling::operator==(const Scaling& other) const noexcept
     {
         return m_type == other.m_type &&
                m_factor == other.m_factor &&
                m_offset == other.m_offset;
     }
 
-    bool Scaling::operator!=(const Scaling& other) const
+    bool Scaling::operator!=(const Scaling& other) const noexcept
     {
         return !(*this == other);
     }
@@ -169,17 +169,17 @@ namespace odk
     }
 
 
-    DataSetDescriptor::DataSetDescriptor()
+    DataSetDescriptor::DataSetDescriptor() noexcept
         : m_id()
         , m_stream_descriptors()
     {
     }
 
-    bool DataSetDescriptor::parse(const char* xml_string)
+    bool DataSetDescriptor::parse(boost::string_view xml_string)
     {
         pugi::xml_document doc;
         m_stream_descriptors.clear();
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
@@ -188,25 +188,23 @@ namespace odk
 
                 m_id = boost::lexical_cast<std::uint64_t>(block_desc_node.attribute("data_set_key").value());
 
-                for (auto scan_desc_node : block_desc_node.select_nodes("StreamDescriptor"))
+                for (auto scan_desc_node : block_desc_node.children("StreamDescriptor"))
                 {
                     StreamDescriptor scan_desc;
-                    auto a_scan_desc_node = scan_desc_node.node();
-                    scan_desc.m_stream_id = boost::lexical_cast<std::uint64_t>(a_scan_desc_node.attribute("stream_id").value());
+                    scan_desc.m_stream_id = boost::lexical_cast<std::uint64_t>(scan_desc_node.attribute("stream_id").value());
 
-                    for (auto channel_desc_node : a_scan_desc_node.select_nodes("Channel"))
+                    for (auto channel_desc_node : scan_desc_node.children("Channel"))
                     {
                         ChannelDescriptor channel_desc;
-                        auto a_channel_desc_node = channel_desc_node.node();
 
-                        channel_desc.m_channel_id = boost::lexical_cast<std::uint64_t>(a_channel_desc_node.attribute("channel_id").value());
-                        channel_desc.m_dimension = boost::lexical_cast<std::uint32_t>(a_channel_desc_node.attribute("dimension").value());
-                        channel_desc.m_size = boost::lexical_cast<std::uint32_t>(a_channel_desc_node.attribute("size").value());
-                        channel_desc.m_stride = boost::lexical_cast<std::uint32_t>(a_channel_desc_node.attribute("stride").value());
-                        auto type = boost::lexical_cast<std::string>(a_channel_desc_node.attribute("type").value());
+                        channel_desc.m_channel_id = boost::lexical_cast<std::uint64_t>(channel_desc_node.attribute("channel_id").value());
+                        channel_desc.m_dimension = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("dimension").value());
+                        channel_desc.m_size = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("size").value());
+                        channel_desc.m_stride = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("stride").value());
+                        auto type = boost::lexical_cast<std::string>(channel_desc_node.attribute("type").value());
                         channel_desc.m_type = parseSampleType(type);
 
-                        auto scaling_children = a_channel_desc_node.select_nodes("Scaling/*");
+                        auto scaling_children = channel_desc_node.select_nodes("Scaling/*");
                         for (auto child : scaling_children)
                         {
                             const auto n = child.node().name();
@@ -220,16 +218,16 @@ namespace odk
                             }
                         }
 
-                        auto timestamp_node = a_channel_desc_node.select_node("Timestamp");
+                        auto timestamp_node = channel_desc_node.child("Timestamp");
                         if (timestamp_node)
                         {
-                            channel_desc.m_timestamp_position = boost::lexical_cast<std::int32_t>(timestamp_node.node().attribute("position").value());
+                            channel_desc.m_timestamp_position = boost::lexical_cast<std::int32_t>(timestamp_node.attribute("position").value());
                         }
 
-                        auto sample_size_position_node = a_channel_desc_node.select_node("Samplesize");
+                        auto sample_size_position_node = channel_desc_node.child("Samplesize");
                         if (sample_size_position_node)
                         {
-                            channel_desc.m_sample_size_position = boost::lexical_cast<std::int32_t>(sample_size_position_node.node().attribute("position").value());
+                            channel_desc.m_sample_size_position = boost::lexical_cast<std::int32_t>(sample_size_position_node.attribute("position").value());
                         }
 
 
