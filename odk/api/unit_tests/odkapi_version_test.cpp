@@ -1,6 +1,8 @@
 // Copyright DEWETRON GmbH 2021
 #include "odkapi_version_xml.h"
 
+#include "odkuni_xpugixml.h"
+
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(version_test_suite)
@@ -57,6 +59,32 @@ BOOST_AUTO_TEST_CASE(Serialization)
     BOOST_CHECK_EQUAL(version.generate(), "1.3");
     
     BOOST_CHECK(version.parse("5.2") == odk::Version(5, 2));
+}
+
+BOOST_AUTO_TEST_CASE(AttributeParser)
+{
+    {
+        pugi::xml_document doc;
+        doc.load_string("<test></test>");
+        BOOST_CHECK(odk::getProtocolVersion(doc.document_element()) == odk::Version(1, 0));
+    }
+    {
+        pugi::xml_document doc;
+        doc.load_string("<test protocol_version='3'></test>");
+        BOOST_CHECK(odk::getProtocolVersion(doc.document_element()) == odk::Version(3, 0));
+    }
+    {
+        pugi::xml_document doc;
+        doc.load_string("<test protocol_version='3.14'></test>");
+        BOOST_CHECK(odk::getProtocolVersion(doc.document_element()) == odk::Version(3, 14));
+    }
+    {
+        pugi::xml_document doc;
+        auto request_node = doc.append_child("Test");
+        auto doc_element = doc.document_element();
+        odk::setProtocolVersion(doc_element, odk::Version(1));
+        BOOST_CHECK(odk::getProtocolVersion(doc.document_element()) == odk::Version(1, 0));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

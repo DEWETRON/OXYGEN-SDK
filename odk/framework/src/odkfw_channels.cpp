@@ -495,6 +495,7 @@ namespace framework
         if (m_channels_dirty)
         {
             odk::UpdateChannelsTelegram telegram;
+            telegram.m_channels.reserve(m_channels.size());
             for (const auto& channel : m_channels)
             {
                 ODK_ASSERT(channel.second->m_channel_info.m_local_parent_id == (channel.second->m_local_parent ? channel.second->m_local_parent->getLocalId() : -1));

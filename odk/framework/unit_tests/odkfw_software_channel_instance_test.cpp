@@ -75,13 +75,13 @@ namespace
             case odk::host_msg::SET_PLUGIN_OUTPUT_CHANNELS:
             {
                 odk::UpdateChannelsTelegram telegram;
-                BOOST_REQUIRE(telegram.parse(static_cast<const char*>(param)));
+                BOOST_REQUIRE(telegram.parse({ static_cast<const char*>(param), static_cast<std::size_t>(param_size - 1) }));
                 return odk::error_codes::OK;
             }
             case odk::host_msg::SET_PLUGIN_CONFIGURATION:
             {
                 odk::UpdateConfigTelegram telegram;
-                BOOST_REQUIRE(telegram.parse(static_cast<const char*>(param)));
+                BOOST_REQUIRE(telegram.parse({ static_cast<const char*>(param), static_cast<std::size_t>(param_size - 1) }));
                 return odk::error_codes::OK;
             }
             default:

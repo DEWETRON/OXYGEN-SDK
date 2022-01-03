@@ -22,6 +22,7 @@ set(ODKAPI_TEST_SOURCES
   odkapi_timestamp_test.cpp
   odkapi_update_channels_test.cpp
   odkapi_update_config_test.cpp
+  odkapi_validation_telegram_test.cpp
   odkapi_version_test.cpp
   test_module.cpp
 )
