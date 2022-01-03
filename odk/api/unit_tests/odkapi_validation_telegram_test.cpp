@@ -2,7 +2,7 @@
 
 #include "odkapi_export_xml.h"
 
-#include "xpugixml.h"
+#include "odkuni_xpugixml.h"
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(plugin_validate_export_telegram_test)

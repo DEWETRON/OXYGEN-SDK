@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         cc: [g++, clang++]
-        std: [14, 17]
+        std: [17]
 
     steps:
     - name: Install Requirements
