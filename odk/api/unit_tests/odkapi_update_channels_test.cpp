@@ -154,11 +154,11 @@ BOOST_AUTO_TEST_CASE(CreateRequestXML)
     BOOST_CHECK(output.parse(xml.c_str()));
     BOOST_CHECK(expected_output == output);
 
-    BOOST_CHECK(getRootChannels(output) == std::vector<uint32>(std::initializer_list<uint32>({ 2u })));
-    BOOST_CHECK(getChildrenOfChannel(output, 2, false) == std::vector<uint32>({5, 11}));
-    BOOST_CHECK(getChildrenOfChannel(output, 5, false) == std::vector<uint32>(std::initializer_list<uint32>({ 8u })));
-    BOOST_CHECK(getChildrenOfChannel(output, 8, false) == std::vector<uint32>());
-    BOOST_CHECK(getChildrenOfChannel(output, 2, true) == std::vector<uint32>({5, 8, 11}));
+    BOOST_CHECK(getRootChannels(output) == std::vector<std::uint32_t>(std::initializer_list<std::uint32_t>({ 2u })));
+    BOOST_CHECK(getChildrenOfChannel(output, 2, false) == std::vector<std::uint32_t>({5, 11}));
+    BOOST_CHECK(getChildrenOfChannel(output, 5, false) == std::vector<std::uint32_t>(std::initializer_list<std::uint32_t>({ 8u })));
+    BOOST_CHECK(getChildrenOfChannel(output, 8, false) == std::vector<std::uint32_t>());
+    BOOST_CHECK(getChildrenOfChannel(output, 2, true) == std::vector<std::uint32_t>({5, 8, 11}));
 }
 
 BOOST_AUTO_TEST_CASE(CreateRequestXML2)
