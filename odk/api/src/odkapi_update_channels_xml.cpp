@@ -109,12 +109,12 @@ namespace
         return nullptr;
     }
 
-    bool UpdateChannelsTelegram::parse(const char* xml_string)
+    bool UpdateChannelsTelegram::parse(const boost::string_view& xml_string)
     {
         m_channels.clear();
 
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             auto request_node = doc.document_element();

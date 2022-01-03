@@ -7,7 +7,9 @@
 #include "odkapi_property_list_xml.h"
 
 #include "odkbase_if_host.h"
+#include "odkuni_defines.h"
 
+#include <boost/utility/string_view.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -29,7 +31,7 @@ namespace odk
             {
             }
 
-            bool operator==(const PluginChannelInfo& other) const
+            ODK_NODISCARD bool operator==(const PluginChannelInfo& other) const
             {
                 return m_local_id == other.m_local_id;
             }
@@ -51,7 +53,7 @@ namespace odk
                 FILE_PATH
             };
 
-            static Constraint makeOption(const odk::Property& value)
+            ODK_NODISCARD static Constraint makeOption(const odk::Property& value)
             {
                 Constraint r(OPTIONS);
                 auto prop = value;
@@ -60,7 +62,7 @@ namespace odk
                 return r;
             }
 
-            static Constraint makeOptions(const std::vector<odk::Property>& options)
+            ODK_NODISCARD static Constraint makeOptions(const std::vector<odk::Property>& options)
             {
                 Constraint r(OPTIONS);
                 for (const auto& option : options)
@@ -72,7 +74,7 @@ namespace odk
                 return r;
             }
 
-            static Constraint makeRange(const odk::Scalar& minv, const odk::Scalar& maxv)
+            ODK_NODISCARD static Constraint makeRange(const odk::Scalar& minv, const odk::Scalar& maxv)
             {
                 Constraint r(RANGE);
                 r.m_params.setProperty(odk::Property("min", minv));
@@ -80,7 +82,7 @@ namespace odk
                 return r;
             }
 
-            static Constraint makeRange(odk::Property minv, odk::Property maxv)
+            ODK_NODISCARD static Constraint makeRange(odk::Property minv, odk::Property maxv)
             {
                 if (minv.getType() != maxv.getType())
                 {
@@ -94,14 +96,14 @@ namespace odk
                 return r;
             }
 
-            static Constraint makeRegEx(const std::string& regex)
+            ODK_NODISCARD static Constraint makeRegEx(const std::string& regex)
             {
                 Constraint r(REGEX);
                 r.m_params.setProperty(odk::Property("regex", regex));
                 return r;
             }
 
-            static Constraint makeSimpleConstraint(Type t)
+            ODK_NODISCARD static Constraint makeSimpleConstraint(Type t)
             {
                 switch (t)
                 {
@@ -113,7 +115,7 @@ namespace odk
             }
 
             // max_items == 1 means single channel id item for now
-            static Constraint makeChannelIds(std::uint32_t max_items, int max_dimension, const std::string& type)
+            ODK_NODISCARD static Constraint makeChannelIds(std::uint32_t max_items, int max_dimension, const std::string& type)
             {
                 Constraint r(CHANNEL_IDS);
                 r.m_params.setProperty(odk::Property("max_items", max_items));
@@ -122,14 +124,14 @@ namespace odk
                 return r;
             }
 
-            static Constraint makeVisibility(const std::string& visibility)
+            ODK_NODISCARD static Constraint makeVisibility(const std::string& visibility)
             {
                 Constraint r(VISIBLITY);
                 r.m_params.setProperty(odk::Property("visibility", visibility));
                 return r;
             }
 
-            static Constraint makeFilePathConstraint(std::string& file_type,
+            ODK_NODISCARD static Constraint makeFilePathConstraint(std::string& file_type,
                 const std::string& dialog_title, const std::string& default_path,
                 const std::vector<std::string>& name_filters, bool multi_select)
             {
@@ -143,16 +145,16 @@ namespace odk
                 return r;
             }
 
-            static Constraint fromXML(const pugi::xml_node& tree);
+            ODK_NODISCARD static Constraint fromXML(const pugi::xml_node& tree);
 
             void appendTo(pugi::xml_node node) const;
 
-            Type getType() const
+            ODK_NODISCARD Type getType() const
             {
                 return m_type;
             }
 
-            odk::Property getRangeMin() const
+            ODK_NODISCARD odk::Property getRangeMin() const
             {
                 if (m_type != RANGE)
                 {
@@ -161,7 +163,7 @@ namespace odk
                 return m_params.getPropertyByName("min");
             }
 
-            odk::Property getRangeMax() const
+            ODK_NODISCARD odk::Property getRangeMax() const
             {
                 if (m_type != RANGE)
                 {
@@ -170,7 +172,7 @@ namespace odk
                 return m_params.getPropertyByName("max");
             }
 
-            std::vector<odk::Property> getOptions() const
+            ODK_NODISCARD std::vector<odk::Property> getOptions() const
             {
                 std::vector<odk::Property> r;
                 for (size_t i = 0; i < m_params.size(); ++i)
@@ -184,7 +186,7 @@ namespace odk
                 return r;
             }
 
-            odk::Property getOption(size_t n) const
+            ODK_NODISCARD odk::Property getOption(size_t n) const
             {
                 auto i = n;
                 for (size_t j = 0; j < m_params.size(); ++j)
@@ -205,7 +207,7 @@ namespace odk
                 return {};
             }
 
-            std::string getRegEx() const
+            ODK_NODISCARD std::string getRegEx() const
             {
                 if (m_type != REGEX)
                 {
@@ -215,7 +217,7 @@ namespace odk
             }
 
             // supported values: HIDDEN, PUBLIC
-            std::string getVisibility() const
+            ODK_NODISCARD std::string getVisibility() const
             {
                 if (m_type != VISIBLITY)
                 {
@@ -224,7 +226,7 @@ namespace odk
                 return m_params.getPropertyByName("visibility").getStringValue();
             }
 
-            std::string getFileType() const
+            ODK_NODISCARD std::string getFileType() const
             {
                 if (m_type != FILE_PATH)
                 {
@@ -233,7 +235,7 @@ namespace odk
                 return m_params.getPropertyByName("file_type").getStringValue();
             }
 
-            std::string getDialogTitle() const
+            ODK_NODISCARD std::string getDialogTitle() const
             {
                 if (m_type != FILE_PATH)
                 {
@@ -242,7 +244,7 @@ namespace odk
                 return m_params.getPropertyByName("dialog_title").getStringValue();
             }
 
-            std::string getDefaultPath() const
+            ODK_NODISCARD std::string getDefaultPath() const
             {
                 if (m_type != FILE_PATH)
                 {
@@ -251,7 +253,7 @@ namespace odk
                 return m_params.getPropertyByName("default_path").getStringValue();
             }
 
-            StringList getNameFilters() const
+            ODK_NODISCARD StringList getNameFilters() const
             {
                 if (m_type != FILE_PATH)
                 {
@@ -260,7 +262,7 @@ namespace odk
                 return m_params.getPropertyByName("name_filters").getStringListValue();
             }
 
-            bool getMultiSelect() const
+            ODK_NODISCARD bool getMultiSelect() const
             {
                 if (m_type != FILE_PATH)
                 {
@@ -274,7 +276,7 @@ namespace odk
             {
             }
 
-            std::uint32_t getMaxItems() const
+            ODK_NODISCARD std::uint32_t getMaxItems() const
             {
                 if (m_type != CHANNEL_IDS)
                 {
@@ -283,7 +285,7 @@ namespace odk
                 return m_params.getPropertyByName("max_items").getUnsignedIntValue();
             }
 
-            int getMaxDimension() const
+            ODK_NODISCARD int getMaxDimension() const
             {
                 if (m_type != CHANNEL_IDS)
                 {
@@ -292,7 +294,7 @@ namespace odk
                 return m_params.getPropertyByName("max_dimension").getIntValue();
             }
 
-            std::string getChannelType() const
+            ODK_NODISCARD std::string getChannelType() const
             {
                 if (m_type != CHANNEL_IDS)
                 {
@@ -301,7 +303,7 @@ namespace odk
                 return m_params.getPropertyByName("channel_type").getStringValue();
             }
 
-            bool operator==(const Constraint& other) const
+            ODK_NODISCARD bool operator==(const Constraint& other) const
             {
                 return m_type == other.m_type
                     && m_params == other.m_params;
@@ -343,7 +345,7 @@ namespace odk
                 return *this;
             }
 
-            const odk::Property* getProperty(const std::string& name) const
+            ODK_NODISCARD const odk::Property* getProperty(const std::string& name) const
             {
                 for (size_t i = 0; i < m_properties.size(); ++i)
                 {
@@ -355,7 +357,7 @@ namespace odk
                 return nullptr;
             }
 
-            odk::Property* getProperty(const std::string& name)
+            ODK_NODISCARD odk::Property* getProperty(const std::string& name)
             {
                 return const_cast<odk::Property*>(
                     const_cast<const ChannelConfig*>(this)->getProperty(name));
@@ -394,7 +396,7 @@ namespace odk
                 return *this;
             }
 
-            ConstraintVec_t getConstraints(const std::string& name) const
+            ODK_NODISCARD ConstraintVec_t getConstraints(const std::string& name) const
             {
                 auto it = m_constraints.find(name);
                 if (it != m_constraints.end())
@@ -410,7 +412,7 @@ namespace odk
             void appendProperties(pugi::xml_node channel_node) const;
             bool readProperties(pugi::xml_node channel_node);
 
-            bool operator==(const ChannelConfig& other) const
+            ODK_NODISCARD bool operator==(const ChannelConfig& other) const
             {
                 return m_channel_info == other.m_channel_info
                     && m_properties == other.m_properties
@@ -426,13 +428,13 @@ namespace odk
 
         UpdateConfigTelegram::ChannelConfig& addChannel(std::uint32_t local_id);
         void removeChannel(std::uint32_t local_id);
-        UpdateConfigTelegram::ChannelConfig* getChannel(std::uint32_t local_id);
-        const UpdateConfigTelegram::ChannelConfig* getChannel(std::uint32_t local_id) const;
-        std::vector<UpdateConfigTelegram::ChannelConfig> getAllChannels() const;
+        ODK_NODISCARD UpdateConfigTelegram::ChannelConfig* getChannel(std::uint32_t local_id);
+        ODK_NODISCARD const UpdateConfigTelegram::ChannelConfig* getChannel(std::uint32_t local_id) const;
+        ODK_NODISCARD std::vector<UpdateConfigTelegram::ChannelConfig> getAllChannels() const;
 
-        bool parse(const char* xml_string);
-        std::string generate() const;
-        bool operator==(const UpdateConfigTelegram& other) const;
+        bool parse(const boost::string_view& xml_string);
+        ODK_NODISCARD std::string generate() const;
+        ODK_NODISCARD bool operator==(const UpdateConfigTelegram& other) const;
 
         void update(const UpdateConfigTelegram& updates);
     };
@@ -446,12 +448,12 @@ namespace odk
         return *this;
     }
 
-    UpdateConfigTelegram::Constraint makeRangeConstraint(double low, double high);
-    UpdateConfigTelegram::Constraint makeArbitraryStringConstraint();
-    UpdateConfigTelegram::Constraint makeRegExConstraint(const std::string& regex);
-    UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max_items, int max_dimension = -1, const std::string& type_filter = "ALL");
-    UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis);
-    UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeRangeConstraint(double low, double high);
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeArbitraryStringConstraint();
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeRegExConstraint(const std::string& regex);
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeChannelIdsConstraint(std::uint32_t max_items, int max_dimension = -1, const std::string& type_filter = "ALL");
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis);
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
         const std::string& dialog_title, const std::string& path,
         const std::vector<std::string>& name_filters, bool multi_select);
 }

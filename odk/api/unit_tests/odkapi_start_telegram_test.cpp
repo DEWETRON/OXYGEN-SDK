@@ -1,8 +1,8 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_export_xml.h"
+#include "odkuni_xpugixml.h"
 
-#include "xpugixml.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/version.hpp>
 

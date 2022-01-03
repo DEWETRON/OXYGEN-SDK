@@ -5,7 +5,9 @@
 #include "odkapi_types.h"
 #include "odkapi_timebase_xml.h"
 #include "odkapi_update_config_xml.h"
+#include "odkuni_defines.h"
 
+#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -27,9 +29,8 @@ namespace odk
 
             std::vector<ChannelGroupInfo> m_children;
 
-            ChannelGroupInfo()
-            {
-            }
+            ChannelGroupInfo() = default;
+
             explicit ChannelGroupInfo(const std::string& name)
                 : m_group_name(name)
             {
@@ -39,12 +40,12 @@ namespace odk
             {
             }
 
-            bool isGroup() const
+            ODK_NODISCARD bool isGroup() const
             {
                 return !m_group_name.empty();
             }
 
-            bool isChannel() const
+            ODK_NODISCARD bool isChannel() const
             {
                 return m_channel_id != std::numeric_limits<uint32_t>::max();
             }
@@ -61,7 +62,7 @@ namespace odk
                 return m_children.back();
             }
 
-            bool operator==(const ChannelGroupInfo& other) const
+            ODK_NODISCARD bool operator==(const ChannelGroupInfo& other) const
             {
                 return m_group_name == other.m_group_name
                     && m_channel_id == other.m_channel_id
@@ -143,7 +144,7 @@ namespace odk
                 return *this;
             }
 
-            bool operator==(const PluginChannelInfo& other) const
+            ODK_NODISCARD bool operator==(const PluginChannelInfo& other) const
             {
                 return m_local_id == other.m_local_id
                     && m_dataformat_info == other.m_dataformat_info
@@ -169,13 +170,13 @@ namespace odk
 
         UpdateChannelsTelegram::PluginChannelInfo& addChannel(std::uint32_t local_id);
         void appendChannel(const UpdateChannelsTelegram::PluginChannelInfo& channel_info);
-        UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id);
-        const UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id) const;
+        ODK_NODISCARD UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id);
+        ODK_NODISCARD const UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id) const;
         void removeChannel(std::uint32_t local_id);
 
-        bool parse(const char* xml_string);
-        std::string generate() const;
-        bool operator==(const UpdateChannelsTelegram& other) const;
+        bool parse(const boost::string_view& xml_string);
+        ODK_NODISCARD std::string generate() const;
+        ODK_NODISCARD bool operator==(const UpdateChannelsTelegram& other) const;
     };
 
     std::vector<std::uint32_t> getRootChannels(const UpdateChannelsTelegram& t);
