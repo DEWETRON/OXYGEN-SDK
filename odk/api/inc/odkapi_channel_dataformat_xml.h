@@ -4,7 +4,9 @@
 
 #include "odkapi_pugixml_fwd.h"
 #include "odkapi_types.h"
+#include "odkuni_defines.h"
 
+#include <boost/utility/string_view.hpp>
 #include <string>
 
 namespace odk
@@ -82,11 +84,11 @@ namespace odk
         bool store(pugi::xml_node parent_node) const;
         bool extract(pugi::xml_node parent_node);
 
-        std::string generate() const;
-        bool parse(const char* xml_string);
+        ODK_NODISCARD std::string generate() const;
+        bool parse(const boost::string_view& xml_string);
         bool parse(pugi::xml_node data_format);
 
-        bool operator==(const ChannelDataformat& other) const
+        ODK_NODISCARD bool operator==(const ChannelDataformat& other) const
         {
             return m_sample_format == other.m_sample_format
                 && m_sample_dimension == other.m_sample_dimension
@@ -96,7 +98,7 @@ namespace odk
             ;
         }
 
-        static std::string getSampleFormatString(SampleFormat f);
+        ODK_NODISCARD static std::string getSampleFormatString(SampleFormat f);
     };
 
     struct ChannelDataformatTelegram : equality_comparable<ChannelDataformatTelegram>
@@ -104,14 +106,14 @@ namespace odk
         bool store(pugi::xml_node parent_node) const;
         bool extract(pugi::xml_node parent_node);
 
-        std::string generate() const;
-        bool parse(const char* xml_string);
+        ODK_NODISCARD std::string generate() const;
+        bool parse(const boost::string_view& xml_string);
         bool parse(pugi::xml_node channel_node);
 
         std::uint64_t channel_id;
         ChannelDataformat data_format;
 
-        bool operator==(const ChannelDataformatTelegram& other) const
+        ODK_NODISCARD bool operator==(const ChannelDataformatTelegram& other) const
         {
             return channel_id == other.channel_id
                 && data_format == other.data_format;

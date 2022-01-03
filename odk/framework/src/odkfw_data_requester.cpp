@@ -63,7 +63,7 @@ namespace framework
         std::string channel_context = odk::queries::OxygenChannels + ("#" + std::to_string(m_channel_id));
         auto data_format_xml = m_host->getValue<IfXMLValue>(channel_context.c_str(), "DataFormat");
         odk::ChannelDataformat dataformat;
-        if (dataformat.parse(data_format_xml->getValue()))
+        if (dataformat.parse(data_format_xml->asStringView()))
         {
             m_is_single_value = dataformat.m_sample_occurrence == odk::ChannelDataformat::SampleOccurrence::SINGLE_VALUE;
         }
@@ -142,8 +142,8 @@ namespace framework
                 {
                     if (data_regions_result_xml)
                     {
-                        data_regions.reset(new DataRegions());
-                        data_regions->parse(data_regions_result_xml->getValue());
+                        data_regions = std::make_shared<DataRegions>();
+                        data_regions->parse(data_regions_result_xml->asStringView());
                     }
                     data_regions_result->release();
                 }

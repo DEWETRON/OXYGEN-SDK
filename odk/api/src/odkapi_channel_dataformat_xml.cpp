@@ -150,11 +150,11 @@ namespace odk
         return valid;
     }
 
-    bool ChannelDataformat::parse(const char* xml_string)
+    bool ChannelDataformat::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
 
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status != pugi::status_ok)
         {
             return false;
@@ -218,11 +218,11 @@ namespace odk
         return false;
     }
 
-    bool ChannelDataformatTelegram::parse(const char* xml_string)
+    bool ChannelDataformatTelegram::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
 
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status != pugi::status_ok)
         {
             return false;

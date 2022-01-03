@@ -905,7 +905,7 @@ namespace framework
                 if (auto change_xml = odk::value_cast<const odk::IfXMLValue>(param))
                 {
                     odk::UpdateConfigTelegram update_telegram;
-                    if (update_telegram.parse(change_xml->getValue()))
+                    if (update_telegram.parse(change_xml->asStringView()))
                     {
                         return processConfigUpdate(update_telegram);
                     }

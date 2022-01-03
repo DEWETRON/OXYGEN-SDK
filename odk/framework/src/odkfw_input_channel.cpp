@@ -72,11 +72,11 @@ namespace framework
 
         odk::ChannelDataformat dataformat_bak(m_input_channel_data.dataformat);
 
-        if (!m_input_channel_data.dataformat.parse(data_format_xml->getValue()))
+        if (!m_input_channel_data.dataformat.parse(data_format_xml->asStringView()))
         {
             //corrupt or legacy xml
             const auto data_format_extracted = extractDataFormat(*data_format_xml);
-            if (!m_input_channel_data.dataformat.parse(data_format_extracted.c_str()))
+            if (!m_input_channel_data.dataformat.parse(data_format_extracted))
             {
                 m_input_channel_data.dataformat = dataformat_bak;
                 return false;

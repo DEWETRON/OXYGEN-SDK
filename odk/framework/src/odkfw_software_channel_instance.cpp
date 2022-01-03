@@ -394,7 +394,7 @@ namespace framework
                 {
                     if (data_regions_result_xml)
                     {
-                        data_regions.parse(data_regions_result_xml->getValue());
+                        data_regions.parse(data_regions_result_xml->asStringView());
                     }
                     data_regions_result->release();
                 }

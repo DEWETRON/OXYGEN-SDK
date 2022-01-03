@@ -64,7 +64,7 @@ namespace odk
             return {};
         }
         odk::AbsoluteTime time;
-        time.parse(xml_value->getValue());
+        time.parse(xml_value->asStringView());
         return time;
     }
 
