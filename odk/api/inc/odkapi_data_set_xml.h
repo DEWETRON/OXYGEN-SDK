@@ -2,7 +2,9 @@
 #pragma once
 
 #include "odkapi_types.h"
+#include "odkuni_defines.h"
 
+#include <boost/utility/string_view.hpp>
 #include <boost/optional.hpp>
 #include <cstdint>
 #include <string>
@@ -19,9 +21,9 @@ namespace odk
         PluginDataSet();
         explicit PluginDataSet(std::uint64_t id, const std::vector<std::uint64_t>& channels, DataSetType type = DataSetType::SCALED, DataSetMode mode = DataSetMode::NORMAL, StreamPolicy policy = StreamPolicy::EXACT);
 
-        bool parse(const char* xml_string);
+        bool parse(const boost::string_view& xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
         std::vector<std::uint64_t> m_channels;
@@ -38,9 +40,7 @@ namespace odk
         {
         public:
 
-            SingleValue() = delete;
-
-            SingleValue(double timestamp)
+            SingleValue(double timestamp) noexcept
                 : m_timestamp(timestamp)
             {}
 
@@ -50,10 +50,8 @@ namespace odk
         class DataWindow
         {
         public:
-
-            DataWindow() = delete;
-
-            DataWindow(double start, double stop)
+            
+            DataWindow(double start, double stop) noexcept
                 : m_start(start)
                 , m_stop(stop)
             {}
@@ -73,9 +71,9 @@ namespace odk
 
         explicit PluginDataRequest(std::uint64_t id, DataStream data_stream);
 
-        bool parse(const char* xml_string);
+        bool parse(const boost::string_view& xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
 
@@ -92,9 +90,9 @@ namespace odk
         explicit PluginDataStartRequest(std::uint64_t id, double duration);
         explicit PluginDataStartRequest(std::uint64_t id, double start, double duration);
 
-        bool parse(const char* xml_string);
+        bool parse(const boost::string_view& xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
 
@@ -111,9 +109,9 @@ namespace odk
         PluginDataStopRequest();
         explicit PluginDataStopRequest(std::uint64_t id);
 
-        bool parse(const char* xml_string);
+        bool parse(const boost::string_view& xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
 
@@ -127,11 +125,9 @@ namespace odk
         {
         public:
 
-            DataWindow() = delete;
-
-            DataWindow(double start, double stop)
+            DataWindow(double start, double stop) noexcept
                 : m_start(start)
-                  , m_stop(stop)
+                , m_stop(stop)
             {}
 
             double m_start;
@@ -142,9 +138,9 @@ namespace odk
 
         explicit PluginDataRegionsRequest(std::uint64_t id);
 
-        bool parse(const char* xml_string);
+        bool parse(const boost::string_view& xml_string);
 
-        std::string generate() const;
+        ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
         boost::optional<DataWindow> m_data_window;

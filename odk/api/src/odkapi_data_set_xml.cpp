@@ -27,11 +27,11 @@ namespace odk
 
     }
 
-    bool PluginDataSet::parse(const char* xml_string)
+    bool PluginDataSet::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_channels.clear();
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -111,10 +111,10 @@ namespace odk
         , m_data_stream(data_stream)
     {}
 
-    bool PluginDataRequest::parse(const char *xml_string)
+    bool PluginDataRequest::parse(const boost::string_view&  xml_string)
     {
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -122,20 +122,20 @@ namespace odk
                 auto data_request_node = doc.document_element();
                 m_id = boost::lexical_cast<std::uint64_t>(data_request_node.attribute("data_set_key").value());
 
-                if(auto window_node = data_request_node.select_node("Window"))
+                if(auto window_node = data_request_node.child("Window"))
                 {
                     m_data_window = DataWindow(
-                                boost::lexical_cast<double>(window_node.node().attribute("start").value()),
-                                boost::lexical_cast<double>(window_node.node().attribute("end").value()));
+                                boost::lexical_cast<double>(window_node.attribute("start").value()),
+                                boost::lexical_cast<double>(window_node.attribute("end").value()));
                 }
 
-                if(auto single_value_node = data_request_node.select_node("SingleValue"))
+                if(auto single_value_node = data_request_node.child("SingleValue"))
                 {
                     m_single_value = SingleValue(
-                                boost::lexical_cast<double>(single_value_node.node().attribute("timestamp").value()));
+                                boost::lexical_cast<double>(single_value_node.attribute("timestamp").value()));
                 }
 
-                if(auto data_stream_node = data_request_node.select_node("DataStream"))
+                if(auto data_stream_node = data_request_node.child("DataStream"))
                 {
                     m_data_stream = DataStream();
                 }
@@ -199,10 +199,10 @@ namespace odk
         , m_stream_type(odk::StreamType::PUSH)
     {}
 
-    bool PluginDataStartRequest::parse(const char *xml_string)
+    bool PluginDataStartRequest::parse(const boost::string_view&  xml_string)
     {
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -210,7 +210,7 @@ namespace odk
                 auto data_request_node = doc.document_element();
                 m_id = boost::lexical_cast<std::uint64_t>(data_request_node.attribute("data_set_key").value());
 
-                auto window_node = data_request_node.select_node("Stream").node();
+                auto window_node = data_request_node.child("Stream");
 
                 m_start = boost::none;
                 m_block_duration = boost::none;
@@ -266,10 +266,10 @@ namespace odk
         : m_id(id)
     {}
 
-    bool PluginDataStopRequest::parse(const char *xml_string)
+    bool PluginDataStopRequest::parse(const boost::string_view&  xml_string)
     {
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -304,10 +304,10 @@ namespace odk
     {
     }
 
-    bool PluginDataRegionsRequest::parse(const char *xml_string)
+    bool PluginDataRegionsRequest::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -315,11 +315,11 @@ namespace odk
                 auto data_request_node = doc.document_element();
                 m_id = boost::lexical_cast<std::uint64_t>(data_request_node.attribute("data_set_key").value());
 
-                if(auto window_node = data_request_node.select_node("Window"))
+                if(auto window_node = data_request_node.child("Window"))
                 {
                     m_data_window = DataWindow(
-                        boost::lexical_cast<double>(window_node.node().attribute("start").value()),
-                        boost::lexical_cast<double>(window_node.node().attribute("end").value()));
+                        boost::lexical_cast<double>(window_node.attribute("start").value()),
+                        boost::lexical_cast<double>(window_node.attribute("end").value()));
                 }
             }
             catch (const boost::bad_lexical_cast&)

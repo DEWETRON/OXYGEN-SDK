@@ -23,11 +23,11 @@ namespace odk
     class Interval
     {
     public:
-        Interval()
+        Interval() noexcept
             : m_begin(0)
             , m_end(0)
         {}
-        explicit Interval(T begin, T end)
+        explicit Interval(T begin, T end) noexcept
             : m_begin(begin)
             , m_end(end)
         {}

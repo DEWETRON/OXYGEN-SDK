@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(CreateXML)
 
     {
         ExportProperties exp_props;
-        BOOST_CHECK(exp_props.parse(xml_from_props.c_str()));
+        BOOST_CHECK(exp_props.parse(xml_from_props));
 
         BOOST_REQUIRE(exp_props.m_channels.size() == 2);
         {
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(CreateXML_RootNode)
     //! load and check generated xml
     {
         ExportProperties new_exp_props;
-        BOOST_CHECK(new_exp_props.parse(exp_props.generateNodeXML().c_str()));
+        BOOST_CHECK(new_exp_props.parse(exp_props.generateNodeXML()));
 
         BOOST_REQUIRE_EQUAL(new_exp_props.m_channels.size(), 2);
         {
@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(CreateXML_RootNode)
     //! load and check generated pugi node
     {
         ExportProperties new_exp_props;
-        BOOST_CHECK(new_exp_props.parse(exp_props.generate().c_str()));
+        BOOST_CHECK(new_exp_props.parse(exp_props.generate()));
 
         BOOST_REQUIRE(new_exp_props.m_channels.size() == 2);
         {
