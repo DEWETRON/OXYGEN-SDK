@@ -36,7 +36,7 @@ namespace odk
             }
 
             odk::Timestamp master_timebase;
-            master_timebase.parse(master_timebase_xml->getValue(), master_timebase_xml->getLength());
+            master_timebase.parse(master_timebase_xml->asStringView());
             return master_timebase;
         }
         return {};
@@ -51,7 +51,7 @@ namespace odk
             return {};
         }
         odk::AbsoluteTime time;
-        time.parse(xml_value->getValue(), xml_value->getLength());
+        time.parse(xml_value->asStringView());
         return time;
     }
 

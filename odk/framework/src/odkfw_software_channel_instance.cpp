@@ -67,7 +67,7 @@ namespace framework
 
         auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
         BlockListDescriptor list_descriptor;
-        list_descriptor.parse(block_list_descriptor_xml->getValue(), block_list_descriptor_xml->getLength());
+        list_descriptor.parse(block_list_descriptor_xml->asStringView());
 
         odk::framework::StreamReader stream_reader;
 
@@ -78,7 +78,7 @@ namespace framework
             auto block_descriptor_xml = odk::ptr(block->getBlockDescription());
 
             BlockDescriptor block_descriptor;
-            block_descriptor.parse(block_descriptor_xml->getValue(), block_descriptor_xml->getLength());
+            block_descriptor.parse(block_descriptor_xml->asStringView());
 
             if (!block_descriptor.m_block_channels.empty())
             {
@@ -365,7 +365,7 @@ namespace framework
         odk::AcquisitionTaskProcessTelegram telegram;
         if (param)
         {
-            telegram.parse(param->getValue(), param->getLength());
+            telegram.parse(param->asStringView());
         }
 
         ProcessingContext context;
@@ -419,7 +419,7 @@ namespace framework
             {
                 auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
                 BlockListDescriptor list_descriptor;
-                list_descriptor.parse(block_list_descriptor_xml->getValue(), block_list_descriptor_xml->getLength());
+                list_descriptor.parse(block_list_descriptor_xml->asStringView());
 
                 if (list_descriptor.m_windows.empty())
                 {
@@ -463,7 +463,7 @@ namespace framework
                 {
                     auto block_list_descriptor_xml = odk::ptr(block_list->getBlockListDescription());
                     BlockListDescriptor list_descriptor;
-                    list_descriptor.parse(block_list_descriptor_xml->getValue(), block_list_descriptor_xml->getLength());
+                    list_descriptor.parse(block_list_descriptor_xml->asStringView());
 
                     if (list_descriptor.m_windows.empty())
                     {
@@ -570,7 +570,7 @@ namespace framework
             if (group_add_result_xml)
             {
                 m_dataset_descriptor = DataSetDescriptor();
-                m_dataset_descriptor->parse({ group_add_result_xml->getValue(), static_cast<std::size_t>(group_add_result_xml->getLength()) });
+                m_dataset_descriptor->parse(group_add_result_xml->asStringView());
             }
             group_add_result->release();
         }

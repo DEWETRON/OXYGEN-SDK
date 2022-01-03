@@ -7,6 +7,10 @@
 #include <cstdint>
 #include <string>
 
+#ifdef ODK_EXTENSION_FUNCTIONS
+#include <boost/utility/string_view.hpp>
+#endif
+
 /**
  * This header contains interfaces for the value objects used in the plugin API.
  * All of these objects are reference counted.
@@ -114,7 +118,12 @@ namespace odk
         typedef std::string converted_type;
         converted_type convert() const
         {
-            return std::string(getValue(), getLength());
+            return std::string(getValue(), static_cast<std::size_t>(getLength()));
+        }
+
+        boost::string_view asStringView() const
+        {
+            return boost::string_view(getValue(), static_cast<std::size_t>(getLength()));
         }
 #endif
     };
@@ -210,7 +219,12 @@ namespace odk
         typedef std::string converted_type;
         converted_type convert() const
         {
-            return std::string(getValue(), getLength());
+            return std::string(getValue(), static_cast<std::size_t>(getLength()));
+        }
+
+        boost::string_view asStringView() const
+        {
+            return boost::string_view(getValue(), static_cast<std::size_t>(getLength()));
         }
 #endif
     };

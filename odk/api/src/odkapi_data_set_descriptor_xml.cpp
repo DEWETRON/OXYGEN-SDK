@@ -175,7 +175,7 @@ namespace odk
     {
     }
 
-    bool DataSetDescriptor::parse(boost::string_view xml_string)
+    bool DataSetDescriptor::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_stream_descriptors.clear();

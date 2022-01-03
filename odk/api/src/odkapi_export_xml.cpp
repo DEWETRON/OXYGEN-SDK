@@ -32,15 +32,13 @@ namespace odk
         : m_start_export_action(SELECT_FILE)
     {}
 
-    bool RegisterExport::parse(const char* xml_string, std::size_t xml_length)
+    bool RegisterExport::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status != pugi::status_ok)
         {
             return false;
@@ -133,29 +131,27 @@ namespace odk
 
     }
 
-    bool StartExport::parse(const char* xml_string, std::size_t xml_length)
+    bool StartExport::parse(const boost::string_view& xml_string)
     {
         m_transaction_id = 0;
         m_properties = {};
 
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
 
-                auto export_properties_node = doc.document_element().select_node("ExportProperties").node();
+                auto export_properties_node = doc.document_element().child("ExportProperties");
                 if (!m_properties.parse(export_properties_node))
                 {
                     return false;
                 }
 
-                auto transaction_id_node = doc.document_element().select_node("TransactionId").node();
+                auto transaction_id_node = doc.document_element().child("TransactionId");
                 if (transaction_id_node)
                 {
                     m_transaction_id = boost::lexical_cast<std::uint64_t>(transaction_id_node.attribute("transaction_id").value());
@@ -202,15 +198,13 @@ namespace odk
     {
     }
 
-    bool ExportProperties::parse(const char* xml_string, std::size_t xml_length)
+    bool ExportProperties::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             return parse(doc.document_element());
@@ -231,30 +225,28 @@ namespace odk
 
         try
         {
-            if (auto main_channel_node = export_properties_node.select_node("Channels").node())
+            if (auto main_channel_node = export_properties_node.child("Channels"))
             {
-                auto channel_nodes = main_channel_node.select_nodes("Channel");
+                auto channel_nodes = main_channel_node.children("Channel");
                 for (auto channel_node : channel_nodes)
                 {
-                    auto a_channel_node = channel_node.node();
-                    auto a_ch_id = a_channel_node.attribute("channel_id").as_ullong();
+                    auto a_ch_id = channel_node.attribute("channel_id").as_ullong();
                     m_channels.push_back(a_ch_id);
                 }
             }
 
-            if (auto main_interval_node = export_properties_node.select_node("Intervals").node())
+            if (auto main_interval_node = export_properties_node.child("Intervals"))
             {
-                auto window_nodes = main_interval_node.select_nodes("Interval");
+                auto window_nodes = main_interval_node.children("Interval");
                 for (auto window_node : window_nodes)
                 {
-                    auto a_window_node = window_node.node();
-                    auto a_begin = a_window_node.attribute("begin").as_double();
-                    auto a_end = a_window_node.attribute("end").as_double();
+                    auto a_begin = window_node.attribute("begin").as_double();
+                    auto a_end = window_node.attribute("end").as_double();
                     m_export_intervals.emplace_back(a_begin, a_end);
                 }
             }
 
-            if (auto special_main_node = export_properties_node.select_node("CustomProperties").node())
+            if (auto special_main_node = export_properties_node.child("CustomProperties"))
             {
                 for (const auto& prop : special_main_node.children())
                 {
@@ -266,12 +258,12 @@ namespace odk
                 }
             }
 
-            if (auto format_id_node = export_properties_node.select_node("FormatId").node())
+            if (auto format_id_node = export_properties_node.child("FormatId"))
             {
                 m_format_id = boost::lexical_cast<std::string>(format_id_node.attribute("format").value());
             }
 
-            if (auto filename_node = export_properties_node.select_node("Filename").node())
+            if (auto filename_node = export_properties_node.child("Filename"))
             {
                 m_filename = boost::lexical_cast<std::string>(filename_node.attribute("name").value());
             }
@@ -335,21 +327,19 @@ namespace odk
     {
     }
 
-    bool ValidateExport::parse(const char* xml_string, std::size_t xml_length)
+    bool ValidateExport::parse(const boost::string_view& xml_string)
     {
         m_properties = {};
 
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
-                auto export_properties_node = doc.document_element().select_node("ExportProperties").node();
+                auto export_properties_node = doc.document_element().child("ExportProperties");
                 if (!m_properties.parse(export_properties_node))
                 {
                     return false;
@@ -397,18 +387,16 @@ namespace odk
     {
     }
 
-    bool ValidateExportResponse::parse(const char* xml_string, std::size_t xml_length)
+    bool ValidateExportResponse::parse(const boost::string_view& xml_string)
     {
         m_success = false;
         m_channel_errors.clear();
 
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{

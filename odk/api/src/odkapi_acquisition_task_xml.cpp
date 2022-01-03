@@ -8,28 +8,22 @@
 #include "odkuni_xpugixml.h"
 
 #include <boost/lexical_cast.hpp>
-#include <cstring>
 
 namespace odk
 {
-    AddAcquisitionTaskTelegram::AddAcquisitionTaskTelegram()
+    AddAcquisitionTaskTelegram::AddAcquisitionTaskTelegram() noexcept
         : m_id()
     {}
 
-    bool AddAcquisitionTaskTelegram::parse(const char* xml_string, std::size_t xml_length)
+    bool AddAcquisitionTaskTelegram::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
         {
             return false;
         }
 
-        if (xml_length == 0)
-        {
-            xml_length = std::strlen(xml_string);
-        }
-
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -94,20 +88,15 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool AcquisitionTaskProcessTelegram::parse(const char* xml_string, std::size_t xml_length)
+    bool AcquisitionTaskProcessTelegram::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
         {
             return false;
         }
 
-        if (xml_length == 0)
-        {
-            xml_length = std::strlen(xml_string);
-        }
-
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try
@@ -158,4 +147,3 @@ namespace odk
     }
 
 }
-

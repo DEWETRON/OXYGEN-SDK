@@ -24,13 +24,13 @@ BOOST_AUTO_TEST_CASE(AddAcquisitionTaskTelegramSerialization)
     BOOST_CHECK(!serialized.empty());
 
     odk::AddAcquisitionTaskTelegram deserialized;
-    BOOST_CHECK(deserialized.parse(serialized.c_str()));
+    BOOST_CHECK(deserialized.parse(serialized));
     BOOST_CHECK_EQUAL(deserialized.m_id, orig.m_id);
     BOOST_CHECK_EQUAL_COLLECTIONS(deserialized.m_input_channels.begin(), deserialized.m_input_channels.end(), orig.m_input_channels.begin(), orig.m_input_channels.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(deserialized.m_output_channels.begin(), deserialized.m_output_channels.end(), orig.m_output_channels.begin(), orig.m_output_channels.end());
 
     deserialized = {};
-    BOOST_CHECK(deserialized.parse(serialized.c_str(), serialized.size()));
+    BOOST_CHECK(deserialized.parse(serialized));
     BOOST_CHECK_EQUAL(deserialized.m_id, orig.m_id);
     BOOST_CHECK_EQUAL_COLLECTIONS(deserialized.m_input_channels.begin(), deserialized.m_input_channels.end(), orig.m_input_channels.begin(), orig.m_input_channels.end());
     BOOST_CHECK_EQUAL_COLLECTIONS(deserialized.m_output_channels.begin(), deserialized.m_output_channels.end(), orig.m_output_channels.begin(), orig.m_output_channels.end());
@@ -53,14 +53,14 @@ BOOST_AUTO_TEST_CASE(AcquisitionTaskProcessTelegramSerialization)
     BOOST_CHECK(!serialized.empty());
 
     odk::AcquisitionTaskProcessTelegram deserialized;
-    BOOST_CHECK(deserialized.parse(serialized.c_str()));
+    BOOST_CHECK(deserialized.parse(serialized));
     BOOST_CHECK_EQUAL(deserialized.m_start.m_ticks, orig.m_start.m_ticks);
     BOOST_CHECK_EQUAL(deserialized.m_start.m_frequency, orig.m_start.m_frequency);
     BOOST_CHECK_EQUAL(deserialized.m_end.m_ticks, orig.m_end.m_ticks);
     BOOST_CHECK_EQUAL(deserialized.m_end.m_frequency, orig.m_end.m_frequency);
 
     deserialized = {};
-    BOOST_CHECK(deserialized.parse(serialized.c_str(), serialized.size()));
+    BOOST_CHECK(deserialized.parse(serialized));
     BOOST_CHECK_EQUAL(deserialized.m_start.m_ticks, orig.m_start.m_ticks);
     BOOST_CHECK_EQUAL(deserialized.m_start.m_frequency, orig.m_start.m_frequency);
     BOOST_CHECK_EQUAL(deserialized.m_end.m_ticks, orig.m_end.m_ticks);

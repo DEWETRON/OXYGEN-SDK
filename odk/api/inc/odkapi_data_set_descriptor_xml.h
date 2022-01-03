@@ -102,7 +102,7 @@ namespace odk
     public:
         DataSetDescriptor() noexcept;
 
-        bool parse(boost::string_view xml_string);
+        bool parse(const boost::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 

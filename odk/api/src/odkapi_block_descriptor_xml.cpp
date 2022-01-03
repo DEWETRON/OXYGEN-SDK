@@ -26,28 +26,16 @@ namespace odk
     {
     }
 
-    BlockDescriptor::BlockDescriptor(BlockDescriptor&& other) noexcept
-        : m_stream_id(other.m_stream_id)
-        , m_data_size(other.m_data_size)
-        , m_block_channels(std::move(other.m_block_channels))
+    bool BlockDescriptor::parse(const boost::string_view& xml_string)
     {
-    }
-
-
-    bool BlockDescriptor::parse(const char* xml_string, std::size_t xml_length)
-    {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
         {
             return false;
-        }
-        if (xml_length == 0)
-        {
-            xml_length = std::strlen(xml_string);
         }
 
         pugi::xml_document doc;
         m_block_channels.clear();
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             auto block_desc_node = doc.document_element();
@@ -104,17 +92,15 @@ namespace odk
     {
     }
 
-    bool BlockListDescriptor::parse(const char* xml_string, std::size_t xml_length)
+    bool BlockListDescriptor::parse(const boost::string_view& xml_string)
     {
         m_windows.clear();
 
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{
@@ -185,12 +171,12 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool DataRegions::parse(const char* xml_string)
+    bool DataRegions::parse(const boost::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_data_regions.clear();
 
-        auto status = doc.load_string(xml_string);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             try{

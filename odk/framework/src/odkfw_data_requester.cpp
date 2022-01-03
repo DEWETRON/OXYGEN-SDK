@@ -52,7 +52,7 @@ namespace framework
         if (group_add_result.valid())
         {
             m_dataset_descriptor = DataSetDescriptor();
-            m_dataset_descriptor.parse({ group_add_result->getValue(), static_cast<std::size_t>(group_add_result->getLength()) });
+            m_dataset_descriptor.parse(group_add_result->asStringView());
         }
 
         if(m_dataset_descriptor.m_stream_descriptors.size() == 1)
@@ -106,7 +106,7 @@ namespace framework
 
             auto block_list_descriptor_xml = odk::ptr(m_data_block_list->getBlockListDescription());
             BlockListDescriptor list_descriptor;
-            list_descriptor.parse(block_list_descriptor_xml->getValue(), block_list_descriptor_xml->getLength());
+            list_descriptor.parse(block_list_descriptor_xml->asStringView());
 
             odk::framework::StreamReader stream_reader;
 
@@ -116,7 +116,7 @@ namespace framework
                 auto block_descriptor_xml = odk::ptr(block->getBlockDescription());
 
                 BlockDescriptor block_descriptor;
-                block_descriptor.parse(block_descriptor_xml->getValue(), block_descriptor_xml->getLength());
+                block_descriptor.parse(block_descriptor_xml->asStringView());
 
                 if (!block_descriptor.m_block_channels.empty())
                 {

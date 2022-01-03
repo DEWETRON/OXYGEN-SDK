@@ -4,6 +4,7 @@
 #include "odkapi_timestamp_xml.h"
 #include "odkuni_defines.h"
 
+#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -13,9 +14,9 @@ namespace odk
     class AddAcquisitionTaskTelegram
     {
     public:
-        AddAcquisitionTaskTelegram();
+        AddAcquisitionTaskTelegram() noexcept;
 
-        bool parse(const char* xml_string, std::size_t xml_length = 0);
+        bool parse(const boost::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -27,13 +28,11 @@ namespace odk
     class AcquisitionTaskProcessTelegram
     {
     public:
-        bool parse(const char* xml_string, std::size_t xml_length = 0);
+        bool parse(const boost::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
         odk::Timestamp m_start;
         odk::Timestamp m_end;
     };
-
 }
-

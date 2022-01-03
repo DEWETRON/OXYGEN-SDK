@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(parse_generate)
     BOOST_CHECK_EQUAL(block_descriptor.m_block_channels.at(1).m_duration, 300);
 
     auto serialized = block_descriptor.generate();
-    BOOST_CHECK(block_descriptor.parse(serialized.c_str(), serialized.size()));
+    BOOST_CHECK(block_descriptor.parse(serialized));
 
     BOOST_REQUIRE_EQUAL(block_descriptor.m_block_channels.size(), 2);
 

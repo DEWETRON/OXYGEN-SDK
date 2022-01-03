@@ -24,15 +24,13 @@ namespace odk
         return m_frequency > 0;
     }
 
-    bool Timestamp::parse(const char *xml_string, std::size_t xml_length)
+    bool Timestamp::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
             auto node = doc.document_element();
@@ -101,18 +99,16 @@ namespace odk
     {
     }
 
-    bool AbsoluteTime::parse(const char *xml_string, std::size_t xml_length)
+    bool AbsoluteTime::parse(const boost::string_view& xml_string)
     {
-        if (xml_string == nullptr)
+        if (xml_string.empty())
             return false;
-        if (xml_length == 0)
-            xml_length = std::strlen(xml_string);
 
         pugi::xml_document doc;
-        auto status = doc.load_buffer(xml_string, xml_length, pugi::parse_default, pugi::encoding_utf8);
+        auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
-            if (auto absolute_time_node = doc.select_node("AbsoluteTime").node())
+            if (auto absolute_time_node = doc.child("AbsoluteTime"))
             {
                 m_year = boost::lexical_cast<int>(absolute_time_node.attribute("year").value());
                 m_month = boost::lexical_cast<int>(absolute_time_node.attribute("month").value());
