@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkfw_block_iterator.h"
+#include "odkuni_assert.h"
 #include "odkuni_defines.h"
 
 #include <cstddef>
@@ -59,6 +60,7 @@ namespace framework
 
         inline StreamIterator& operator++()
         {
+            ODK_ASSERT(valid());
             ++m_current_iterator;
             if (m_current_iterator == m_blocks_ranges[m_block_index].second)
             {
@@ -69,6 +71,7 @@ namespace framework
 
         inline StreamIterator& operator--()
         {
+            ODK_ASSERT(valid());
             if (m_current_iterator == m_blocks_ranges[m_block_index].first)
             {
                 getPreviousBlock();
