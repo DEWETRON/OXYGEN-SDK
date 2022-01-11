@@ -87,7 +87,7 @@ BEGIN_GROUP(host_msg)
     // > Host
 
     MSG_ID(LOG_MESSAGE,                 PLUGIN_SUPPORT, 0x000003,
-        "loglevel (1 fatal, 2 error), if used with string value; 0 reserved for use with xml value",
+        "loglevel (1 fatal, 2 error), if used with string value (see odkapi_logging.h); 0 reserved for use with xml value",
         "<XML> or string", "-",
         "standard error codes");
 
@@ -179,7 +179,7 @@ BEGIN_GROUP(host_msg_async)
     // > Host
 
     MSG_ID(LOG_MESSAGE,                 PLUGIN_SUPPORT, 0x000003,
-        "loglevel, if used with string value; 0 reserved for use with xml value",
+        "loglevel, if used with string value (see odkapi_logging.h); 0 reserved for use with xml value",
         "<XML> or string", "-",
         "standard error codes");
 

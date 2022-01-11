@@ -24,6 +24,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_error_codes.h
     inc/odkapi_event_ids.h
     inc/odkapi_export_xml.h
+    inc/odkapi_logging.h
     inc/odkapi_marker_xml.h
     inc/odkapi_message_ids.h
     inc/odkapi_message_ids.inc
