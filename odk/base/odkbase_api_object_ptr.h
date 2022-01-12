@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkbase_if_api_object.h"
+#include "odkuni_defines.h"
 #include <boost/intrusive_ptr.hpp>
 
 namespace odk
@@ -13,22 +14,16 @@ namespace detail
     class ApiObjectPtr : public boost::intrusive_ptr<T>
     {
     public:
-        ApiObjectPtr()
-        {
-        }
+        ApiObjectPtr() noexcept = default;
+
         explicit ApiObjectPtr(T* p)
+            : boost::intrusive_ptr<T>::intrusive_ptr(p, false)
         {
-            if (p)
-            {
-                this->reset(p, false);
-            }
         }
+
         ApiObjectPtr(T* p, bool addRef)
+            : boost::intrusive_ptr<T>::intrusive_ptr(p, addRef)
         {
-            if (p)
-            {
-                this->reset(p, addRef);
-            }
         }
     };
 } // namespace detail
@@ -39,19 +34,19 @@ namespace detail
      * It therefore integrates well with common plugin get*-functions which return objects with pre-increased ref count.
      */
     template <class T>
-    detail::ApiObjectPtr<T> ptr(T* p)
+    ODK_NODISCARD detail::ApiObjectPtr<T> ptr(T* p)
     {
         return detail::ApiObjectPtr<T>(p);
     }
 
     template <class T>
-    detail::ApiObjectPtr<T> ptr_add_ref(T* p)
+    ODK_NODISCARD detail::ApiObjectPtr<T> ptr_add_ref(T* p)
     {
         return detail::ApiObjectPtr<T>(p, true);
     }
 
     template <class T, class O>
-    detail::ApiObjectPtr<T> api_ptr_cast(const detail::ApiObjectPtr<O>& ptr)
+    ODK_NODISCARD detail::ApiObjectPtr<T> api_ptr_cast(const detail::ApiObjectPtr<O>& ptr)
     {
         detail::ApiObjectPtr<T> ret;
         ret.reset(static_cast<T*>(ptr.get()));
@@ -59,7 +54,7 @@ namespace detail
     }
 
     template <class T, class O>
-    detail::ApiObjectPtr<T> value_ptr_cast(const detail::ApiObjectPtr<O>& ptr)
+    ODK_NODISCARD detail::ApiObjectPtr<T> value_ptr_cast(const detail::ApiObjectPtr<O>& ptr)
     {
         detail::ApiObjectPtr<T> ret;
         if (ptr && ptr->getType() == T::type_index)
@@ -70,7 +65,7 @@ namespace detail
     }
 
     template <class T, class O>
-    detail::ApiObjectPtr<const T> value_ptr_cast(const detail::ApiObjectPtr<const O>& ptr)
+    ODK_NODISCARD detail::ApiObjectPtr<const T> value_ptr_cast(const detail::ApiObjectPtr<const O>& ptr)
     {
         detail::ApiObjectPtr<const T> ret;
         if (ptr && ptr->getType() == T::type_index)
@@ -79,6 +74,4 @@ namespace detail
         }
         return ret;
     }
-
 }
-

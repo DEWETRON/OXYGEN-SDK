@@ -55,7 +55,7 @@ namespace framework
             m_dataset_descriptor.parse(group_add_result->asStringView());
         }
 
-        if(m_dataset_descriptor.m_stream_descriptors.size() == 1)
+        if (m_dataset_descriptor.m_stream_descriptors.size() == 1)
         {
             m_stream_reader.setStreamDescriptor(m_dataset_descriptor.m_stream_descriptors.at(0));
         }
