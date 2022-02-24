@@ -149,7 +149,7 @@ namespace framework
                 }
             }
 
-            getPluginChannels()->synchronize();
+            getPluginChannels()->synchronize(false);
 
             return true;
         }
