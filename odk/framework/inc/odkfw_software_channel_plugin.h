@@ -149,7 +149,8 @@ namespace framework
                 }
             }
 
-            getPluginChannels()->synchronize(false);
+            instance_channels_to_remove.clear();
+            getPluginChannels()->synchronize();
 
             return true;
         }
