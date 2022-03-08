@@ -29,6 +29,7 @@ set(HEADER_FILES
   inc/odkfw_plugin_base.h
   inc/odkfw_properties.h
   inc/odkfw_property_list_utils.h
+  inc/odkfw_resampler.h
   inc/odkfw_software_channel_instance.h
   inc/odkfw_software_channel_plugin.h
   inc/odkfw_stream_iterator.h
@@ -48,6 +49,7 @@ set(SOURCE_FILES
   src/odkfw_plugin_base.cpp
   src/odkfw_properties.cpp
   src/odkfw_property_list_utils.cpp
+  src/odkfw_resampler.cpp
   src/odkfw_stream_iterator.cpp
   src/odkfw_stream_reader.cpp
   src/odkfw_software_channel_instance.cpp

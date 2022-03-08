@@ -13,6 +13,7 @@ include_directories(
 set(ODKFW_TEST_SOURCES
   odkfw_block_iterator_test.cpp
   odkfw_export_instance_test.cpp
+  odkfw_resampler_test.cpp
   odkfw_software_channel_instance_test.cpp
   odkfw_stream_iterator_test.cpp
   odkfw_stream_reader_test.cpp
