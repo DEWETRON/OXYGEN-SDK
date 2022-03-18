@@ -60,11 +60,13 @@ public:
      */
     InitResult init(const InitParams& params) override
     {
+        ODK_UNUSED(params);
         return { true };
     }
 
     void initTimebases(odk::IfHost* host) override
     {
+        ODK_UNUSED(host);
         auto sr = getRootChannel()->getSamplerateProperty();
         m_timebase_frequency = sr->getValue().m_val;
         m_output_channels[0]->setSimpleTimebase(m_timebase_frequency);

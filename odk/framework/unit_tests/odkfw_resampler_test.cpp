@@ -74,6 +74,7 @@ BOOST_AUTO_TEST_CASE(ResampleSameSampleRate)
     
     const std::vector<double> samples_a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     const std::vector<double> samples_b = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    const std::vector<double> samples_c = { 20, 21, 22, 23, 24 };
 
     BOOST_CHECK_EQUAL(resampler.getSampleCount(), 0);
     
@@ -83,7 +84,10 @@ BOOST_AUTO_TEST_CASE(ResampleSameSampleRate)
     resampler.addSamples(&host, 0, 0.2, samples_b.data(), samples_b.size());
     BOOST_CHECK_EQUAL(resampler.getSampleCount(), 19);
 
-    std::vector<double> expected(19);
+    resampler.addSamples(&host, 0, 0.25, samples_c.data(), samples_c.size());
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 24);
+
+    std::vector<double> expected(24);
     std::iota(expected.begin(), expected.end(), 0);
     
     BOOST_REQUIRE_EQUAL(host.received_samples.size(), expected.size());
@@ -105,13 +109,13 @@ BOOST_AUTO_TEST_CASE(ResampleDoubleSampleRate)
     BOOST_CHECK_EQUAL(resampler.getSampleCount(), 0);
 
     resampler.addSamples(&host, 0, 0.05, samples_a.data(), samples_a.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 4);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 5);
 
     resampler.addSamples(&host, 0, 0.1, samples_b.data(), samples_b.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 9);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 10);
 
     std::vector<double> expected;
-    for (int n = 0; n < 9; ++n)
+    for (int n = 0; n < 10; ++n)
     {
         expected.push_back(2 * n);
     }
@@ -135,13 +139,13 @@ BOOST_AUTO_TEST_CASE(ResampleHalfSampleRate)
     BOOST_CHECK_EQUAL(resampler.getSampleCount(), 0);
 
     resampler.addSamples(&host, 0, 0.2, samples_a.data(), samples_a.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 19);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 18);
 
     resampler.addSamples(&host, 0, 0.4, samples_b.data(), samples_b.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 39);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 38);
 
     std::vector<double> expected;
-    for (int n = 0; n < 39; ++n)
+    for (int n = 0; n < 38; ++n)
     {
         expected.push_back(0.5 * n);
     }
@@ -162,17 +166,21 @@ BOOST_AUTO_TEST_CASE(ResampleCloseSampleRate)
 
     const std::vector<double> samples_a = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     const std::vector<double> samples_b = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    const std::vector<double> samples_c = { 20, 21, 22, 23, 24 };
 
     BOOST_CHECK_EQUAL(resampler.getSampleCount(), 0);
 
     resampler.addSamples(&host, 0, 10 / real_rate, samples_a.data(), samples_a.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 8);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 9);
 
     resampler.addSamples(&host, 0, 20 / real_rate, samples_b.data(), samples_b.size());
-    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 18);
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 19);
+
+    resampler.addSamples(&host, 0, 25 / real_rate, samples_c.data(), samples_c.size());
+    BOOST_CHECK_EQUAL(resampler.getSampleCount(), 24);
 
     std::vector<double> expected;
-    for (int n = 0; n < 18; ++n)
+    for (int n = 0; n < 24; ++n)
     {
         expected.push_back(n * real_rate / nominal_rate);
     }

@@ -45,7 +45,10 @@ namespace
         double m_scale;
     };
 
-    void interp(double* output, std::uint64_t x_start, double x_samplerate, std::size_t num, const InputVectorLabels& fp_time, const std::vector<double>& fp)
+    /**
+     * computes linearly interpolated output samples and pushes them to the vector
+     */
+    std::size_t interp(std::vector<double>& output, std::uint64_t x_start, double x_samplerate, std::size_t num, const InputVectorLabels& fp_time, const std::vector<double>& fp)
     {
         for (std::size_t n = 0; n < num; ++n)
         {
@@ -56,11 +59,16 @@ namespace
             const double t = pos - static_cast<double>(idx);
 
             ODK_ASSERT_GTE(idx, 0);
-            ODK_ASSERT_LTE(idx + 1, fp.size());
+            if (idx + 1 >= fp.size())
+            {
+                // element fp[idx + 1] is inaccessible, early return
+                return n;
+            }
 
             double val_interp = lerp(fp[idx], fp[idx + 1], t);
-            *output++ = val_interp;
+            output.push_back(val_interp);
         }
+        return num;
     }
 }
 
@@ -99,6 +107,7 @@ std::uint64_t Resampler::addSamples(odk::IfHost* host, std::uint32_t local_chann
     {
         double estimated_sample_duration = (last_sample_timestamp - m_last_timestamp) / num_samples;
         first_sample_timestamp -= m_input_buffer.size() * estimated_sample_duration;
+        ODK_ASSERT_GTE(first_sample_timestamp, 0);
     }
     m_input_buffer.insert(m_input_buffer.end(), data, data + num_samples);
 
@@ -107,23 +116,23 @@ std::uint64_t Resampler::addSamples(odk::IfHost* host, std::uint32_t local_chann
     std::uint64_t result = odk::error_codes::OK;
     if (last_sample_int > m_actual_scnt)
     {
-        const std::size_t num = last_sample_int - m_actual_scnt - 1; // we cannot use the last sample as it would need to access past the end of input
-    
-        // Prepare the output buffer which has a uint64 timestamp followed by <num> double values
-        m_output_buffer.resize(num + 1);
+        const std::size_t num = last_sample_int - m_actual_scnt; // the maximum possible number of sample to compute
+
+        // Prepare the output buffer which has a uint64 timestamp followed by up to <num> double values
+        m_output_buffer.resize(1);
 
         // Store the timestamp of the first output sample
         static_assert(sizeof(std::uint64_t) == sizeof(double), "The following code only works when double and uint64 have the same size");
         *reinterpret_cast<std::uint64_t*>(m_output_buffer.data()) = m_actual_scnt;
 
-        // write <num> interpolated samples to m_output_buffer
-        interp(m_output_buffer.data() + 1,
+        // write up to <num> interpolated samples to m_output_buffer
+        std::size_t num_written = interp(m_output_buffer,
             m_actual_scnt, m_nomianal_sample_rate, num, // this iterates over real output timestamps in ticks
             input_desc, // Timestamps of input samples
             m_input_buffer); // actual input samples
 
         result = host->messageSyncData(odk::host_msg::ADD_CONTIGUOUS_SAMPLES, local_channel_id, m_output_buffer.data(), m_output_buffer.size() * sizeof(double), nullptr);
-        m_actual_scnt += num;
+        m_actual_scnt += num_written;
     }
 
     // Remember old samples
