@@ -4,6 +4,7 @@
 #include "odkfw_interfaces.h"
 
 #include <regex>
+#include <limits>
 
 namespace odk
 {
@@ -265,10 +266,12 @@ namespace framework
     class EditableChannelIDProperty : public PropertyBase
     {
     public:
-        explicit EditableChannelIDProperty(const odk::ChannelID val = -1);
+        explicit EditableChannelIDProperty(odk::ChannelID val = std::numeric_limits<odk::ChannelID>::max());
 
         odk::ChannelID getValue() const;
         void setValue(odk::ChannelID ch_id);
+
+        bool isValid() const;
 
         bool update(const odk::Property& value) override;
 

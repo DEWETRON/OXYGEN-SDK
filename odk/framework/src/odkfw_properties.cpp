@@ -648,6 +648,11 @@ namespace framework
         }
     }
 
+    bool EditableChannelIDProperty::isValid() const
+    {
+        return m_value != std::numeric_limits<odk::ChannelID>::max();
+    }
+
     void EditableChannelIDProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
         odk::Property property(property_name);

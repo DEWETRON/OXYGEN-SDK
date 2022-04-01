@@ -16,6 +16,7 @@
 #include "odkfw_stream_reader.h"
 #include "odkuni_logger.h"
 #include "odkuni_assert.h"
+#include <limits>
 
 namespace odk
 {
@@ -695,7 +696,10 @@ namespace framework
             {
                 if(auto channel_id_property = std::dynamic_pointer_cast<EditableChannelIDProperty>(property.second))
                 {
-                    all_input_channels.insert(channel_id_property->getValue());
+                    if (channel_id_property->isValid())
+                    {
+                        all_input_channels.insert(channel_id_property->getValue());
+                    }
                 }
                 else if(auto channel_list_property = std::dynamic_pointer_cast<EditableChannelIDListProperty>(property.second))
                 {
@@ -743,7 +747,7 @@ namespace framework
     {
         auto new_input_channel = std::make_shared<InputChannel>(m_host, channel_id);
         new_input_channel->updateDataFormat();
-        m_input_channel_proxies.push_back(new_input_channel);
+        m_input_channel_proxies.push_back(std::move(new_input_channel));
         m_task->addInputChannel(channel_id);
     }
 
