@@ -59,21 +59,20 @@ Step by Step Instructions
 -------------------------
 
 The following description assumes that the OXYGEN-SDK repository is cloned
-to c:\\OXYGEN-SDK.
+to ``c:\\OXYGEN-SDK``.
 
-  * Extract the Boost source archive to c:\\OXYGEN-SDK\\3rdparty.
+  * Extract the Boost source archive to ``c:\\OXYGEN-SDK\\3rdparty``.
 
     Verify that the file
-    c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp exists
+    ``c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp`` exists
     to make sure the extracted paths are correct.
 
-  * Either install Qt to c:\\Qt\\5.12.6.
+  * Either install Qt to ``c:\\Qt\\5.12.6``
+    or unpack ``qt_resource_compiler.zip`` to ``c:\\OXYGEN-SDK``
 
-  * Or unpack qt_resource_compiler.zip to c:\\OXYGEN-SDK
+  * Open a command line prompt and change to the directory ``c:\\OXYGEN-SDK``
 
-  * Open a command line prompt and change to the directory c:\\OXYGEN-SDK
-
-  * Create a new directory 'build' and change to c:\\OXYGEN-SDK\\build
+  * Create a new directory ``build`` and change to ``c:\\OXYGEN-SDK\\build``
 
       ``mkdir build``
 
@@ -96,16 +95,41 @@ to c:\\OXYGEN-SDK.
   * Build one of the example plugins
 
     The compiled plugins will be stored in
-    c:\\OXYGEN-SDK\\build\\{Debug|Release}\\plugins
+    ``c:\\OXYGEN-SDK\\build\\{Debug|Release}\\plugins``
     as files with the extension .plugin
 
   * To test a plugin it has to be copied to
-    {PublicDocuments}\\Dewetron\\Oxygen\\Plugins
+    ``{PublicDocuments}\\Dewetron\\Oxygen\\Plugins``
     or the 'bin' directory of the
     installed Oxygen (by default this is
-    C:\\Program Files\\DEWETRON\\Oxygen\\bin).
+    ``C:\\Program Files\\DEWETRON\\Oxygen\\bin)``.
 
   * Start Oxygen and the plugin will automatically load.
 
     This can be verified by looking at
     'System Settings' -> 'Extensions and Plugins' -> 'Overview'
+
+----------------------------
+Debugging from Visual Studio
+----------------------------
+
+The following step-by-step guide explains how to attach a Visual Studio
+debugger to a running Oxygen instance in order to debug an ODK plugin
+on a developer machine.
+
+  * Make sure the latest build of your plugin is copied to a suitable
+    plugin location (see previous section). Usually, copying the
+    ``.plugin`` file is sufficient and the ``.pdb`` does not need to be copied.
+
+  * Start Oxygen and make sure your plugin is loaded
+
+  * In Visual Studio, open the debug attach dialog from 'Debug' -> 'Attach to process...'
+
+  * Make sure that the value of 'Attach to:' is set to 'Native code' and not 'Automatic'
+
+  * Select 'Oxygen.exe' in the process list
+
+  * Close the dialog by clicking on the 'Attach' button
+
+  * Now, set your breakpoints and use the plugin inside Oxygen
+    until it triggers a breakpoint
