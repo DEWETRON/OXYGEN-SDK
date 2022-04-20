@@ -1,7 +1,7 @@
+.. _software_channel_plugin:
 
-------------------------
 Software Channel Plugins
-------------------------
+========================
 
 SoftwareChannelPlugin is a framework support class including several helpers used to simplify read, process and/or write channel data from/to Oxygen.
 At runtime, depending on the current Oxygen setup, there can be multiple instances of one SoftwareChannelPlugin active, each acting independently.
@@ -13,9 +13,9 @@ Possible use cases are, for example:
     - Provide channels with simulated data read from a text file
     - Process channel data from Oxygen in an custom calculation and write back the results as channels
 
-```````````````
+
 Output Channels
-```````````````
+---------------
 
 A SoftwareChannelPlugin instance can provide 1 to n output channels which are then available in Oxygen.
 One root channel of the instance is automatically added by the framework to act as an anchor point for the instance.
@@ -25,18 +25,18 @@ See :ref:`Data Format <channel_data_format>`
 By default, the root channel does not act as a data channel providing samples but can be configured to do so like every other output channel.
 
 
-`````````````
+
 Configuration
-`````````````
+-------------
 
 Configuration parameters can be added to every output channel, including the root channel.
 These configuration parameters are automatically available in Oxygen and get stored in the Oxygen setup file.
 
-See :doc:`Oxygen Channel Configuration <channel_configuration>`
+See :ref:`Oxygen Channel Configuration <channel_configuration>`
 
-``````````````
+
 Input Channels
-``````````````
+--------------
 
 To request channels as input channels and fetch data from them, the channel id of the desired channel has to be contained in a
 ChannelID (for single channel) or ChannelIDList (for multiple channels) config item.
@@ -44,9 +44,9 @@ This channels will get fetched automatically and data will be provided in the pr
 
 Additionally, in case of a config change of one of the input channels, the instance will get the opportunity to react in an update() call.
 
-````````````
+
 I/O-Channels
-````````````
+------------
 
 In case an input channel is capable of receiving messages (e.g.: CAN channel), this can be done via
 ``odk::host_msg::WRITE_TO_CHANNEL`` as shown in the example below:
@@ -64,9 +64,9 @@ In case an input channel is capable of receiving messages (e.g.: CAN channel), t
 
 See :ref:`Data Formats<channel_data_formats>` for a description on how output messages have to be formatted.
 
-`````````````````````````````````
+
 SoftwareChannelInstance Lifecycle 
-`````````````````````````````````
+---------------------------------
 
 .. image:: images/software_channel_instance_lifecycle.png
 
@@ -106,9 +106,9 @@ update
 
     e.g.: input channel unit has changed, adapt unit of output channel
 
-```````````````
+
 Data processing
-```````````````
+---------------
 If a SoftwareChannelInstance is configured and valid, it takes part in the Oxygen acquisition loop.
 
 .. image:: images/software_channel_instance_data_processing.png
@@ -127,13 +127,14 @@ process
 stopProcessing
     Called once per acquisition run, used to clean up the instance
 
+
 .. _channel_data_formats:
 
-````````````````````
 Channel data formats
-````````````````````
+--------------------
+
 CAN messages
-------------
+~~~~~~~~~~~~
 Each CAN message is received as byte array. In addition to the data pointer the size of the array is also provided and can be
 accessed via the ``odk::framework::StreamIterator`` class.
 

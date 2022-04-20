@@ -1,4 +1,3 @@
-===============
 About OxygenSDK
 ===============
 
@@ -7,7 +6,7 @@ DEWETRON Oxygen measurement software using the OxygenSDK (ODK).
 More detailed information about Oxygen can be found at
 https://www.dewetron.com/products/software-choices/oxygen/
 
----------------------------
+
 Structure of the Repository
 ---------------------------
 
@@ -36,14 +35,14 @@ Structure of the Repository
   This library contains support classes that make plugin development
   much easier.
 
-  The base classes, such as :doc:`SoftwareChannelPlugin <software_channel_plugin>`, are tailored for common
+  The base classes, such as :ref:`Software Channel Plugin <software_channel_plugin>`, are tailored for common
   types of plugins and implement basic tasks in order to allow the
   plugin developer to focus on the new functionality.
 
   Additional helper objects simplify reading input data or exposing
   config items.
 
-\/:doc:`examples <examples>`
+\/:ref:`Examples <examples>`
 
   Source code for several small plugins is provided here to demonstrate
   different scenarios for using the ODK framework.
@@ -58,7 +57,7 @@ Structure of the Repository
   ODK also requires some parts of the Boost C++ libraries which should
   be extracted to this directory.
   Check out the
-  :doc:`build instructions <build_instructions>`
+  :ref:`Build Instructions <build_instructions>`
   for details.
 
 \/docs

@@ -2,3 +2,4 @@
 3rdparty/qt/bin
 **/build
 qt/
+**/_build

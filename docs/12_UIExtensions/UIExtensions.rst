@@ -1,7 +1,5 @@
-
 .. _ui_extensions:
 
-=============
 UI Extensions
 =============
 
@@ -23,7 +21,7 @@ and implemented according to this specification.
 The following sections provide more details.
 
 
------------------
+
 Common Properties
 -----------------
 
@@ -46,7 +44,7 @@ to communicate their size preferences.
   readonly property real maximumWidth
 
 
----------------
+
 Export settings
 ---------------
 
@@ -90,7 +88,7 @@ Item interface
     be used to start the export.
 
 
-------------------
+
 Add channel dialog
 ------------------
 

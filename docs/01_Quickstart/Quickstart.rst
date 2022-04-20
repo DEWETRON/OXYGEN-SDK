@@ -1,8 +1,9 @@
-==================
+.. _build_instructions:
+
 Build Instructions
 ==================
 
-------------
+
 Requirements
 ------------
 
@@ -18,7 +19,7 @@ Please verify that the ``cmake`` command can be run from the command prompt.
 If this does not work you have use the 'Add CMake to the system PATH' option
 during installation or add it to the PATH manually.
 
----------------------
+
 Optional Requirements
 ---------------------
 
@@ -30,7 +31,7 @@ we provide a minimal archive (qt_resource_compiler.zip) in the Releases section.
 
 
 
---------------------------------------------
+
 Quick Summary for Experienced C++ Developers
 --------------------------------------------
 
@@ -54,7 +55,7 @@ Quick Summary for Experienced C++ Developers
     {PublicDocuments}\\Dewetron\\Oxygen\\Plugins or
     {oxygen-install-folder}\\bin to use in Oxygen.
 
--------------------------
+
 Step by Step Instructions
 -------------------------
 
@@ -109,7 +110,7 @@ to ``c:\\OXYGEN-SDK``.
     This can be verified by looking at
     'System Settings' -> 'Extensions and Plugins' -> 'Overview'
 
-----------------------------
+
 Debugging from Visual Studio
 ----------------------------
 

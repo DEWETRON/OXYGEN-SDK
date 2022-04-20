@@ -1,5 +1,5 @@
+.. _channel_configuration:
 
-============================
 Oxygen Channel Configuration
 ============================
 
@@ -37,7 +37,6 @@ value, and this final value is shown in instruments.
 
 .. _config_items:
 
-------------
 Config Items
 ------------
 A config item is a single named property that has a current value of a
@@ -148,7 +147,7 @@ At the moment this cannot be mixed with any other value constraints.
 
 .. _channel_data_format:
 
------------
+
 Data Format
 -----------
 
@@ -214,7 +213,7 @@ of elements.
 Not all combinations of Occurrence, Format & Dimension are currently
 supported by Oxygen.
 
----------
+
 Time Base
 ---------
 

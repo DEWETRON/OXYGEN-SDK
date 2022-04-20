@@ -1,24 +1,17 @@
-
-
 .. _plugin_qml_intro:
 
-**********************
 QML for Oxygen Plugins
-**********************
-
-===============
-Using QML Items
-===============
+======================
 
 This section explains how to work with QML items in Oxygen plugins, which
 is also illustrated by the *Sync File Replay* and *WAV Export* examples. 
 
------------------
+
 QML and QRC Files
 -----------------
 
 First create the QML files you want to use in Oxygen.
-Check out the :ref:`UI extensions <ui_extension>` for information on what
+Check out the :ref:`UI extensions <ui_extensions>` for information on what
 you can do with this feature.
 
 These files and their dependencies should be listed in a Qt Resource Collection
@@ -34,7 +27,7 @@ See https://doc.qt.io/qt-5/resources.html for more details.
   </qresource>
   </RCC>
 
--------------------------
+
 Build Integration (CMake)
 -------------------------
 
@@ -61,14 +54,14 @@ The plugin build needs to perform two extra steps:
     declared by the header, in this case *output.rcc.h*.
 
 
----------------
+
 Plugin Manifest
 ---------------
 
 The plugin manifest must contain the element ``<UsesUIExtensions/>``
 (within the element <OxygenPlugin>) to support any custom ui features.
 
-----------------
+
 Upload to Oxygen
 ----------------
 
@@ -81,7 +74,7 @@ you can upload using the following commands:
 ``#include "output.rcc.h"``
 ``addQtResources(plugin_resources::OUTPUT_RCC_data, plugin_resources::OUTPUT_RCC_size);``
 
-===========
+
 QML Sandbox
 ===========
 
@@ -114,7 +107,7 @@ ressources an recreate the item using the new sources.
   remains cached and is not parsed again!
 
 
-===============
+
 Available Items
 ===============
 
@@ -131,7 +124,7 @@ but the usual QML Layouts to arrange them.
 
 .. _custom_qml_request:
 
-======================
+
 Custom Plugin Requests
 ======================
 
@@ -143,7 +136,7 @@ im QML and C++.
 The following paragraphs and the *Sync File Replay* example illustrate the necessary steps to add custom
 requests to a plugin.
 
-------------------
+
 Plugin Preparation
 ------------------
 
@@ -159,7 +152,7 @@ and activate it by calling
 
 in the constructor.
 
-------------------------------
+
 Implementing Request Functions
 ------------------------------
 
@@ -184,7 +177,7 @@ Each method has to be registered in the plugin constructor::
     std::uint16_t my_request1_id = 123;
     m_custom_requests->registerFunction(my_request1_id, "MyRequest1", std::bind(&MyPlugin::myRequest1, this, arg::_1, arg::_2));
 
----------------------------
+
 Performing a Custom Request
 ---------------------------
 

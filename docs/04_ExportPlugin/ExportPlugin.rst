@@ -1,13 +1,12 @@
-
-------------------------
 Export Plugins
-------------------------
+==============
+
 
 ExportPlugin is a framework support class including several helpers used to simplify export of channel data from Oxygen to custom data formats.
 
-```````````````
+
 Export transaction
-```````````````
+------------------
 
 An export transaction consists of 3 calls:
 
@@ -25,9 +24,9 @@ cancel
     Called if export transaction gets cancelled by the user. All necessary cleanup tasks should be handled here (file deletion, etc.)
 
 
-```````````````
+
 Custom Settings GUI
-```````````````
+-------------------
 
 If an export plugin needs some custom configuration from the user, a custom QML GUI element can be provided via export registration telegram.
 Separate elements can be provided for the small and fullscreen export tab in oxygen if needed.

@@ -1,5 +1,3 @@
-
-===========
 Translation
 ===========
 
@@ -11,7 +9,7 @@ Usually, all of those are processed by our translation framework before they
 shown to the user. Therefore it is recommended to upload plugin-specifc
 translation files to Oxygen during plugin initialization.
 
----------------------------
+
 Format of Translation Files
 ---------------------------
 
@@ -34,7 +32,7 @@ All translated strings are located in a context that is specified in this
 section. This is necessary to disambiguate between different modules in
 the application.
 
-------------------------
+
 Registering Translations
 ------------------------
 
@@ -57,7 +55,31 @@ Call this in your override of the ``registerResources()`` method in the
 plugin class.
 
 
-------------
+Using External Translation Files
+--------------------------------
+
+Translation files should be saved as .ts files in UTF-8 encoding and
+compiled into the plugin binary. This can be done with a few cmake
+commands.
+
+Generic setup of resource support for the project is the same as used
+for QML files:
+
+``set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)``
+``include_directories(${RESOURCE_DIR})``
+
+Add every required file as a resource:
+``AddResourceFile(${LIBNAME} "demo_de.ts" ${RESOURCE_DIR})``
+
+To use these TS resources the header has to be included
+
+``#include "demo_de.ts.h"``
+
+and the content has to be registered with the following call:
+
+``addTranslation(reinterpret_cast<const char*>(plugin_resources::DEMO_DE_TS_data));``
+
+
 Config Items
 ------------
 
@@ -70,43 +92,7 @@ internal key strings display nicely.
 Use context *ConfigKeys* and the key as source string to provide translations.
 
 
----------
-QML Items
----------
 
-All displayed texts in QML items should be explicitly marked for translation
-using the qsTranslate method (https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method):
-
-``qsTranslate("MY_PLUGIN/AddChannel", "Settings for the new channel")``
-
-Qt will automatically use a matching translated text if an entry is found in the
-translation file, or use the provided text as the fallback.
-
-``qsTranslate(context, sourceText)``
-------------------------------------
-
-  The context has to be in the format "<PLUGIN_ID>/<QmlItemName>" to prevent conflict
-  between different plugins.
-
-  sourceText should be the english version of the text. You can use placeholders
-  if necessary to include dynamic parameters in the text as described in
-  https://doc.qt.io/qt-5/qml-qtqml-string.html.
-
-For the example above, a german translation could be provided by adding the following
-code to your translation file:
-
-.. code-block:: xml
-
-    <context><name>MY_PLUGIN/AddChannel</name>
-        <message>
-            <source>Settings for the new channel</source>
-            <translation>Einstellungen des neuen Kanals</translation>
-        </message>
-    </context>
-
-
-
----------
 QML Items
 ---------
 
