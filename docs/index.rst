@@ -16,8 +16,8 @@ DEWETRON OXYGEN-SDK 6.0
    :includehidden:
 
    00_InformationRights/InformationRights
-   01_Quickstart/Quickstart
-   02_SDKOverview/SDKOverview
+   01_SDKIntroduction/SDKIntroduction
+   02_Quickstart/Quickstart
    03_SoftwareChannelPlugin/SoftwareChannelPlugin
    04_ExportPlugin/ExportPlugin
    10_ChannelConfiguration/ChannelConfiguration
@@ -27,4 +27,5 @@ DEWETRON OXYGEN-SDK 6.0
    14_PropertyList/PropertyList
    20_Examples/Examples
    30_Templates/Templates
+   50_FAQ/FAQ
 
