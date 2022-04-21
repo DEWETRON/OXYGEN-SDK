@@ -7,7 +7,7 @@ the extension of the Oxygen measurement application using external plugins.
 
 This documentation describes plugin development for the
 DEWETRON Oxygen measurement software using the OxygenSDK (ODK).
-More detailed information about Oxygen and the lates installer can be found
+More detailed information about Oxygen and the latest installer can be found
 at
 
 https://www.dewetron.com/products/oxygen-measurement-software/

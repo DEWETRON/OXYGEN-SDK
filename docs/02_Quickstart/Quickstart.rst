@@ -1,63 +1,94 @@
-.. _build_instructions:
+.. _quickstart:
 
-Build Instructions
-==================
+Quickstart
+==========
+
+Lets dive in fast! This quickstart guide will guide you through the
+steps necessary for building an Oxygen plugin.
 
 
-Requirements
-------------
+Before using the SDK, please install the supported development tools:
 
-Windows:
-  * DEWETRON Oxygen 5.3.0 or later (https://ccc.dewetron.com/)
-  * Microsoft Visual Studio 2017 or 2019 with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
-  * CMake 3.1 or later (https://cmake.org/download/)
+* Visual Studio 2019 or better (for Windows)
+* cmake
+* Oxygen
+
+
+
+
+Install Oxygen
+--------------
+
+Please download and install the latest Oxygen installer from DEWETRON's
+download portal:
+
+https://www.dewetron.com/products/oxygen-measurement-software/
+
+
+
+Development Requirements for Windows
+------------------------------------
+
+  * Microsoft Visual Studio 2019 or later with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
+  * CMake (https://cmake.org/download/)
   * Source files for Boost C++ Libraries 1.70 or later
     (https://www.boost.org/users/history/version_1_70_0.html)
+  * Git for windows or https://desktop.github.com/ application
 
 Make sure Visual Studio and CMake are installed.
 Please verify that the ``cmake`` command can be run from the command prompt.
 If this does not work you have use the 'Add CMake to the system PATH' option
 during installation or add it to the PATH manually.
 
+.. code:: text
+
+   $ cmake --version
+   cmake version 3.16.4
+   
+   CMake suite maintained and supported by Kitware (kitware.com/cmake).
+
 
 Optional Requirements
 ---------------------
 
-Windows:
-  * Qt 5.12.x (https://www.qt.io/download-qt-installer)
+For resource package creation the qt resource compiler (rcc) is needed.
 
-As Qt is a rather large downwload (40GB with included debug symbol files)
-we provide a minimal archive (qt_resource_compiler.zip) in the Releases section.
+It is found the GitHub projects download section:
 
-
+https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_resource_compiler.zip
 
 
-Quick Summary for Experienced C++ Developers
---------------------------------------------
+Alternatively one can install the complete Qt libraries package:
 
-  * Boost has to be extracted to find the header files at
-    {repo-root}\\3rdparty\\boost_1_*\\boost
+  * Qt 5.15.2 (https://www.qt.io/download-qt-installer)
 
-  * Optionally: Qt 5.12.x has to be installed on the system.
-    This manual assumes the correct build for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.12.6\\msvc2017_64)
-
-  * Alternative: extract `qt_resource_compiler.zip` to the SDK workspace (this file can be found in the github releases (https://github.com/DEWETRON/OXYGEN-SDK/releases))
-
-  * Main CMakeLists.txt file in root directory of the repository
-    references the SDK and all example plugins.
-    Run cmbuild with the option -DCMAKE_PREFIX_PATH={QT_DIR}.
-
-  * Each example directory contains a CMakeLists.txt that can be
-    used directly to build just that example and the necessary dependencies.
-
-  * Plugins are built to {solution-folder}\\{build-type}\\plugins\\*.plugin
-    and have to be copied to
-    {PublicDocuments}\\Dewetron\\Oxygen\\Plugins or
-    {oxygen-install-folder}\\bin to use in Oxygen.
+Qt is a rather large download (40GB with included debug symbol files) so
+the use of the small provided qt_resource_compiler.zip archive is preferred.
 
 
-Step by Step Instructions
--------------------------
+
+.. _build_instructions:
+
+Build instructions
+------------------
+
+
+Build instructions for Windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
+to the directory refered to as WORKSPACE.
+
+Example creating a Oxygen SDK workspace in C:\\OxygenSDK:
+
+.. code:: text
+   
+   $ cd C:\
+   $ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
+
+
+{WORKSPACE} refers to the directory C:\\OXYGEN-SDK.
+
 
 The following description assumes that the OXYGEN-SDK repository is cloned
 to ``c:\\OXYGEN-SDK``.
@@ -68,8 +99,10 @@ to ``c:\\OXYGEN-SDK``.
     ``c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp`` exists
     to make sure the extracted paths are correct.
 
-  * Either install Qt to ``c:\\Qt\\5.12.6``
-    or unpack ``qt_resource_compiler.zip`` to ``c:\\OXYGEN-SDK``
+  * Unpack ``qt_resource_compiler.zip`` to ``c:\\OXYGEN-SDK``
+
+  * *Alternatively: Qt 5.15.2 has to be installed on the system. This manual assumes the correct build
+    for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.15.2\\msvc2017_64)*
 
   * Open a command line prompt and change to the directory ``c:\\OXYGEN-SDK``
 
@@ -81,7 +114,11 @@ to ``c:\\OXYGEN-SDK``.
 
   * Generate a Visual Studio solution by using the following command:
 
-      ``cmake -DCMAKE_PREFIX_PATH=c:\\Qt\\5.12.6\\msvc2017_64 ..``
+      ``cmake -A x64 ..``
+
+    If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:
+    
+      ``cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..``
 
     If CMake encounters an error you need to fix the issue and then invoke
 
@@ -109,6 +146,23 @@ to ``c:\\OXYGEN-SDK``.
 
     This can be verified by looking at
     'System Settings' -> 'Extensions and Plugins' -> 'Overview'
+
+
+.. attention:: Oxygen is a 64bit application (x64) and is not able to load plugins build for a 32bit (x86) architecture.
+  Please check the build configuration in Visual Studio if your plugin fails to load. Add ``-A x64`` to the cmake call.
+
+
+
+Build instructions for Ubuntu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TBD
+
+
+Build instructions for Red Hat Enterprise Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TBD
 
 
 Debugging from Visual Studio
