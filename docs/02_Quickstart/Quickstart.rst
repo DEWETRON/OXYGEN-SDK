@@ -107,9 +107,16 @@ Build instructions for Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
-to the directory refered to as WORKSPACE.
+to this directory: C:\\OXYGEN-SDK.
 
-Example creating a Oxygen SDK workspace in C:\\OxygenSDK:
+Alternatively you can download a zip archive:
+
+https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip
+
+
+
+Clone using cmd.exe
+^^^^^^^^^^^^^^^^^^^
 
 .. code:: text
    
@@ -117,11 +124,45 @@ Example creating a Oxygen SDK workspace in C:\\OxygenSDK:
    $ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 
 
-{WORKSPACE} refers to the directory C:\\OXYGEN-SDK.
+
+Clone using GitHub Desktop
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: img/github_desktop.png
+    :alt: GitHub Desktop
+    :width: 4in
+
+    Cloning with GitHub Desktop
 
 
-The following description assumes that the OXYGEN-SDK repository is cloned
-to ``c:\\OXYGEN-SDK``.
+Workspace setup using setup.py (Optional)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``C:\OXYGEN-SDK\setup.py`` is a helper script automating the next necessary steps.
+It downloads and setups all 3rdparty tools and libraries:
+
+* Boost 1.70.0
+* CMake
+* Qt resource compiler
+
+setup.py needs python3 to be installed. Using setup.py is completely optional: All the
+steps necessary can be done manually.
+
+.. code:: text
+   
+   $ cd C:\OXYGEN-SDK
+   $ python setup.py
+   Boost 1.70.0 dependency processing ...
+   Qt resource compiler (rcc) dependency processing ...
+   CMake 3.23.1 dependency is fullfilled!
+
+
+When using setup.py *Workspace setup step by step* can be skipped.
+
+
+Workspace setup step by step
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
   * Extract the Boost source archive to ``c:\\OXYGEN-SDK\\3rdparty``.
 
@@ -252,6 +293,28 @@ Now run make to build the SDK and all example plugins
    [ 98%] Linking CXX shared library ../../Debug/plugins/libex_wav_export.plugin
    [100%] Built target ex_wav_export
   
+
+After building all plugins are found here:
+
+*Debug*: OXYGEN-SDK/build/Debug/plugins/
+
+*Release*: OXYGEN-SDK/build/Release/plugins/
+
+
+.. code:: text
+   
+   PC$ ls build/Debug/plugins/
+   libex_bin_detector.plugin
+   libex_property_callback.plugin
+   libex_replay_sync_scalar.plugin
+   libex_sample_interpolator.plugin
+   libex_simple_moving_average.plugin
+   libex_sum_channels.plugin
+   libex_sync_resample_source.plugin
+   libex_wav_export.plugin
+
+
+
 
 Building with Visual Studio Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
