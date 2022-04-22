@@ -25,7 +25,8 @@ DEWETRON OXYGEN-SDK 6.0
    12_UIExtensions/UIExtensions
    13_PluginQML/PluginQML
    14_PropertyList/PropertyList
-   20_Examples/Examples
-   30_Templates/Templates
+   20_DebuggingLogging/DebuggingLogging
+   30_Examples/Examples
+   40_Templates/Templates
    50_FAQ/FAQ
 

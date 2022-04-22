@@ -67,6 +67,36 @@ the use of the small provided qt_resource_compiler.zip archive is preferred.
 
 
 
+Development Requirements for Linux
+----------------------------------
+
+ * Ubuntu 20.04 LTS Linux (Focal Fossa)
+ * Red Hat Enterprise Linux 8 (RHEL8)
+
+
+The minimum build environment for Linux consists of following packages:
+
+  * cmake
+  * gcc/g++
+  * boost
+  * qt-dev
+  * make
+  * ninja (optional)
+
+It is completely ok to use the packages provided by the distribution.
+
+
+
+Optional Requirements for Linux
+-------------------------------
+
+A good and free IDE for Linux (and Windows too) is Visual Studio Code.
+The download is free and its usage is highly recommended.
+
+https://code.visualstudio.com/download
+
+
+
 .. _build_instructions:
 
 Build instructions
@@ -153,38 +183,145 @@ to ``c:\\OXYGEN-SDK``.
 
 
 
-Build instructions for Ubuntu
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Build instructions for Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TBD
+It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
+to the directory refered to as WORKSPACE:
+
+.. code:: text
+   
+   PC$ cd $HOME
+   PC$ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 
 
-Build instructions for Red Hat Enterprise Linux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-TBD
+The directory ``/home/USER/OXYGEN-SDK`` has been created containing the latest
+SDK version.
 
 
-Debugging from Visual Studio
-----------------------------
+Building with the shell
+^^^^^^^^^^^^^^^^^^^^^^^
 
-The following step-by-step guide explains how to attach a Visual Studio
-debugger to a running Oxygen instance in order to debug an ODK plugin
-on a developer machine.
+Enter the OXYGEN-SDK directory and execute cmake to check for all necessary
+dependencies and let it create a Makefile.
 
-  * Make sure the latest build of your plugin is copied to a suitable
-    plugin location (see previous section). Usually, copying the
-    ``.plugin`` file is sufficient and the ``.pdb`` does not need to be copied.
+.. code:: text
+   
+   PC$ cd $HOME/OXYGEN-SDK
+   PC$ mkdir build
+   PC$ cd build
+   PC$ cmake ..
+   -- The C compiler identification is GNU 9.4.0
+   -- The CXX compiler identification is GNU 9.4.0
+   -- Check for working C compiler: /usr/bin/cc
+   -- Check for working C compiler: /usr/bin/cc -- works
+   -- Detecting C compiler ABI info
+   -- Detecting C compiler ABI info - done
+   -- Detecting C compile features
+   -- Detecting C compile features - done
+   -- Check for working CXX compiler: /usr/bin/c++
+   -- Check for working CXX compiler: /usr/bin/c++ -- works
+   -- Detecting CXX compiler ABI info
+   -- Detecting CXX compiler ABI info - done
+   -- Detecting CXX compile features
+   -- Detecting CXX compile features - done
+   -- ODKROOT = /home/USER/OXYGEN-SDK
+   -- Performing Test _HAS_CXX17_FLAG
+   -- Performing Test _HAS_CXX17_FLAG - Success
+   -- Checking C++11 support for "constexpr"
+   -- Checking C++11 support for "constexpr": works
+   -- GITHUB_REPO = True
+   -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0")  
+   -- Qt found
+   -- Configuring done
+   -- Generating done
+   -- Build files have been written to: /home/USER/OXYGEN-SDK/build
+   
 
-  * Start Oxygen and make sure your plugin is loaded
+Now run make to build the SDK and all example plugins
 
-  * In Visual Studio, open the debug attach dialog from 'Debug' -> 'Attach to process...'
+.. code:: text
+   
+   PC$ make
+   Scanning dependencies of target pugixml
+   [  1%] Building CXX object 3rdparty/pugixml-1.9/CMakeFiles/pugixml.dir/__/src/pugixml.cpp.o
+   [  2%] Linking CXX static library ../../Debug/libpugixml.a
+   
+   lines skipped
+   
+   [ 98%] Linking CXX shared library ../../Debug/plugins/libex_wav_export.plugin
+   [100%] Built target ex_wav_export
+  
 
-  * Make sure that the value of 'Attach to:' is set to 'Native code' and not 'Automatic'
+Building with Visual Studio Code
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  * Select 'Oxygen.exe' in the process list
+It is highly suggested that following Visual Studio Code extensions have been installed:
 
-  * Close the dialog by clicking on the 'Attach' button
+ * C/C++
+ * CMake Tools
+ * alternatively: C/C++ Extension Pack
 
-  * Now, set your breakpoints and use the plugin inside Oxygen
-    until it triggers a breakpoint
+
+*Please note that Visual Studio Code is also a good working IDE for Windows.*
+
+
+Start Visual Studio Code
+
+.. figure:: img/vscode.png
+    :alt: Visual Studio Code
+    :width: 7in
+
+    Visual Studio Code
+
+
+Select *Open Folder* and select ``/home/USER/OXYGEN-SDK``. On the first start
+Visual Studio Code asks which compiler (or Kit) to use.
+Select 9.3 or 9.4, both work great.
+
+.. note:: Most modern compilers will work, as far as C++ 17 is supported.
+
+
+Usually cmake is automatically run by the IDE.
+
+
+.. figure:: img/vscode_after_cmake.png
+    :alt: Visual Studio Code after cmake
+    :width: 7in
+
+    Visual Studio Code after cmake
+
+
+
+Press *Build* in the bottom bar to trigger the compilation of the Oxygen-SDK framework
+and all example plugins.
+There is also the option to switch between Release and Debug build.
+
+
+
+.. figure:: img/vscode_build.png
+    :alt: Visual Studio Code Building
+    :width: 7in
+
+    Visual Studio Code Building
+
+
+After building all plugins are found here:
+
+*Debug*: OXYGEN-SDK/build/Debug/plugins/
+
+*Release*: OXYGEN-SDK/build/Release/plugins/
+
+
+.. code:: text
+   
+   PC$ ls build/Debug/plugins/
+   libex_bin_detector.plugin
+   libex_property_callback.plugin
+   libex_replay_sync_scalar.plugin
+   libex_sample_interpolator.plugin
+   libex_simple_moving_average.plugin
+   libex_sum_channels.plugin
+   libex_sync_resample_source.plugin
+   libex_wav_export.plugin
+
