@@ -3,21 +3,22 @@
 Quickstart
 ==========
 
-Lets dive in fast! This quickstart guide will guide you through the
-steps necessary for building an Oxygen plugin.
+This quickstart guide will guide you through the necessary steps for building Oxygen plugins.
 
-
-Before using the SDK, please install the supported development tools:
+For using the SDK a development toolkit is needed:
 
 * Visual Studio 2019 or better (for Windows)
 * cmake
 * Oxygen
 
 
+A free alternative to Visual Studio 2019/2022 is *Visual Studio Code*.
 
 
 Install Oxygen
 --------------
+
+To test the plugins an Oxygen installation is needed:
 
 Please download and install the latest Oxygen installer from DEWETRON's
 download portal:
@@ -99,12 +100,9 @@ https://code.visualstudio.com/download
 
 .. _build_instructions:
 
-Build instructions
-------------------
-
-
 Build instructions for Windows
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------
+
 
 It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
 to this directory: C:\\OXYGEN-SDK.
@@ -115,8 +113,8 @@ https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip
 
 
 
-Clone using cmd.exe
-^^^^^^^^^^^^^^^^^^^
+Git clone using cmd.exe
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: text
    
@@ -125,8 +123,8 @@ Clone using cmd.exe
 
 
 
-Clone using GitHub Desktop
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Git clone using GitHub Desktop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: img/github_desktop.png
     :alt: GitHub Desktop
@@ -135,10 +133,10 @@ Clone using GitHub Desktop
     Cloning with GitHub Desktop
 
 
-Workspace setup using setup.py (Optional)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Easy workspace setup using setup.py (Optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``C:\OXYGEN-SDK\setup.py`` is a helper script automating the next necessary steps.
+``C:\OXYGEN-SDK\setup.py`` is a utility script automating the following steps.
 It downloads and setups all 3rdparty tools and libraries:
 
 * Boost 1.70.0
@@ -160,63 +158,105 @@ steps necessary can be done manually.
 When using setup.py *Workspace setup step by step* can be skipped.
 
 
+
 Workspace setup step by step
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-  * Extract the Boost source archive to ``c:\\OXYGEN-SDK\\3rdparty``.
+Setup Boost libraries 
+^^^^^^^^^^^^^^^^^^^^^
+*If setup.py was not used or did not succeed*
 
-    Verify that the file
-    ``c:\\OXYGEN-SDK\\3rdparty\\boost_1_70_0\\boost\\align.hpp`` exists
-    to make sure the extracted paths are correct.
+Extract the Boost source archive to ``C:\OXYGEN-SDK\3rdparty``.
 
-  * Unpack ``qt_resource_compiler.zip`` to ``c:\\OXYGEN-SDK``
+Verify that the file
+``C:\OXYGEN-SDK\3rdparty\boost_1_70_0\boost\align.hpp`` exists
+to make sure the extracted paths are correct.
 
-  * *Alternatively: Qt 5.15.2 has to be installed on the system. This manual assumes the correct build
-    for your compiler is installed to {QT_DIR} (for example c:\\Qt\\5.15.2\\msvc2017_64)*
 
-  * Open a command line prompt and change to the directory ``c:\\OXYGEN-SDK``
+Setup Qt resource compiler
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+*If setup.py was not used or did not succeed*
 
-  * Create a new directory ``build`` and change to ``c:\\OXYGEN-SDK\\build``
+Unpack ``qt_resource_compiler.zip`` to ``C:\OXYGEN-SDK``
 
-      ``mkdir build``
+*Or: Qt 5.15.2 has to be installed on the system. 
+This manual assumes the correct build for your compiler is installed to {QT_DIR}
+(for example C:\\Qt\\5.15.2\\msvc2017_64)*
 
-      ``cd build``
 
-  * Generate a Visual Studio solution by using the following command:
 
-      ``cmake -A x64 ..``
+Building with Visual Studio
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:
+Open a command line prompt and change to the directory ``C:\OXYGEN-SDK``
+
+Create a new directory ``build`` and change to ``C:\OXYGEN-SDK\build``
+
+.. code:: text
+   
+   PC$ cd C:\OXYGEN-SDK
+   PC$ mkdir build
+   PC$ cd build
+
+
+Using cmake we create a Visual Studio solution:
+
+.. code:: text
+   
+   PC$ cmake -A x64 ..
+
+The option *-A x64* forces the solution to build for 64bit architecture.
+It may not be necessary, but sometimes a x86 (32bit) solution is created
+and Oxygen is not able to load the plugins.
+
+
+If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:
     
-      ``cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..``
+.. code:: text
+   
+   PC$ cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
 
-    If CMake encounters an error you need to fix the issue and then invoke
+    
+    
+If CMake encounters an error, you need to fix the issue and then invoke
 
-      ``del CMakeCache.txt``
+.. code:: text
+   
+   PC$ del CMakeCache.txt
 
-    before retrying to ensure a clean run.
+before retrying to ensure a clean run.
 
-  * Open the generated Solution in Visual Studio
+  
+Open the generated Solution in Visual Studio
 
-      ``start ODK.sln``
+.. code:: text
+   
+   PC$ start ODK.sln
 
-  * Build one of the example plugins
 
-    The compiled plugins will be stored in
-    ``c:\\OXYGEN-SDK\\build\\{Debug|Release}\\plugins``
-    as files with the extension .plugin
 
-  * To test a plugin it has to be copied to
-    ``{PublicDocuments}\\Dewetron\\Oxygen\\Plugins``
-    or the 'bin' directory of the
-    installed Oxygen (by default this is
-    ``C:\\Program Files\\DEWETRON\\Oxygen\\bin)``.
+.. figure:: img/vs2019_odk.png
+    :alt: Visual Studio 2019 ODK solution
+    :width: 7in
 
-  * Start Oxygen and the plugin will automatically load.
+    Visual Studio 2019 ODK solution
 
-    This can be verified by looking at
-    'System Settings' -> 'Extensions and Plugins' -> 'Overview'
+
+Build at least one of the example plugins. *Build Solution* will build everthing.
+
+The compiled plugins will be stored in
+``C:\OXYGEN-SDK\build\{Debug|Release}\plugins``
+as files with the extension .plugin
+
+To test a plugin it has to be copied to ``{PublicDocuments}\Dewetron\Oxygen\Plugins``
+or the 'bin' directory of the installed Oxygen (by default this is
+``C:\Program Files\DEWETRON\Oxygen\bin)``.
+
+Start Oxygen and the plugin will automatically load.
+
+This can be verified by looking at
+'System Settings' -> 'Extensions and Plugins' -> 'Overview'
 
 
 .. attention:: Oxygen is a 64bit application (x64) and is not able to load plugins build for a 32bit (x86) architecture.
@@ -225,7 +265,7 @@ Workspace setup step by step
 
 
 Build instructions for Linux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
 to the directory refered to as WORKSPACE:
@@ -240,8 +280,8 @@ The directory ``/home/USER/OXYGEN-SDK`` has been created containing the latest
 SDK version.
 
 
-Building with the shell
-^^^^^^^^^^^^^^^^^^^^^^^
+Building with commandline tools
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enter the OXYGEN-SDK directory and execute cmake to check for all necessary
 dependencies and let it create a Makefile.
@@ -317,7 +357,7 @@ After building all plugins are found here:
 
 
 Building with Visual Studio Code
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is highly suggested that following Visual Studio Code extensions have been installed:
 
@@ -388,3 +428,12 @@ After building all plugins are found here:
    libex_sync_resample_source.plugin
    libex_wav_export.plugin
 
+
+
+Hello World plugin
+------------------
+
+The first plugin will be a variant of the classic "Hello World" programming
+example.
+
+TODO
