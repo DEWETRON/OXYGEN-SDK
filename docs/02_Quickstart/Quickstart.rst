@@ -3,13 +3,21 @@
 Quickstart
 ==========
 
-This quickstart guide will guide you through the necessary steps for building Oxygen plugins.
+This quickstart guide will guide you through the necessary steps for building
+Oxygen plugins.
 
-For using the SDK a development toolkit is needed:
+The guide explains three necessary steps:
 
-* Visual Studio 2019 or better (for Windows)
-* cmake
-* Oxygen
+1. Setup of a development environment
+2. Compiling OXYGEN-SDK
+3. A new plugin: Hello World
+
+
+Lets start with the setup of the development environment:
+
+- Visual Studio 2019 or better (for Windows)
+- cmake
+- Oxygen
 
 
 A free alternative to Visual Studio 2019/2022 is *Visual Studio Code*.
@@ -30,11 +38,11 @@ https://www.dewetron.com/products/oxygen-measurement-software/
 Development Requirements for Windows
 ------------------------------------
 
-  * Microsoft Visual Studio 2019 or later with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
-  * CMake (https://cmake.org/download/)
-  * Source files for Boost C++ Libraries 1.70 or later
-    (https://www.boost.org/users/history/version_1_70_0.html)
-  * Git for windows or https://desktop.github.com/ application
+- Microsoft Visual Studio 2019 or later with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
+- CMake (https://cmake.org/download/)
+- Source files for Boost C++ Libraries 1.70 or later
+  (https://www.boost.org/users/history/version_1_70_0.html)
+- Git for windows or https://desktop.github.com/ application
 
 Make sure Visual Studio and CMake are installed.
 Please verify that the ``cmake`` command can be run from the command prompt.
@@ -61,7 +69,7 @@ https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_res
 
 Alternatively one can install the complete Qt libraries package:
 
-  * Qt 5.15.2 (https://www.qt.io/download-qt-installer)
+- Qt 5.15.2 (https://www.qt.io/download-qt-installer)
 
 Qt is a rather large download (40GB with included debug symbol files) so
 the use of the small provided qt_resource_compiler.zip archive is preferred.
@@ -71,18 +79,18 @@ the use of the small provided qt_resource_compiler.zip archive is preferred.
 Development Requirements for Linux
 ----------------------------------
 
- * Ubuntu 20.04 LTS Linux (Focal Fossa)
- * Red Hat Enterprise Linux 8 (RHEL8)
+- Ubuntu 20.04 LTS Linux (Focal Fossa)
+- Red Hat Enterprise Linux 8 (RHEL8)
 
 
 The minimum build environment for Linux consists of following packages:
 
-  * cmake
-  * gcc/g++
-  * boost
-  * qt-dev
-  * make
-  * ninja (optional)
+- cmake
+- gcc/g++
+- boost
+- qt-dev
+- make
+- ninja (optional)
 
 It is completely ok to use the packages provided by the distribution.
 
@@ -361,9 +369,9 @@ Building with Visual Studio Code
 
 It is highly suggested that following Visual Studio Code extensions have been installed:
 
- * C/C++
- * CMake Tools
- * alternatively: C/C++ Extension Pack
+- C/C++
+- CMake Tools
+- alternatively: C/C++ Extension Pack
 
 
 *Please note that Visual Studio Code is also a good working IDE for Windows.*
@@ -436,4 +444,222 @@ Hello World plugin
 The first plugin will be a variant of the classic "Hello World" programming
 example.
 
-TODO
+To start the development a project directory for our new developement has to 
+be created: ``C:\OXYGEN-PLUGINS\Hello_World``
+
+Our plugin directory has to be populated with at least two files:
+
+- The plugin source file: hello_world_plugin.cpp
+- The plugin build file: CMakeLists.txt
+
+
+Lets start with the plugin source code:
+
+.. code:: c++
+
+   // Copyright DEWETRON GmbH 2022  
+   #include "odkfw_software_channel_plugin.h"
+   
+   static const char* PLUGIN_MANIFEST =
+   R"XML(<?xml version="1.0"?>
+   <OxygenPlugin name="HELLO_WORLD" version="1.0"
+    uuid="0b9ae54e-7eaa-4b11-9abd-b1154e596f9b">
+     <Info name="Quickstart: Hello World">
+       <Vendor name="Example Company"/>
+       <Description>Simplest plugin</Description>
+     </Info>
+     <Host minimum_version="6.0"/>
+   </OxygenPlugin>
+   )XML";
+   
+   using namespace odk::framework;
+   
+   class HelloWorldChannel : public SoftwareChannelInstance
+   {
+   public:
+       HelloWorldChannel()
+       {
+       }
+   
+       // Describe how the software channel should be shown in the "Add Channel" dialog
+       static odk::RegisterSoftwareChannel getSoftwareChannelInfo()
+       {
+           odk::RegisterSoftwareChannel telegram;
+           telegram.m_display_name = "Quickstart: Hello World";
+           telegram.m_service_name = "CreateChannel";
+           telegram.m_display_group = "Examples";
+           telegram.m_description = "Simplest plugin possible";
+           telegram.m_analysis_capable = true;
+   
+           return telegram;
+       }
+   
+       bool update() override
+       {
+           return true;
+       }
+   
+       void create(odk::IfHost* host) override
+       {
+       }
+   
+       bool configure(
+           const odk::UpdateChannelsTelegram& request,
+           std::map<std::uint32_t, std::uint32_t>& channel_id_map) override
+       {
+           configureFromTelegram(request, channel_id_map);
+           return true;
+       }
+   
+       void prepareProcessing(odk::IfHost* host) override
+       {
+       }
+   
+       void process(ProcessingContext& context, odk::IfHost *host) override
+       {
+       }
+   private:
+   };
+   
+   class HelloWorldPlugin : public SoftwareChannelPlugin<HelloWorldChannel>
+   {
+   public:
+   };
+   
+   OXY_REGISTER_PLUGIN1("HELLO_WORLD", PLUGIN_MANIFEST, HelloWorldPlugin);
+    
+
+
+This small (but complete) plugin source code describes the *Hello World*
+plugin. It defines the necessary plugin manifest, defines the plugin channel
+class *HelloWorldChannel* (more or less empty), and the plugin class
+*HelloWorldPlugin* (also empty).
+
+
+OXY_REGISTER_PLUGIN1(...) is needed to register the plugin with the Oxygen
+plugin loader.
+
+
+
+The second necessary file is *CMakeLists.txt*. It contains the necessary
+build instructions for IDE (and compiler) to translate the plugin source
+code to a valid binary plugin file.
+
+.. code:: cmake
+
+   #
+   # Oxygen Hello World
+   #
+   cmake_minimum_required(VERSION 3.16)
+   
+   # Name of the plugin project and compiled plugin file
+   set(LIBNAME hello_world)
+   # This is just any stable GUID to help Visual Studio identify the project for rebuilds
+   set("${LIBNAME}_GUID_CMAKE" "8c15e366-e94f-4870-8ec1-0db0b342994c" CACHE INTERNAL "remove this and Visual Studio will mess up incremental builds")
+   
+   #
+   # Project name
+   project(HelloWorldPlugin)
+   
+   #
+   # C++ Standard, Compiler Flags
+   set(CMAKE_CXX_STANDARD 17)
+   
+   #
+   # Import Oxygen SDK
+   if (NOT DEFINED OXYGEN_SDK_PATH)
+       if (MSVC)
+           set(OXYGEN_SDK_PATH "C:/OXYGEN-SDK")
+       else()
+           set(OXYGEN_SDK_PATH "../OXYGEN-SDK")
+       endif()
+   endif()
+   
+   # get absolute path of OXYGEN_SDK_PATH
+   get_filename_component(OXYGEN_SDK_PATH ${OXYGEN_SDK_PATH} ABSOLUTE)
+   
+   # Expand cmake path to find ODK cmake utilities
+   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OXYGEN_SDK_PATH}/cmake)
+   include(CMakeSettings)
+   include(OxygenPluginFunctions)
+   
+   # Add ODK sources
+   add_subdirectory(${OXYGEN_SDK_PATH}/odk OXYGEN-SDK)
+   
+   # Build settings and 3rdparty libs
+   SetupODKEnvironment(${OXYGEN_SDK_PATH})
+   
+   
+   include_directories(
+     SYSTEM
+     ${Boost_INCLUDE_DIRS}
+   )
+   
+   set(SOURCE_FILES
+     hello_world_plugin.cpp
+   )
+   source_group("Source Files" FILES ${SOURCE_FILES})
+   
+   add_library(${LIBNAME} SHARED
+     ${SOURCE_FILES}
+   )
+   
+   target_link_libraries(${LIBNAME}
+     odk_framework
+   )
+   
+   SetPluginOutputOptions(${LIBNAME})
+   
+   #
+   # add this to Visual Studio group lib
+   set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_plugins")
+
+
+
+Please create both files using the above source code.
+
+Now lets build the plugin:
+
+
+.. code:: text
+   
+   PC$ cd C:\OXYGEN-PLUGINS\Hello_World
+   PC$ mkdir build
+   PC$ cd build  
+   PC$ cmake -A x64 -DOXYGEN_SDK_PATH=C:\OXYGEN-SDK ..
+   ...
+   PC$ start HelloWorldPlugin.sln
+
+
+
+TODO: Visual Studio
+
+
+
+After building you have to copy the plugin to a valid Oxygen plugin directory:
+
+
+TODO: directory
+
+
+Now start Oxygen. After Oxygen started look for the plugin in *System Setup*:
+
+.. figure:: img/oxygen_hello_world_plugin.png
+    :alt: Hello world in System Setup
+    :width: 5in
+
+    System Setup shows *Hello World* plugin
+
+
+In the *Channel List* the plugin is listed in the *AddChannel* dialog:
+
+
+.. figure:: img/oxygen_hello_world_add_channel.png
+    :alt: Hello World in channel list
+    :width: 7in
+
+    Hello World in AddChannel Dialog.
+
+
+
+**Congratulation! You developed, build and tested your first Oxygen plugin!**

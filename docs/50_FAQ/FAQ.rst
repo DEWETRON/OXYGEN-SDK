@@ -22,8 +22,9 @@ scripts and many more from a single maintainted *CMakeLists.txt* file.
 Can a plugin compiled for Windows used with a Linux version of Oxygen?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-No. Plugins are in fact dynamic link libraries (.dll) on Windows and
-shared objects (.so) on Linux.
+No. Plugins are dynamic link libraries (.dll) on Windows and
+shared objects (.so) on Linux. They are dependent on the operting
+system and the compiler (ABI).
 
 So one has to provide different Windows and Linux versions of their
 plugin. Of course those can be build from the same source code.
@@ -45,3 +46,29 @@ Try to add ``-A x64`` to cmake to get the correct Visual Studio Solution.
    $ cd build
    $ cmake -A x64 ..
    
+
+
+Plugin Development
+------------------
+
+I am developing using Linux. Is it possible to create a UUID/GUID without Visual Studio?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On Ubuntu 20.04 you can use the command ``uuidgen``:
+
+.. code:: text
+   
+   $ uuidgen
+   7afa630a-0b15-4f34-b583-14e38c04293d
+   
+
+
+Where should I copy my plugin to so that Oxygen will load it?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Windows:
+
+
+Linux:
+
+
