@@ -587,12 +587,11 @@ code to a valid binary plugin file.
    include(CMakeSettings)
    include(OxygenPluginFunctions)
    
-   # Add ODK sources
-   add_subdirectory(${ODK_ROOT}/odk OXYGEN-SDK)
-   
    # Build settings and 3rdparty libs
    SetupODKEnvironment(${ODK_ROOT})
-   
+
+   # Add ODK sources
+   add_subdirectory(${ODK_ROOT}/odk OXYGEN-SDK)  
    
    include_directories(
      SYSTEM
