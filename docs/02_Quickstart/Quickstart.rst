@@ -453,6 +453,10 @@ Our plugin directory has to be populated with at least two files:
 - The plugin build file: CMakeLists.txt
 
 
+
+Hello World Source Files
+~~~~~~~~~~~~~~~~~~~~~~~~
+
 Lets start with the plugin source code:
 
 .. code:: c++
@@ -567,27 +571,27 @@ code to a valid binary plugin file.
    
    #
    # Import Oxygen SDK
-   if (NOT DEFINED OXYGEN_SDK_PATH)
+   if (NOT DEFINED ODK_ROOT)
        if (MSVC)
-           set(OXYGEN_SDK_PATH "C:/OXYGEN-SDK")
+           set(ODK_ROOT "C:/OXYGEN-SDK")
        else()
-           set(OXYGEN_SDK_PATH "../OXYGEN-SDK")
+           set(ODK_ROOT "../OXYGEN-SDK")
        endif()
    endif()
    
-   # get absolute path of OXYGEN_SDK_PATH
-   get_filename_component(OXYGEN_SDK_PATH ${OXYGEN_SDK_PATH} ABSOLUTE)
+   # get absolute path of ODK_ROOT
+   get_filename_component(ODK_ROOT ${ODK_ROOT} ABSOLUTE)
    
    # Expand cmake path to find ODK cmake utilities
-   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OXYGEN_SDK_PATH}/cmake)
+   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ODK_ROOT}/cmake)
    include(CMakeSettings)
    include(OxygenPluginFunctions)
    
    # Add ODK sources
-   add_subdirectory(${OXYGEN_SDK_PATH}/odk OXYGEN-SDK)
+   add_subdirectory(${ODK_ROOT}/odk OXYGEN-SDK)
    
    # Build settings and 3rdparty libs
-   SetupODKEnvironment(${OXYGEN_SDK_PATH})
+   SetupODKEnvironment(${ODK_ROOT})
    
    
    include_directories(
@@ -618,28 +622,74 @@ code to a valid binary plugin file.
 
 Please create both files using the above source code.
 
-Now lets build the plugin:
 
+Hello World Building
+~~~~~~~~~~~~~~~~~~~~
+
+Now lets build the plugin:
 
 .. code:: text
    
    PC$ cd C:\OXYGEN-PLUGINS\Hello_World
    PC$ mkdir build
    PC$ cd build  
-   PC$ cmake -A x64 -DOXYGEN_SDK_PATH=C:\OXYGEN-SDK ..
-   ...
+   PC$ cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
+   -- Building for: Visual Studio 16 2019
+   -- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19044.
+   -- The C compiler identification is MSVC 19.29.30142.1
+   -- The CXX compiler identification is MSVC 19.29.30142.1
+   -- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe
+   -- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe -- works
+   -- Detecting C compiler ABI info
+   -- Detecting C compiler ABI info - done
+   -- Detecting C compile features
+   -- Detecting C compile features - done
+   -- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe
+   -- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe -- works -- Detecting CXX compiler ABI info
+   -- Detecting CXX compiler ABI info - done
+   -- Detecting CXX compile features
+   -- Detecting CXX compile features - done
+   -- Found Boost: C:/OXYGEN-SDK/3rdparty/boost_1_70_0 (found version "1.70.0")
+   -- Qt rcc found: C:/OXYGEN-SDK/3rdparty/qt/bin/rcc.exe
+   -- Configuring done
+   -- Generating done
+   -- Build files have been written to: C:/OXYGEN-PLUGINS/Hello_World/build
+
+
+Then start Visual Studio:
+
+.. code:: text
+
    PC$ start HelloWorldPlugin.sln
 
 
+.. figure:: img/vs_hello_world.png
+    :alt: Hello World in Visual Studio
+    :width: 7in
 
-TODO: Visual Studio
+    Hello World in Visual Studio.
 
 
+Start compiling by pressing *Ctrl+Shift+B* or selecting *Build Solution* in the
+*Build* menu.
+
+
+.. figure:: img/vs_hello_world_build.png
+    :alt: Building Hello World in Visual Studio
+    :width: 5in
+
+    Building Hello World in Visual Studio.
+
+
+Hello World Deployment
+~~~~~~~~~~~~~~~~~~~~~~
 
 After building you have to copy the plugin to a valid Oxygen plugin directory:
 
+In Windows these locations are valid for plugins:
 
-TODO: directory
+- ``C:\Program Files\DEWETRON\OXYGEN\bin``
+- ``C:\Users\Public\Documents\Dewetron\Oxygen\Plugins``
 
 
 Now start Oxygen. After Oxygen started look for the plugin in *System Setup*:
