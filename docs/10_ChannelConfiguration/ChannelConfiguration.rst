@@ -62,8 +62,8 @@ Plugins are allowed to add arbitrary items to their channels to store
 configuration and identification data. The name of these custom items
 has to conform to the following patterns:
 
-  - "UNIQUE_PLUGIN_NAME/MyCustomName"
-  - "ID:UNIQUE_PLUGIN_NAME/MyCustomIdentifier"
+- "UNIQUE_PLUGIN_NAME/MyCustomName"
+- "ID:UNIQUE_PLUGIN_NAME/MyCustomIdentifier"
 
 All other config items keys are reserved for Oxygen and other plugins
 and may not be used for custom items.
@@ -83,14 +83,14 @@ Values
 Config items can accept many different types of values.
 For plugin development the most important ones are
 
-  - String: A Unicode string of aribtrary length, encoded in UTF-8.
-  - Scalar: A double precision floating point value with an
-    associated unit (string usually containing SI units).
-  - ChannelId(List): one or more unsigned 64bit values that uniquely
-    identify a channel in the current Oxygen measurement setup.
-  - FloatingPointNumber, Integer, UnsignedInteger(64):
-    Simple numerical values corresponding to the C types
-    double, int32_t, uint32_t, uint64_t respectively.
+- String: A Unicode string of aribtrary length, encoded in UTF-8.
+- Scalar: A double precision floating point value with an
+  associated unit (string usually containing SI units).
+- ChannelId(List): one or more unsigned 64bit values that uniquely
+  identify a channel in the current Oxygen measurement setup.
+- FloatingPointNumber, Integer, UnsignedInteger(64):
+  Simple numerical values corresponding to the C types
+  double, int32_t, uint32_t, uint64_t respectively.
 
 Constraints
 -----------

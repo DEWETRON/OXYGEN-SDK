@@ -107,12 +107,12 @@ translation file, or use the provided text as the fallback.
 ``qsTranslate(context, sourceText)``
 ------------------------------------
 
-  The context has to be in the format "<PLUGIN_ID>/<QmlItemName>" to prevent conflict
-  between different plugins.
+The context has to be in the format "<PLUGIN_ID>/<QmlItemName>" to prevent conflict
+between different plugins.
 
-  sourceText should be the english version of the text. You can use placeholders
-  if necessary to include dynamic parameters in the text as described in
-  https://doc.qt.io/qt-5/qml-qtqml-string.html.
+sourceText should be the english version of the text. You can use placeholders
+if necessary to include dynamic parameters in the text as described in
+https://doc.qt.io/qt-5/qml-qtqml-string.html.
 
 For the example above, a german translation could be provided by adding the following
 code to your translation file:

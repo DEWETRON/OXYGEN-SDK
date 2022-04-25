@@ -53,9 +53,9 @@ The *WAV Export* example demonstrates usage of custom *Export Settings*.
 Export plugins can register two QML items by settings their names in the
 ``odk::RegisterExport`` telegram:
 
-  - **m_ui_item_small** is displayed in the sidebar
+- **m_ui_item_small** is displayed in the sidebar
 
-  - **m_ui_item_full** is used when the export settings area is displayed full screen
+- **m_ui_item_full** is used when the export settings area is displayed full screen
 
 These items will be shown in addition to the channel list and any
 common export settings provided by oxygen.

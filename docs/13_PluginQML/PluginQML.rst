@@ -33,25 +33,23 @@ Build Integration (CMake)
 
 The plugin build needs to perform two extra steps:
 
-  - Combine all required resources, as listed in the QRC file, into a single
-    binary package.
+- Combine all required resources, as listed in the QRC file, into a single
+  binary package.
 
-    In your CMakeLists.txt this can be automated using the following commands:
-    ``find_package(Qt5Core REQUIRED)``
-    ``qt5_add_binary_resources(${LIBNAME}_qml input.qrc DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/output.rcc")``
+  In your CMakeLists.txt this can be automated using the following commands:
+  ``find_package(Qt5Core REQUIRED)``
+  ``qt5_add_binary_resources(${LIBNAME}_qml input.qrc DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/output.rcc")``
+- Ensure the plugin has access to the data output.rcc file during initialization.
+  The easiest way is to use the provided CMake scripts to link the file into the
+  plugin binary:
 
-  - Ensure the plugin has access to the data output.rcc file during initialization.
-
-    The easiest way is to use the provided CMake scripts to link the file into the
-    plugin binary:
-
-    ``set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)``
-    ``include_directories(${RESOURCE_DIR})``
-    ``AddResourceFile(${LIBNAME} "${CMAKE_CURRENT_BINARY_DIR}/output.rcc" ${RESOURCE_DIR})``
-
-    This generates C++ files containg the file data and builds them within
-    the project. The binary data can then be referenced using the variables
-    declared by the header, in this case *output.rcc.h*.
+  ``set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)``
+  ``include_directories(${RESOURCE_DIR})``
+  ``AddResourceFile(${LIBNAME} "${CMAKE_CURRENT_BINARY_DIR}/output.rcc" ${RESOURCE_DIR})``
+  
+  This generates C++ files containg the file data and builds them within
+  the project. The binary data can then be referenced using the variables
+  declared by the header, in this case *output.rcc.h*.
 
 
 
@@ -87,9 +85,9 @@ ressource files.
 It can be found in the "Developer" section in the "System Settings" tab.
 
 To use it
- - select the display context of the item you are developing,
- - select the folder where your QML ressources are stored,
- - and enter the name of the item that should be displayed.
+- select the display context of the item you are developing,
+- select the folder where your QML ressources are stored,
+- and enter the name of the item that should be displayed.
 
 If the item needs :ref:`custom requests <custom_qml_request>`, your plugin
 (which will respond to these requests) must be loaded and selected in the correspondig list.
