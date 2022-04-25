@@ -293,7 +293,7 @@ macro(SetLinkStaticRuntime)
     set(CMAKE_C_FLAGS_RELEASE          "${CMAKE_C_FLAGS_RELEASE} /MT")
     set(CMAKE_C_FLAGS_RELWITHDEBINFO   "${CMAKE_C_FLAGS_RELWITHDEBINFO} /MT")
   else()
-    message(WARNING "SetLinkStaticRuntime is not supported if not using MSVC")
+    #message(WARNING "SetLinkStaticRuntime is not supported if not using MSVC")
   endif()
 
 endmacro()
@@ -400,3 +400,21 @@ macro(get_arch ARCH)
   endif()
 endmacro()
 
+#
+# SetupODKEnvironment
+# Setup:
+# * Runtime
+# * Output directory options
+# * Boost Settings
+# * XML
+macro(SetupODKEnvironment OXYGEN_SDK_PATH)
+
+  SetLinkStaticRuntime()
+  SetCommonOutputDirectory()
+  SetBoostOptions()
+  find_package(Boost REQUIRED)
+  find_package(SDKQt REQUIRED)
+
+  AddUniqueTargetFromSubdirectory(pugixml "${OXYGEN_SDK_PATH}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
+
+endmacro()
