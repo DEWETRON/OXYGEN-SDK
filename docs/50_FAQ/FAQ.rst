@@ -66,9 +66,22 @@ On Ubuntu 20.04 you can use the command ``uuidgen``:
 Where should I copy my plugin to so that Oxygen will load it?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Valid locations for plugins are:
+
 Windows:
+
+``C:\Users\Public\Documents\Dewetron\Oxygen\Plugins``
+
+This is a good location for deploying plugins during development.
+
+
+``C:\Program Files\DEWETRON\OXYGEN\bin``
+
+If you copy a plugin into the Oxygen installation folder it will also work.
+Please note that the Oxygen uninstaller removes the complete directory including
+all copied plugins.
 
 
 Linux:
 
-
+``$HOME/Dewetron/Oxygen/plugins``
