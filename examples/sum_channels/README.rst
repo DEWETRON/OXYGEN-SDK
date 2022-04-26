@@ -1,12 +1,13 @@
-===========================
+
 Example: Sync+Async Channel
-===========================
+---------------------------
 
 This example demonstrates how to sum up sample values of two scalar input channels and write the result to an output channel.
 
----------
+
 Features
----------
+~~~~~~~~
+
   * Register a new Software Channel Type in Oxygen
   * Plugin instance provides a Channel Id List Config Item to configure the two input channels
   * Config Item name is translated to English and German

@@ -2,7 +2,7 @@
 Debugging and Logging
 =====================
 
-During developement both *Debugging* and  *Logging* are essential.
+During development both *Debugging* and  *Logging* are essential.
 This chapter describes how both con be used when developing Oxygen plugins.
 
 

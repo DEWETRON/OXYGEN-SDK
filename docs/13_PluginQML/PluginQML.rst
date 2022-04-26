@@ -46,7 +46,7 @@ The plugin build needs to perform two extra steps:
   ``set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)``
   ``include_directories(${RESOURCE_DIR})``
   ``AddResourceFile(${LIBNAME} "${CMAKE_CURRENT_BINARY_DIR}/output.rcc" ${RESOURCE_DIR})``
-  
+
   This generates C++ files containg the file data and builds them within
   the project. The binary data can then be referenced using the variables
   declared by the header, in this case *output.rcc.h*.
@@ -74,7 +74,7 @@ you can upload using the following commands:
 
 
 QML Sandbox
-===========
+-----------
 
 The QML Sandbox is an Oxygen feature to facilitate authoring of QML items,
 by previewing in-development content and providing easy iteration of the design.
@@ -107,7 +107,7 @@ ressources an recreate the item using the new sources.
 
 
 Available Items
-===============
+---------------
 
 Oxygen plugins may only use QML features and items described in this documentation,
 to ensure compatibility with future Oxygen versions.
@@ -124,7 +124,7 @@ but the usual QML Layouts to arrange them.
 
 
 Custom Plugin Requests
-======================
+----------------------
 
 Custom requests provide a direct, but asynchronous, communication channel between
 an UI item and its plugin. Each request function is identifed by a plugin-unique

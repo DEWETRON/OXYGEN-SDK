@@ -1,6 +1,6 @@
-=======================================
+
 Template: Empty Export Plugin
-=======================================
+-----------------------------
 
 This is an empty plugin-project to be used as a template for
 writing your own plugins.
@@ -15,16 +15,13 @@ Those marked elements are also marked with an identifier
 
 This replacement is necessary in both - the cmake file, and in the \*.cpp file.
 
------------------------------------------
-Descriptive Legend of Elements to Fill In
------------------------------------------
 
----------------------------
+
 Elements in the \*.cpp File
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Plugin_Manifest
----------------
+~~~~~~~~~~~~~~~
 
 **$UNIQUE_PLUGIN_NAME$**: 
   a (short)name of the plugin. This is only used internally,
@@ -80,8 +77,10 @@ Plugin_Manifest
 
   e.g.: "5.0.2"
 
+
 getSoftwareChannelInfo()
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
+
 **$REGISTER_EXPORT_FORMAT_NAME$**:
   This name will be displayed in the export format list
 
@@ -98,9 +97,9 @@ getSoftwareChannelInfo()
   UI item shown in the fullscreen export tab (used for additional configuration)
 
 
------------------------------------
+
 Elements in the CMakeLists.txt File
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *$LIBNAME$*
   Name of the project and the resulting .plugin

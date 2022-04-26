@@ -444,7 +444,7 @@ Hello World plugin
 The first plugin will be a variant of the classic "Hello World" programming
 example.
 
-To start the development a project directory for our new developement has to 
+To start the development a project directory for our new development has to 
 be created: ``C:\OXYGEN-PLUGINS\Hello_World``
 
 Our plugin directory has to be populated with at least two files:

@@ -19,7 +19,7 @@ import platform
 # -- Project information -----------------------------------------------------
 
 project = 'Oxygen SDK'
-copyright = '2021, DEWETRON GmbH'
+copyright = '2022, DEWETRON GmbH'
 author = 'DEWETRON GmbH'
 nav_title = 'DEWETRON Oxygen SDK'
 
@@ -109,6 +109,20 @@ if html_theme == 'sphinx_material':
       'globaltoc_collapse': False,
       # If True, show hidden TOC entries
       'globaltoc_includehidden': False,
+
+      # internal & external links
+      "nav_links": [
+         {
+            "href": "https://www.dewetron.com/support-area",
+            "internal": False,
+            "title": "Support area",
+        },
+        {
+            "href": "https://www.dewetron.com/",
+            "internal": False,
+            "title": "DEWETRON Website",
+        },
+      ],
    }
    html_sidebars = {
          "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
