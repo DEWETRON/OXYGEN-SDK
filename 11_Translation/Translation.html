@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Translation &#8212; Oxygen SDK 6.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/stylesheets/oxygen_material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/oxygen.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="UI Extensions" href="../12_UIExtensions/UIExtensions.html" />
+    <link rel="prev" title="Oxygen Channel Configuration" href="../10_ChannelConfiguration/ChannelConfiguration.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#11_Translation/Translation" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Oxygen SDK 6.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Oxygen SDK logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Oxygen SDK</span>
+          <span class="md-header-nav__topic"> Translation </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Oxygen SDK 6.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Oxygen SDK 6.1 documentation">Oxygen SDK</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Contents</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../00_InformationRights/InformationRights.html" class="md-nav__link">Preface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../01_SDKIntroduction/SDKIntroduction.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../02_Quickstart/Quickstart.html" class="md-nav__link">Quickstart</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" class="md-nav__link">Software Channel Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../04_ExportPlugin/ExportPlugin.html" class="md-nav__link">Export Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../10_ChannelConfiguration/ChannelConfiguration.html" class="md-nav__link">Oxygen Channel Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Translation </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Translation</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#11-translation-translation--page-root" class="md-nav__link">Translation</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#format-of-translation-files" class="md-nav__link">Format of Translation Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#registering-translations" class="md-nav__link">Registering Translations</a>
+        </li>
+        <li class="md-nav__item"><a href="#using-external-translation-files" class="md-nav__link">Using External Translation Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#config-items" class="md-nav__link">Config Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#qml-items" class="md-nav__link">QML Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#qstranslate-context-sourcetext" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">qsTranslate(context,</span> <span class="pre">sourceText)</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../12_UIExtensions/UIExtensions.html" class="md-nav__link">UI Extensions</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../13_PluginQML/PluginQML.html" class="md-nav__link">QML for Oxygen Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../14_PropertyList/PropertyList.html" class="md-nav__link">odk::PropertyList</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../20_DebuggingLogging/DebuggingLogging.html" class="md-nav__link">Debugging and Logging</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../30_Examples/Examples.html" class="md-nav__link">Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../40_Templates/Templates.html" class="md-nav__link">Plugin Templates</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../50_FAQ/FAQ.html" class="md-nav__link">Frequently Asked Questions</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#11-translation-translation--page-root" class="md-nav__link">Translation</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#format-of-translation-files" class="md-nav__link">Format of Translation Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#registering-translations" class="md-nav__link">Registering Translations</a>
+        </li>
+        <li class="md-nav__item"><a href="#using-external-translation-files" class="md-nav__link">Using External Translation Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#config-items" class="md-nav__link">Config Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#qml-items" class="md-nav__link">QML Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#qstranslate-context-sourcetext" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">qsTranslate(context,</span> <span class="pre">sourceText)</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="translation">
+<h1 id="11-translation-translation--page-root">Translation<a class="headerlink" href="#11-translation-translation--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Normal texts that are sent to Oxygen for display should be written in English.
+In some cases (e.g. <a class="reference internal" href="../10_ChannelConfiguration/ChannelConfiguration.html#config-item-key"><span class="std std-ref">config item keys</span></a>) a specified,
+more technical format, has to be used.</p>
+<p>Usually, all of those are processed by our translation framework before they
+shown to the user. Therefore it is recommended to upload plugin-specifc
+translation files to Oxygen during plugin initialization.</p>
+<section id="format-of-translation-files">
+<h2 id="format-of-translation-files">Format of Translation Files<a class="headerlink" href="#format-of-translation-files" title="Permalink to this headline">¶</a></h2>
+<p>Oxygen currently accepts translations as XML files in the Qt Linguist format:
+<a class="reference external" href="https://doc.qt.io/qt-5/linguist-ts-file-format.html">https://doc.qt.io/qt-5/linguist-ts-file-format.html</a></p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="nt">&lt;TS</span> <span class="na">version=</span><span class="s">"2.1"</span> <span class="na">language=</span><span class="s">"en"</span> <span class="na">sourcelanguage=</span><span class="s">"en"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;context&gt;&lt;name&gt;</span>ConfigKeys<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;message&gt;</span>
+            <span class="nt">&lt;source&gt;</span>PLUGIN_ID/MyConfigItem<span class="nt">&lt;/source&gt;</span>
+            <span class="nt">&lt;translation&gt;</span>My Configuration Item<span class="nt">&lt;/translation&gt;</span>
+        <span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;/context&gt;</span>
+<span class="nt">&lt;/TS&gt;</span>
+</pre></div>
+</div>
+<p>All translated strings are located in a context that is specified in this
+section. This is necessary to disambiguate between different modules in
+the application.</p>
+</section>
+<section id="registering-translations">
+<h2 id="registering-translations">Registering Translations<a class="headerlink" href="#registering-translations" title="Permalink to this headline">¶</a></h2>
+<p>During initialization the plugin should upload all available translation
+files to Oxygen, which in turn will select the most appropriate language
+based on application settings.</p>
+<p>The file that is uploaded first will be used if no better variant is
+available.</p>
+<p>Upload is performed using the following message:</p>
+<p><code class="docutils literal notranslate"><span class="pre">messageSync(ADD_TRANSLATION,</span> <span class="pre">0,</span> <span class="pre">XMLValue,</span> <span class="pre">&amp;ErrorValue);</span></code></p>
+<p>If using framework this is wrapped in the simple function</p>
+<p><code class="docutils literal notranslate"><span class="pre">addTranslation("&lt;ts-xml&gt;")</span></code></p>
+<p>Call this in your override of the <code class="docutils literal notranslate"><span class="pre">registerResources()</span></code> method in the
+plugin class.</p>
+</section>
+<section id="using-external-translation-files">
+<h2 id="using-external-translation-files">Using External Translation Files<a class="headerlink" href="#using-external-translation-files" title="Permalink to this headline">¶</a></h2>
+<p>Translation files should be saved as .ts files in UTF-8 encoding and
+compiled into the plugin binary. This can be done with a few cmake
+commands.</p>
+<p>Generic setup of resource support for the project is the same as used
+for QML files:</p>
+<p><code class="docutils literal notranslate"><span class="pre">set(RESOURCE_DIR</span> <span class="pre">${CMAKE_CURRENT_BINARY_DIR}/resources)</span></code>
+<code class="docutils literal notranslate"><span class="pre">include_directories(${RESOURCE_DIR})</span></code></p>
+<p>Add every required file as a resource:
+<code class="docutils literal notranslate"><span class="pre">AddResourceFile(${LIBNAME}</span> <span class="pre">"demo_de.ts"</span> <span class="pre">${RESOURCE_DIR})</span></code></p>
+<p>To use these TS resources the header has to be included</p>
+<p><code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">"demo_de.ts.h"</span></code></p>
+<p>and the content has to be registered with the following call:</p>
+<p><code class="docutils literal notranslate"><span class="pre">addTranslation(reinterpret_cast&lt;const</span> <span class="pre">char*&gt;(plugin_resources::DEMO_DE_TS_data));</span></code></p>
+</section>
+<section id="config-items">
+<h2 id="config-items">Config Items<a class="headerlink" href="#config-items" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="../10_ChannelConfiguration/ChannelConfiguration.html#config-item-key"><span class="std std-ref">Config Item keys</span></a> are shown by default as column
+labels in the channel list and in the detail setup page of a channel.</p>
+<p>At least an English translation file should be provided to make the
+internal key strings display nicely.</p>
+<p>Use context <em>ConfigKeys</em> and the key as source string to provide translations.</p>
+</section>
+<section id="qml-items">
+<h2 id="qml-items">QML Items<a class="headerlink" href="#qml-items" title="Permalink to this headline">¶</a></h2>
+<p>All displayed texts in QML items should be explicitly marked for translation
+using the qsTranslate method (<a class="reference external" href="https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method">https://doc.qt.io/qt-5/qml-qtqml-qt.html#qsTranslate-method</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">qsTranslate("MY_PLUGIN/AddChannel",</span> <span class="pre">"Settings</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">new</span> <span class="pre">channel")</span></code></p>
+<p>Qt will automatically use a matching translated text if an entry is found in the
+translation file, or use the provided text as the fallback.</p>
+</section>
+<section id="qstranslate-context-sourcetext">
+<h2 id="qstranslate-context-sourcetext"><code class="docutils literal notranslate"><span class="pre">qsTranslate(context,</span> <span class="pre">sourceText)</span></code><a class="headerlink" href="#qstranslate-context-sourcetext" title="Permalink to this headline">¶</a></h2>
+<p>The context has to be in the format “&lt;PLUGIN_ID&gt;/&lt;QmlItemName&gt;” to prevent conflict
+between different plugins.</p>
+<p>sourceText should be the english version of the text. You can use placeholders
+if necessary to include dynamic parameters in the text as described in
+<a class="reference external" href="https://doc.qt.io/qt-5/qml-qtqml-string.html">https://doc.qt.io/qt-5/qml-qtqml-string.html</a>.</p>
+<p>For the example above, a german translation could be provided by adding the following
+code to your translation file:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;context&gt;&lt;name&gt;</span>MY_PLUGIN/AddChannel<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;message&gt;</span>
+        <span class="nt">&lt;source&gt;</span>Settings for the new channel<span class="nt">&lt;/source&gt;</span>
+        <span class="nt">&lt;translation&gt;</span>Einstellungen des neuen Kanals<span class="nt">&lt;/translation&gt;</span>
+    <span class="nt">&lt;/message&gt;</span>
+<span class="nt">&lt;/context&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../10_ChannelConfiguration/ChannelConfiguration.html" title="Oxygen Channel Configuration"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Oxygen Channel Configuration </span>
+              </div>
+            </a>
+          
+          
+            <a href="../12_UIExtensions/UIExtensions.html" title="UI Extensions"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> UI Extensions </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, DEWETRON GmbH.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

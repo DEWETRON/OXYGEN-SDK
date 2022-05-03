@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Software Channel Plugins &#8212; Oxygen SDK 6.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/stylesheets/oxygen_material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/oxygen.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Export Plugins" href="../04_ExportPlugin/ExportPlugin.html" />
+    <link rel="prev" title="Quickstart" href="../02_Quickstart/Quickstart.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#03_SoftwareChannelPlugin/SoftwareChannelPlugin" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Oxygen SDK 6.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Oxygen SDK logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Oxygen SDK</span>
+          <span class="md-header-nav__topic"> Software Channel Plugins </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Oxygen SDK 6.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Oxygen SDK 6.1 documentation">Oxygen SDK</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Contents</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../00_InformationRights/InformationRights.html" class="md-nav__link">Preface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../01_SDKIntroduction/SDKIntroduction.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../02_Quickstart/Quickstart.html" class="md-nav__link">Quickstart</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Software Channel Plugins </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Software Channel Plugins</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#03-softwarechannelplugin-softwarechannelplugin--page-root" class="md-nav__link">Software Channel Plugins</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#output-channels" class="md-nav__link">Output Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#configuration" class="md-nav__link">Configuration</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-channels" class="md-nav__link">Input Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#i-o-channels" class="md-nav__link">I/O-Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#softwarechannelinstance-lifecycle" class="md-nav__link">SoftwareChannelInstance Lifecycle</a>
+        </li>
+        <li class="md-nav__item"><a href="#data-processing" class="md-nav__link">Data processing</a>
+        </li>
+        <li class="md-nav__item"><a href="#channel-data-formats" class="md-nav__link">Channel data formats</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#can-messages" class="md-nav__link">CAN messages</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../04_ExportPlugin/ExportPlugin.html" class="md-nav__link">Export Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../10_ChannelConfiguration/ChannelConfiguration.html" class="md-nav__link">Oxygen Channel Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../11_Translation/Translation.html" class="md-nav__link">Translation</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../12_UIExtensions/UIExtensions.html" class="md-nav__link">UI Extensions</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../13_PluginQML/PluginQML.html" class="md-nav__link">QML for Oxygen Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../14_PropertyList/PropertyList.html" class="md-nav__link">odk::PropertyList</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../20_DebuggingLogging/DebuggingLogging.html" class="md-nav__link">Debugging and Logging</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../30_Examples/Examples.html" class="md-nav__link">Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../40_Templates/Templates.html" class="md-nav__link">Plugin Templates</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../50_FAQ/FAQ.html" class="md-nav__link">Frequently Asked Questions</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#03-softwarechannelplugin-softwarechannelplugin--page-root" class="md-nav__link">Software Channel Plugins</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#output-channels" class="md-nav__link">Output Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#configuration" class="md-nav__link">Configuration</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-channels" class="md-nav__link">Input Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#i-o-channels" class="md-nav__link">I/O-Channels</a>
+        </li>
+        <li class="md-nav__item"><a href="#softwarechannelinstance-lifecycle" class="md-nav__link">SoftwareChannelInstance Lifecycle</a>
+        </li>
+        <li class="md-nav__item"><a href="#data-processing" class="md-nav__link">Data processing</a>
+        </li>
+        <li class="md-nav__item"><a href="#channel-data-formats" class="md-nav__link">Channel data formats</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#can-messages" class="md-nav__link">CAN messages</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="software-channel-plugins">
+<span id="software-channel-plugin"></span><h1 id="03-softwarechannelplugin-softwarechannelplugin--page-root">Software Channel Plugins<a class="headerlink" href="#03-softwarechannelplugin-softwarechannelplugin--page-root" title="Permalink to this headline">¶</a></h1>
+<p>SoftwareChannelPlugin is a framework support class including several helpers used to simplify read, process and/or write channel data from/to Oxygen.
+At runtime, depending on the current Oxygen setup, there can be multiple instances of one SoftwareChannelPlugin active, each acting independently.</p>
+<p>From a user perspective, an instance is created using the AddChannel Dialog (‘+’ button) in the Oxygen channellist.</p>
+<dl class="simple">
+<dt>Possible use cases are, for example:</dt><dd><ul class="simple">
+<li><p>Read channel data from Oxygen and forward them to an external interface</p></li>
+<li><p>Provide channels with simulated data read from a text file</p></li>
+<li><p>Process channel data from Oxygen in an custom calculation and write back the results as channels</p></li>
+</ul>
+</dd>
+</dl>
+<section id="output-channels">
+<h2 id="output-channels">Output Channels<a class="headerlink" href="#output-channels" title="Permalink to this headline">¶</a></h2>
+<p>A SoftwareChannelPlugin instance can provide 1 to n output channels which are then available in Oxygen.
+One root channel of the instance is automatically added by the framework to act as an anchor point for the instance.
+Additional channels can be added as children of the root channel as needed.
+Output channels can provide configuration parameters and sample data in various formats.
+See <a class="reference internal" href="../10_ChannelConfiguration/ChannelConfiguration.html#channel-data-format"><span class="std std-ref">Data Format</span></a>
+By default, the root channel does not act as a data channel providing samples but can be configured to do so like every other output channel.</p>
+</section>
+<section id="configuration">
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Configuration parameters can be added to every output channel, including the root channel.
+These configuration parameters are automatically available in Oxygen and get stored in the Oxygen setup file.</p>
+<p>See <a class="reference internal" href="../10_ChannelConfiguration/ChannelConfiguration.html#channel-configuration"><span class="std std-ref">Oxygen Channel Configuration</span></a></p>
+</section>
+<section id="input-channels">
+<h2 id="input-channels">Input Channels<a class="headerlink" href="#input-channels" title="Permalink to this headline">¶</a></h2>
+<p>To request channels as input channels and fetch data from them, the channel id of the desired channel has to be contained in a
+ChannelID (for single channel) or ChannelIDList (for multiple channels) config item.
+This channels will get fetched automatically and data will be provided in the process() call.</p>
+<p>Additionally, in case of a config change of one of the input channels, the instance will get the opportunity to react in an update() call.</p>
+</section>
+<section id="i-o-channels">
+<h2 id="i-o-channels">I/O-Channels<a class="headerlink" href="#i-o-channels" title="Permalink to this headline">¶</a></h2>
+<p>In case an input channel is capable of receiving messages (e.g.: CAN channel), this can be done via
+<code class="docutils literal notranslate"><span class="pre">odk::host_msg::WRITE_TO_CHANNEL</span></code> as shown in the example below:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data_ptr</span><span class="p">;</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getHost</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">createValue</span><span class="o">&lt;</span><span class="n">odk</span><span class="o">::</span><span class="n">IfArbitraryBinaryValue</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+
+<span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">(</span><span class="n">data_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span><span class="w"></span>
+
+<span class="kt">uint64_t</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getHost</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">messageSync</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">host_msg</span><span class="o">::</span><span class="n">WRITE_TO_CHANNEL</span><span class="p">,</span><span class="w"> </span><span class="o">&lt;</span><span class="n">ChannelID</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#channel-data-formats"><span class="std std-ref">Data Formats</span></a> for a description on how output messages have to be formatted.</p>
+</section>
+<section id="softwarechannelinstance-lifecycle">
+<h2 id="softwarechannelinstance-lifecycle">SoftwareChannelInstance Lifecycle<a class="headerlink" href="#softwarechannelinstance-lifecycle" title="Permalink to this headline">¶</a></h2>
+<img alt="../_images/software_channel_instance_lifecycle.png" src="../_images/software_channel_instance_lifecycle.png"/>
+<dl>
+<dt>create</dt><dd><p>Called once on creation of the instance as first entry point.
+This can be triggered either by creating via GUI or by loading an Oxygen config file containing a software channel instance.</p>
+<p>All static configuration should happen in here.</p>
+<p>E.g.:
+- If the plugin provides 2 output channels, regardless of configuration and input, they should be configured here.</p>
+</dd>
+<dt>init</dt><dd><p>Called after creation over GUI and used to set up the instance based on the user selected input channels.</p>
+</dd>
+<dt>configure</dt><dd><p>Called after creation on setup load. A complete set of the stored parameters is provided to restore the state of the instance.
+There are some helper functions available to extract channel and config parameters and apply them.</p>
+<p>When loading a setup the framework will call updatePropertyTypes() for each loaded plugin output channel.
+Due to ambiguity in regard to ODK property types the framework loads properties with a placeholder type and the
+plugin is responsible to exchange this placeholder with the property data type it expects to work with.</p>
+<p>As property-constraints are not serialized to the setup file, all static constraints need to be re-established after loading.
+The framework will call the function updateStaticPropertyConstraints() for each plugin ouput channel.
+More dynamic constraints need to be handled during update().</p>
+</dd>
+<dt>update</dt><dd><p>called every time a configuration parameter of the instance or an input channel changes.
+Should be used to update the dynamic state of the instance:</p>
+<ul class="simple">
+<li><p>update config parameters</p></li>
+<li><p>update config constraints</p></li>
+<li><p>add/remove/update output channels depending on configuration</p></li>
+</ul>
+<p>e.g.: input channel unit has changed, adapt unit of output channel</p>
+</dd>
+</dl>
+</section>
+<section id="data-processing">
+<h2 id="data-processing">Data processing<a class="headerlink" href="#data-processing" title="Permalink to this headline">¶</a></h2>
+<p>If a SoftwareChannelInstance is configured and valid, it takes part in the Oxygen acquisition loop.</p>
+<img alt="../_images/software_channel_instance_data_processing.png" src="../_images/software_channel_instance_data_processing.png"/>
+<dl class="simple">
+<dt>initTimebases</dt><dd><p>Called once per acquisition run when all input channel timebases are ready and used to determine the timebases of the output channels</p>
+</dd>
+<dt>prepareProcessing</dt><dd><p>Called once per acquisition run, used to set up the instance for processing (create buffers, …)</p>
+</dd>
+<dt>process</dt><dd><p>Called periodically as long as the acquisition is running.
+Adding samples to output channels must be done in here.
+ProcessingContext provides current time information and all new data of the requested input channels since the last call.</p>
+</dd>
+<dt>stopProcessing</dt><dd><p>Called once per acquisition run, used to clean up the instance</p>
+</dd>
+</dl>
+</section>
+<section id="channel-data-formats">
+<span id="id1"></span><h2 id="channel-data-formats">Channel data formats<a class="headerlink" href="#channel-data-formats" title="Permalink to this headline">¶</a></h2>
+<section id="can-messages">
+<h3 id="can-messages">CAN messages<a class="headerlink" href="#can-messages" title="Permalink to this headline">¶</a></h3>
+<p>Each CAN message is received as byte array. In addition to the data pointer the size of the array is also provided and can be
+accessed via the <code class="docutils literal notranslate"><span class="pre">odk::framework::StreamIterator</span></code> class.</p>
+<p>For sending CAN messages to the input channel the following structure has to be used:</p>
+<table id="id2">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">CAN Message Structure</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset (bytes)</p></th>
+<th class="head"><p>Length (bytes)</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>4</p></td>
+<td><p>uint32</p></td>
+<td><p>CAN Arbitration ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>1</p></td>
+<td><p>uint8</p></td>
+<td><p>Standard/Extended Message (0/1)</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><em>data size</em></p></td>
+<td><p>uint8*</p></td>
+<td><p>Data</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../02_Quickstart/Quickstart.html" title="Quickstart"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Quickstart </span>
+              </div>
+            </a>
+          
+          
+            <a href="../04_ExportPlugin/ExportPlugin.html" title="Export Plugins"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Export Plugins </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, DEWETRON GmbH.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

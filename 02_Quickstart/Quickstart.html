@@ -1,0 +1,1044 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Quickstart &#8212; Oxygen SDK 6.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/stylesheets/oxygen_material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/oxygen.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Software Channel Plugins" href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" />
+    <link rel="prev" title="Introduction" href="../01_SDKIntroduction/SDKIntroduction.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#02_Quickstart/Quickstart" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Oxygen SDK 6.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Oxygen SDK logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Oxygen SDK</span>
+          <span class="md-header-nav__topic"> Quickstart </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Oxygen SDK 6.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Oxygen SDK 6.1 documentation">Oxygen SDK</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Contents</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../00_InformationRights/InformationRights.html" class="md-nav__link">Preface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../01_SDKIntroduction/SDKIntroduction.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Quickstart </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Quickstart</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#02-quickstart-quickstart--page-root" class="md-nav__link">Quickstart</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#install-oxygen" class="md-nav__link">Install Oxygen</a>
+        </li>
+        <li class="md-nav__item"><a href="#development-requirements-for-windows" class="md-nav__link">Development Requirements for Windows</a>
+        </li>
+        <li class="md-nav__item"><a href="#optional-requirements" class="md-nav__link">Optional Requirements</a>
+        </li>
+        <li class="md-nav__item"><a href="#development-requirements-for-linux" class="md-nav__link">Development Requirements for Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#optional-requirements-for-linux" class="md-nav__link">Optional Requirements for Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#build-instructions-for-windows" class="md-nav__link">Build instructions for Windows</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#git-clone-using-cmd-exe" class="md-nav__link">Git clone using cmd.exe</a>
+        </li>
+        <li class="md-nav__item"><a href="#git-clone-using-github-desktop" class="md-nav__link">Git clone using GitHub Desktop</a>
+        </li>
+        <li class="md-nav__item"><a href="#easy-workspace-setup-using-setup-py-optional" class="md-nav__link">Easy workspace setup using setup.py (Optional)</a>
+        </li>
+        <li class="md-nav__item"><a href="#workspace-setup-step-by-step" class="md-nav__link">Workspace setup step by step</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#setup-boost-libraries" class="md-nav__link">Setup Boost libraries</a>
+        </li>
+        <li class="md-nav__item"><a href="#setup-qt-resource-compiler" class="md-nav__link">Setup Qt resource compiler</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#building-with-visual-studio" class="md-nav__link">Building with Visual Studio</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#build-instructions-for-linux" class="md-nav__link">Build instructions for Linux</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#building-with-commandline-tools" class="md-nav__link">Building with commandline tools</a>
+        </li>
+        <li class="md-nav__item"><a href="#building-with-visual-studio-code" class="md-nav__link">Building with Visual Studio Code</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-plugin" class="md-nav__link">Hello World plugin</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#hello-world-source-files" class="md-nav__link">Hello World Source Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-building" class="md-nav__link">Hello World Building</a>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-deployment" class="md-nav__link">Hello World Deployment</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" class="md-nav__link">Software Channel Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../04_ExportPlugin/ExportPlugin.html" class="md-nav__link">Export Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../10_ChannelConfiguration/ChannelConfiguration.html" class="md-nav__link">Oxygen Channel Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../11_Translation/Translation.html" class="md-nav__link">Translation</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../12_UIExtensions/UIExtensions.html" class="md-nav__link">UI Extensions</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../13_PluginQML/PluginQML.html" class="md-nav__link">QML for Oxygen Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../14_PropertyList/PropertyList.html" class="md-nav__link">odk::PropertyList</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../20_DebuggingLogging/DebuggingLogging.html" class="md-nav__link">Debugging and Logging</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../30_Examples/Examples.html" class="md-nav__link">Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../40_Templates/Templates.html" class="md-nav__link">Plugin Templates</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../50_FAQ/FAQ.html" class="md-nav__link">Frequently Asked Questions</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#02-quickstart-quickstart--page-root" class="md-nav__link">Quickstart</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#install-oxygen" class="md-nav__link">Install Oxygen</a>
+        </li>
+        <li class="md-nav__item"><a href="#development-requirements-for-windows" class="md-nav__link">Development Requirements for Windows</a>
+        </li>
+        <li class="md-nav__item"><a href="#optional-requirements" class="md-nav__link">Optional Requirements</a>
+        </li>
+        <li class="md-nav__item"><a href="#development-requirements-for-linux" class="md-nav__link">Development Requirements for Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#optional-requirements-for-linux" class="md-nav__link">Optional Requirements for Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#build-instructions-for-windows" class="md-nav__link">Build instructions for Windows</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#git-clone-using-cmd-exe" class="md-nav__link">Git clone using cmd.exe</a>
+        </li>
+        <li class="md-nav__item"><a href="#git-clone-using-github-desktop" class="md-nav__link">Git clone using GitHub Desktop</a>
+        </li>
+        <li class="md-nav__item"><a href="#easy-workspace-setup-using-setup-py-optional" class="md-nav__link">Easy workspace setup using setup.py (Optional)</a>
+        </li>
+        <li class="md-nav__item"><a href="#workspace-setup-step-by-step" class="md-nav__link">Workspace setup step by step</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#setup-boost-libraries" class="md-nav__link">Setup Boost libraries</a>
+        </li>
+        <li class="md-nav__item"><a href="#setup-qt-resource-compiler" class="md-nav__link">Setup Qt resource compiler</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#building-with-visual-studio" class="md-nav__link">Building with Visual Studio</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#build-instructions-for-linux" class="md-nav__link">Build instructions for Linux</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#building-with-commandline-tools" class="md-nav__link">Building with commandline tools</a>
+        </li>
+        <li class="md-nav__item"><a href="#building-with-visual-studio-code" class="md-nav__link">Building with Visual Studio Code</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-plugin" class="md-nav__link">Hello World plugin</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#hello-world-source-files" class="md-nav__link">Hello World Source Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-building" class="md-nav__link">Hello World Building</a>
+        </li>
+        <li class="md-nav__item"><a href="#hello-world-deployment" class="md-nav__link">Hello World Deployment</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="quickstart">
+<span id="id1"></span><h1 id="02-quickstart-quickstart--page-root">Quickstart<a class="headerlink" href="#02-quickstart-quickstart--page-root" title="Permalink to this headline">¶</a></h1>
+<p>This quickstart guide will guide you through the necessary steps for building
+Oxygen plugins.</p>
+<p>The guide explains three necessary steps:</p>
+<ol class="arabic simple">
+<li><p>Setup of a development environment</p></li>
+<li><p>Compiling OXYGEN-SDK</p></li>
+<li><p>A new plugin: Hello World</p></li>
+</ol>
+<p>Lets start with the setup of the development environment:</p>
+<ul class="simple">
+<li><p>Visual Studio 2019 or better (for Windows)</p></li>
+<li><p>cmake</p></li>
+<li><p>Oxygen</p></li>
+</ul>
+<p>A free alternative to Visual Studio 2019/2022 is <em>Visual Studio Code</em>.</p>
+<section id="install-oxygen">
+<h2 id="install-oxygen">Install Oxygen<a class="headerlink" href="#install-oxygen" title="Permalink to this headline">¶</a></h2>
+<p>To test the plugins an Oxygen installation is needed:</p>
+<p>Please download and install the latest Oxygen installer from DEWETRON’s
+download portal:</p>
+<p><a class="reference external" href="https://www.dewetron.com/products/oxygen-measurement-software/">https://www.dewetron.com/products/oxygen-measurement-software/</a></p>
+</section>
+<section id="development-requirements-for-windows">
+<h2 id="development-requirements-for-windows">Development Requirements for Windows<a class="headerlink" href="#development-requirements-for-windows" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Microsoft Visual Studio 2019 or later with C++ compiler and toolchain (<a class="reference external" href="https://visualstudio.microsoft.com/">https://visualstudio.microsoft.com/</a>)</p></li>
+<li><p>CMake (<a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>)</p></li>
+<li><p>Source files for Boost C++ Libraries 1.70 or later
+(<a class="reference external" href="https://www.boost.org/users/history/version_1_70_0.html">https://www.boost.org/users/history/version_1_70_0.html</a>)</p></li>
+<li><p>Git for windows or <a class="reference external" href="https://desktop.github.com/">https://desktop.github.com/</a> application</p></li>
+</ul>
+<p>Make sure Visual Studio and CMake are installed.
+Please verify that the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> command can be run from the command prompt.
+If this does not work you have use the ‘Add CMake to the system PATH’ option
+during installation or add it to the PATH manually.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cmake --version
+cmake version 3.16.4
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+</pre></div>
+</div>
+</section>
+<section id="optional-requirements">
+<h2 id="optional-requirements">Optional Requirements<a class="headerlink" href="#optional-requirements" title="Permalink to this headline">¶</a></h2>
+<p>For resource package creation the qt resource compiler (rcc) is needed.</p>
+<p>It is found the GitHub projects download section:</p>
+<p><a class="reference external" href="https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_resource_compiler.zip">https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_resource_compiler.zip</a></p>
+<p>Alternatively one can install the complete Qt libraries package:</p>
+<ul class="simple">
+<li><p>Qt 5.15.2 (<a class="reference external" href="https://www.qt.io/download-qt-installer">https://www.qt.io/download-qt-installer</a>)</p></li>
+</ul>
+<p>Qt is a rather large download (40GB with included debug symbol files) so
+the use of the small provided qt_resource_compiler.zip archive is preferred.</p>
+</section>
+<section id="development-requirements-for-linux">
+<h2 id="development-requirements-for-linux">Development Requirements for Linux<a class="headerlink" href="#development-requirements-for-linux" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Ubuntu 20.04 LTS Linux (Focal Fossa)</p></li>
+<li><p>Red Hat Enterprise Linux 8 (RHEL8)</p></li>
+</ul>
+<p>The minimum build environment for Linux consists of following packages:</p>
+<ul class="simple">
+<li><p>cmake</p></li>
+<li><p>gcc/g++</p></li>
+<li><p>boost</p></li>
+<li><p>qt-dev</p></li>
+<li><p>make</p></li>
+<li><p>ninja (optional)</p></li>
+</ul>
+<p>It is completely ok to use the packages provided by the distribution.</p>
+</section>
+<section id="optional-requirements-for-linux">
+<h2 id="optional-requirements-for-linux">Optional Requirements for Linux<a class="headerlink" href="#optional-requirements-for-linux" title="Permalink to this headline">¶</a></h2>
+<p>A good and free IDE for Linux (and Windows too) is Visual Studio Code.
+The download is free and its usage is highly recommended.</p>
+<p><a class="reference external" href="https://code.visualstudio.com/download">https://code.visualstudio.com/download</a></p>
+</section>
+<section id="build-instructions-for-windows">
+<span id="build-instructions"></span><h2 id="build-instructions-for-windows">Build instructions for Windows<a class="headerlink" href="#build-instructions-for-windows" title="Permalink to this headline">¶</a></h2>
+<p>It is assumed that <a class="reference external" href="https://github.com/DEWETRON/OXYGEN-SDK">https://github.com/DEWETRON/OXYGEN-SDK</a> is cloned
+to this directory: C:\OXYGEN-SDK.</p>
+<p>Alternatively you can download a zip archive:</p>
+<p><a class="reference external" href="https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip">https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip</a></p>
+<section id="git-clone-using-cmd-exe">
+<h3 id="git-clone-using-cmd-exe">Git clone using cmd.exe<a class="headerlink" href="#git-clone-using-cmd-exe" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cd C:\
+$ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
+</pre></div>
+</div>
+</section>
+<section id="git-clone-using-github-desktop">
+<h3 id="git-clone-using-github-desktop">Git clone using GitHub Desktop<a class="headerlink" href="#git-clone-using-github-desktop" title="Permalink to this headline">¶</a></h3>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/github_desktop.png"><img alt="GitHub Desktop" src="../_images/github_desktop.png" style="width: 4in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Cloning with GitHub Desktop</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="easy-workspace-setup-using-setup-py-optional">
+<h3 id="easy-workspace-setup-using-setup-py-optional">Easy workspace setup using setup.py (Optional)<a class="headerlink" href="#easy-workspace-setup-using-setup-py-optional" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\setup.py</span></code> is a utility script automating the following steps.
+It downloads and setups all 3rdparty tools and libraries:</p>
+<ul class="simple">
+<li><p>Boost 1.70.0</p></li>
+<li><p>CMake</p></li>
+<li><p>Qt resource compiler</p></li>
+</ul>
+<p>setup.py needs python3 to be installed. Using setup.py is completely optional: All the
+steps necessary can be done manually.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cd C:\OXYGEN-SDK
+$ python setup.py
+Boost 1.70.0 dependency processing ...
+Qt resource compiler (rcc) dependency processing ...
+CMake 3.23.1 dependency is fullfilled!
+</pre></div>
+</div>
+<p>When using setup.py <em>Workspace setup step by step</em> can be skipped.</p>
+</section>
+<section id="workspace-setup-step-by-step">
+<h3 id="workspace-setup-step-by-step">Workspace setup step by step<a class="headerlink" href="#workspace-setup-step-by-step" title="Permalink to this headline">¶</a></h3>
+<section id="setup-boost-libraries">
+<h4 id="setup-boost-libraries">Setup Boost libraries<a class="headerlink" href="#setup-boost-libraries" title="Permalink to this headline">¶</a></h4>
+<p><em>If setup.py was not used or did not succeed</em></p>
+<p>Extract the Boost source archive to <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\3rdparty</span></code>.</p>
+<p>Verify that the file
+<code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\3rdparty\boost_1_70_0\boost\align.hpp</span></code> exists
+to make sure the extracted paths are correct.</p>
+</section>
+<section id="setup-qt-resource-compiler">
+<h4 id="setup-qt-resource-compiler">Setup Qt resource compiler<a class="headerlink" href="#setup-qt-resource-compiler" title="Permalink to this headline">¶</a></h4>
+<p><em>If setup.py was not used or did not succeed</em></p>
+<p>Unpack <code class="docutils literal notranslate"><span class="pre">qt_resource_compiler.zip</span></code> to <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK</span></code></p>
+<p><em>Or: Qt 5.15.2 has to be installed on the system.
+This manual assumes the correct build for your compiler is installed to {QT_DIR}
+(for example C:\Qt\5.15.2\msvc2017_64)</em></p>
+</section>
+</section>
+<section id="building-with-visual-studio">
+<h3 id="building-with-visual-studio">Building with Visual Studio<a class="headerlink" href="#building-with-visual-studio" title="Permalink to this headline">¶</a></h3>
+<p>Open a command line prompt and change to the directory <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK</span></code></p>
+<p>Create a new directory <code class="docutils literal notranslate"><span class="pre">build</span></code> and change to <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\build</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd C:\OXYGEN-SDK
+PC$ mkdir build
+PC$ cd build
+</pre></div>
+</div>
+<p>Using cmake we create a Visual Studio solution:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cmake -A x64 ..
+</pre></div>
+</div>
+<p>The option <em>-A x64</em> forces the solution to build for 64bit architecture.
+It may not be necessary, but sometimes a x86 (32bit) solution is created
+and Oxygen is not able to load the plugins.</p>
+<p>If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
+</pre></div>
+</div>
+<p>If CMake encounters an error, you need to fix the issue and then invoke</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ del CMakeCache.txt
+</pre></div>
+</div>
+<p>before retrying to ensure a clean run.</p>
+<p>Open the generated Solution in Visual Studio</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ start ODK.sln
+</pre></div>
+</div>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/vs2019_odk.png"><img alt="Visual Studio 2019 ODK solution" src="../_images/vs2019_odk.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">Visual Studio 2019 ODK solution</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Build at least one of the example plugins. <em>Build Solution</em> will build everthing.</p>
+<p>The compiled plugins will be stored in
+<code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\build\{Debug|Release}\plugins</span></code>
+as files with the extension .plugin</p>
+<p>To test a plugin it has to be copied to <code class="docutils literal notranslate"><span class="pre">{PublicDocuments}\Dewetron\Oxygen\Plugins</span></code>
+or the ‘bin’ directory of the installed Oxygen (by default this is
+<code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\DEWETRON\Oxygen\bin)</span></code>.</p>
+<p>Start Oxygen and the plugin will automatically load.</p>
+<p>This can be verified by looking at
+‘System Settings’ -&gt; ‘Extensions and Plugins’ -&gt; ‘Overview’</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Oxygen is a 64bit application (x64) and is not able to load plugins build for a 32bit (x86) architecture.
+Please check the build configuration in Visual Studio if your plugin fails to load. Add <code class="docutils literal notranslate"><span class="pre">-A</span> <span class="pre">x64</span></code> to the cmake call.</p>
+</div>
+</section>
+</section>
+<section id="build-instructions-for-linux">
+<h2 id="build-instructions-for-linux">Build instructions for Linux<a class="headerlink" href="#build-instructions-for-linux" title="Permalink to this headline">¶</a></h2>
+<p>It is assumed that <a class="reference external" href="https://github.com/DEWETRON/OXYGEN-SDK">https://github.com/DEWETRON/OXYGEN-SDK</a> is cloned
+to the directory refered to as WORKSPACE:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd $HOME
+PC$ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
+</pre></div>
+</div>
+<p>The directory <code class="docutils literal notranslate"><span class="pre">/home/USER/OXYGEN-SDK</span></code> has been created containing the latest
+SDK version.</p>
+<section id="building-with-commandline-tools">
+<h3 id="building-with-commandline-tools">Building with commandline tools<a class="headerlink" href="#building-with-commandline-tools" title="Permalink to this headline">¶</a></h3>
+<p>Enter the OXYGEN-SDK directory and execute cmake to check for all necessary
+dependencies and let it create a Makefile.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd $HOME/OXYGEN-SDK
+PC$ mkdir build
+PC$ cd build
+PC$ cmake ..
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- ODKROOT = /home/USER/OXYGEN-SDK
+-- Performing Test _HAS_CXX17_FLAG
+-- Performing Test _HAS_CXX17_FLAG - Success
+-- Checking C++11 support for "constexpr"
+-- Checking C++11 support for "constexpr": works
+-- GITHUB_REPO = True
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0")
+-- Qt found
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/USER/OXYGEN-SDK/build
+</pre></div>
+</div>
+<p>Now run make to build the SDK and all example plugins</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ make
+Scanning dependencies of target pugixml
+[  1%] Building CXX object 3rdparty/pugixml-1.9/CMakeFiles/pugixml.dir/__/src/pugixml.cpp.o
+[  2%] Linking CXX static library ../../Debug/libpugixml.a
+
+lines skipped
+
+[ 98%] Linking CXX shared library ../../Debug/plugins/libex_wav_export.plugin
+[100%] Built target ex_wav_export
+</pre></div>
+</div>
+<p>After building all plugins are found here:</p>
+<p><em>Debug</em>: OXYGEN-SDK/build/Debug/plugins/</p>
+<p><em>Release</em>: OXYGEN-SDK/build/Release/plugins/</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ ls build/Debug/plugins/
+libex_bin_detector.plugin
+libex_property_callback.plugin
+libex_replay_sync_scalar.plugin
+libex_sample_interpolator.plugin
+libex_simple_moving_average.plugin
+libex_sum_channels.plugin
+libex_sync_resample_source.plugin
+libex_wav_export.plugin
+</pre></div>
+</div>
+</section>
+<section id="building-with-visual-studio-code">
+<h3 id="building-with-visual-studio-code">Building with Visual Studio Code<a class="headerlink" href="#building-with-visual-studio-code" title="Permalink to this headline">¶</a></h3>
+<p>It is highly suggested that following Visual Studio Code extensions have been installed:</p>
+<ul class="simple">
+<li><p>C/C++</p></li>
+<li><p>CMake Tools</p></li>
+<li><p>alternatively: C/C++ Extension Pack</p></li>
+</ul>
+<p><em>Please note that Visual Studio Code is also a good working IDE for Windows.</em></p>
+<p>Start Visual Studio Code</p>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/vscode.png"><img alt="Visual Studio Code" src="../_images/vscode.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Visual Studio Code</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Select <em>Open Folder</em> and select <code class="docutils literal notranslate"><span class="pre">/home/USER/OXYGEN-SDK</span></code>. On the first start
+Visual Studio Code asks which compiler (or Kit) to use.
+Select 9.3 or 9.4, both work great.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Most modern compilers will work, as far as C++ 17 is supported.</p>
+</div>
+<p>Usually cmake is automatically run by the IDE.</p>
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="../_images/vscode_after_cmake.png"><img alt="Visual Studio Code after cmake" src="../_images/vscode_after_cmake.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Visual Studio Code after cmake</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Press <em>Build</em> in the bottom bar to trigger the compilation of the Oxygen-SDK framework
+and all example plugins.
+There is also the option to switch between Release and Debug build.</p>
+<figure class="align-default" id="id6">
+<a class="reference internal image-reference" href="../_images/vscode_build.png"><img alt="Visual Studio Code Building" src="../_images/vscode_build.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Visual Studio Code Building</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>After building all plugins are found here:</p>
+<p><em>Debug</em>: OXYGEN-SDK/build/Debug/plugins/</p>
+<p><em>Release</em>: OXYGEN-SDK/build/Release/plugins/</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ ls build/Debug/plugins/
+libex_bin_detector.plugin
+libex_property_callback.plugin
+libex_replay_sync_scalar.plugin
+libex_sample_interpolator.plugin
+libex_simple_moving_average.plugin
+libex_sum_channels.plugin
+libex_sync_resample_source.plugin
+libex_wav_export.plugin
+</pre></div>
+</div>
+</section>
+</section>
+<section id="hello-world-plugin">
+<h2 id="hello-world-plugin">Hello World plugin<a class="headerlink" href="#hello-world-plugin" title="Permalink to this headline">¶</a></h2>
+<p>The first plugin will be a variant of the classic “Hello World” programming
+example.</p>
+<p>To start the development a project directory for our new development has to
+be created: <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-PLUGINS\Hello_World</span></code></p>
+<p>Our plugin directory has to be populated with at least two files:</p>
+<ul class="simple">
+<li><p>The plugin source file: hello_world_plugin.cpp</p></li>
+<li><p>The plugin build file: CMakeLists.txt</p></li>
+</ul>
+<section id="hello-world-source-files">
+<h3 id="hello-world-source-files">Hello World Source Files<a class="headerlink" href="#hello-world-source-files" title="Permalink to this headline">¶</a></h3>
+<p>Lets start with the plugin source code:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Copyright DEWETRON GmbH 2022</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkfw_software_channel_plugin.h"</span><span class="cp"></span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">PLUGIN_MANIFEST</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="sa">R</span><span class="s">"</span><span class="dl">XML(</span><span class="s">&lt;?xml version="1.0"?&gt;</span>
+<span class="s">&lt;OxygenPlugin name="HELLO_WORLD" version="1.0"</span>
+<span class="s"> uuid="0b9ae54e-7eaa-4b11-9abd-b1154e596f9b"&gt;</span>
+<span class="s">  &lt;Info name="Quickstart: Hello World"&gt;</span>
+<span class="s">    &lt;Vendor name="Example Company"/&gt;</span>
+<span class="s">    &lt;Description&gt;Simplest plugin&lt;/Description&gt;</span>
+<span class="s">  &lt;/Info&gt;</span>
+<span class="s">  &lt;Host minimum_version="6.0"/&gt;</span>
+<span class="s">&lt;/OxygenPlugin&gt;</span>
+<span class="dl">)XML</span><span class="s">"</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">odk</span><span class="o">::</span><span class="nn">framework</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HelloWorldChannel</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">SoftwareChannelInstance</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">HelloWorldChannel</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Describe how the software channel should be shown in the "Add Channel" dialog</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">RegisterSoftwareChannel</span><span class="w"> </span><span class="n">getSoftwareChannelInfo</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">odk</span><span class="o">::</span><span class="n">RegisterSoftwareChannel</span><span class="w"> </span><span class="n">telegram</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Quickstart: Hello World"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_service_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"CreateChannel"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_display_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Examples"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Simplest plugin possible"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_analysis_capable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">telegram</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">update</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">create</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="o">*</span><span class="w"> </span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">configure</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">UpdateChannelsTelegram</span><span class="o">&amp;</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">channel_id_map</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">configureFromTelegram</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">channel_id_map</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">prepareProcessing</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="o">*</span><span class="w"> </span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">process</span><span class="p">(</span><span class="n">ProcessingContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="w"> </span><span class="o">*</span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HelloWorldPlugin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">SoftwareChannelPlugin</span><span class="o">&lt;</span><span class="n">HelloWorldChannel</span><span class="o">&gt;</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="n">OXY_REGISTER_PLUGIN1</span><span class="p">(</span><span class="s">"HELLO_WORLD"</span><span class="p">,</span><span class="w"> </span><span class="n">PLUGIN_MANIFEST</span><span class="p">,</span><span class="w"> </span><span class="n">HelloWorldPlugin</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This small (but complete) plugin source code describes the <em>Hello World</em>
+plugin. It defines the necessary plugin manifest, defines the plugin channel
+class <em>HelloWorldChannel</em> (more or less empty), and the plugin class
+<em>HelloWorldPlugin</em> (also empty).</p>
+<p>OXY_REGISTER_PLUGIN1(…) is needed to register the plugin with the Oxygen
+plugin loader.</p>
+<p>The second necessary file is <em>CMakeLists.txt</em>. It contains the necessary
+build instructions for IDE (and compiler) to translate the plugin source
+code to a valid binary plugin file.</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c">#</span>
+<span class="c"># Oxygen Hello World</span>
+<span class="c">#</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.16</span><span class="p">)</span>
+
+<span class="c"># Name of the plugin project and compiled plugin file</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">LIBNAME</span><span class="w"> </span><span class="s">hello_world</span><span class="p">)</span>
+<span class="c"># This is just any stable GUID to help Visual Studio identify the project for rebuilds</span>
+<span class="nb">set</span><span class="p">(</span><span class="s2">"${LIBNAME}_GUID_CMAKE"</span><span class="w"> </span><span class="s2">"8c15e366-e94f-4870-8ec1-0db0b342994c"</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">INTERNAL</span><span class="w"> </span><span class="s2">"remove this and Visual Studio will mess up incremental builds"</span><span class="p">)</span>
+
+<span class="c">#</span>
+<span class="c"># Project name</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">HelloWorldPlugin</span><span class="p">)</span>
+
+<span class="c">#</span>
+<span class="c"># C++ Standard, Compiler Flags</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="s">17</span><span class="p">)</span>
+
+<span class="c">#</span>
+<span class="c"># Import Oxygen SDK</span>
+<span class="nb">if</span> <span class="p">(</span><span class="s">NOT</span><span class="w"> </span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ODK_ROOT</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span> <span class="p">(</span><span class="s">MSVC</span><span class="p">)</span>
+<span class="w">        </span><span class="nb">set</span><span class="p">(</span><span class="s">ODK_ROOT</span><span class="w"> </span><span class="s2">"C:/OXYGEN-SDK"</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">else</span><span class="p">()</span>
+<span class="w">        </span><span class="nb">set</span><span class="p">(</span><span class="s">ODK_ROOT</span><span class="w"> </span><span class="s2">"../OXYGEN-SDK"</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="nb">endif</span><span class="p">()</span>
+
+<span class="c"># get absolute path of ODK_ROOT</span>
+<span class="nb">get_filename_component</span><span class="p">(</span><span class="s">ODK_ROOT</span><span class="w"> </span><span class="o">${</span><span class="nv">ODK_ROOT</span><span class="o">}</span><span class="w"> </span><span class="s">ABSOLUTE</span><span class="p">)</span>
+
+<span class="c"># Expand cmake path to find ODK cmake utilities</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_MODULE_PATH</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_MODULE_PATH</span><span class="o">}</span><span class="w"> </span><span class="o">${</span><span class="nv">ODK_ROOT</span><span class="o">}</span><span class="s">/cmake</span><span class="p">)</span>
+<span class="nb">include</span><span class="p">(</span><span class="s">CMakeSettings</span><span class="p">)</span>
+<span class="nb">include</span><span class="p">(</span><span class="s">OxygenPluginFunctions</span><span class="p">)</span>
+
+<span class="c"># Build settings and 3rdparty libs</span>
+<span class="nb">SetupODKEnvironment</span><span class="p">(</span><span class="o">${</span><span class="nv">ODK_ROOT</span><span class="o">}</span><span class="p">)</span>
+
+<span class="c"># Add ODK sources</span>
+<span class="nb">add_subdirectory</span><span class="p">(</span><span class="o">${</span><span class="nv">ODK_ROOT</span><span class="o">}</span><span class="s">/odk</span><span class="w"> </span><span class="s">OXYGEN-SDK</span><span class="p">)</span>
+
+<span class="nb">include_directories</span><span class="p">(</span>
+<span class="w">  </span><span class="s">SYSTEM</span>
+<span class="w">  </span><span class="o">${</span><span class="nv">Boost_INCLUDE_DIRS</span><span class="o">}</span>
+<span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">SOURCE_FILES</span>
+<span class="w">  </span><span class="s">hello_world_plugin.cpp</span>
+<span class="p">)</span>
+<span class="nb">source_group</span><span class="p">(</span><span class="s2">"Source Files"</span><span class="w"> </span><span class="s">FILES</span><span class="w"> </span><span class="o">${</span><span class="nv">SOURCE_FILES</span><span class="o">}</span><span class="p">)</span>
+
+<span class="nb">add_library</span><span class="p">(</span><span class="o">${</span><span class="nv">LIBNAME</span><span class="o">}</span><span class="w"> </span><span class="s">SHARED</span>
+<span class="w">  </span><span class="o">${</span><span class="nv">SOURCE_FILES</span><span class="o">}</span>
+<span class="p">)</span>
+
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">LIBNAME</span><span class="o">}</span>
+<span class="w">  </span><span class="s">odk_framework</span>
+<span class="p">)</span>
+
+<span class="nb">SetPluginOutputOptions</span><span class="p">(</span><span class="o">${</span><span class="nv">LIBNAME</span><span class="o">}</span><span class="p">)</span>
+
+<span class="c">#</span>
+<span class="c"># add this to Visual Studio group lib</span>
+<span class="nb">set_target_properties</span><span class="p">(</span><span class="o">${</span><span class="nv">LIBNAME</span><span class="o">}</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">FOLDER</span><span class="w"> </span><span class="s2">"odk_plugins"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please create both files using the above source code.</p>
+</section>
+<section id="hello-world-building">
+<h3 id="hello-world-building">Hello World Building<a class="headerlink" href="#hello-world-building" title="Permalink to this headline">¶</a></h3>
+<p>Now lets build the plugin:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd C:\OXYGEN-PLUGINS\Hello_World
+PC$ mkdir build
+PC$ cd build
+PC$ cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
+-- Building for: Visual Studio 16 2019
+-- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19044.
+-- The C compiler identification is MSVC 19.29.30142.1
+-- The CXX compiler identification is MSVC 19.29.30142.1
+-- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe
+-- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe -- works -- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: C:/OXYGEN-SDK/3rdparty/boost_1_70_0 (found version "1.70.0")
+-- Qt rcc found: C:/OXYGEN-SDK/3rdparty/qt/bin/rcc.exe
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/OXYGEN-PLUGINS/Hello_World/build
+</pre></div>
+</div>
+<p>Then start Visual Studio:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ start HelloWorldPlugin.sln
+</pre></div>
+</div>
+<figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../_images/vs_hello_world.png"><img alt="Hello World in Visual Studio" src="../_images/vs_hello_world.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Hello World in Visual Studio.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Start compiling by pressing <em>Ctrl+Shift+B</em> or selecting <em>Build Solution</em> in the
+<em>Build</em> menu.</p>
+<figure class="align-default" id="id8">
+<a class="reference internal image-reference" href="../_images/vs_hello_world_build.png"><img alt="Building Hello World in Visual Studio" src="../_images/vs_hello_world_build.png" style="width: 5in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">Building Hello World in Visual Studio.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="hello-world-deployment">
+<h3 id="hello-world-deployment">Hello World Deployment<a class="headerlink" href="#hello-world-deployment" title="Permalink to this headline">¶</a></h3>
+<p>After building you have to copy the plugin to a valid Oxygen plugin directory:</p>
+<p>In Windows these locations are valid for plugins:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\DEWETRON\OXYGEN\bin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">C:\Users\Public\Documents\Dewetron\Oxygen\Plugins</span></code></p></li>
+</ul>
+<p>Now start Oxygen. After Oxygen started look for the plugin in <em>System Setup</em>:</p>
+<figure class="align-default" id="id9">
+<a class="reference internal image-reference" href="../_images/oxygen_hello_world_plugin.png"><img alt="Hello world in System Setup" src="../_images/oxygen_hello_world_plugin.png" style="width: 5in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">System Setup shows <em>Hello World</em> plugin</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>In the <em>Channel List</em> the plugin is listed in the <em>AddChannel</em> dialog:</p>
+<figure class="align-default" id="id10">
+<a class="reference internal image-reference" href="../_images/oxygen_hello_world_add_channel.png"><img alt="Hello World in channel list" src="../_images/oxygen_hello_world_add_channel.png" style="width: 7in;"/></a>
+<figcaption>
+<p><span class="caption-number">Fig. 11 </span><span class="caption-text">Hello World in AddChannel Dialog.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p><strong>Congratulation! You developed, build and tested your first Oxygen plugin!</strong></p>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../01_SDKIntroduction/SDKIntroduction.html" title="Introduction"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Introduction </span>
+              </div>
+            </a>
+          
+          
+            <a href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" title="Software Channel Plugins"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Software Channel Plugins </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, DEWETRON GmbH.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

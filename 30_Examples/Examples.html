@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Examples &#8212; Oxygen SDK 6.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/stylesheets/oxygen_material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/oxygen.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plugin Templates" href="../40_Templates/Templates.html" />
+    <link rel="prev" title="Debugging and Logging" href="../20_DebuggingLogging/DebuggingLogging.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#30_Examples/Examples" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Oxygen SDK 6.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Oxygen SDK logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Oxygen SDK</span>
+          <span class="md-header-nav__topic"> Examples </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Oxygen SDK 6.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Oxygen SDK 6.1 documentation">Oxygen SDK</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Contents</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../00_InformationRights/InformationRights.html" class="md-nav__link">Preface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../01_SDKIntroduction/SDKIntroduction.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../02_Quickstart/Quickstart.html" class="md-nav__link">Quickstart</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" class="md-nav__link">Software Channel Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../04_ExportPlugin/ExportPlugin.html" class="md-nav__link">Export Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../10_ChannelConfiguration/ChannelConfiguration.html" class="md-nav__link">Oxygen Channel Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../11_Translation/Translation.html" class="md-nav__link">Translation</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../12_UIExtensions/UIExtensions.html" class="md-nav__link">UI Extensions</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../13_PluginQML/PluginQML.html" class="md-nav__link">QML for Oxygen Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../14_PropertyList/PropertyList.html" class="md-nav__link">odk::PropertyList</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../20_DebuggingLogging/DebuggingLogging.html" class="md-nav__link">Debugging and Logging</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Examples </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Examples</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#30-examples-examples--page-root" class="md-nav__link">Examples</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#example-sync-file-replay" class="md-nav__link">Example: Sync File Replay</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#features" class="md-nav__link">Features</a>
+        </li>
+        <li class="md-nav__item"><a href="#source-code-of-main-file" class="md-nav__link">Source Code of Main File</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-sync-async-channel" class="md-nav__link">Example: Sync+Async Channel</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-bin-detector" class="md-nav__link">Example: Bin Detector</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id3" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-wav-export" class="md-nav__link">Example: WAV Export</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id4" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../40_Templates/Templates.html" class="md-nav__link">Plugin Templates</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../50_FAQ/FAQ.html" class="md-nav__link">Frequently Asked Questions</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#30-examples-examples--page-root" class="md-nav__link">Examples</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#example-sync-file-replay" class="md-nav__link">Example: Sync File Replay</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#features" class="md-nav__link">Features</a>
+        </li>
+        <li class="md-nav__item"><a href="#source-code-of-main-file" class="md-nav__link">Source Code of Main File</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-sync-async-channel" class="md-nav__link">Example: Sync+Async Channel</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-bin-detector" class="md-nav__link">Example: Bin Detector</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id3" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#example-wav-export" class="md-nav__link">Example: WAV Export</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id4" class="md-nav__link">Features</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="examples">
+<span id="id1"></span><h1 id="30-examples-examples--page-root">Examples<a class="headerlink" href="#30-examples-examples--page-root" title="Permalink to this headline">¶</a></h1>
+<section id="example-sync-file-replay">
+<h2 id="example-sync-file-replay">Example: Sync File Replay<a class="headerlink" href="#example-sync-file-replay" title="Permalink to this headline">¶</a></h2>
+<p>This example channel reads floating point values from the first column of a CSV file and writes them to a synchronous output channel.
+Output frequency can be configured using the Sample rate setting. Playback loops when the end of the file is reached.</p>
+<section id="features">
+<h3 id="features">Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Register a new Software Channel Type in Oxygen</p></li>
+<li><p>Plugin channel provides editable filename (string) and sample rate (scalar) config items</p></li>
+<li><p>Custom config item provides an english display name</p></li>
+<li><p>Validate input file and update channel state accordingly</p></li>
+<li><p>Set maximum range of output channel sample values</p></li>
+<li><p>Write samples to a synchronous scalar output channel</p></li>
+<li><p>UI extension to configure replay file</p></li>
+<li><p>Custom request to demonstrate communication between UI and plugin</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Location</span><span class="p">:</span> <span class="n">examples</span><span class="o">/</span><span class="n">replay_sync_scalar</span>
+<span class="n">Main</span> <span class="n">File</span><span class="p">:</span> <span class="n">odkex_replay_sync_scalar</span><span class="o">.</span><span class="n">cpp</span>
+<span class="n">Plugin</span> <span class="n">Name</span><span class="p">:</span> <span class="n">ODK_REPLAY_SYNC_SCALAR</span>
+<span class="n">Plugin</span> <span class="n">UUID</span><span class="p">:</span> <span class="n">E70860DB</span><span class="o">-</span><span class="mi">1</span><span class="n">A21</span><span class="o">-</span><span class="mi">4</span><span class="n">C1E</span><span class="o">-</span><span class="mi">8329</span><span class="o">-</span><span class="mi">55</span><span class="n">A1871ACC7A</span>
+</pre></div>
+</div>
+</section>
+<section id="source-code-of-main-file">
+<h3 id="source-code-of-main-file">Source Code of Main File<a class="headerlink" href="#source-code-of-main-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Copyright DEWETRON GmbH 2019</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkapi_config_item_keys.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkfw_custom_request_handler.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkfw_properties.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkfw_software_channel_plugin.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkbase_message_return_value_holder.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"odkapi_utils.h"</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"qml.rcc.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"sdk_csv_utils.h"</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;functional&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Manifest constains necessary metadata for oxygen plugins</span>
+<span class="c1">//   OxygenPlugin.name: unique plugin identifier; please use your (company) name to avoid name conflicts. This name is also used as a prefix in all custom config item keys.</span>
+<span class="c1">//   OxygenPlugin.uuid: unique number (generated by a GUID/UUID generator tool) that stored in configuration files to match channels etc. to the correct plugin</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">PLUGIN_MANIFEST</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="sa">R</span><span class="s">"</span><span class="dl">XML(</span><span class="s">&lt;?xml version="1.0"?&gt;</span>
+<span class="s">&lt;OxygenPlugin name="ODK_REPLAY_SYNC_SCALAR" version="1.1" uuid="E70860DB-1A21-4C1E-8329-55A1871ACC7A"&gt;</span>
+<span class="s">  &lt;Info name="Example Plugin: Simple file replay"&gt;</span>
+<span class="s">    &lt;Vendor name="DEWETRON GmbH"/&gt;</span>
+<span class="s">    &lt;Description&gt;SDK Example plugin implementing file replay into a synchronous scalar channel.&lt;/Description&gt;</span>
+<span class="s">  &lt;/Info&gt;</span>
+<span class="s">  &lt;Host minimum_version="5.3.2045"/&gt;</span>
+<span class="s">  &lt;UsesUIExtensions/&gt;</span>
+<span class="s">&lt;/OxygenPlugin&gt;</span>
+<span class="dl">)XML</span><span class="s">"</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// A minimal translation file that maps the internal ConfigItem key to a nicer text for the user</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">TRANSLATION_EN</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="sa">R</span><span class="s">"</span><span class="dl">XML(</span><span class="s">&lt;?xml version="1.0"?&gt;</span>
+<span class="s">&lt;TS version="2.1" language="en" sourcelanguage="en"&gt;</span>
+<span class="s">    &lt;context&gt;&lt;name&gt;ConfigKeys&lt;/name&gt;</span>
+<span class="s">        &lt;message&gt;&lt;source&gt;ODK_REPLAY_SYNC_SCALAR/InputFile&lt;/source&gt;&lt;translation&gt;Input File&lt;/translation&gt;&lt;/message&gt;</span>
+<span class="s">    &lt;/context&gt;</span>
+
+<span class="s">    &lt;!-- Translations for custom UI item --&gt;</span>
+<span class="s">    &lt;context&gt;&lt;name&gt;ODK_REPLAY_SYNC_SCALAR/AddChannel&lt;/name&gt;</span>
+<span class="s">        &lt;message&gt;&lt;source&gt;Not a valid CSV file&lt;/source&gt;&lt;translation&gt;No valid CSV file selected&lt;/translation&gt;&lt;/message&gt;</span>
+<span class="s">    &lt;/context&gt;</span>
+<span class="s">&lt;/TS&gt;</span>
+<span class="dl">)XML</span><span class="s">"</span><span class="p">;</span><span class="w"></span>
+
+
+<span class="c1">// Keys for ConfigItems that are used to store channel settings</span>
+
+<span class="c1">// Custom key (prefixed by plugin name) to store path to the input file</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">KEY_INPUT_FILE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ODK_REPLAY_SYNC_SCALAR/InputFile"</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">odk</span><span class="o">::</span><span class="nn">framework</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ReplayChannel</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">SoftwareChannelInstance</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ReplayChannel</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">m_input_file</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EditableStringProperty</span><span class="p">(</span><span class="s">""</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="p">,</span><span class="w"> </span><span class="n">m_next_tick</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">())</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Describe how the software channel should be shown in the "Add Channel" dialog</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">RegisterSoftwareChannel</span><span class="w"> </span><span class="n">getSoftwareChannelInfo</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">odk</span><span class="o">::</span><span class="n">RegisterSoftwareChannel</span><span class="w"> </span><span class="n">telegram</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_display_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Example Plugin: Simple file replay"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_service_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"CreateChannel"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_display_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Data Sources"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Adds a synchronous channel that delivers samples read from a CSV file."</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_ui_item_add</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"AddChannel"</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">telegram</span><span class="p">.</span><span class="n">m_analysis_capable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">telegram</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">InitResult</span><span class="w"> </span><span class="n">init</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">InitParams</span><span class="o">&amp;</span><span class="w"> </span><span class="n">params</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">odk</span><span class="o">::</span><span class="n">PropertyList</span><span class="w"> </span><span class="nf">props</span><span class="p">(</span><span class="n">params</span><span class="p">.</span><span class="n">m_properties</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">csv_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">props</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s">"ODK_REPLAY_SYNC_SCALAR/CSVFile"</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">csv_file</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">m_input_file</span><span class="o">-&gt;</span><span class="n">setValue</span><span class="p">(</span><span class="n">csv_file</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">update</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">InitResult</span><span class="w"> </span><span class="n">r</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">showChannelDetails</span><span class="p">(</span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getLocalId</span><span class="p">());</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">r</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">updatePropertyTypes</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PluginChannelPtr</span><span class="o">&amp;</span><span class="w"> </span><span class="n">output_channel</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ODK_UNUSED</span><span class="p">(</span><span class="n">output_channel</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">updateStaticPropertyConstraints</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PluginChannelPtr</span><span class="o">&amp;</span><span class="w"> </span><span class="n">channel</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ODK_UNUSED</span><span class="p">(</span><span class="n">channel</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">update</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// channel is only valid if we can properly parse the specified csv file</span>
+<span class="w">        </span><span class="c1">// in production code the parsing should not be done on every config change, but only if the filename was updated</span>
+<span class="w">        </span><span class="n">CSVNumberReader</span><span class="w"> </span><span class="n">csv</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">input_stream</span><span class="p">(</span><span class="n">m_input_file</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">());</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">m_next_tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_values</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">range_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">range_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">lowest</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">input_stream</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">csv</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">input_stream</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">csv</span><span class="p">.</span><span class="n">m_values</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">m_values</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">csv</span><span class="p">.</span><span class="n">m_values</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="w">            </span><span class="kt">size_t</span><span class="w"> </span><span class="n">column_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">row_values</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">csv</span><span class="p">.</span><span class="n">m_values</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">row_values</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">column_index</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">range_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">range_min</span><span class="p">,</span><span class="w"> </span><span class="n">row_values</span><span class="p">[</span><span class="n">column_index</span><span class="p">]);</span><span class="w"></span>
+<span class="w">                    </span><span class="n">range_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">range_max</span><span class="p">,</span><span class="w"> </span><span class="n">row_values</span><span class="p">[</span><span class="n">column_index</span><span class="p">]);</span><span class="w"></span>
+<span class="w">                    </span><span class="n">m_values</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">row_values</span><span class="p">[</span><span class="n">column_index</span><span class="p">]);</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="k">else</span><span class="w"></span>
+<span class="w">                </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="n">m_values</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;::</span><span class="n">quiet_NaN</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range_min</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">range_max</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setRange</span><span class="p">({</span><span class="n">range_min</span><span class="p">,</span><span class="w"> </span><span class="n">range_max</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">});</span><span class="w"></span>
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setValid</span><span class="p">(</span><span class="n">is_valid</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getRangeProperty</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setLive</span><span class="p">(</span><span class="n">is_valid</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setSimpleTimebase</span><span class="p">(</span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">().</span><span class="n">m_val</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">is_valid</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">create</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="o">*</span><span class="w"> </span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ODK_UNUSED</span><span class="p">(</span><span class="n">host</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setSamplerate</span><span class="p">({</span><span class="mf">1000.0</span><span class="p">,</span><span class="w"> </span><span class="s">"Hz"</span><span class="p">});</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_sample_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getSamplerateProperty</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">setMinMaxConstraint</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="mf">10000000.0</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// add some proposed sample rates</span>
+<span class="w">        </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">addOption</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">addOption</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">addOption</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">setDefaultName</span><span class="p">(</span><span class="s">"Replay channel"</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">setSampleFormat</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="n">odk</span><span class="o">::</span><span class="n">ChannelDataformat</span><span class="o">::</span><span class="n">SampleOccurrence</span><span class="o">::</span><span class="n">SYNC</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">odk</span><span class="o">::</span><span class="n">ChannelDataformat</span><span class="o">::</span><span class="n">SampleFormat</span><span class="o">::</span><span class="n">DOUBLE</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">setSimpleTimebase</span><span class="p">(</span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">().</span><span class="n">m_val</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">setDeletable</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">.</span><span class="n">addProperty</span><span class="p">(</span><span class="n">KEY_INPUT_FILE</span><span class="p">,</span><span class="w"> </span><span class="n">m_input_file</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">configure</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">UpdateChannelsTelegram</span><span class="o">&amp;</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">channel_id_map</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">configureFromTelegram</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="n">channel_id_map</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">prepareProcessing</span><span class="p">(</span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="o">*</span><span class="w"> </span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getMasterTimestamp</span><span class="p">(</span><span class="n">host</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">rate_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">().</span><span class="n">m_val</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ts</span><span class="p">.</span><span class="n">m_frequency</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_next_tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ts</span><span class="p">.</span><span class="n">m_ticks</span><span class="o">*</span><span class="w"> </span><span class="n">rate_factor</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">process</span><span class="p">(</span><span class="n">ProcessingContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">IfHost</span><span class="w"> </span><span class="o">*</span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">ODK_UNUSED</span><span class="p">(</span><span class="n">context</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">channel_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getRootChannel</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getLocalId</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">ts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getMasterTimestamp</span><span class="p">(</span><span class="n">host</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_next_tick</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">rate_factor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_sample_rate</span><span class="o">-&gt;</span><span class="n">getValue</span><span class="p">().</span><span class="n">m_val</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ts</span><span class="p">.</span><span class="n">m_frequency</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">target_tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ts</span><span class="p">.</span><span class="n">m_ticks</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rate_factor</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">target_tick</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tick</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">m_values</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">sz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">m_values</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">target_tick</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tick</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">addSamples</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">channel_id</span><span class="p">,</span><span class="w"> </span><span class="n">tick</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sz</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">tick</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">sz</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_next_tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tick</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">EditableStringProperty</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_input_file</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">EditableScalarProperty</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_sample_rate</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_values</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">m_next_tick</span><span class="p">;</span><span class="w"> </span><span class="c1">// timestamp of the next sample that will be generated in doProcess()</span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ReplaySyncScalarPlugin</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">SoftwareChannelPlugin</span><span class="o">&lt;</span><span class="n">ReplayChannel</span><span class="o">&gt;</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">ReplaySyncScalarPlugin</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">m_custom_requests</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">odk</span><span class="o">::</span><span class="n">framework</span><span class="o">::</span><span class="n">CustomRequestHandler</span><span class="o">&gt;</span><span class="p">())</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">addMessageHandler</span><span class="p">(</span><span class="n">m_custom_requests</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">namespace</span><span class="w"> </span><span class="nn">arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">std</span><span class="o">::</span><span class="nn">placeholders</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_custom_requests</span><span class="o">-&gt;</span><span class="n">registerFunction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">"checkCSVFile"</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ReplaySyncScalarPlugin</span><span class="o">::</span><span class="n">checkCSVFile</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">arg</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span><span class="w"> </span><span class="n">arg</span><span class="o">::</span><span class="n">_2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">registerResources</span><span class="p">()</span><span class="w"> </span><span class="k">final</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">addTranslation</span><span class="p">(</span><span class="n">TRANSLATION_EN</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">addQtResources</span><span class="p">(</span><span class="n">plugin_resources</span><span class="o">::</span><span class="n">QML_RCC_data</span><span class="p">,</span><span class="w"> </span><span class="n">plugin_resources</span><span class="o">::</span><span class="n">QML_RCC_size</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">checkCSVFile</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">PropertyList</span><span class="o">&amp;</span><span class="w"> </span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">PropertyList</span><span class="o">&amp;</span><span class="w"> </span><span class="n">returns</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="s">"filename"</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">CSVNumberReader</span><span class="w"> </span><span class="n">csv</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">input_stream</span><span class="p">(</span><span class="n">filename</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input_stream</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">csv</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">input_stream</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">csv</span><span class="p">.</span><span class="n">m_values</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">returns</span><span class="p">.</span><span class="n">setBool</span><span class="p">(</span><span class="s">"valid"</span><span class="p">,</span><span class="w"> </span><span class="n">valid</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">odk</span><span class="o">::</span><span class="n">error_codes</span><span class="o">::</span><span class="n">OK</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">odk</span><span class="o">::</span><span class="n">framework</span><span class="o">::</span><span class="n">CustomRequestHandler</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_custom_requests</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="n">OXY_REGISTER_PLUGIN1</span><span class="p">(</span><span class="s">"ODK_REPLAY_SYNC_SCALAR"</span><span class="p">,</span><span class="w"> </span><span class="n">PLUGIN_MANIFEST</span><span class="p">,</span><span class="w"> </span><span class="n">ReplaySyncScalarPlugin</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-sync-async-channel">
+<h2 id="example-sync-async-channel">Example: Sync+Async Channel<a class="headerlink" href="#example-sync-async-channel" title="Permalink to this headline">¶</a></h2>
+<p>This example demonstrates how to sum up sample values of two scalar input channels and write the result to an output channel.</p>
+<section id="id2">
+<h3 id="id2">Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Register a new Software Channel Type in Oxygen</p></li>
+<li><p>Plugin instance provides a Channel Id List Config Item to configure the two input channels</p></li>
+<li><p>Config Item name is translated to English and German</p></li>
+<li><p>Validate input channels and their type</p></li>
+<li><p>Read samples from synchronous and/or asynchronous channels</p></li>
+<li><p>Write samples to a synchronous and an asynchronous output channel</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Location</span><span class="p">:</span> <span class="n">examples</span><span class="o">/</span><span class="n">sync_plus_async_channel</span>
+<span class="n">Main</span> <span class="n">File</span><span class="p">:</span> <span class="n">odkex_sync_plus_async_channel</span><span class="o">.</span><span class="n">cpp</span>
+<span class="n">Plugin</span> <span class="n">Name</span><span class="p">:</span> <span class="n">ODK_SUM_CHANNELS</span>
+<span class="n">Plugin</span> <span class="n">UUID</span><span class="p">:</span> <span class="n">D9C295C0</span><span class="o">-</span><span class="n">CBB9</span><span class="o">-</span><span class="mi">4412</span><span class="o">-</span><span class="mi">9</span><span class="n">B4A</span><span class="o">-</span><span class="mi">0</span><span class="n">C5B1ACF3EB6</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-bin-detector">
+<h2 id="example-bin-detector">Example: Bin Detector<a class="headerlink" href="#example-bin-detector" title="Permalink to this headline">¶</a></h2>
+<p>This example plugin detects the minimum and/or maximum values with the
+corresponding bins out of an Oxygen vector channel (e.g. a fft channel).
+All values and bins are written to separate asynchronous output channels.
+Detecting min/max values and bins can be configured through the plugin
+group channel setup page.</p>
+<section id="id3">
+<h3 id="id3">Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Register a new Software Channel Type in Oxygen</p></li>
+<li><p>Plugin group channel provides selectable config items for detecting min
+and/or max values and their corresponding bins.</p></li>
+<li><p>Creates output channels for values and bins dynamically. The name of
+the selected input channel affects the name of the created output
+channel names</p></li>
+<li><p>Read samples from a vector channel</p></li>
+<li><p>Write values and bins to corresponding asynchronous scalar output channels</p></li>
+<li><p>Dynamic plugin config is stored and can be reloaded through oxygen
+save/load config use case</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Location</span><span class="p">:</span> <span class="n">examples</span><span class="o">/</span><span class="n">bin_detector</span>
+<span class="n">Main</span> <span class="n">File</span><span class="p">:</span> <span class="n">odkex_bin_detector</span><span class="o">.</span><span class="n">cpp</span>
+<span class="n">Plugin</span> <span class="n">Name</span><span class="p">:</span> <span class="n">ODK_BIN_DETECTOR</span>
+<span class="n">Plugin</span> <span class="n">UUID</span><span class="p">:</span> <span class="n">DCDF634A</span><span class="o">-</span><span class="mi">377</span><span class="n">B</span><span class="o">-</span><span class="mf">4E9</span><span class="n">F</span><span class="o">-</span><span class="mi">89</span><span class="n">BD</span><span class="o">-</span><span class="mi">09</span><span class="n">D54C9DFCD3</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-wav-export">
+<h2 id="example-wav-export">Example: WAV Export<a class="headerlink" href="#example-wav-export" title="Permalink to this headline">¶</a></h2>
+<p>This example plugin exports channel data as WAV file</p>
+<section id="id4">
+<h3 id="id4">Features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Register custom exporter in Oxygen</p></li>
+<li><p>Simple WAV file writer</p></li>
+<li><p>Write channel samples to WAV file</p></li>
+<li><p>UI extension to change format settings</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Location</span><span class="p">:</span> <span class="n">examples</span><span class="o">/</span><span class="n">wav_export</span>
+<span class="n">Main</span> <span class="n">File</span><span class="p">:</span> <span class="n">odkex_wav_export</span><span class="o">.</span><span class="n">cpp</span>
+<span class="n">Plugin</span> <span class="n">Name</span><span class="p">:</span> <span class="n">ODK_WAV_EXPORT</span>
+<span class="n">Plugin</span> <span class="n">UUID</span><span class="p">:</span> <span class="mf">60e4627</span><span class="n">b</span><span class="o">-</span><span class="mi">8964</span><span class="o">-</span><span class="mi">4259</span><span class="o">-</span><span class="n">a9e0</span><span class="o">-</span><span class="mi">54</span><span class="n">d38847ae68</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../20_DebuggingLogging/DebuggingLogging.html" title="Debugging and Logging"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Debugging and Logging </span>
+              </div>
+            </a>
+          
+          
+            <a href="../40_Templates/Templates.html" title="Plugin Templates"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Plugin Templates </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, DEWETRON GmbH.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

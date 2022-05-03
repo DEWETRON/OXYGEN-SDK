@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>QML for Oxygen Plugins &#8212; Oxygen SDK 6.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/stylesheets/oxygen_material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/oxygen.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="odk::PropertyList" href="../14_PropertyList/PropertyList.html" />
+    <link rel="prev" title="UI Extensions" href="../12_UIExtensions/UIExtensions.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#13_PluginQML/PluginQML" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Oxygen SDK 6.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Oxygen SDK logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Oxygen SDK</span>
+          <span class="md-header-nav__topic"> QML for Oxygen Plugins </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
+            
+            <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Oxygen SDK 6.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Oxygen SDK 6.1 documentation">Oxygen SDK</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Contents</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../00_InformationRights/InformationRights.html" class="md-nav__link">Preface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../01_SDKIntroduction/SDKIntroduction.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../02_Quickstart/Quickstart.html" class="md-nav__link">Quickstart</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../03_SoftwareChannelPlugin/SoftwareChannelPlugin.html" class="md-nav__link">Software Channel Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../04_ExportPlugin/ExportPlugin.html" class="md-nav__link">Export Plugins</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../10_ChannelConfiguration/ChannelConfiguration.html" class="md-nav__link">Oxygen Channel Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../11_Translation/Translation.html" class="md-nav__link">Translation</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../12_UIExtensions/UIExtensions.html" class="md-nav__link">UI Extensions</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> QML for Oxygen Plugins </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">QML for Oxygen Plugins</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#13-pluginqml-pluginqml--page-root" class="md-nav__link">QML for Oxygen Plugins</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#qml-and-qrc-files" class="md-nav__link">QML and QRC Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#build-integration-cmake" class="md-nav__link">Build Integration (CMake)</a>
+        </li>
+        <li class="md-nav__item"><a href="#plugin-manifest" class="md-nav__link">Plugin Manifest</a>
+        </li>
+        <li class="md-nav__item"><a href="#upload-to-oxygen" class="md-nav__link">Upload to Oxygen</a>
+        </li>
+        <li class="md-nav__item"><a href="#qml-sandbox" class="md-nav__link">QML Sandbox</a>
+        </li>
+        <li class="md-nav__item"><a href="#available-items" class="md-nav__link">Available Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#custom-plugin-requests" class="md-nav__link">Custom Plugin Requests</a>
+        </li>
+        <li class="md-nav__item"><a href="#plugin-preparation" class="md-nav__link">Plugin Preparation</a>
+        </li>
+        <li class="md-nav__item"><a href="#implementing-request-functions" class="md-nav__link">Implementing Request Functions</a>
+        </li>
+        <li class="md-nav__item"><a href="#performing-a-custom-request" class="md-nav__link">Performing a Custom Request</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../14_PropertyList/PropertyList.html" class="md-nav__link">odk::PropertyList</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../20_DebuggingLogging/DebuggingLogging.html" class="md-nav__link">Debugging and Logging</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../30_Examples/Examples.html" class="md-nav__link">Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../40_Templates/Templates.html" class="md-nav__link">Plugin Templates</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../50_FAQ/FAQ.html" class="md-nav__link">Frequently Asked Questions</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#13-pluginqml-pluginqml--page-root" class="md-nav__link">QML for Oxygen Plugins</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#qml-and-qrc-files" class="md-nav__link">QML and QRC Files</a>
+        </li>
+        <li class="md-nav__item"><a href="#build-integration-cmake" class="md-nav__link">Build Integration (CMake)</a>
+        </li>
+        <li class="md-nav__item"><a href="#plugin-manifest" class="md-nav__link">Plugin Manifest</a>
+        </li>
+        <li class="md-nav__item"><a href="#upload-to-oxygen" class="md-nav__link">Upload to Oxygen</a>
+        </li>
+        <li class="md-nav__item"><a href="#qml-sandbox" class="md-nav__link">QML Sandbox</a>
+        </li>
+        <li class="md-nav__item"><a href="#available-items" class="md-nav__link">Available Items</a>
+        </li>
+        <li class="md-nav__item"><a href="#custom-plugin-requests" class="md-nav__link">Custom Plugin Requests</a>
+        </li>
+        <li class="md-nav__item"><a href="#plugin-preparation" class="md-nav__link">Plugin Preparation</a>
+        </li>
+        <li class="md-nav__item"><a href="#implementing-request-functions" class="md-nav__link">Implementing Request Functions</a>
+        </li>
+        <li class="md-nav__item"><a href="#performing-a-custom-request" class="md-nav__link">Performing a Custom Request</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="qml-for-oxygen-plugins">
+<span id="plugin-qml-intro"></span><h1 id="13-pluginqml-pluginqml--page-root">QML for Oxygen Plugins<a class="headerlink" href="#13-pluginqml-pluginqml--page-root" title="Permalink to this headline">¶</a></h1>
+<p>This section explains how to work with QML items in Oxygen plugins, which
+is also illustrated by the <em>Sync File Replay</em> and <em>WAV Export</em> examples.</p>
+<section id="qml-and-qrc-files">
+<h2 id="qml-and-qrc-files">QML and QRC Files<a class="headerlink" href="#qml-and-qrc-files" title="Permalink to this headline">¶</a></h2>
+<p>First create the QML files you want to use in Oxygen.
+Check out the <a class="reference internal" href="../12_UIExtensions/UIExtensions.html#ui-extensions"><span class="std std-ref">UI extensions</span></a> for information on what
+you can do with this feature.</p>
+<p>These files and their dependencies should be listed in a Qt Resource Collection
+(.qrc) file because we will use Qt Resource packages to upload everything to Oxygen.
+See <a class="reference external" href="https://doc.qt.io/qt-5/resources.html">https://doc.qt.io/qt-5/resources.html</a> for more details.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE RCC&gt;</span><span class="nt">&lt;RCC</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;qresource&gt;</span>
+  <span class="nt">&lt;file&gt;</span>./AddChannel.qml<span class="nt">&lt;/file&gt;</span>
+  ...
+<span class="nt">&lt;/qresource&gt;</span>
+<span class="nt">&lt;/RCC&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="build-integration-cmake">
+<h2 id="build-integration-cmake">Build Integration (CMake)<a class="headerlink" href="#build-integration-cmake" title="Permalink to this headline">¶</a></h2>
+<p>The plugin build needs to perform two extra steps:</p>
+<ul>
+<li><p>Combine all required resources, as listed in the QRC file, into a single
+binary package.</p>
+<p>In your CMakeLists.txt this can be automated using the following commands:
+<code class="docutils literal notranslate"><span class="pre">find_package(Qt5Core</span> <span class="pre">REQUIRED)</span></code>
+<code class="docutils literal notranslate"><span class="pre">qt5_add_binary_resources(${LIBNAME}_qml</span> <span class="pre">input.qrc</span> <span class="pre">DESTINATION</span> <span class="pre">"${CMAKE_CURRENT_BINARY_DIR}/output.rcc")</span></code></p>
+</li>
+<li><p>Ensure the plugin has access to the data output.rcc file during initialization.
+The easiest way is to use the provided CMake scripts to link the file into the
+plugin binary:</p>
+<p><code class="docutils literal notranslate"><span class="pre">set(RESOURCE_DIR</span> <span class="pre">${CMAKE_CURRENT_BINARY_DIR}/resources)</span></code>
+<code class="docutils literal notranslate"><span class="pre">include_directories(${RESOURCE_DIR})</span></code>
+<code class="docutils literal notranslate"><span class="pre">AddResourceFile(${LIBNAME}</span> <span class="pre">"${CMAKE_CURRENT_BINARY_DIR}/output.rcc"</span> <span class="pre">${RESOURCE_DIR})</span></code></p>
+<p>This generates C++ files containg the file data and builds them within
+the project. The binary data can then be referenced using the variables
+declared by the header, in this case <em>output.rcc.h</em>.</p>
+</li>
+</ul>
+</section>
+<section id="plugin-manifest">
+<h2 id="plugin-manifest">Plugin Manifest<a class="headerlink" href="#plugin-manifest" title="Permalink to this headline">¶</a></h2>
+<p>The plugin manifest must contain the element <code class="docutils literal notranslate"><span class="pre">&lt;UsesUIExtensions/&gt;</span></code>
+(within the element &lt;OxygenPlugin&gt;) to support any custom ui features.</p>
+</section>
+<section id="upload-to-oxygen">
+<h2 id="upload-to-oxygen">Upload to Oxygen<a class="headerlink" href="#upload-to-oxygen" title="Permalink to this headline">¶</a></h2>
+<p>The plugin class should implement the <code class="docutils literal notranslate"><span class="pre">registerResources()</span></code> method to
+upload the resource pacakge by calling <code class="docutils literal notranslate"><span class="pre">addQtResources()</span></code>.</p>
+<p>If you followed the steps above and linked the resource file into the plugin,
+you can upload using the following commands:</p>
+<p><code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">"output.rcc.h"</span></code>
+<code class="docutils literal notranslate"><span class="pre">addQtResources(plugin_resources::OUTPUT_RCC_data,</span> <span class="pre">plugin_resources::OUTPUT_RCC_size);</span></code></p>
+</section>
+<section id="qml-sandbox">
+<h2 id="qml-sandbox">QML Sandbox<a class="headerlink" href="#qml-sandbox" title="Permalink to this headline">¶</a></h2>
+<p>The QML Sandbox is an Oxygen feature to facilitate authoring of QML items,
+by previewing in-development content and providing easy iteration of the design.</p>
+<p>Sandbox loads its content directly from the filesystem and cannot work with
+ressource files.</p>
+<p>It can be found in the “Developer” section in the “System Settings” tab.</p>
+<p>To use it
+- select the display context of the item you are developing,
+- select the folder where your QML ressources are stored,
+- and enter the name of the item that should be displayed.</p>
+<p>If the item needs <a class="reference internal" href="#custom-qml-request"><span class="std std-ref">custom requests</span></a>, your plugin
+(which will respond to these requests) must be loaded and selected in the correspondig list.</p>
+<p>Errors encountered while creating the item are displayed in the text field on the right.</p>
+<p>If successfully loaded the item is displayed in the “Current Item” section.
+The size of this area can be changed to test dynamic layouts.</p>
+<p>After changing a file on disk, the “Reload files” button can be used to refresh
+ressources an recreate the item using the new sources.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The reload feature does not work properly in Oxygen 5.3.0, because the item
+remains cached and is not parsed again!</p>
+</div>
+</section>
+<section id="available-items">
+<h2 id="available-items">Available Items<a class="headerlink" href="#available-items" title="Permalink to this headline">¶</a></h2>
+<p>Oxygen plugins may only use QML features and items described in this documentation,
+to ensure compatibility with future Oxygen versions.</p>
+<p>If Oxygen provides items for a specific use case the have to be used for better
+consistency and interoperability, but standard QML components that are provided,
+and not deprecated, in Qt 5.12.6 may be used in other cases.</p>
+<p>For example you should use the customized Oxygen version of standard controls,
+but the usual QML Layouts to arrange them.</p>
+</section>
+<section id="custom-plugin-requests">
+<span id="custom-qml-request"></span><h2 id="custom-plugin-requests">Custom Plugin Requests<a class="headerlink" href="#custom-plugin-requests" title="Permalink to this headline">¶</a></h2>
+<p>Custom requests provide a direct, but asynchronous, communication channel between
+an UI item and its plugin. Each request function is identifed by a plugin-unique
+uint16 number, which has to be managed by the plugin developer and used consistently
+im QML and C++.</p>
+<p>The following paragraphs and the <em>Sync File Replay</em> example illustrate the necessary steps to add custom
+requests to a plugin.</p>
+</section>
+<section id="plugin-preparation">
+<h2 id="plugin-preparation">Plugin Preparation<a class="headerlink" href="#plugin-preparation" title="Permalink to this headline">¶</a></h2>
+<p>The plugin class needs a handler to process incoming custom requests.</p>
+<p>Add a member</p>
+<p><code class="docutils literal notranslate"><span class="pre">std::shared_ptr&lt;odk::framework::CustomRequestHandler&gt;</span> <span class="pre">m_custom_requests</span></code></p>
+<p>and activate it by calling</p>
+<p><code class="docutils literal notranslate"><span class="pre">addMessageHandler(m_custom_requests);</span></code></p>
+<p>in the constructor.</p>
+</section>
+<section id="implementing-request-functions">
+<h2 id="implementing-request-functions">Implementing Request Functions<a class="headerlink" href="#implementing-request-functions" title="Permalink to this headline">¶</a></h2>
+<p>Implement the required methods in your plugin.</p>
+<p>For each method you can select one of the following signatures:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">std::uint64_t</span> <span class="pre">myCustomRequest(const</span> <span class="pre">odk::PropertyList&amp;</span> <span class="pre">params,</span> <span class="pre">odk::PropertyList&amp;</span> <span class="pre">returns)</span></code></dt><dd><p>This method uses <a class="reference internal" href="../14_PropertyList/PropertyList.html#property-list-type"><span class="std std-ref">property lists</span></a> as input and
+output and can therefore cover almost all use cases.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">std::uint64_t</span> <span class="pre">myXmlRequest(const</span> <span class="pre">odk::PropertyList&amp;</span> <span class="pre">params,</span> <span class="pre">odk::IfXMLValue&amp;</span> <span class="pre">return_xml)</span></code></dt><dd><p>This method received its parameters in a <a class="reference internal" href="../14_PropertyList/PropertyList.html#property-list-type"><span class="std std-ref">property lists</span></a>
+and responds with a single xml document.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">std::uint64_t</span> <span class="pre">myVerySpecialRequest(odk::IfHost*</span> <span class="pre">host,</span> <span class="pre">const</span> <span class="pre">odk::IfValue*</span> <span class="pre">param,</span> <span class="pre">const</span> <span class="pre">odk::IfValue**</span> <span class="pre">ret)</span></code></dt><dd><p>This low-level interface should not be used, because it provides no advantages for
+qml items but is more difficult to use correctly.</p>
+</dd>
+</dl>
+<p>Each method has to be registered in the plugin constructor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="p">::</span><span class="n">uint16_t</span> <span class="n">my_request1_id</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+<span class="n">m_custom_requests</span><span class="o">-&gt;</span><span class="n">registerFunction</span><span class="p">(</span><span class="n">my_request1_id</span><span class="p">,</span> <span class="s2">"MyRequest1"</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">MyPlugin</span><span class="p">::</span><span class="n">myRequest1</span><span class="p">,</span> <span class="n">this</span><span class="p">,</span> <span class="n">arg</span><span class="p">::</span><span class="n">_1</span><span class="p">,</span> <span class="n">arg</span><span class="p">::</span><span class="n">_2</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="performing-a-custom-request">
+<h2 id="performing-a-custom-request">Performing a Custom Request<a class="headerlink" href="#performing-a-custom-request" title="Permalink to this headline">¶</a></h2>
+<p>The following QML item is used to perform custom requests from QML:</p>
+<dl>
+<dt>CustomPluginRequest (Oxygen.Tools 1.0)</dt><dd><p>property int <strong>messageId</strong></p>
+<blockquote>
+<div><p>The id specified when registering the custom request.</p>
+</div></blockquote>
+<p>readonly property bool <strong>requestPending</strong>: false</p>
+<blockquote>
+<div><p>Indicates whether an request is currently active and waiting for a response from the plugin.
+Only a single request can be active at the same time.</p>
+</div></blockquote>
+<p>function <strong>request</strong> (parameters)</p>
+<blockquote>
+<div><p>Start the request using the provided parameters (usually a <a class="reference internal" href="../14_PropertyList/PropertyList.html#property-list-type"><span class="std std-ref">property list</span></a>).</p>
+</div></blockquote>
+<p>signal <strong>response</strong> (bool success, int code, var value)</p>
+<blockquote>
+<div><p>Emitted as soon as the response arrives.
+If request was successful the parameters provide the return code as well as the return value.
+The value is usually a <a class="reference internal" href="../14_PropertyList/PropertyList.html#property-list-type"><span class="std std-ref">property list</span></a> or an string containing XML.</p>
+</div></blockquote>
+</dd>
+</dl>
+<p>The following example provides easy access to a request using one input and one output parameter:</p>
+<div class="highlight-qml notranslate"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="nx">Oxygen</span><span class="p">.</span><span class="nx">Tools</span> <span class="mf">1.0</span>
+
+<span class="p">...</span>
+
+<span class="nx">CustomPluginRequest</span> <span class="p">{</span>
+    <span class="kd">id: myRequest1</span>
+    <span class="k">messageId:</span> <span class="mi">123</span>
+
+    <span class="kd">function</span> <span class="nx">startRequest</span><span class="p">(</span><span class="nx">param</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">plugin</span><span class="p">.</span><span class="nx">createPropertyList</span><span class="p">();</span>
+        <span class="nx">props</span><span class="p">.</span><span class="nx">setString</span><span class="p">(</span><span class="s2">"param"</span><span class="p">,</span> <span class="nx">param</span><span class="p">);</span>
+        <span class="nx">request</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">onResponse:</span>
+    <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">value</span><span class="p">.</span><span class="nx">getString</span><span class="p">(</span><span class="s2">"result"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../12_UIExtensions/UIExtensions.html" title="UI Extensions"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> UI Extensions </span>
+              </div>
+            </a>
+          
+          
+            <a href="../14_PropertyList/PropertyList.html" title="odk::PropertyList"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> odk::PropertyList </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, DEWETRON GmbH.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
