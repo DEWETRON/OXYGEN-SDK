@@ -107,10 +107,12 @@ def do_afterprocessing(dep, after):
     """
     exec = after.get('exec', None)
     extract_to = after.get('extract_to', None)
-    
+
+    name = dep.get('name', None)    
     url = dep.get('url', None)
 
     if exec:
+        print("Executing %s ..." % (name), flush=True)
         verbose("Running executable %s" % (exec))
         try:
             exec_list = exec.split()
@@ -122,6 +124,7 @@ def do_afterprocessing(dep, after):
             return False
 
     elif extract_to:
+        print("Unpacking %s ..." % (name), flush=True)
         archive_name = os.path.basename(url)
         verbose("Extracting %s to %s" % (archive_name, extract_to))
         archive = zipfile.ZipFile(archive_name)
@@ -148,8 +151,8 @@ def process_dependency(cmd_cfg, dep):
 
     # Install only if check fails
     if not do_check(check):
-        print("%s dependency processing ..." % (name), flush=True)
         if not skip_download:
+            print("Downloading %s ..." % (name), flush=True)
             do_download(url, os.path.basename(url))
         do_afterprocessing(dep, after)
     else:
