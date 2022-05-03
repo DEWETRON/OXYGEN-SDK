@@ -1,28 +1,32 @@
-.. Oxygen SDK documentation master file
+.. OXYGEN-SDK documentation master file
 
-===============
-OxygenSDK Index
-===============
+=======================
+DEWETRON OXYGEN-SDK 6.0
+=======================
 
-Welcome to Oxygen SDK's documentation!
-======================================
+.. Welcome to Oxygen SDK's documentation!
+.. ======================================
+
+**OXYGEN Software Development Kit**
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
    :includehidden:
 
-   about
-   build_instructions
-   software_channel_plugin
-   export_plugin
-   channel_configuration
-   translation
-   ui_extensions
-   plugin_qml
-   examples
-   templates
-
-
-
+   00_InformationRights/InformationRights
+   01_SDKIntroduction/SDKIntroduction
+   02_Quickstart/Quickstart
+   03_SoftwareChannelPlugin/SoftwareChannelPlugin
+   04_ExportPlugin/ExportPlugin
+   10_ChannelConfiguration/ChannelConfiguration
+   11_Translation/Translation
+   12_UIExtensions/UIExtensions
+   13_PluginQML/PluginQML
+   14_PropertyList/PropertyList
+   20_DebuggingLogging/DebuggingLogging
+   30_Examples/Examples
+   40_Templates/Templates
+   50_FAQ/FAQ
 

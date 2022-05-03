@@ -5,3 +5,4 @@
 *.msi
 **/build
 qt/
+**/_build

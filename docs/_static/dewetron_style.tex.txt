@@ -1,0 +1,81 @@
+
+% to include titlepage
+\usepackage{pdfpages}
+
+\usepackage{fontspec}
+
+\setcounter{tocdepth}{2} 
+
+
+% main font should be Calibri, Linux alternative Carlito 
+\IfFontExistsTF{Calibri}
+  {\setmainfont{Calibri}}
+  {\setmainfont{Carlito}}
+
+% fncychap to use "Decima Nova Pro" in "Bjarne" style
+\IfFontExistsTF{Decima Nova Pro}
+  {\newfontfamily{\chapterfont}{Decima Nova Pro}}
+  {\newcommand{\chapterfont}{\sffamily\bfseries}}
+
+
+\newcommand{\MyHeaderFamily}{\chapterfont}
+
+% "Bjarne" modifications:
+\ChNameUpperCase
+\ChTitleUpperCase  
+\ChNameVar{\raggedleft\normalsize\rm}
+\ChNumVar{\raggedleft \bfseries\Large}
+\ChTitleVar{\raggedleft\LARGE\MyHeaderFamily}
+\ChRuleWidth{1pt}
+
+% section titles
+\titleformat{\section}{\Large\MyHeaderFamily}%
+            {\color{TitleColor}\thesection}{0.5em}{\color{TitleColor}}
+\titleformat{\subsection}{\large\MyHeaderFamily}%
+            {\color{TitleColor}\thesubsection}{0.5em}{\color{TitleColor}}
+\titleformat{\subsubsection}{\MyHeaderFamily}%
+            {\color{TitleColor}\thesubsubsection}{0.5em}{\color{TitleColor}}
+
+\titleformat{\paragraph}{\MyHeaderFamily}%
+            {\color{TitleColor}\theparagraph}{0.5em}{\color{TitleColor}}
+\titleformat{\subparagraph}{\MyHeaderFamily}%
+            {\color{TitleColor}\thesubparagraph}{0.5em}{\color{TitleColor}}
+
+
+% Header and Footer
+\newcommand{\shiftleft}[2]{\makebox[0pt][r]{\makebox[#1][l]{#2}}}
+\newcommand{\shiftright}[2]{\makebox[#1][r]{\makebox[0pt][l]{#2}}}
+\makeatletter
+  \fancypagestyle{normal}{
+    \fancyhf{}
+    \setlength{\headheight}{30pt}
+    \fancyfoot[LE,RO]{{\MyHeaderFamily\thepage}}
+    \fancyfoot[LO]{{\MyHeaderFamily\nouppercase{\rightmark}}}
+    \fancyfoot[RE]{{\MyHeaderFamily\nouppercase{\leftmark}}}
+    \renewcommand{\headrulewidth}{2pt}   
+    \fancyhead[RO]{\shiftleft{20pt}{\raisebox{-1ex}{\LARGE $\blacktriangledown$}}%
+        \setlength{\unitlength}{\baselineskip}%
+        \begin{picture}(0,0)
+          \put(0,-1.2){\makebox(0,0)[r]{\MyHeaderFamily \@title, \py@release}}
+        \end{picture}}
+    \fancyhead[LE]{%
+        \setlength{\unitlength}{\baselineskip}%
+        \begin{picture}(0,0)
+          \put(0,-1.2){\makebox(0,0)[l]{\MyHeaderFamily \@title, \py@release}}
+        \end{picture}%
+        \shiftright{8pt}{\raisebox{-1ex}{\LARGE $\blacktriangledown$}}}
+    \renewcommand{\footrulewidth}{0.4pt}
+  }
+\makeatother
+
+% vertical tabulary alignment
+\setlength\extrarowheight{4pt}
+
+\def\zz{\ifx\[$\else\aftergroup\zzz\fi}
+\def\zzz{\setbox0\lastbox
+\dimen0\dimexpr\extrarowheight + \ht0-\dp0\relax
+\setbox0\hbox{\raise-.5\dimen0\box0}%
+\ht0=\dimexpr\ht0+\extrarowheight\relax
+\dp0=\dimexpr\dp0+\extrarowheight\relax 
+\box0
+}
