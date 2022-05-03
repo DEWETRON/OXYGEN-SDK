@@ -73,7 +73,9 @@ def verbose(msg):
 
 def do_check(check):
     """
-    do_check
+    Checks if the given setup step has to executed or
+    if the dependency is already fullfilled.
+    check is the content of the json "check" section.
     """
     cmd = check.get('cmd', None)
     exists = check.get('exists', None)
@@ -83,7 +85,7 @@ def do_check(check):
             cmd_list = cmd.split()
             out = subprocess.check_output(cmd_list)
         except OSError as error:
-            print("Check error %s" % (error), flush=True)
+            #print("Check error %s" % (error), flush=True)
             return False
         except:
             return False
@@ -116,7 +118,7 @@ def do_afterprocessing(dep, after):
         verbose("Running executable %s" % (exec))
         try:
             exec_list = exec.split()
-            subprocess.check_output(exec_list)
+            subprocess.check_output(exec_list, shell=True)
         except OSError as error:
             print("Check error %s" % (error), flush=True)
             return False
@@ -144,7 +146,7 @@ def process_dependency(cmd_cfg, dep):
 
     skip_download = cmd_cfg.get('skip_download', False)
 
-    verbose("processing dependency %s %s" % (name, url))
+    verbose("processing dependency %s (%s)" % (name, url))
 
     if name == None or url == None:
         return
