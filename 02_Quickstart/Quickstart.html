@@ -159,6 +159,8 @@
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
             
+            <li class="md-tabs__item"><a href="https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.1.0/oxygensdk.pdf" class="md-tabs__link">Download Oxygen SDK Manual</a></li>
+            
             <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
             
             <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
@@ -462,7 +464,7 @@ download portal:</p>
 Please verify that the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> command can be run from the command prompt.
 If this does not work you have use the ‘Add CMake to the system PATH’ option
 during installation or add it to the PATH manually.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cmake --version
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\&gt; cmake --version
 cmake version 3.16.4
 
 CMake suite maintained and supported by Kitware (kitware.com/cmake).
@@ -512,8 +514,8 @@ to this directory: C:\OXYGEN-SDK.</p>
 <p><a class="reference external" href="https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip">https://github.com/DEWETRON/OXYGEN-SDK/archive/refs/heads/master.zip</a></p>
 <section id="git-clone-using-cmd-exe">
 <h3 id="git-clone-using-cmd-exe">Git clone using cmd.exe<a class="headerlink" href="#git-clone-using-cmd-exe" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cd C:\
-$ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\&gt; cd C:\
+C:\&gt; git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 </pre></div>
 </div>
 </section>
@@ -537,8 +539,8 @@ It downloads and setups all 3rdparty tools and libraries:</p>
 </ul>
 <p>setup.py needs python3 to be installed. Using setup.py is completely optional: All the
 steps necessary can be done manually.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cd C:\OXYGEN-SDK
-$ python setup.py
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\&gt; cd C:\OXYGEN-SDK
+C:\&gt; python setup.py
 Boost 1.70.0 dependency processing ...
 Qt resource compiler (rcc) dependency processing ...
 CMake 3.23.1 dependency is fullfilled!
@@ -569,29 +571,29 @@ This manual assumes the correct build for your compiler is installed to {QT_DIR}
 <h3 id="building-with-visual-studio">Building with Visual Studio<a class="headerlink" href="#building-with-visual-studio" title="Permalink to this headline">¶</a></h3>
 <p>Open a command line prompt and change to the directory <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK</span></code></p>
 <p>Create a new directory <code class="docutils literal notranslate"><span class="pre">build</span></code> and change to <code class="docutils literal notranslate"><span class="pre">C:\OXYGEN-SDK\build</span></code></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd C:\OXYGEN-SDK
-PC$ mkdir build
-PC$ cd build
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\&gt; cd C:\OXYGEN-SDK
+C:\OXYGEN-SDK&gt; mkdir build
+C:\OXYGEN-SDK&gt; cd build
 </pre></div>
 </div>
 <p>Using cmake we create a Visual Studio solution:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cmake -A x64 ..
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-SDK\build&gt; cmake -A x64 ..
 </pre></div>
 </div>
 <p>The option <em>-A x64</em> forces the solution to build for 64bit architecture.
 It may not be necessary, but sometimes a x86 (32bit) solution is created
 and Oxygen is not able to load the plugins.</p>
 <p>If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-SDK\build&gt; cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
 </pre></div>
 </div>
 <p>If CMake encounters an error, you need to fix the issue and then invoke</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ del CMakeCache.txt
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-SDK\build&gt; del CMakeCache.txt
 </pre></div>
 </div>
 <p>before retrying to ensure a clean run.</p>
 <p>Open the generated Solution in Visual Studio</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ start ODK.sln
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-SDK\build&gt; start ODK.sln
 </pre></div>
 </div>
 <figure class="align-default" id="id3">
@@ -911,10 +913,10 @@ code to a valid binary plugin file.</p>
 <section id="hello-world-building">
 <h3 id="hello-world-building">Hello World Building<a class="headerlink" href="#hello-world-building" title="Permalink to this headline">¶</a></h3>
 <p>Now lets build the plugin:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ cd C:\OXYGEN-PLUGINS\Hello_World
-PC$ mkdir build
-PC$ cd build
-PC$ cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-SDK&gt; cd C:\OXYGEN-PLUGINS\Hello_World
+C:\OXYGEN-PLUGINS\Hello_World&gt; mkdir build
+C:\OXYGEN-PLUGINS\Hello_World&gt; cd build
+C:\OXYGEN-PLUGINS\Hello_World\build&gt; cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
 -- Building for: Visual Studio 16 2019
 -- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19044.
 -- The C compiler identification is MSVC 19.29.30142.1
@@ -938,7 +940,7 @@ PC$ cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
 </pre></div>
 </div>
 <p>Then start Visual Studio:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PC$ start HelloWorldPlugin.sln
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\OXYGEN-PLUGINS\Hello_World\build&gt; start HelloWorldPlugin.sln
 </pre></div>
 </div>
 <figure class="align-default" id="id7">
