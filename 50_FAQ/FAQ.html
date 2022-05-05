@@ -158,6 +158,8 @@
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Oxygen SDK</a></li>
             
+            <li class="md-tabs__item"><a href="https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.1.0/oxygensdk.pdf" class="md-tabs__link">Download Oxygen SDK Manual</a></li>
+            
             <li class="md-tabs__item"><a href="https://www.dewetron.com/support-area" class="md-tabs__link">Support area</a></li>
             
             <li class="md-tabs__item"><a href="https://www.dewetron.com/" class="md-tabs__link">DEWETRON Website</a></li>
@@ -388,9 +390,9 @@ plugin. Of course those can be build from the same source code.</p>
 <p>Maybe you build the plugin for the wring architecture. Oxygen is a 64bit application (x64)
 and is only able load plugins also build for 64bit.</p>
 <p>Try to add <code class="docutils literal notranslate"><span class="pre">-A</span> <span class="pre">x64</span></code> to cmake to get the correct Visual Studio Solution.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ cd C:\OXYGEN-SDK
-$ cd build
-$ cmake -A x64 ..
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C:\&gt; cd C:\OXYGEN-SDK
+C:\OXYGEN-PLUGINS&gt; cd build
+C:\OXYGEN-PLUGINS\build&gt; cmake -A x64 ..
 </pre></div>
 </div>
 </section>
