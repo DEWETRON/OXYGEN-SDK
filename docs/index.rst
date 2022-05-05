@@ -1,7 +1,7 @@
 .. OXYGEN-SDK documentation master file
 
 =======================
-DEWETRON OXYGEN-SDK 6.0
+DEWETRON OXYGEN-SDK 6.1
 =======================
 
 .. Welcome to Oxygen SDK's documentation!
