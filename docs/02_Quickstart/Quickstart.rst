@@ -51,7 +51,7 @@ during installation or add it to the PATH manually.
 
 .. code:: text
 
-   $ cmake --version
+   C:\> cmake --version
    cmake version 3.16.4
    
    CMake suite maintained and supported by Kitware (kitware.com/cmake).
@@ -126,8 +126,8 @@ Git clone using cmd.exe
 
 .. code:: text
    
-   $ cd C:\
-   $ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
+   C:\> cd C:\
+   C:\> git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 
 
 
@@ -156,8 +156,8 @@ steps necessary can be done manually.
 
 .. code:: text
    
-   $ cd C:\OXYGEN-SDK
-   $ python setup.py
+   C:\> cd C:\OXYGEN-SDK
+   C:\> python setup.py
    Boost 1.70.0 dependency processing ...
    Qt resource compiler (rcc) dependency processing ...
    CMake 3.23.1 dependency is fullfilled!
@@ -203,16 +203,16 @@ Create a new directory ``build`` and change to ``C:\OXYGEN-SDK\build``
 
 .. code:: text
    
-   PC$ cd C:\OXYGEN-SDK
-   PC$ mkdir build
-   PC$ cd build
+   C:\> cd C:\OXYGEN-SDK
+   C:\OXYGEN-SDK> mkdir build
+   C:\OXYGEN-SDK> cd build
 
 
 Using cmake we create a Visual Studio solution:
 
 .. code:: text
    
-   PC$ cmake -A x64 ..
+   C:\OXYGEN-SDK\build> cmake -A x64 ..
 
 The option *-A x64* forces the solution to build for 64bit architecture.
 It may not be necessary, but sometimes a x86 (32bit) solution is created
@@ -223,7 +223,7 @@ If your are using a qt installation instead of the qt_resource_compiler package 
     
 .. code:: text
    
-   PC$ cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
+   C:\OXYGEN-SDK\build> cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
 
     
     
@@ -231,7 +231,7 @@ If CMake encounters an error, you need to fix the issue and then invoke
 
 .. code:: text
    
-   PC$ del CMakeCache.txt
+   C:\OXYGEN-SDK\build> del CMakeCache.txt
 
 before retrying to ensure a clean run.
 
@@ -240,7 +240,7 @@ Open the generated Solution in Visual Studio
 
 .. code:: text
    
-   PC$ start ODK.sln
+   C:\OXYGEN-SDK\build> start ODK.sln
 
 
 
@@ -629,10 +629,10 @@ Now lets build the plugin:
 
 .. code:: text
    
-   PC$ cd C:\OXYGEN-PLUGINS\Hello_World
-   PC$ mkdir build
-   PC$ cd build  
-   PC$ cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
+   C:\OXYGEN-SDK> cd C:\OXYGEN-PLUGINS\Hello_World
+   C:\OXYGEN-PLUGINS\Hello_World> mkdir build
+   C:\OXYGEN-PLUGINS\Hello_World> cd build  
+   C:\OXYGEN-PLUGINS\Hello_World\build> cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
    -- Building for: Visual Studio 16 2019
    -- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19044.
    -- The C compiler identification is MSVC 19.29.30142.1
@@ -659,7 +659,7 @@ Then start Visual Studio:
 
 .. code:: text
 
-   PC$ start HelloWorldPlugin.sln
+   C:\OXYGEN-PLUGINS\Hello_World\build> start HelloWorldPlugin.sln
 
 
 .. figure:: img/vs_hello_world.png

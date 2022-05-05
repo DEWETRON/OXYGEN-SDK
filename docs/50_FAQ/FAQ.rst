@@ -42,9 +42,9 @@ Try to add ``-A x64`` to cmake to get the correct Visual Studio Solution.
 
 .. code:: text
    
-   $ cd C:\OXYGEN-SDK
-   $ cd build
-   $ cmake -A x64 ..
+   C:\> cd C:\OXYGEN-SDK
+   C:\OXYGEN-PLUGINS> cd build
+   C:\OXYGEN-PLUGINS\build> cmake -A x64 ..
    
 
 

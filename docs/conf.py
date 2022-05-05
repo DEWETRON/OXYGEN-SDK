@@ -113,15 +113,20 @@ if html_theme == 'sphinx_material':
       # internal & external links
       "nav_links": [
          {
+            "href": "https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.1.0/oxygensdk.pdf",
+            "internal": False,
+            "title": "Download Oxygen SDK Manual",
+         },
+         {
             "href": "https://www.dewetron.com/support-area",
             "internal": False,
             "title": "Support area",
-        },
-        {
+         },
+         {
             "href": "https://www.dewetron.com/",
             "internal": False,
             "title": "DEWETRON Website",
-        },
+         },
       ],
    }
    html_sidebars = {
