@@ -66,13 +66,17 @@ namespace framework
         bool export_waveform = true;
         bool export_statistic = false;
 
-        if (m_context.m_properties.m_custom_properties.containsProperty("WAVEFORM"))
+        if (m_context.m_properties.m_custom_properties.containsProperty("WAVEFORM") ||
+            m_context.m_properties.m_custom_properties.containsProperty("EXPORT_WAVEFORM"))
         {
-            export_waveform = m_context.m_properties.m_custom_properties.getBool("WAVEFORM");
+            export_waveform = m_context.m_properties.m_custom_properties.getBool("WAVEFORM") ||
+                m_context.m_properties.m_custom_properties.getBool("EXPORT_WAVEFORM");
         }
-        if (m_context.m_properties.m_custom_properties.containsProperty("STATISTIC"))
+        if (m_context.m_properties.m_custom_properties.containsProperty("STATISTIC") ||
+            m_context.m_properties.m_custom_properties.containsProperty("EXPORT_STATISTICS"))
         {
-            export_statistic = m_context.m_properties.m_custom_properties.getBool("STATISTIC");
+            export_statistic = m_context.m_properties.m_custom_properties.getBool("STATISTIC") ||
+                m_context.m_properties.m_custom_properties.getBool("EXPORT_STATISTICS");
         }
 
         for(const auto& channel_id : start_telegram.m_properties.m_channels)
@@ -80,13 +84,13 @@ namespace framework
             auto new_input_channel = std::make_shared<InputChannel>(m_host, channel_id);
             new_input_channel->updateDataFormat();
             new_input_channel->updateTimeBase();
-            m_context.m_channels.emplace(channel_id, std::move(new_input_channel));
+            m_context.m_channels.insert_or_assign(channel_id, new_input_channel);
 
             auto& first_interval = start_telegram.m_properties.m_export_intervals.front();
 
             if (export_waveform)
             {
-                auto raw_requester = std::make_unique<DataRequester>(getHost(), channel_id);
+                auto raw_requester = std::make_unique<DataRequester>(getHost(), new_input_channel);
                 try
                 {
                     m_context.m_channel_iterators[channel_id] =
@@ -101,7 +105,7 @@ namespace framework
 
             if (export_statistic)
             {
-                auto reduced_requester = std::make_unique<DataRequester>(getHost(), channel_id, true);
+                auto reduced_requester = std::make_unique<DataRequester>(getHost(), new_input_channel, true);
                 try
                 {
                     m_context.m_reduced_channel_iterators[channel_id] =

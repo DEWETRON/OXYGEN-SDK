@@ -495,6 +495,26 @@ namespace framework
                 }
             }
         }
+        else if (!m_dataset_descriptor && telegram.m_start.timestampValid() && telegram.m_end.timestampValid())
+        {
+            context.m_window.first = convertTickToTime(telegram.m_start.m_ticks, telegram.m_start.m_frequency);
+            context.m_window.second = convertTickToTime(telegram.m_end.m_ticks, telegram.m_end.m_frequency);
+
+            try
+            {
+                process(context, host);
+            }
+            catch (const std::exception& e)
+            {
+                ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+            catch (...)
+            {
+                ODKLOG_ERROR("Unhandled exception during 'process'");
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+        }
         else
         {
             try

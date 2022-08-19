@@ -23,6 +23,8 @@ namespace odk
 {
 namespace framework
 {
+    class InputChannel;
+
     class DataRequestIDManager
     {
     public:
@@ -39,10 +41,11 @@ namespace framework
     class DataRequester : public IfIteratorUpdater
     {
         static constexpr uint64_t BLOCK_SIZE = 1000;
-        static constexpr double BLOCK_LENGTH = 0.1;
+        static constexpr double DEFAULT_REQUEST_INTERVAL = 0.1;
+        static constexpr uint64_t SAMPLES_PER_REQUEST = 10000;
 
     public:
-        DataRequester(odk::IfHost *host, std::uint64_t channel_id, bool user_reduced = false);
+        DataRequester(odk::IfHost *host, std::shared_ptr<InputChannel> channel, bool user_reduced = false);
 
         DataRequester(const DataRequester& ) = delete;
 
@@ -56,17 +59,21 @@ namespace framework
 
         std::shared_ptr<StreamIterator> getIterator(double start, double end);
 
+        std::vector<DataRegion> getDataRegions(double start, double end);
+
     private:
         odk::IfHost* m_host;
         double m_current_position;
         double m_end_position;
-        uint64_t m_channel_id;
+        std::shared_ptr<InputChannel> m_channel;
         DataSetDescriptor m_dataset_descriptor;
         odk::detail::ApiObjectPtr<const IfDataBlockList> m_data_block_list;
         odk::framework::StreamReader m_stream_reader;
         std::shared_ptr<StreamIterator> m_iterator;
         bool m_is_single_value;
         bool m_user_reduced;
+        double m_data_request_interval;
+        std::uint64_t m_ratio;
     };
 }
 }

@@ -77,6 +77,8 @@ namespace framework
 
         std::vector<odk::UpdateConfigTelegram::Constraint> getConfigPropertyConstraints(const std::string& key) const;
 
+        void applyChannelAction(const std::string& key);
+
     private:
         template <class T>
         odk::detail::ApiObjectPtr<const T> getInputChannelParam(const char* const key) const

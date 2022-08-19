@@ -1008,6 +1008,29 @@ namespace framework
     }*/
 
 
+    XmlStringProperty::XmlStringProperty(const RawPropertyHolder& value)
+        : StringProperty()
+    {
+        if (value.getProperty().isValid())
+        {
+            update(value.getProperty());
+        }
+    }
+
+    XmlStringProperty::XmlStringProperty(const std::string& val)
+        : StringProperty(val)
+    {
+    }
+
+    bool XmlStringProperty::update(const odk::Property& value)
+    {
+        return StringProperty::update(value);
+    }
+
+    void XmlStringProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
+    {
+        telegram.addProperty(odk::Property(property_name, getValue(), "XML"));
+    }
 }
 }
 

@@ -263,6 +263,19 @@ namespace framework
         bool m_is_a_arbitrary_string;
     };
 
+    class XmlStringProperty : public StringProperty
+    {
+    public:
+        explicit XmlStringProperty(const RawPropertyHolder& value);
+        explicit XmlStringProperty(const std::string& val);
+
+        bool update(const odk::Property& value) override;
+
+    protected:
+        void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
+
+    };
+
     class EditableChannelIDProperty : public PropertyBase
     {
     public:

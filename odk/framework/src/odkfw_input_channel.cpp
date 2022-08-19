@@ -277,5 +277,21 @@ namespace framework
         }
         return {};
     }
+
+    void InputChannel::applyChannelAction(const std::string& key)
+    {
+        std::string channel_context = odk::queries::OxygenChannels;
+
+        pugi::xml_document doc;
+        auto channel_action_node = doc.append_child("ChannelActions");
+        auto action_node = channel_action_node.append_child("Action");
+        action_node.append_attribute("name").set_value(key.c_str());
+
+        auto channel = action_node.append_child("Channel");
+        channel.append_attribute("id").set_value(std::to_string(getChannelId()).c_str());
+        auto xml_string = xpugi::toXML(doc);
+        m_host->queryXML(channel_context.c_str(), "ChannelActions", xml_string.c_str(), xml_string.size());
+    }
+
 }
 }
