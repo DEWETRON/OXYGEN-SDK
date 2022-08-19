@@ -109,7 +109,7 @@ namespace
         return nullptr;
     }
 
-    bool UpdateChannelsTelegram::parse(const boost::string_view& xml_string)
+    bool UpdateChannelsTelegram::parse(const std::string_view& xml_string)
     {
         m_channels.clear();
 

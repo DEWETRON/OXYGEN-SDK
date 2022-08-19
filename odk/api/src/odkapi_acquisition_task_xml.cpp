@@ -15,7 +15,7 @@ namespace odk
         : m_id()
     {}
 
-    bool AddAcquisitionTaskTelegram::parse(const boost::string_view& xml_string)
+    bool AddAcquisitionTaskTelegram::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {
@@ -88,7 +88,7 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool AcquisitionTaskProcessTelegram::parse(const boost::string_view& xml_string)
+    bool AcquisitionTaskProcessTelegram::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {

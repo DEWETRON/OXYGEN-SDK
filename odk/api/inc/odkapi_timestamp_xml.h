@@ -4,9 +4,9 @@
 #include "odkuni_xpugixml_fwd.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
+#include <string_view>
 
 namespace odk
 {
@@ -16,7 +16,7 @@ namespace odk
         Timestamp() noexcept;
         Timestamp(std::uint64_t ticks, double frequency) noexcept;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         ODK_NODISCARD std::string generate() const;
 
         bool parseTickFrequencyAttributes(const pugi::xml_node& node);
@@ -33,7 +33,7 @@ namespace odk
     public:
         AbsoluteTime();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         ODK_NODISCARD std::string generate() const;
 
         int m_year;

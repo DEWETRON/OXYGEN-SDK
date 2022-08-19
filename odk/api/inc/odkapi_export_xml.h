@@ -6,9 +6,9 @@
 #include "odkuni_defines.h"
 #include "odkuni_xpugixml.h"
 
-#include <boost/utility/string_view.hpp>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -25,7 +25,7 @@ namespace odk
 
         RegisterExport();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -44,7 +44,7 @@ namespace odk
     public:
         ExportProperties();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         bool parse(pugi::xml_node export_properties_node);
 
         ODK_NODISCARD std::string generate() const;
@@ -66,7 +66,7 @@ namespace odk
     public:
         StartExport();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -80,7 +80,7 @@ namespace odk
     public:
         ValidateExport();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -102,7 +102,7 @@ namespace odk
     public:
         ValidateExportResponse();
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 

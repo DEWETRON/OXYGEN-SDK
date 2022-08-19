@@ -27,7 +27,7 @@ namespace odk
 
     }
 
-    bool PluginDataSet::parse(const boost::string_view& xml_string)
+    bool PluginDataSet::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_channels.clear();
@@ -111,7 +111,7 @@ namespace odk
         , m_data_stream(data_stream)
     {}
 
-    bool PluginDataRequest::parse(const boost::string_view&  xml_string)
+    bool PluginDataRequest::parse(const std::string_view&  xml_string)
     {
         pugi::xml_document doc;
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
@@ -199,7 +199,7 @@ namespace odk
         , m_stream_type(odk::StreamType::PUSH)
     {}
 
-    bool PluginDataStartRequest::parse(const boost::string_view&  xml_string)
+    bool PluginDataStartRequest::parse(const std::string_view&  xml_string)
     {
         pugi::xml_document doc;
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
@@ -266,7 +266,7 @@ namespace odk
         : m_id(id)
     {}
 
-    bool PluginDataStopRequest::parse(const boost::string_view&  xml_string)
+    bool PluginDataStopRequest::parse(const std::string_view&  xml_string)
     {
         pugi::xml_document doc;
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
@@ -304,7 +304,7 @@ namespace odk
     {
     }
 
-    bool PluginDataRegionsRequest::parse(const boost::string_view& xml_string)
+    bool PluginDataRegionsRequest::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);

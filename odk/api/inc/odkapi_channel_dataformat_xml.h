@@ -6,8 +6,8 @@
 #include "odkapi_types.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <string>
+#include <string_view>
 
 namespace odk
 {
@@ -85,7 +85,7 @@ namespace odk
         bool extract(pugi::xml_node parent_node);
 
         ODK_NODISCARD std::string generate() const;
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         bool parse(pugi::xml_node data_format);
 
         ODK_NODISCARD bool operator==(const ChannelDataformat& other) const
@@ -107,7 +107,7 @@ namespace odk
         bool extract(pugi::xml_node parent_node);
 
         ODK_NODISCARD std::string generate() const;
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         bool parse(pugi::xml_node channel_node);
 
         std::uint64_t channel_id;

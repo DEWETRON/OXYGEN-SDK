@@ -7,9 +7,9 @@
 #include "odkapi_update_config_xml.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -174,7 +174,7 @@ namespace odk
         ODK_NODISCARD const UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id) const;
         void removeChannel(std::uint32_t local_id);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         ODK_NODISCARD std::string generate() const;
         ODK_NODISCARD bool operator==(const UpdateChannelsTelegram& other) const;
     };

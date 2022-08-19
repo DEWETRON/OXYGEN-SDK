@@ -62,7 +62,7 @@ namespace odk
         return nullptr;
     }
 
-    bool UpdateConfigTelegram::parse(const boost::string_view& xml_string)
+    bool UpdateConfigTelegram::parse(const std::string_view& xml_string)
     {
         m_channel_configs.clear();
 

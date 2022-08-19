@@ -6,9 +6,9 @@
 #include "odkuni_defines.h"
 
 #include <boost/optional.hpp>
-#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -102,7 +102,7 @@ namespace odk
     public:
         DataSetDescriptor() noexcept;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 

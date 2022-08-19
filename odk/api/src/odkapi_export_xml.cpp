@@ -32,7 +32,7 @@ namespace odk
         : m_start_export_action(SELECT_FILE)
     {}
 
-    bool RegisterExport::parse(const boost::string_view& xml_string)
+    bool RegisterExport::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
             return false;
@@ -131,7 +131,7 @@ namespace odk
 
     }
 
-    bool StartExport::parse(const boost::string_view& xml_string)
+    bool StartExport::parse(const std::string_view& xml_string)
     {
         m_transaction_id = 0;
         m_properties = {};
@@ -198,7 +198,7 @@ namespace odk
     {
     }
 
-    bool ExportProperties::parse(const boost::string_view& xml_string)
+    bool ExportProperties::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
             return false;
@@ -327,7 +327,7 @@ namespace odk
     {
     }
 
-    bool ValidateExport::parse(const boost::string_view& xml_string)
+    bool ValidateExport::parse(const std::string_view& xml_string)
     {
         m_properties = {};
 
@@ -387,7 +387,7 @@ namespace odk
     {
     }
 
-    bool ValidateExportResponse::parse(const boost::string_view& xml_string)
+    bool ValidateExportResponse::parse(const std::string_view& xml_string)
     {
         m_success = false;
         m_channel_errors.clear();

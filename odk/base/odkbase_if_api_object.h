@@ -46,7 +46,7 @@ namespace odk
     };
 
     /**
-     * helper function for boost::intrusive_pointer
+     * helper function for ApiObjectPtr
      */
     inline void intrusive_ptr_add_ref(const IfApiObject* service)
     {
@@ -54,7 +54,7 @@ namespace odk
     }
 
     /**
-     * helper function for boost::intrusive_pointer
+     * helper function for ApiObjectPtr
      */
     inline void intrusive_ptr_release(const IfApiObject* service)
     {

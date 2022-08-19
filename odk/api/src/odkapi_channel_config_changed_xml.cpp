@@ -24,7 +24,7 @@ namespace odk
         if (status.status == pugi::status_ok)
         {
             auto request_node = doc.document_element();
-            if (strcmp(request_node.name(), "ChannelConfigChanged") != 0)
+            if (std::strcmp(request_node.name(), "ChannelConfigChanged") != 0)
                 return false;
             auto version = odk::getProtocolVersion(request_node);
             if (version != odk::Version(1, 0))
@@ -32,7 +32,7 @@ namespace odk
 
             for (const auto channel_node : request_node.children())
             {
-                if (strcmp(channel_node.name(), "Channel") == 0)
+                if (std::strcmp(channel_node.name(), "Channel") == 0)
                 {
                     std::uint64_t chn_id = channel_node.attribute("id").as_ullong(std::numeric_limits<uint64_t>::max());
                     if (chn_id != std::numeric_limits<uint64_t>::max())

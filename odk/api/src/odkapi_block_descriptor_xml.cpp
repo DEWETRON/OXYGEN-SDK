@@ -26,7 +26,7 @@ namespace odk
     {
     }
 
-    bool BlockDescriptor::parse(const boost::string_view& xml_string)
+    bool BlockDescriptor::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {
@@ -92,7 +92,7 @@ namespace odk
     {
     }
 
-    bool BlockListDescriptor::parse(const boost::string_view& xml_string)
+    bool BlockListDescriptor::parse(const std::string_view& xml_string)
     {
         m_windows.clear();
 
@@ -171,7 +171,7 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool DataRegions::parse(const boost::string_view& xml_string)
+    bool DataRegions::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_data_regions.clear();

@@ -24,7 +24,7 @@ namespace odk
         return m_frequency > 0;
     }
 
-    bool Timestamp::parse(const boost::string_view& xml_string)
+    bool Timestamp::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
             return false;
@@ -99,7 +99,7 @@ namespace odk
     {
     }
 
-    bool AbsoluteTime::parse(const boost::string_view& xml_string)
+    bool AbsoluteTime::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
             return false;

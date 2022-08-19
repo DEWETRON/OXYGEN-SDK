@@ -151,7 +151,7 @@ namespace odk
         return valid;
     }
 
-    bool ChannelDataformat::parse(const boost::string_view& xml_string)
+    bool ChannelDataformat::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
 
@@ -219,7 +219,7 @@ namespace odk
         return false;
     }
 
-    bool ChannelDataformatTelegram::parse(const boost::string_view& xml_string)
+    bool ChannelDataformatTelegram::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
 

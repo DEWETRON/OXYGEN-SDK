@@ -4,10 +4,10 @@
 #include "odkapi_types.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <boost/optional.hpp>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -21,7 +21,7 @@ namespace odk
         PluginDataSet();
         explicit PluginDataSet(std::uint64_t id, const std::vector<std::uint64_t>& channels, DataSetType type = DataSetType::SCALED, DataSetMode mode = DataSetMode::NORMAL, StreamPolicy policy = StreamPolicy::EXACT);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -71,7 +71,7 @@ namespace odk
 
         explicit PluginDataRequest(std::uint64_t id, DataStream data_stream);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -90,7 +90,7 @@ namespace odk
         explicit PluginDataStartRequest(std::uint64_t id, double duration);
         explicit PluginDataStartRequest(std::uint64_t id, double start, double duration);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -109,7 +109,7 @@ namespace odk
         PluginDataStopRequest();
         explicit PluginDataStopRequest(std::uint64_t id);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -138,7 +138,7 @@ namespace odk
 
         explicit PluginDataRegionsRequest(std::uint64_t id);
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 

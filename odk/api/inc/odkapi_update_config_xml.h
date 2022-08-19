@@ -9,9 +9,9 @@
 #include "odkbase_if_host.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -432,7 +432,7 @@ namespace odk
         ODK_NODISCARD const UpdateConfigTelegram::ChannelConfig* getChannel(std::uint32_t local_id) const;
         ODK_NODISCARD std::vector<UpdateConfigTelegram::ChannelConfig> getAllChannels() const;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         ODK_NODISCARD std::string generate() const;
         ODK_NODISCARD bool operator==(const UpdateConfigTelegram& other) const;
 

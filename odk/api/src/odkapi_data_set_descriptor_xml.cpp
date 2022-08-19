@@ -105,7 +105,7 @@ namespace odk
         : m_type(type)
         , m_factor(factor)
         , m_offset(offset)
-    {      
+    {
     }
 
     bool Scaling::operator==(const Scaling& other) const noexcept
@@ -175,7 +175,7 @@ namespace odk
     {
     }
 
-    bool DataSetDescriptor::parse(const boost::string_view& xml_string)
+    bool DataSetDescriptor::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_stream_descriptors.clear();
