@@ -5,6 +5,7 @@
 #include "odkapi_property_list_xml.h"
 #include "odkbase_basic_values.h"
 
+#include <functional>
 #include <map>
 
 namespace odk
@@ -18,7 +19,7 @@ namespace framework
 
         //custom request the uses property lists as input and output
         using PropertyListFunction = std::uint64_t(const odk::PropertyList& params, odk::PropertyList& returns);
-        
+
         //custom request the uses a property list as input and return an XML document
         using PropertyListToXMLFunction = std::uint64_t(const odk::PropertyList& params, odk::IfXMLValue& return_xml);
 

@@ -212,8 +212,8 @@ namespace odk
 
                 auto window_node = data_request_node.child("Stream");
 
-                m_start = boost::none;
-                m_block_duration = boost::none;
+                m_start = std::nullopt;
+                m_block_duration = std::nullopt;
 
                 if (auto start_attr = window_node.attribute("start"))
                 {

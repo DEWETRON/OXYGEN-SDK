@@ -315,7 +315,7 @@ namespace framework
                 msg->set(m_dataset_descriptor->m_id);
                 m_host->messageSync(odk::host_msg::DATA_GROUP_REMOVE, 0, msg.get(), nullptr);
 
-                m_dataset_descriptor = boost::none;
+                m_dataset_descriptor = std::nullopt;
             }
 
             stopProcessing(host);

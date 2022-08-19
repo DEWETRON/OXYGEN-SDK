@@ -4,7 +4,6 @@
 #include "odkuni_xpugixml.h"
 
 #include <cmath>
-#include <cstring>
 #include <limits>
 
 namespace
@@ -53,9 +52,9 @@ namespace odk
             return parseWithOffset(timebase_offset_node);
         }
 
-            reset();
-            return false;
-        }
+        reset();
+        return false;
+    }
 
     bool Timebase::store(pugi::xml_node parent_node) const
     {

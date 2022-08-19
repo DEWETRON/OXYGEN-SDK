@@ -4,8 +4,8 @@
 #include "odkapi_types.h"
 #include "odkuni_defines.h"
 
-#include <boost/optional.hpp>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -77,9 +77,9 @@ namespace odk
 
         std::uint64_t m_id;
 
-        boost::optional<DataWindow> m_data_window;
-        boost::optional<SingleValue> m_single_value;
-        boost::optional<DataStream> m_data_stream;
+        std::optional<DataWindow> m_data_window;
+        std::optional<SingleValue> m_single_value;
+        std::optional<DataStream> m_data_stream;
 
     };
 
@@ -96,9 +96,9 @@ namespace odk
 
         std::uint64_t m_id;
 
-        boost::optional<double> m_start;
-        boost::optional<double> m_block_duration;
-        boost::optional<bool>   m_ignore_regions;
+        std::optional<double> m_start;
+        std::optional<double> m_block_duration;
+        std::optional<bool>   m_ignore_regions;
         StreamType m_stream_type;
 
     };
@@ -143,7 +143,7 @@ namespace odk
         ODK_NODISCARD std::string generate() const;
 
         std::uint64_t m_id;
-        boost::optional<DataWindow> m_data_window;
+        std::optional<DataWindow> m_data_window;
     };
 }
 

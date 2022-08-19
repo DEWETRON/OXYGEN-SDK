@@ -5,6 +5,7 @@
 
 #include "odkuni_xpugixml.h"
 
+#include <algorithm>
 
 namespace odk
 {
