@@ -44,6 +44,10 @@
 /// Value: String
 #define ODK_CI_KEY_CHANNEL_PHYSICAL_UNIT "Neon/PhysicalUnit"
 
+/// The unit of the samples that are stored in this channels (before scaling)
+/// Value: String
+#define ODK_CI_KEY_CHANNEL_UNIT "Unit"
+
 /// The type of channel (Analog, Counter...)
 /// Value: Enum (DAQChannelType)
 #define ODK_CI_KEY_CHANNEL_TYPE "ChannelType"
@@ -65,5 +69,9 @@
 /// Used - flag of the channel
 /// Value: bool
 #define ODK_CI_KEY_USED "Used"
+
+/// Color of the channel in #rrggbb format
+/// Value: String
+#define ODK_CI_KEY_CHANNEL_COLOR "Neon/Color"
 
 #endif //_ODKAPI_CONFIG_ITEM_KEYS_H_
