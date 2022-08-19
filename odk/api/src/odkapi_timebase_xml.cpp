@@ -4,6 +4,7 @@
 #include "odkuni_xpugixml.h"
 
 #include <cmath>
+#include <cstring>
 #include <limits>
 
 namespace

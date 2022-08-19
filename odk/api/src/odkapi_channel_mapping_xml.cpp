@@ -1,8 +1,9 @@
 // Copyright DEWETRON GmbH 2018
 
 #include "odkapi_channel_mapping_xml.h"
-#include "odkuni_assert.h"
 
+#include "odkuni_assert.h"
+#include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
 #include <cstdint>

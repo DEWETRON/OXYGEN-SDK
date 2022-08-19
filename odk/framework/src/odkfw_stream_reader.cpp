@@ -3,6 +3,7 @@
 #include "odkapi_data_set_descriptor_xml.h"
 #include "odkuni_assert.h"
 
+#include <algorithm>
 #include <stdexcept>
 
 namespace odk

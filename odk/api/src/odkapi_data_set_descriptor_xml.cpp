@@ -1,12 +1,13 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_data_set_descriptor_xml.h"
-#include "odkuni_assert.h"
 
+#include "odkuni_assert.h"
+#include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+#include <algorithm>
+#include <cctype>
 
 namespace odk
 {
@@ -15,35 +16,47 @@ namespace odk
     {
         SampleType parseSampleType(const std::string& type)
         {
-            if (boost::iequals(type, "double"))
+            std::string type_lower = type;
+            std::transform(type_lower.begin(), type_lower.end(), type_lower.begin(),
+                [](std::string::value_type c)
+                { // only safe/sufficient since we want to compare for equality to 7-bit ASCII strings
+                    auto r = c;
+                    if (c >= 'A' && c <= 'Z')
+                    {
+                        r = c - ('Z' - 'z');
+                    }
+                    return r;
+                }
+            );
+            if (type_lower == "double")
             {
                 return SampleType::DOUBLE;
             }
-            else if (boost::iequals(type, "16bit_sint"))
+            else if (type_lower == "16bit_sint")
             {
                 return SampleType::SIGNED16BIT;
             }
-            else if (boost::iequals(type, "24bit_sint"))
+            else if (type_lower == "24bit_sint")
             {
                 return SampleType::SIGNED24BIT;
             }
-            else if (boost::iequals(type, "1bit"))
+            else if (type_lower == "1bit")
             {
                 return SampleType::SINGLEBIT;
             }
-            else if (boost::iequals(type, "complex"))
+            else if (type_lower == "complex")
             {
                 return SampleType::COMPLEX;
             }
-            else if (boost::iequals(type, "blob"))
+            else if (type_lower == "blob")
             {
                 return SampleType::BLOB;
             }
-            else if (boost::iequals(type, "reduced"))
+            else if (type_lower == "reduced")
             {
                 return SampleType::REDUCED;
             }
-            else if (boost::iequals(type, "raw"))
+            else if (type_lower == "raw")
             {
                 return SampleType::RAW;
             }
@@ -77,6 +90,7 @@ namespace odk
 
             case SampleType::REDUCED:
                 return "reduced";
+
             case SampleType::RAW:
                 return "raw";
 
@@ -186,22 +200,22 @@ namespace odk
 
                 auto block_desc_node = doc.document_element();
 
-                m_id = boost::lexical_cast<std::uint64_t>(block_desc_node.attribute("data_set_key").value());
+                m_id = odk::from_string<std::uint64_t>(block_desc_node.attribute("data_set_key").value());
 
                 for (auto scan_desc_node : block_desc_node.children("StreamDescriptor"))
                 {
                     StreamDescriptor scan_desc;
-                    scan_desc.m_stream_id = boost::lexical_cast<std::uint64_t>(scan_desc_node.attribute("stream_id").value());
+                    scan_desc.m_stream_id = odk::from_string<std::uint64_t>(scan_desc_node.attribute("stream_id").value());
 
                     for (auto channel_desc_node : scan_desc_node.children("Channel"))
                     {
                         ChannelDescriptor channel_desc;
 
-                        channel_desc.m_channel_id = boost::lexical_cast<std::uint64_t>(channel_desc_node.attribute("channel_id").value());
-                        channel_desc.m_dimension = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("dimension").value());
-                        channel_desc.m_size = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("size").value());
-                        channel_desc.m_stride = boost::lexical_cast<std::uint32_t>(channel_desc_node.attribute("stride").value());
-                        auto type = boost::lexical_cast<std::string>(channel_desc_node.attribute("type").value());
+                        channel_desc.m_channel_id = odk::from_string<std::uint64_t>(channel_desc_node.attribute("channel_id").value());
+                        channel_desc.m_dimension = odk::from_string<std::uint32_t>(channel_desc_node.attribute("dimension").value());
+                        channel_desc.m_size = odk::from_string<std::uint32_t>(channel_desc_node.attribute("size").value());
+                        channel_desc.m_stride = odk::from_string<std::uint32_t>(channel_desc_node.attribute("stride").value());
+                        auto type = std::string(channel_desc_node.attribute("type").value());
                         channel_desc.m_type = parseSampleType(type);
 
                         auto scaling_children = channel_desc_node.select_nodes("Scaling/*");
@@ -211,8 +225,8 @@ namespace odk
                             if (n && std::string(n) == "Linear")
                             {
                                 Scaling linear_scaling;
-                                linear_scaling.m_factor = boost::lexical_cast<double>(child.node().attribute("factor").value());
-                                linear_scaling.m_offset = boost::lexical_cast<double>(child.node().attribute("offset").value());
+                                linear_scaling.m_factor = odk::from_string<double>(child.node().attribute("factor").value());
+                                linear_scaling.m_offset = odk::from_string<double>(child.node().attribute("offset").value());
 
                                 channel_desc.m_scaling.push_back(linear_scaling);
                             }
@@ -221,13 +235,13 @@ namespace odk
                         auto timestamp_node = channel_desc_node.child("Timestamp");
                         if (timestamp_node)
                         {
-                            channel_desc.m_timestamp_position = boost::lexical_cast<std::int32_t>(timestamp_node.attribute("position").value());
+                            channel_desc.m_timestamp_position = odk::from_string<std::int32_t>(timestamp_node.attribute("position").value());
                         }
 
                         auto sample_size_position_node = channel_desc_node.child("Samplesize");
                         if (sample_size_position_node)
                         {
-                            channel_desc.m_sample_size_position = boost::lexical_cast<std::int32_t>(sample_size_position_node.attribute("position").value());
+                            channel_desc.m_sample_size_position = odk::from_string<std::int32_t>(sample_size_position_node.attribute("position").value());
                         }
 
 
@@ -237,7 +251,7 @@ namespace odk
                     m_stream_descriptors.push_back(scan_desc);
                 }
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&)
             {
                 return false;
             }

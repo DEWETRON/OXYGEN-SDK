@@ -50,7 +50,7 @@ namespace odk
         class DataWindow
         {
         public:
-            
+
             DataWindow(double start, double stop) noexcept
                 : m_start(start)
                 , m_stop(stop)

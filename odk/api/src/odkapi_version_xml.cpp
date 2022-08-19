@@ -1,11 +1,8 @@
 // Copyright DEWETRON GmbH 2017
 #include "odkapi_version_xml.h"
-#include "pugixml.hpp"
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/lexical_cast.hpp>
-#include <vector>
+#include "odkuni_string_util.h"
+#include "pugixml.hpp"
 
 namespace odk
 {
@@ -43,8 +40,7 @@ namespace odk
 
     Version Version::parse(const char* str)
     {
-        std::vector<std::string> numbers;
-        boost::split(numbers, str, boost::is_any_of("."));
+        std::vector<std::string> numbers = odk::split(std::string(str), '.');
 
         unsigned major = 0;
         unsigned minor = 0;
@@ -54,14 +50,14 @@ namespace odk
             switch (numbers.size())
             {
             case 2:
-                minor = boost::lexical_cast<unsigned>(numbers[1]);
+                minor = odk::from_string<unsigned>(numbers[1]);
                 //fall through
             case 1:
-                major = boost::lexical_cast<unsigned>(numbers[0]);
+                major = odk::from_string<unsigned>(numbers[0]);
                 break;
             }
         }
-        catch (boost::bad_lexical_cast&)
+        catch (std::logic_error&)
         {
             return{};
         }

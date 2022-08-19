@@ -2,9 +2,9 @@
 
 #include "odkapi_timestamp_xml.h"
 
+#include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
-#include <boost/lexical_cast.hpp>
 #include <cstring>
 
 namespace odk
@@ -74,11 +74,11 @@ namespace odk
                 return false;
             }
 
-            m_ticks = boost::lexical_cast<std::uint64_t>(ticks_attr.value());
-            m_frequency = boost::lexical_cast<double>(freq_attr.value());
+            m_ticks = odk::from_string<std::uint64_t>(ticks_attr.value());
+            m_frequency = odk::from_string<double>(freq_attr.value());
             return true;
         }
-        catch (const boost::bad_lexical_cast&)
+        catch (const std::logic_error&)
         {
             return false;
         }
@@ -110,23 +110,29 @@ namespace odk
         {
             if (auto absolute_time_node = doc.child("AbsoluteTime"))
             {
-                m_year = boost::lexical_cast<int>(absolute_time_node.attribute("year").value());
-                m_month = boost::lexical_cast<int>(absolute_time_node.attribute("month").value());
-                m_day = boost::lexical_cast<int>(absolute_time_node.attribute("day").value());
-                m_hour = boost::lexical_cast<int>(absolute_time_node.attribute("hour").value());
-                m_minute = boost::lexical_cast<int>(absolute_time_node.attribute("minute").value());
-                m_second = boost::lexical_cast<int>(absolute_time_node.attribute("second").value());
-                m_nanosecond = boost::lexical_cast<std::uint32_t>(absolute_time_node.attribute("nanosecond").value());
+                try
+                {
+                    m_year = odk::from_string<int>(absolute_time_node.attribute("year").value());
+                    m_month = odk::from_string<int>(absolute_time_node.attribute("month").value());
+                    m_day = odk::from_string<int>(absolute_time_node.attribute("day").value());
+                    m_hour = odk::from_string<int>(absolute_time_node.attribute("hour").value());
+                    m_minute = odk::from_string<int>(absolute_time_node.attribute("minute").value());
+                    m_second = odk::from_string<int>(absolute_time_node.attribute("second").value());
+                    m_nanosecond = odk::from_string<std::uint32_t>(absolute_time_node.attribute("nanosecond").value());
 
-                m_nanoseconds_since_1970 = boost::lexical_cast<std::uint64_t>(absolute_time_node.attribute("nanoseconds_since_1970").value());
+                    m_nanoseconds_since_1970 = odk::from_string<std::uint64_t>(absolute_time_node.attribute("nanoseconds_since_1970").value());
 
-                m_timezone_name = absolute_time_node.attribute("tz_name").value();
-                m_timezone_location = absolute_time_node.attribute("tz_location").value();
-                m_timezone_utc_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_utc_offset_seconds").value());
-                m_timezone_std_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_std_offset_seconds").value());
-                m_timezone_dst_offset_seconds = boost::lexical_cast<int>(absolute_time_node.attribute("tz_dst_offset_seconds").value());
+                    m_timezone_name = absolute_time_node.attribute("tz_name").value();
+                    m_timezone_location = absolute_time_node.attribute("tz_location").value();
+                    m_timezone_utc_offset_seconds = odk::from_string<int>(absolute_time_node.attribute("tz_utc_offset_seconds").value());
+                    m_timezone_std_offset_seconds = odk::from_string<int>(absolute_time_node.attribute("tz_std_offset_seconds").value());
+                    m_timezone_dst_offset_seconds = odk::from_string<int>(absolute_time_node.attribute("tz_dst_offset_seconds").value());
 
-                return true;
+                    return true;
+                }
+                catch (const std::logic_error&)
+                {
+                }
             }
         }
         return false;
@@ -137,33 +143,33 @@ namespace odk
         pugi::xml_document doc;
         auto timestamp_node = doc.append_child("AbsoluteTime");
         timestamp_node.append_attribute("year")
-            .set_value(boost::lexical_cast<std::string>(m_year).c_str());
+            .set_value(std::to_string(m_year).c_str());
         timestamp_node.append_attribute("month")
-            .set_value(boost::lexical_cast<std::string>(m_month).c_str());
+            .set_value(std::to_string(m_month).c_str());
         timestamp_node.append_attribute("day")
-            .set_value(boost::lexical_cast<std::string>(m_day).c_str());
+            .set_value(std::to_string(m_day).c_str());
         timestamp_node.append_attribute("hour")
-            .set_value(boost::lexical_cast<std::string>(m_hour).c_str());
+            .set_value(std::to_string(m_hour).c_str());
         timestamp_node.append_attribute("minute")
-            .set_value(boost::lexical_cast<std::string>(m_minute).c_str());
+            .set_value(std::to_string(m_minute).c_str());
         timestamp_node.append_attribute("second")
-            .set_value(boost::lexical_cast<std::string>(m_second).c_str());
+            .set_value(std::to_string(m_second).c_str());
         timestamp_node.append_attribute("nanosecond")
-            .set_value(boost::lexical_cast<std::string>(m_nanosecond).c_str());
+            .set_value(std::to_string(m_nanosecond).c_str());
 
         timestamp_node.append_attribute("nanoseconds_since_1970")
-            .set_value(boost::lexical_cast<std::string>(m_nanoseconds_since_1970).c_str());
+            .set_value(std::to_string(m_nanoseconds_since_1970).c_str());
 
         timestamp_node.append_attribute("tz_name")
             .set_value(m_timezone_name.c_str());
         timestamp_node.append_attribute("tz_location")
             .set_value(m_timezone_location.c_str());
         timestamp_node.append_attribute("tz_utc_offset_seconds")
-            .set_value(boost::lexical_cast<std::string>(m_timezone_utc_offset_seconds).c_str());
+            .set_value(std::to_string(m_timezone_utc_offset_seconds).c_str());
         timestamp_node.append_attribute("tz_std_offset_seconds")
-            .set_value(boost::lexical_cast<std::string>(m_timezone_std_offset_seconds).c_str());
+            .set_value(std::to_string(m_timezone_std_offset_seconds).c_str());
         timestamp_node.append_attribute("tz_dst_offset_seconds")
-            .set_value(boost::lexical_cast<std::string>(m_timezone_dst_offset_seconds).c_str());
+            .set_value(std::to_string(m_timezone_dst_offset_seconds).c_str());
 
         auto xml_string = xpugi::toXML(doc);
         return xml_string;

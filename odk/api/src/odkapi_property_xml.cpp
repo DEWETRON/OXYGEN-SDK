@@ -9,9 +9,6 @@
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-
 namespace
 {
 
@@ -205,7 +202,7 @@ namespace odk
     void Property::setValue(int value)
     {
         m_type = INTEGER;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -217,13 +214,13 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<int>(m_string_value);
+        return odk::from_string<int>(m_string_value);
     }
 
     void Property::setValue(unsigned int value)
     {
         m_type = UNSIGNED_INTEGER;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -235,12 +232,12 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<unsigned int>(m_string_value);
+        return odk::from_string<unsigned int>(m_string_value);
     }
 
     void Property::setValue(std::uint64_t value) {
         m_type = UNSIGNED_INTEGER64;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -251,12 +248,12 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<std::uint64_t>(m_string_value);
+        return odk::from_string<std::uint64_t>(m_string_value);
     }
 
     void Property::setValue(std::int64_t value) {
         m_type = INTEGER64;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -267,13 +264,13 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<std::int64_t>(m_string_value);
+        return odk::from_string<std::int64_t>(m_string_value);
     }
 
     void Property::setValue(double value)
     {
         m_type = FLOATING_POINT_NUMBER;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -285,7 +282,7 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<double>(m_string_value);
+        return odk::from_string<double>(m_string_value);
     }
 
     bool Property::getBoolValue() const
@@ -482,7 +479,7 @@ namespace odk
     void Property::setChannelIDValue(const ChannelID& value)
     {
         m_type = CHANNEL_ID;
-        m_string_value = boost::lexical_cast<std::string>(value);
+        m_string_value = std::to_string(value);
         m_value.reset();
     }
 
@@ -494,7 +491,7 @@ namespace odk
             ODKLOG_ERROR(error.c_str());
             throw std::runtime_error(error);
         }
-        return boost::lexical_cast<ChannelID>(m_string_value);
+        return odk::from_string<ChannelID>(m_string_value);
     }
 
     void Property::setChannelIDListValue(const ChannelIDList& value)
@@ -1029,7 +1026,7 @@ namespace odk
         ODK_ASSERT(value_node);
         //ADD_DUMMY_DATA(value_node);
 
-        const auto value_text = boost::lexical_cast<std::string>(scalar.m_val);
+        const auto value_text = std::to_string(scalar.m_val);
         xpugi::setText(value_node, value_text);
 
         auto unit_node = parent.append_child("Unit");
@@ -1049,7 +1046,7 @@ namespace odk
                 std::string sub_name = n.name();
                 if (sub_name == "Value")
                 {
-                    scalar.m_val = boost::lexical_cast<double>(xpugi::getText(n));
+                    scalar.m_val = odk::from_string<double>(xpugi::getText(n));
                 }
                 else if (sub_name == "Unit")
                 {
@@ -1072,11 +1069,11 @@ namespace odk
 
         auto num_node = parent.append_child("Numerator");
         ODK_ASSERT(num_node);
-        xpugi::setText(num_node, boost::lexical_cast<std::string>(rational.m_val.numerator()));
+        xpugi::setText(num_node, std::to_string(rational.m_val.numerator()));
 
         auto den_node = parent.append_child("Denominator");
         ODK_ASSERT(den_node);
-        xpugi::setText(den_node, boost::lexical_cast<std::string>(rational.m_val.denominator()));
+        xpugi::setText(den_node, std::to_string(rational.m_val.denominator()));
 
         auto unit_node = parent.append_child("Unit");
         ODK_ASSERT(unit_node);
@@ -1094,11 +1091,11 @@ namespace odk
                 std::string sub_name = n.name();
                 if (sub_name == "Numerator")
                 {
-                    num = boost::lexical_cast<int64_t>(xpugi::getText(n));
+                    num = odk::from_string<int64_t>(xpugi::getText(n));
                 }
                 else if (sub_name == "Denominator")
                 {
-                    den = boost::lexical_cast<int64_t>(xpugi::getText(n));
+                    den = odk::from_string<int64_t>(xpugi::getText(n));
                 }
                 else if (sub_name == "Unit")
                 {
@@ -1128,7 +1125,7 @@ namespace odk
 
         auto value_element = parent.append_child("Value");
         ODK_ASSERT(value_element);
-        xpugi::setText(value_element, boost::lexical_cast<std::string>(decorated_num.m_val));
+        xpugi::setText(value_element, std::to_string(decorated_num.m_val));
 
         if (!decorated_num.m_suffix.empty())
         {
@@ -1148,7 +1145,7 @@ namespace odk
                 std::string sub_name = n.name();
                 if (sub_name == "Value")
                 {
-                    deco_num.m_val = boost::lexical_cast<double>(xpugi::getText(n));
+                    deco_num.m_val = odk::from_string<double>(xpugi::getText(n));
                 }
                 else if (sub_name == "Prefix")
                 {
@@ -1175,7 +1172,7 @@ namespace odk
         auto range_element = parent.append_child("RangeMin");
         ODK_ASSERT(range_element);
         //ADD_DUMMY_DATA(range_element);
-        xpugi::setText(range_element, boost::lexical_cast<std::string>(range.m_min));
+        xpugi::setText(range_element, std::to_string(range.m_min));
 
         range_element = parent.append_child("RangeMinUnit");
         ODK_ASSERT(range_element);
@@ -1185,7 +1182,7 @@ namespace odk
         range_element = parent.append_child("RangeMax");
         ODK_ASSERT(range_element);
         //ADD_DUMMY_DATA(range_element);
-        xpugi::setText(range_element, boost::lexical_cast<std::string>(range.m_max));
+        xpugi::setText(range_element, std::to_string(range.m_max));
 
         range_element = parent.append_child("RangeMaxUnit");
         ODK_ASSERT(range_element);
@@ -1203,11 +1200,11 @@ namespace odk
                 std::string sub_name = n.name();
                 if (sub_name == "RangeMin")
                 {
-                    range.m_min = boost::lexical_cast<double>(xpugi::getText(n));
+                    range.m_min = odk::from_string<double>(xpugi::getText(n));
                 }
                 else if (sub_name == "RangeMax")
                 {
-                    range.m_max = boost::lexical_cast<double>(xpugi::getText(n));
+                    range.m_max = odk::from_string<double>(xpugi::getText(n));
                 }
                 else if (sub_name == "RangeMinUnit")
                 {
@@ -1254,7 +1251,7 @@ namespace odk
         {
             auto item_element = list_element.append_child("Item");
             ODK_ASSERT(item_element);
-            xpugi::setText(item_element, boost::lexical_cast<std::string>(value));
+            xpugi::setText(item_element, std::to_string(value));
         }
     }
 
@@ -1272,8 +1269,8 @@ namespace odk
                 if (node.type() == pugi::node_element)
                 {
                     std::string value_string = xpugi::getText(node);
-                    boost::algorithm::trim(value_string);
-                    list.m_values.push_back(boost::lexical_cast<double>(value_string));
+                    odk::trim(value_string);
+                    list.m_values.push_back(odk::from_string<double>(value_string));
                 }
             }
         }
@@ -1333,11 +1330,11 @@ namespace odk
 
         auto x_element = parent.append_child("x");
         ODK_ASSERT(x_element);
-        xpugi::setText(x_element, boost::lexical_cast<std::string>(point.first));
+        xpugi::setText(x_element, std::to_string(point.first));
 
         auto y_element = parent.append_child("y");
         ODK_ASSERT(y_element);
-        xpugi::setText(y_element, boost::lexical_cast<std::string>(point.second));
+        xpugi::setText(y_element, std::to_string(point.second));
     }
 
     Point Property::parsePointNode(const pugi::xml_node& type_node)
@@ -1351,11 +1348,11 @@ namespace odk
                 std::string sub_name = n.name();
                 if (sub_name == "x")
                 {
-                    point.first = boost::lexical_cast<double>(xpugi::getText(n));
+                    point.first = odk::from_string<double>(xpugi::getText(n));
                 }
                 else if (sub_name == "y")
                 {
-                    point.second = boost::lexical_cast<double>(xpugi::getText(n));
+                    point.second = odk::from_string<double>(xpugi::getText(n));
                 }
                 else
                 {
@@ -1385,12 +1382,12 @@ namespace odk
             auto x_element = point_element.append_child("x");
             ODK_ASSERT(x_element);
             //ADD_DUMMY_DATA(x_element);
-            xpugi::setText(x_element, boost::lexical_cast<std::string>(a_point.first));
+            xpugi::setText(x_element, std::to_string(a_point.first));
 
             auto y_element = point_element.append_child("y");
             ODK_ASSERT(y_element);
             //ADD_DUMMY_DATA(y_element);
-            xpugi::setText(y_element, boost::lexical_cast<std::string>(a_point.second));
+            xpugi::setText(y_element, std::to_string(a_point.second));
         }
     }
 
@@ -1418,13 +1415,13 @@ namespace odk
                             {
                                 std::string x_string = xpugi::getText(x_node);
                                 std::string y_string = xpugi::getText(y_node);
-                                boost::algorithm::trim(x_string);
-                                boost::algorithm::trim(y_string);
-                                x = boost::lexical_cast<double>(x_string);
-                                y = boost::lexical_cast<double>(y_string);
+                                odk::trim(x_string);
+                                odk::trim(y_string);
+                                x = odk::from_string<double>(x_string);
+                                y = odk::from_string<double>(y_string);
                                 okay = true;
                             }
-                            catch (boost::bad_lexical_cast &)
+                            catch (std::logic_error &)
                             {
                             }
                         }
@@ -1461,7 +1458,7 @@ namespace odk
         {
             auto id_element = list_element.append_child("ChannelID");
             ODK_ASSERT(id_element);
-            xpugi::setText(id_element, boost::lexical_cast<std::string>(ch_id));
+            xpugi::setText(id_element, std::to_string(ch_id));
         }
     }
 
@@ -1500,18 +1497,18 @@ namespace odk
             case SCALAR:
             {
                 odk::Scalar scalar = getScalarValue();
-                return boost::lexical_cast<std::string>(scalar.m_val) + unitToString(scalar.m_unit);
+                return std::to_string(scalar.m_val) + unitToString(scalar.m_unit);
             }
             case RATIONAL:
             {
                 auto rational = getRationalValue();
-                return boost::lexical_cast<std::string>(rational.m_val) + unitToString(rational.m_unit);
+                return std::to_string(rational.m_val.numerator()) + '/' + std::to_string(rational.m_val.denominator()) + unitToString(rational.m_unit);
             }
             case RANGE:
             {
                 odk::Range range = getRangeValue();
-                return "(" + boost::lexical_cast<std::string>(range.m_min) + unitToString(range.m_min_unit)
-                    + ", " + boost::lexical_cast<std::string>(range.m_max) + unitToString(range.m_max_unit)
+                return "(" + std::to_string(range.m_min) + unitToString(range.m_min_unit)
+                    + ", " + std::to_string(range.m_max) + unitToString(range.m_max_unit)
                     + ")";
             }
             case FLOATING_POINT_NUMBER_LIST:
@@ -1522,7 +1519,7 @@ namespace odk
                 std::string ret_string{};
                 for (double v : list.m_values)
                 {
-                    ret_string.append(boost::lexical_cast<std::string>(v));
+                    ret_string.append(std::to_string(v));
                     ++index;
                     if (index < num_of_elems)
                     {
@@ -1575,9 +1572,9 @@ namespace odk
                 for (const PointList::ValueType& point : list.m_values)
                 {
                     ret_string.append("[");
-                    ret_string.append(boost::lexical_cast<std::string>(point.first));
+                    ret_string.append(std::to_string(point.first));
                     ret_string.append(", ");
-                    ret_string.append(boost::lexical_cast<std::string>(point.second));
+                    ret_string.append(std::to_string(point.second));
                     ret_string.append("]");
                     ++index;
                     if (index < num_of_elems)
@@ -1596,7 +1593,7 @@ namespace odk
                 std::string ret_string{};
                 for (const ChannelID id : list.m_values)
                 {
-                    ret_string.append(boost::lexical_cast<std::string>(id));
+                    ret_string.append(std::to_string(id));
                     ++index;
                     if (index < num_of_elems)
                     {

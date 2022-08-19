@@ -5,13 +5,9 @@
 #include "odkapi_error_codes.h"
 #include "odkapi_version_xml.h"
 
+#include "odkuni_bimap.h"
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
-
-#include <boost/assign/list_of.hpp>
-#include <boost/bimap.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <cstring>
 #include <map>
@@ -19,11 +15,12 @@
 
 namespace
 {
-    typedef boost::bimap<odk::RegisterExport::StartExportAction, std::string> StartExportActionBiMap;
-    static const StartExportActionBiMap START_EXPORT_OPTION_MAP = boost::assign::list_of<StartExportActionBiMap::relation>
-        (odk::RegisterExport::StartExportAction::SELECT_FILE, "SELECT_FILE")
-        (odk::RegisterExport::StartExportAction::SELECT_DIRECTORY, "SELECT_DIRECTORY")
-        (odk::RegisterExport::StartExportAction::NONE, "NONE");
+    typedef odk::SimpleBiMap<odk::RegisterExport::StartExportAction, std::string> StartExportActionBiMap;
+    static const StartExportActionBiMap START_EXPORT_OPTION_MAP = {
+        {odk::RegisterExport::StartExportAction::SELECT_FILE, "SELECT_FILE"},
+        {odk::RegisterExport::StartExportAction::SELECT_DIRECTORY, "SELECT_DIRECTORY"},
+        {odk::RegisterExport::StartExportAction::NONE, "NONE"},
+    };
 }
 
 namespace odk
@@ -154,7 +151,7 @@ namespace odk
                 auto transaction_id_node = doc.document_element().child("TransactionId");
                 if (transaction_id_node)
                 {
-                    m_transaction_id = boost::lexical_cast<std::uint64_t>(transaction_id_node.attribute("transaction_id").value());
+                    m_transaction_id = odk::from_string<std::uint64_t>(transaction_id_node.attribute("transaction_id").value());
                 }
                 else
                 {
@@ -162,7 +159,7 @@ namespace odk
                 }
 
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&)
             {
                 return false;
             }
@@ -223,54 +220,47 @@ namespace odk
         m_filename.clear();
         m_format_id.clear();
 
-        try
+        if (auto main_channel_node = export_properties_node.child("Channels"))
         {
-            if (auto main_channel_node = export_properties_node.child("Channels"))
+            auto channel_nodes = main_channel_node.children("Channel");
+            for (auto channel_node : channel_nodes)
             {
-                auto channel_nodes = main_channel_node.children("Channel");
-                for (auto channel_node : channel_nodes)
-                {
-                    auto a_ch_id = channel_node.attribute("channel_id").as_ullong();
-                    m_channels.push_back(a_ch_id);
-                }
-            }
-
-            if (auto main_interval_node = export_properties_node.child("Intervals"))
-            {
-                auto window_nodes = main_interval_node.children("Interval");
-                for (auto window_node : window_nodes)
-                {
-                    auto a_begin = window_node.attribute("begin").as_double();
-                    auto a_end = window_node.attribute("end").as_double();
-                    m_export_intervals.emplace_back(a_begin, a_end);
-                }
-            }
-
-            if (auto special_main_node = export_properties_node.child("CustomProperties"))
-            {
-                for (const auto& prop : special_main_node.children())
-                {
-                    odk::Property p;
-                    if (p.readFrom(prop, {1, 0}))
-                    {
-                        m_custom_properties.setProperty(p);
-                    }
-                }
-            }
-
-            if (auto format_id_node = export_properties_node.child("FormatId"))
-            {
-                m_format_id = boost::lexical_cast<std::string>(format_id_node.attribute("format").value());
-            }
-
-            if (auto filename_node = export_properties_node.child("Filename"))
-            {
-                m_filename = boost::lexical_cast<std::string>(filename_node.attribute("name").value());
+                auto a_ch_id = channel_node.attribute("channel_id").as_ullong();
+                m_channels.push_back(a_ch_id);
             }
         }
-        catch (const boost::bad_lexical_cast&)
+
+        if (auto main_interval_node = export_properties_node.child("Intervals"))
         {
-            return false;
+            auto window_nodes = main_interval_node.children("Interval");
+            for (auto window_node : window_nodes)
+            {
+                auto a_begin = window_node.attribute("begin").as_double();
+                auto a_end = window_node.attribute("end").as_double();
+                m_export_intervals.emplace_back(a_begin, a_end);
+            }
+        }
+
+        if (auto special_main_node = export_properties_node.child("CustomProperties"))
+        {
+            for (const auto& prop : special_main_node.children())
+            {
+                odk::Property p;
+                if (p.readFrom(prop, {1, 0}))
+                {
+                    m_custom_properties.setProperty(p);
+                }
+            }
+        }
+
+        if (auto format_id_node = export_properties_node.child("FormatId"))
+        {
+            m_format_id = std::string(format_id_node.attribute("format").value());
+        }
+
+        if (auto filename_node = export_properties_node.child("Filename"))
+        {
+            m_filename = std::string(filename_node.attribute("name").value());
         }
 
         return true;
@@ -411,11 +401,11 @@ namespace odk
 
                         try
                         {
-                            auto channel_id_num = boost::lexical_cast<std::uint64_t>(channel_id);
-                            auto channel_code_num = boost::lexical_cast<std::uint64_t>(channel_code);
+                            auto channel_id_num = odk::from_string<std::uint64_t>(channel_id);
+                            auto channel_code_num = odk::from_string<std::uint64_t>(channel_code);
                             m_channel_warnings.emplace_back(channel_id_num, channel_code_num, channel_msg);
                         }
-                        catch (const boost::bad_lexical_cast&)
+                        catch (const std::logic_error&)
                         {
                             return false;
                         }
@@ -434,11 +424,11 @@ namespace odk
 
                         try
                         {
-                            auto channel_id_num = boost::lexical_cast<std::uint64_t>(channel_id);
-                            auto channel_code_num = boost::lexical_cast<std::uint64_t>(channel_code);
+                            auto channel_id_num = odk::from_string<std::uint64_t>(channel_id);
+                            auto channel_code_num = odk::from_string<std::uint64_t>(channel_code);
                             m_channel_errors.emplace_back(channel_id_num, channel_code_num, channel_msg);
                         }
-                        catch(const boost::bad_lexical_cast&)
+                        catch(const std::logic_error&)
                         {
                             return false;
                         }
@@ -467,10 +457,10 @@ namespace odk
                 for (const auto& channel : m_channel_warnings)
                 {
                     auto ch_warning = ch_warnings.append_child("Channel");
-                    auto xpath = boost::format("//ExportProperties/Channels/Channel[Id=%d]") % channel.channel_id;
-                    ch_warning.append_attribute("path").set_value(xpath.str().c_str());
-                    xpugi::setText(ch_warning.append_child("Id"), std::to_string(channel.channel_id));
-                    xpugi::setText(ch_warning.append_child("ErrorCode"), std::to_string(channel.error_code));
+                    auto xpath = std::string("//ExportProperties/Channels/Channel[Id=") + odk::to_string(channel.channel_id) + "]";
+                    ch_warning.append_attribute("path").set_value(xpath.c_str());
+                    xpugi::setText(ch_warning.append_child("Id"), odk::to_string(channel.channel_id));
+                    xpugi::setText(ch_warning.append_child("ErrorCode"), odk::to_string(channel.error_code));
                     xpugi::setText(ch_warning.append_child("ErrorMessage"), odk::error_codes::toString(channel.error_code));
                 }
             }
@@ -484,12 +474,11 @@ namespace odk
                 for (const auto& channel : m_channel_errors)
                 {
                     auto ch_error = ch_errors.append_child("Channel");
-                    auto xpath = boost::format("//ExportProperties/Channels/Channel[Id=%d]") % channel.channel_id;
-                    ch_error.append_attribute("path").set_value(xpath.str().c_str());
-                    xpugi::setText(ch_error.append_child("Id"), std::to_string(channel.channel_id));
-                    xpugi::setText(ch_error.append_child("ErrorCode"), std::to_string(channel.error_code));
+                    auto xpath = std::string("//ExportProperties/Channels/Channel[Id=") + odk::to_string(channel.channel_id) + "]";
+                    ch_error.append_attribute("path").set_value(xpath.c_str());
+                    xpugi::setText(ch_error.append_child("Id"), odk::to_string(channel.channel_id));
+                    xpugi::setText(ch_error.append_child("ErrorCode"), odk::to_string(channel.error_code));
                     xpugi::setText(ch_error.append_child("ErrorMessage"), channel.error_message);
-                    //xpugi::setText(ch_error.append_child("ErrorMessage"), odk::error_codes::toString(channel.error_code));
                 }
             }
         }

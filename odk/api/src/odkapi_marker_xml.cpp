@@ -2,10 +2,8 @@
 
 #include "odkapi_marker_xml.h"
 
-#include "odkuni_xpugixml.h"
 #include "odkuni_string_util.h"
-
-#include <boost/lexical_cast.hpp>
+#include "odkuni_xpugixml.h"
 
 #include <algorithm>
 #include <map>
@@ -77,10 +75,10 @@ namespace odk
             {
                 auto marker_request_node = doc.document_element();
                 auto window_node = marker_request_node.select_node("Window");
-                m_start = boost::lexical_cast<double>(window_node.node().attribute("start").value());
-                m_stop = boost::lexical_cast<double>(window_node.node().attribute("end").value());
+                m_start = odk::from_string<double>(window_node.node().attribute("start").value());
+                m_stop = odk::from_string<double>(window_node.node().attribute("end").value());
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&)
             {
                 return false;
             }
@@ -115,11 +113,11 @@ namespace odk
 
     Marker::Marker( std::uint64_t ticks
                     , const odk::Timebase& m_timebase
-                                     ,const std::string& type
-                                     ,const std::string& message
-                                     ,const std::string& description
-                                     ,const std::string& group_id
-                                     ,bool is_mutable
+                    , const std::string& type
+                    , const std::string& message
+                    , const std::string& description
+                    , const std::string& group_id
+                    , bool is_mutable
                                       )
         : m_timestamp(ticks, m_timebase.m_frequency)
         , m_type(type)
@@ -149,61 +147,63 @@ namespace odk
 
     bool Marker::parseMarker(const pugi::xml_node& parent)
     {
-        try
-        {
-            if (!odk::strequal(parent.name(), "Marker"))
-            {
-                return false;
-            }
-
-            if (auto type_attr = parent.attribute("type"))
-            {
-                m_type = type_attr.value();
-            }
-
-            if (auto ismutable_attr = parent.attribute("ismutable"))
-            {
-                m_is_mutable = ismutable_attr.as_bool();
-            }
-
-            auto timestamp_node = parent.child("Timestamp");
-            if (timestamp_node)
-            {
-                m_timestamp.parseTickFrequencyAttributes(timestamp_node);
-            }
-
-            auto timebase_node = parent.child("SimpleTimebase");
-            if (timebase_node)
-            {
-                m_timebase.parse(timebase_node);
-            }
-            auto with_offset_node = parent.child("TimebaseWithOffset");
-            if (with_offset_node)
-            {
-                m_timebase.parseWithOffset(with_offset_node);
-            }
-
-            if(auto message_node = parent.child("Message"))
-            {
-                m_msg = message_node.child_value();
-            }
-
-            if(auto desc_node = parent.child("Description"))
-            {
-                m_desc = desc_node.child_value();
-            }
-
-            if(auto storage_node = parent.child("StorageGroup"))
-            {
-                m_group_id = storage_node.child_value();
-            }
-
-            return true;
-        }
-        catch (const boost::bad_lexical_cast&)
+        if (!odk::strequal(parent.name(), "Marker"))
         {
             return false;
         }
+
+        if (auto type_attr = parent.attribute("type"))
+        {
+            m_type = type_attr.value();
+        }
+
+        if (auto ismutable_attr = parent.attribute("ismutable"))
+        {
+            m_is_mutable = ismutable_attr.as_bool();
+        }
+
+        auto timestamp_node = parent.child("Timestamp");
+        if (timestamp_node)
+        {
+            if (!m_timestamp.parseTickFrequencyAttributes(timestamp_node))
+            {
+                return false;
+            }
+        }
+
+        auto timebase_node = parent.child("SimpleTimebase");
+        if (timebase_node)
+        {
+            if (!m_timebase.parse(timebase_node))
+            {
+                return false;
+            }
+        }
+        auto with_offset_node = parent.child("TimebaseWithOffset");
+        if (with_offset_node)
+        {
+            if (!m_timebase.parseWithOffset(with_offset_node))
+            {
+                return false;
+            }
+        }
+
+        if(auto message_node = parent.child("Message"))
+        {
+            m_msg = message_node.child_value();
+        }
+
+        if(auto desc_node = parent.child("Description"))
+        {
+            m_desc = desc_node.child_value();
+        }
+
+        if(auto storage_node = parent.child("StorageGroup"))
+        {
+            m_group_id = storage_node.child_value();
+        }
+
+        return true;
     }
 
     std::string Marker::generate() const

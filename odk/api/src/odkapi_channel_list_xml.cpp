@@ -5,6 +5,9 @@
 
 #include "odkuni_xpugixml.h"
 
+#include <cstring>
+#include <limits>
+
 namespace odk
 {
 
