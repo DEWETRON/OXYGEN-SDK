@@ -205,7 +205,7 @@ namespace framework
                 auto status = doc.load_string(xml_value->getValue());
                 if (status.status == pugi::status_ok)
                 {
-                    if (strcmp(doc.document_element().name(), "Constraints") == 0)
+                    if (std::strcmp(doc.document_element().name(), "Constraints") == 0)
                     {
                         for (const auto& constraint_node : doc.document_element().children())
                         {

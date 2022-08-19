@@ -4,6 +4,7 @@
 #include "odkuni_xpugixml.h"
 
 #include <cmath>
+#include <cstring>
 #include <limits>
 
 namespace
@@ -89,7 +90,7 @@ namespace odk
     bool Timebase::parse(pugi::xml_node timebase)
     {
         reset();
-        if (strcmp(timebase.name(), XML_ELEM_SIMPLE_TIMEBASE) != 0)
+        if (std::strcmp(timebase.name(), XML_ELEM_SIMPLE_TIMEBASE) != 0)
         {
             return false;
         }
@@ -107,7 +108,7 @@ namespace odk
     bool Timebase::parseWithOffset(pugi::xml_node timebase)
     {
         reset();
-        if (strcmp(timebase.name(), XML_ELEM_TIMEBASE_WITH_OFFSET) != 0)
+        if (std::strcmp(timebase.name(), XML_ELEM_TIMEBASE_WITH_OFFSET) != 0)
         {
             return false;
         }

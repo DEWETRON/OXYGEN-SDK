@@ -4,7 +4,6 @@
 #include "odkuni_xpugixml_fwd.h"
 #include "odkuni_defines.h"
 #include <pugixml.hpp>
-#include <boost/function.hpp>
 #include <string>
 
 /**

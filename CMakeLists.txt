@@ -2,12 +2,16 @@
 # Oxygen plugin sdk
 #
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 #
 # handle setup of a cmake toplevel project
 # finding libraries etc
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+
+  #
+  # Force C++17
+  set(CMAKE_CXX_STANDARD 17)
 
   #
   # studio project name
@@ -33,6 +37,7 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   #
   # Get general cmake settings
   include(CMakeSettings)
+  include(CTest)
 
   #
   # Set static runtime

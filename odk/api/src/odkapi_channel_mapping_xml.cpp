@@ -6,6 +6,7 @@
 #include "odkuni_xpugixml.h"
 
 #include <cstdint>
+#include <cstring>
 
 namespace
 {

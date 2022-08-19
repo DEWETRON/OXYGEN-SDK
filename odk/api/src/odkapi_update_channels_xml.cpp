@@ -40,12 +40,12 @@ namespace
 
     bool parseChannelGroupInfo(const pugi::xml_node& node, UpdateChannelsTelegram::ChannelGroupInfo& g)
     {
-        if (strcmp(node.name(), "Channel") == 0)
+        if (std::strcmp(node.name(), "Channel") == 0)
         {
             std::uint32_t channel_id = node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
             g = UpdateChannelsTelegram::ChannelGroupInfo(channel_id);
         }
-        else if (strcmp(node.name(), "Group") == 0)
+        else if (std::strcmp(node.name(), "Group") == 0)
         {
             std::string name = node.attribute("name").as_string();
             g = UpdateChannelsTelegram::ChannelGroupInfo(name);
@@ -118,7 +118,7 @@ namespace
         if (status.status == pugi::status_ok)
         {
             auto request_node = doc.document_element();
-            if (strcmp(request_node.name(), "UpdatePluginChannels") != 0)
+            if (std::strcmp(request_node.name(), "UpdatePluginChannels") != 0)
                 return false;
             auto version = odk::getProtocolVersion(request_node);
             if (version != odk::Version(1, 0))

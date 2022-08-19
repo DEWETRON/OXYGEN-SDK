@@ -71,7 +71,7 @@ namespace odk
         if (status.status == pugi::status_ok)
         {
             auto request_node = doc.document_element();
-            if (strcmp(request_node.name(), "UpdateConfig") != 0)
+            if (std::strcmp(request_node.name(), "UpdateConfig") != 0)
                 return false;
             auto version = odk::getProtocolVersion(request_node);
             if (version != odk::Version(1, 0))
@@ -79,7 +79,7 @@ namespace odk
 
             for (const auto channel_node : request_node.children())
             {
-                if (strcmp(channel_node.name(), "Channel") == 0)
+                if (std::strcmp(channel_node.name(), "Channel") == 0)
                 {
                     std::uint32_t local_id = channel_node.attribute("local_id").as_uint(std::numeric_limits<uint32_t>::max());
                     if (local_id != std::numeric_limits<uint32_t>::max())
@@ -379,7 +379,7 @@ namespace odk
                 {
                     //skip
                 }
-                if (strcmp(property_child_node.name(), "Constraints") == 0)
+                if (std::strcmp(property_child_node.name(), "Constraints") == 0)
                 {
                     ConstraintVec_t entries;
                     for (pugi::xml_node constraint_node : property_child_node.children())

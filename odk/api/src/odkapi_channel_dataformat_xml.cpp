@@ -134,7 +134,7 @@ namespace odk
 
     bool ChannelDataformat::parse(pugi::xml_node data_format)
     {
-        if (strcmp(data_format.name(), XML_NAME_DATAFORMAT) != 0)
+        if (std::strcmp(data_format.name(), XML_NAME_DATAFORMAT) != 0)
         {
             return false;
         }
@@ -204,7 +204,7 @@ namespace odk
 
     bool ChannelDataformatTelegram::parse(pugi::xml_node channel_node)
     {
-        if (strcmp(channel_node.name(), XML_NAME_CHANNEL) != 0)
+        if (std::strcmp(channel_node.name(), XML_NAME_CHANNEL) != 0)
         {
             return false;
         }
