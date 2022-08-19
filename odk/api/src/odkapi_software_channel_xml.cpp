@@ -184,7 +184,7 @@ namespace odk
             list_telegram.parse(xpugi::toXML(channels_node).c_str());
             for (const auto& a_channel : list_telegram.m_channels)
             {
-                auto channel_id_str = std::to_string(a_channel.m_channel_id);
+                auto channel_id_str = odk::to_string(a_channel.m_channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
                 auto ch_node = channels_node.select_node(xpath.c_str());
                 if (!ch_node)
@@ -221,7 +221,7 @@ namespace odk
         {
             for (const auto& a_channel : m_all_selected_channels_data)
             {
-                auto channel_id_str = std::to_string(a_channel.channel_id);
+                auto channel_id_str = odk::to_string(a_channel.channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
                 auto ch_node = channels_node.select_node(xpath.c_str());
                 if (!ch_node)
@@ -365,7 +365,7 @@ namespace odk
             list_telegram.parse(xpugi::toXML(channels_node).c_str());
             for (const auto& a_channel : list_telegram.m_channels)
             {
-                auto channel_id_str = std::to_string(a_channel.m_channel_id);
+                auto channel_id_str = odk::to_string(a_channel.m_channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
                 auto ch_node = channels_node.select_node(xpath.c_str());
                 if (!ch_node)
@@ -399,7 +399,7 @@ namespace odk
         {
             for (const auto& a_channel : m_all_selected_channels_data)
             {
-                auto channel_id_str = std::to_string(a_channel.channel_id);
+                auto channel_id_str = odk::to_string(a_channel.channel_id);
                 std::string xpath = "Channel[@channel_id=\"" + channel_id_str + "\"]";
                 auto ch_node = channels_node.select_node(xpath.c_str());
                 if (!ch_node)

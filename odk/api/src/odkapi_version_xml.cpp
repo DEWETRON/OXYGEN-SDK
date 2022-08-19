@@ -35,7 +35,7 @@ namespace odk
 
     std::string Version::generate() const
     {
-        return std::to_string(m_major) + "." + std::to_string(m_minor);
+        return odk::to_string(m_major) + "." + odk::to_string(m_minor);
     }
 
     Version Version::parse(const char* str)

@@ -143,33 +143,33 @@ namespace odk
         pugi::xml_document doc;
         auto timestamp_node = doc.append_child("AbsoluteTime");
         timestamp_node.append_attribute("year")
-            .set_value(std::to_string(m_year).c_str());
+            .set_value(odk::to_string(m_year).c_str());
         timestamp_node.append_attribute("month")
-            .set_value(std::to_string(m_month).c_str());
+            .set_value(odk::to_string(m_month).c_str());
         timestamp_node.append_attribute("day")
-            .set_value(std::to_string(m_day).c_str());
+            .set_value(odk::to_string(m_day).c_str());
         timestamp_node.append_attribute("hour")
-            .set_value(std::to_string(m_hour).c_str());
+            .set_value(odk::to_string(m_hour).c_str());
         timestamp_node.append_attribute("minute")
-            .set_value(std::to_string(m_minute).c_str());
+            .set_value(odk::to_string(m_minute).c_str());
         timestamp_node.append_attribute("second")
-            .set_value(std::to_string(m_second).c_str());
+            .set_value(odk::to_string(m_second).c_str());
         timestamp_node.append_attribute("nanosecond")
-            .set_value(std::to_string(m_nanosecond).c_str());
+            .set_value(odk::to_string(m_nanosecond).c_str());
 
         timestamp_node.append_attribute("nanoseconds_since_1970")
-            .set_value(std::to_string(m_nanoseconds_since_1970).c_str());
+            .set_value(odk::to_string(m_nanoseconds_since_1970).c_str());
 
         timestamp_node.append_attribute("tz_name")
             .set_value(m_timezone_name.c_str());
         timestamp_node.append_attribute("tz_location")
             .set_value(m_timezone_location.c_str());
         timestamp_node.append_attribute("tz_utc_offset_seconds")
-            .set_value(std::to_string(m_timezone_utc_offset_seconds).c_str());
+            .set_value(odk::to_string(m_timezone_utc_offset_seconds).c_str());
         timestamp_node.append_attribute("tz_std_offset_seconds")
-            .set_value(std::to_string(m_timezone_std_offset_seconds).c_str());
+            .set_value(odk::to_string(m_timezone_std_offset_seconds).c_str());
         timestamp_node.append_attribute("tz_dst_offset_seconds")
-            .set_value(std::to_string(m_timezone_dst_offset_seconds).c_str());
+            .set_value(odk::to_string(m_timezone_dst_offset_seconds).c_str());
 
         auto xml_string = xpugi::toXML(doc);
         return xml_string;

@@ -65,8 +65,8 @@ namespace
             for (const auto& map_entry : channel_id_map)
             {
                 auto mapping_entry = channel_id_map_node.append_child("ChannelMappingPair");
-                mapping_entry.append_attribute("first").set_value(std::to_string(map_entry.first).c_str());
-                mapping_entry.append_attribute("second").set_value(std::to_string(map_entry.second).c_str());
+                mapping_entry.append_attribute("first").set_value(odk::to_string(map_entry.first).c_str());
+                mapping_entry.append_attribute("second").set_value(odk::to_string(map_entry.second).c_str());
             }
 
             return true;

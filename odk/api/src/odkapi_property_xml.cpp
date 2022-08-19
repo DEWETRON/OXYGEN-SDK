@@ -202,7 +202,7 @@ namespace odk
     void Property::setValue(int value)
     {
         m_type = INTEGER;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -220,7 +220,7 @@ namespace odk
     void Property::setValue(unsigned int value)
     {
         m_type = UNSIGNED_INTEGER;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -237,7 +237,7 @@ namespace odk
 
     void Property::setValue(std::uint64_t value) {
         m_type = UNSIGNED_INTEGER64;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -253,7 +253,7 @@ namespace odk
 
     void Property::setValue(std::int64_t value) {
         m_type = INTEGER64;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -270,7 +270,7 @@ namespace odk
     void Property::setValue(double value)
     {
         m_type = FLOATING_POINT_NUMBER;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -479,7 +479,7 @@ namespace odk
     void Property::setChannelIDValue(const ChannelID& value)
     {
         m_type = CHANNEL_ID;
-        m_string_value = std::to_string(value);
+        m_string_value = odk::to_string(value);
         m_value.reset();
     }
 
@@ -1026,7 +1026,7 @@ namespace odk
         ODK_ASSERT(value_node);
         //ADD_DUMMY_DATA(value_node);
 
-        const auto value_text = std::to_string(scalar.m_val);
+        const auto value_text = odk::to_string(scalar.m_val);
         xpugi::setText(value_node, value_text);
 
         auto unit_node = parent.append_child("Unit");
@@ -1069,11 +1069,11 @@ namespace odk
 
         auto num_node = parent.append_child("Numerator");
         ODK_ASSERT(num_node);
-        xpugi::setText(num_node, std::to_string(rational.m_val.numerator()));
+        xpugi::setText(num_node, odk::to_string(rational.m_val.numerator()));
 
         auto den_node = parent.append_child("Denominator");
         ODK_ASSERT(den_node);
-        xpugi::setText(den_node, std::to_string(rational.m_val.denominator()));
+        xpugi::setText(den_node, odk::to_string(rational.m_val.denominator()));
 
         auto unit_node = parent.append_child("Unit");
         ODK_ASSERT(unit_node);
@@ -1125,7 +1125,7 @@ namespace odk
 
         auto value_element = parent.append_child("Value");
         ODK_ASSERT(value_element);
-        xpugi::setText(value_element, std::to_string(decorated_num.m_val));
+        xpugi::setText(value_element, odk::to_string(decorated_num.m_val));
 
         if (!decorated_num.m_suffix.empty())
         {
@@ -1172,7 +1172,7 @@ namespace odk
         auto range_element = parent.append_child("RangeMin");
         ODK_ASSERT(range_element);
         //ADD_DUMMY_DATA(range_element);
-        xpugi::setText(range_element, std::to_string(range.m_min));
+        xpugi::setText(range_element, odk::to_string(range.m_min));
 
         range_element = parent.append_child("RangeMinUnit");
         ODK_ASSERT(range_element);
@@ -1182,7 +1182,7 @@ namespace odk
         range_element = parent.append_child("RangeMax");
         ODK_ASSERT(range_element);
         //ADD_DUMMY_DATA(range_element);
-        xpugi::setText(range_element, std::to_string(range.m_max));
+        xpugi::setText(range_element, odk::to_string(range.m_max));
 
         range_element = parent.append_child("RangeMaxUnit");
         ODK_ASSERT(range_element);
@@ -1251,7 +1251,7 @@ namespace odk
         {
             auto item_element = list_element.append_child("Item");
             ODK_ASSERT(item_element);
-            xpugi::setText(item_element, std::to_string(value));
+            xpugi::setText(item_element, odk::to_string(value));
         }
     }
 
@@ -1330,11 +1330,11 @@ namespace odk
 
         auto x_element = parent.append_child("x");
         ODK_ASSERT(x_element);
-        xpugi::setText(x_element, std::to_string(point.first));
+        xpugi::setText(x_element, odk::to_string(point.first));
 
         auto y_element = parent.append_child("y");
         ODK_ASSERT(y_element);
-        xpugi::setText(y_element, std::to_string(point.second));
+        xpugi::setText(y_element, odk::to_string(point.second));
     }
 
     Point Property::parsePointNode(const pugi::xml_node& type_node)
@@ -1382,12 +1382,12 @@ namespace odk
             auto x_element = point_element.append_child("x");
             ODK_ASSERT(x_element);
             //ADD_DUMMY_DATA(x_element);
-            xpugi::setText(x_element, std::to_string(a_point.first));
+            xpugi::setText(x_element, odk::to_string(a_point.first));
 
             auto y_element = point_element.append_child("y");
             ODK_ASSERT(y_element);
             //ADD_DUMMY_DATA(y_element);
-            xpugi::setText(y_element, std::to_string(a_point.second));
+            xpugi::setText(y_element, odk::to_string(a_point.second));
         }
     }
 
@@ -1458,7 +1458,7 @@ namespace odk
         {
             auto id_element = list_element.append_child("ChannelID");
             ODK_ASSERT(id_element);
-            xpugi::setText(id_element, std::to_string(ch_id));
+            xpugi::setText(id_element, odk::to_string(ch_id));
         }
     }
 
@@ -1497,18 +1497,18 @@ namespace odk
             case SCALAR:
             {
                 odk::Scalar scalar = getScalarValue();
-                return std::to_string(scalar.m_val) + unitToString(scalar.m_unit);
+                return odk::to_string(scalar.m_val) + unitToString(scalar.m_unit);
             }
             case RATIONAL:
             {
                 auto rational = getRationalValue();
-                return std::to_string(rational.m_val.numerator()) + '/' + std::to_string(rational.m_val.denominator()) + unitToString(rational.m_unit);
+                return odk::to_string(rational.m_val.numerator()) + '/' + odk::to_string(rational.m_val.denominator()) + unitToString(rational.m_unit);
             }
             case RANGE:
             {
                 odk::Range range = getRangeValue();
-                return "(" + std::to_string(range.m_min) + unitToString(range.m_min_unit)
-                    + ", " + std::to_string(range.m_max) + unitToString(range.m_max_unit)
+                return "(" + odk::to_string(range.m_min) + unitToString(range.m_min_unit)
+                    + ", " + odk::to_string(range.m_max) + unitToString(range.m_max_unit)
                     + ")";
             }
             case FLOATING_POINT_NUMBER_LIST:
@@ -1519,7 +1519,7 @@ namespace odk
                 std::string ret_string{};
                 for (double v : list.m_values)
                 {
-                    ret_string.append(std::to_string(v));
+                    ret_string.append(odk::to_string(v));
                     ++index;
                     if (index < num_of_elems)
                     {
@@ -1572,9 +1572,9 @@ namespace odk
                 for (const PointList::ValueType& point : list.m_values)
                 {
                     ret_string.append("[");
-                    ret_string.append(std::to_string(point.first));
+                    ret_string.append(odk::to_string(point.first));
                     ret_string.append(", ");
-                    ret_string.append(std::to_string(point.second));
+                    ret_string.append(odk::to_string(point.second));
                     ret_string.append("]");
                     ++index;
                     if (index < num_of_elems)
@@ -1593,7 +1593,7 @@ namespace odk
                 std::string ret_string{};
                 for (const ChannelID id : list.m_values)
                 {
-                    ret_string.append(std::to_string(id));
+                    ret_string.append(odk::to_string(id));
                     ++index;
                     if (index < num_of_elems)
                     {
