@@ -9,6 +9,7 @@
 #include "wav_writer.h"
 
 #include "qml.rcc.h"
+#include "all_translations.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -29,14 +30,6 @@ R"XML(<?xml version="1.0"?>
 </OxygenPlugin>
 )XML";
 
-static const char* TRANSLATION_EN =
-R"XML(<?xml version="1.0"?>
-<TS version="2.1" language="en" sourcelanguage="en">
-    <context><name>ODK_WAV_EXPORT/</name>
-    </context>
-</TS>
-)XML";
-
 
 using namespace odk::framework;
 
@@ -51,7 +44,7 @@ public:
     static odk::RegisterExport getExportInfo()
     {
         odk::RegisterExport telegram;
-        telegram.m_format_name = "WAV";
+        telegram.m_format_name = "Wave (*.wav)";
         telegram.m_format_id = "WAV";
         telegram.m_file_extension = "wav";
         telegram.m_ui_item_small = "ExportSettings";
@@ -173,8 +166,8 @@ public:
 
     void registerResources() final
     {
-        addTranslation(TRANSLATION_EN);
         addQtResources(plugin_resources::QML_RCC_data, plugin_resources::QML_RCC_size);
+        plugin_resources::addAllTranslations(getHost());
     }
 };
 

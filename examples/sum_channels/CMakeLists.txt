@@ -43,7 +43,7 @@ include_directories(
 )
 
 set(SOURCE_FILES
-  odkex_sum_channels
+  odkex_sum_channels.cpp
 )
 source_group("Source Files" FILES ${SOURCE_FILES})
 
