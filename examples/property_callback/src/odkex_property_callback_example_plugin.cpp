@@ -112,7 +112,7 @@ public:
         m_enable_callback = true;
     }
 
-    void setLocalChannelId(int id)
+    void setLocalChannelId(uint32_t id)
     {
         m_local_id = id;
     }
@@ -126,7 +126,7 @@ public:
 
 private:
     bool m_enable_callback;
-    int m_local_id;
+    uint32_t m_local_id;
     CallbackExampleChannel* m_parent;
 };
 
@@ -149,7 +149,7 @@ public:
         return telegram;
     }
 
-    InitResult init(const InitParams& params) override
+    InitResult init(const InitParams&) override
     {
         return { true };
     }
@@ -217,7 +217,7 @@ public:
         return true;
     }
 
-    void create(odk::IfHost* host) override
+    void create(odk::IfHost*) override
     {
         getRootChannel()->setDefaultName("Callback Instance channel")
             .setDeletable(true);
@@ -245,12 +245,12 @@ public:
         channel->setDeletable(true);
     }
 
-    void markInputChannelChange(std::uint64_t local_channel_id)
+    void markInputChannelChange(std::uint32_t local_channel_id)
     {
         m_channels_changed.insert(local_channel_id);
     }
 
-    void initTimebases(odk::IfHost* host) override
+    void initTimebases(odk::IfHost*) override
     {
         if (getInputChannelProxies().size() > 0)
         {
@@ -270,7 +270,7 @@ public:
         }
     }
 
-    void prepareProcessing(odk::IfHost* host) override
+    void prepareProcessing(odk::IfHost*) override
     {
     }
 
@@ -284,12 +284,12 @@ public:
     }
 
 
-    void process(ProcessingContext& context, odk::IfHost *host) override
+    void process(ProcessingContext&, odk::IfHost*) override
     {
     }
 
 private:
-    std::set<std::uint64_t> m_channels_changed;
+    std::set<std::uint32_t> m_channels_changed;
 
 };
 
@@ -301,7 +301,7 @@ public:
     {
     }
 
-    bool validateInputChannels(const std::vector<InputChannel::InputChannelData>& input_channel_data, std::vector<std::uint64_t>& invalid_channels) final
+    bool validateInputChannels(const std::vector<InputChannel::InputChannelData>&, std::vector<std::uint64_t>&) final
     {
         return true;
     }

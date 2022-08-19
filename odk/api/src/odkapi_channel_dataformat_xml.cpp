@@ -3,6 +3,7 @@
 #include "odkapi_channel_dataformat_xml.h"
 #include "odkapi_utils.h"
 #include "assert_bimap_size.h"
+#include "odkuni_bimap.h"
 #include "odkuni_xpugixml.h"
 
 #include <boost/assign/list_of.hpp>

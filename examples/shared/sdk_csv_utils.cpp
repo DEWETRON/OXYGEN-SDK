@@ -2,8 +2,6 @@
 
 #include "sdk_csv_utils.h"
 
-#include <boost/algorithm/hex.hpp>
-
 #include <algorithm>
 #include <limits>
 #include <cctype>
@@ -174,8 +172,48 @@ std::vector<std::string> tokenize(const std::string& str, const std::string& del
 std::vector<uint8_t> AsciiHexToBits(const std::string& input)
 {
     std::vector<uint8_t> result;
-    result.reserve(1 + (input.length() / 2));
-    boost::algorithm::unhex(input, std::back_inserter(result));
+    result.reserve((input.length() / 2));
+    auto i = input.begin();
+    auto decode = [&i, input](uint8_t& val) {
+        if (i != input.end())
+        {
+            auto ch = *i;
+            ++i;
+            if (ch <= '9' && ch >= '0')
+            {
+                val = ch - '0';
+            }
+            else if (ch <= 'F' && ch >= 'A')
+            {
+                val = ch - 'A' + 10;
+            }
+            else if (ch <= 'f' && ch >= 'a')
+            {
+                val = ch - 'a' + 10;
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    };
+
+    while (true)
+    {
+        uint8_t val1 = 0, val2 = 0;
+        if (decode(val1) && decode(val2))
+        {
+            auto val = static_cast<uint8_t>((val1 << 4) + val2);
+            result.push_back(val);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     return result;
 }
 

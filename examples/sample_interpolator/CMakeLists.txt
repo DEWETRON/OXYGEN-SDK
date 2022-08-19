@@ -15,6 +15,10 @@ set("${LIBNAME}_GUID_CMAKE" "8A08FFE5-2E71-4A14-8BF5-334873504A8A" CACHE INTERNA
 # finding libraries etc
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
+  #
+  # Force C++17
+  set(CMAKE_CXX_STANDARD 17)
+
   # project name
   project(${LIBNAME})
 
@@ -28,8 +32,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   SetLinkStaticRuntime()
   SetCommonOutputDirectory()
-  SetBoostOptions()
-  find_package(Boost REQUIRED)
 
   AddUniqueTargetFromSubdirectory(pugixml "${SW_APP_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
   AddUniqueTargetFromSubdirectory(odk "${ODK_ROOT}/odk" "odk")
@@ -37,11 +39,6 @@ else()
   include(OxygenPluginFunctions)
 endif()
 
-
-include_directories(
-  SYSTEM
-  ${Boost_INCLUDE_DIRS}
-)
 
 set(SOURCE_FILES
   odkex_sample_interpolator.cpp

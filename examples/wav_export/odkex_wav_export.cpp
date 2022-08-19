@@ -2,19 +2,14 @@
 
 #include "odkfw_export_plugin.h"
 #include "odkfw_properties.h"
-#include "odkfw_property_list_utils.h"
-#include "odkbase_message_return_value_holder.h"
-#include "odkapi_utils.h"
 
 #include "wav_writer.h"
 
 #include "qml.rcc.h"
 #include "all_translations.h"
 
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
-#include <chrono>
 #include <ios>
 #include <thread>
 
@@ -37,9 +32,7 @@ class WavExport : public ExportInstance
 {
 public:
 
-    WavExport()
-    {
-    }
+    WavExport() = default;
 
     static odk::RegisterExport getExportInfo()
     {
@@ -52,7 +45,7 @@ public:
         return telegram;
     }
 
-    void validate(const ValidationContext& context, odk::ValidateExportResponse& response) const
+    void validate(const ValidationContext& context, odk::ValidateExportResponse& response) const final
     {
         bool no_export_possible = true;
         for (auto& channel_id : context.m_properties.m_channels)
@@ -77,7 +70,7 @@ public:
         response.m_success = !no_export_possible;
     }
 
-    bool exportData(const ProcessingContext& context)
+    bool exportData(const ProcessingContext& context) final
     {
         WavFormatTag type = WavFormatTag::WAV_FORMAT_FLOAT;
         std::size_t sample_size = sizeof(float)*8;
@@ -148,7 +141,7 @@ public:
         return false;
     }
 
-    void cancel()
+    void cancel() final
     {
 
     }
@@ -160,9 +153,7 @@ private:
 class WavExportPlugin : public ExportPlugin<WavExport>
 {
 public:
-    WavExportPlugin()
-    {
-    }
+    WavExportPlugin() = default;
 
     void registerResources() final
     {

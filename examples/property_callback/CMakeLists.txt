@@ -27,8 +27,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   SetLinkStaticRuntime()
   SetCommonOutputDirectory()
-  SetBoostOptions()
-  find_package(Boost REQUIRED)
 
   AddUniqueTargetFromSubdirectory(pugixml "${SW_APP_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
   AddUniqueTargetFromSubdirectory(odk "${ODK_ROOT}/odk" "odk")
@@ -37,11 +35,6 @@ else()
 endif()
 
 find_package(Qt5Core)
-
-include_directories(
-  SYSTEM
-  ${Boost_INCLUDE_DIRS}
-)
 
 include_directories(
   inc

@@ -10,6 +10,8 @@
 #include "qml.rcc.h"
 #include "sdk_csv_utils.h"
 
+#include <codecvt>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <string.h>
@@ -51,6 +53,15 @@ R"XML(<?xml version="1.0"?>
 static const char* KEY_INPUT_FILE = "ODK_REPLAY_SYNC_SCALAR/InputFile";
 
 using namespace odk::framework;
+
+namespace
+{
+    std::wstring toWString(const std::string& utf8s)
+    {
+        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_converter;
+        return wstring_converter.from_bytes(utf8s);
+    }
+}
 
 class ReplayChannel : public SoftwareChannelInstance
 {
@@ -107,7 +118,9 @@ public:
         // channel is only valid if we can properly parse the specified csv file
         // in production code the parsing should not be done on every config change, but only if the filename was updated
         CSVNumberReader csv;
-        std::ifstream input_stream(m_input_file->getValue());
+        const auto filename =
+            std::filesystem::path(toWString(m_input_file->getValue()));
+        std::ifstream input_stream(filename.native());
 
         m_next_tick = std::numeric_limits<uint64_t>::max();
         m_values.clear();
@@ -229,10 +242,11 @@ public:
 
     std::uint64_t checkCSVFile(const odk::PropertyList& params, odk::PropertyList& returns)
     {
-        const auto filename = params.getString("filename");
+        const auto filename =
+            std::filesystem::path(toWString(params.getString("filename")));
 
         CSVNumberReader csv;
-        std::ifstream input_stream(filename);
+        std::ifstream input_stream(filename.native());
         const bool valid = input_stream && csv.parse(input_stream) && !csv.m_values.empty();
 
         returns.setBool("valid", valid);

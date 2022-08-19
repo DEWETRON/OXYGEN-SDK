@@ -85,7 +85,7 @@ public:
         return { true };
     }
 
-    void initTimebases(odk::IfHost* host) override
+    void initTimebases(odk::IfHost*) override
     {
         m_timebase_frequency = 0.0;
 
