@@ -1,14 +1,13 @@
-
+=========================
 Example: Sync File Replay
--------------------------
+=========================
 
 This example channel reads floating point values from the first column of a CSV file and writes them to a synchronous output channel.
 Output frequency can be configured using the Sample rate setting. Playback loops when the end of the file is reached.
 
-
+---------
 Features
-~~~~~~~~
-
+---------
   * Register a new Software Channel Type in Oxygen
   * Plugin channel provides editable filename (string) and sample rate (scalar) config items
   * Custom config item provides an english display name

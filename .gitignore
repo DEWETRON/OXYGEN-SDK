@@ -1,8 +1,9 @@
 ﻿3rdparty/boost*
 3rdparty/qt/bin
-*.zip
+*.bak
 *.exe
 *.msi
+*.zip
 **/build
 qt/
 **/_build

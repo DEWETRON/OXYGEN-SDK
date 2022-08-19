@@ -1,6 +1,6 @@
-
+=======================================
 Template: Empty Software Channel Plugin
----------------------------------------
+=======================================
 
 This is an empty plugin-project to be used as a template for
 writing your own plugins.
@@ -15,13 +15,16 @@ Those marked elements are also marked with an identifier
 
 This replacement is necessary in both - the cmake file, and in the \*.cpp file.
 
+-----------------------------------------
+Descriptive Legend of Elements to Fill In
+-----------------------------------------
 
-
+---------------------------
 Elements in the \*.cpp File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 Plugin_Manifest
-~~~~~~~~~~~~~~~
+---------------
 
 **$UNIQUE_PLUGIN_NAME$**: 
   a (short)name of the plugin. This is only used internally,
@@ -77,10 +80,8 @@ Plugin_Manifest
 
   e.g.: "5.0.2"
 
-
 getSoftwareChannelInfo()
-~~~~~~~~~~~~~~~~~~~~~~~~
-
+------------------------
 **$ADD_INSTANCE_DISPLAY_NAME$**:
   This name will be displayed in the add-channel-dialog
   (The '+' sign, in the channel-setup screen)
@@ -97,9 +98,9 @@ getSoftwareChannelInfo()
   This description will be shown on the righthand-side of the add-channel-dialog.
   The string does not support control-characters for carriage-return/line-feed.
 
-
+-----------------------------------
 Elements in the CMakeLists.txt File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 *$LIBNAME$*
   Name of the project and the resulting .plugin

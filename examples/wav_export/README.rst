@@ -1,17 +1,17 @@
-
+===================
 Example: WAV Export
--------------------
+===================
 
 This example plugin exports channel data as WAV file
 
-
+--------
 Features
-~~~~~~~~
-
+--------
   * Register custom exporter in Oxygen
   * Simple WAV file writer
   * Write channel samples to WAV file
   * UI extension to change format settings
+  * Using external translation files
 
 ::
 

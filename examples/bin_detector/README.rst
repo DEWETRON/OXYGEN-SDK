@@ -1,6 +1,6 @@
-
+=====================
 Example: Bin Detector
----------------------
+=====================
 
 This example plugin detects the minimum and/or maximum values with the
 corresponding bins out of an Oxygen vector channel (e.g. a fft channel).
@@ -8,10 +8,9 @@ All values and bins are written to separate asynchronous output channels.
 Detecting min/max values and bins can be configured through the plugin
 group channel setup page.
 
-
+---------
 Features
-~~~~~~~~
-
+---------
   * Register a new Software Channel Type in Oxygen
   * Plugin group channel provides selectable config items for detecting min
     and/or max values and their corresponding bins.
