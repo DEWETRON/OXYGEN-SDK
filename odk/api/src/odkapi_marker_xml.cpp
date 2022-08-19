@@ -108,19 +108,20 @@ namespace odk
         , m_msg{}
         , m_desc{}
         , m_group_id{}
+        , m_timebase{}
         , m_is_mutable(true)
     {
     }
 
     Marker::Marker( std::uint64_t ticks
-                                     ,double frequency
+                    , const odk::Timebase& m_timebase
                                      ,const std::string& type
                                      ,const std::string& message
                                      ,const std::string& description
                                      ,const std::string& group_id
                                      ,bool is_mutable
                                       )
-        : m_timestamp(ticks, frequency)
+        : m_timestamp(ticks, m_timebase.m_frequency)
         , m_type(type)
         , m_msg(message)
         , m_desc(description)
@@ -171,6 +172,17 @@ namespace odk
                 m_timestamp.parseTickFrequencyAttributes(timestamp_node);
             }
 
+            auto timebase_node = parent.child("SimpleTimebase");
+            if (timebase_node)
+            {
+                m_timebase.parse(timebase_node);
+            }
+            auto with_offset_node = parent.child("TimebaseWithOffset");
+            if (with_offset_node)
+            {
+                m_timebase.parseWithOffset(with_offset_node);
+            }
+
             if(auto message_node = parent.child("Message"))
             {
                 m_msg = message_node.child_value();
@@ -209,6 +221,8 @@ namespace odk
 
         auto timestamp_node = marker_node.append_child("Timestamp");
         m_timestamp.writeTickFrequencyAttributes(timestamp_node);
+
+        m_timebase.store(marker_node);
 
         if (!m_msg.empty())
         {

@@ -3,6 +3,7 @@
 
 #define ODK_EXTENSION_FUNCTIONS //enable C++ integration
 
+#include "odkapi_timebase_xml.h"
 #include "odkbase_if_host_fwd.h"
 #include "odkbase_basic_values.h"
 
@@ -83,4 +84,34 @@ namespace odk
     {
         return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
     }
+
+    /**
+     * Convert from seconds to ticks from a timebase with offset
+     *
+     * @param time      sample time in seconds
+     * @param timebase  timebase with sample rate in Hz and offset
+     * @return          tick value
+     */
+    ODK_NODISCARD inline std::uint64_t convertTimeToTickAtOrAfter(double time, const odk::Timebase& timebase)
+    {
+        if (time == 0.0)
+        {
+            return 0;
+        }
+        return convertTimeToTickAtOrAfter(time - timebase.m_offset, timebase.m_frequency);
+    }
+
+    /**
+     * Convert from tick values to time in seconds from a timebase with offset
+     *
+     * @param tick      sample position in ticks
+     * @param timebase  timebase with sample rate in Hz and offset
+     * @return          tick value converted to seconds
+     */
+    ODK_NODISCARD inline double convertTickToTime(std::uint64_t tick, const odk::Timebase& timebase)
+    {
+        const auto offset = timebase.m_offset;
+        return convertTickToTime(tick, timebase.m_frequency) + offset;
+    }
+
 }

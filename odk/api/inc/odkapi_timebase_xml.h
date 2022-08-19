@@ -17,6 +17,7 @@ namespace odk
         {
             NONE,
             SIMPLE,
+            TIMEBASE_WITH_OFFSET
         };
 
         //create a Timebase of type NONE
@@ -25,8 +26,14 @@ namespace odk
         //create a SIMPLE Timebase with a frequency
         explicit Timebase(double frequency);
 
+        //create a Timebase with a frequency and a offset
+        Timebase(double frequency, double offset);
+
         //parse any of the supported timebase nodes
         bool parse(pugi::xml_node node);
+
+        //read timebase  with offset information from the parent element
+        bool parseWithOffset(pugi::xml_node node);
 
         //read timebase information from the parent element
         bool extract(pugi::xml_node parent_node);
@@ -43,6 +50,7 @@ namespace odk
 
         TimebaseType m_type;
         double m_frequency;
+        double m_offset;
     };
 
 }

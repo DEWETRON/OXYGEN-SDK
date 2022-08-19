@@ -2,6 +2,7 @@
 #pragma once
 
 #include "odkapi_timestamp_xml.h"
+#include "odkapi_timebase_xml.h"
 #include "odkapi_types.h"
 #include "odkuni_xpugixml.h"
 
@@ -64,7 +65,7 @@ namespace odk
     public:
         Marker();
         Marker( std::uint64_t ticks,
-                double frequency,
+                const odk::Timebase& m_timebase,
                 const std::string& type,
                 const std::string& message,
                 const std::string& description,
@@ -81,6 +82,7 @@ namespace odk
         std::string m_msg;
         std::string m_desc;
         std::string m_group_id;
+        odk::Timebase m_timebase;
         bool m_is_mutable;
 
         void generateMarker(pugi::xml_node& parent) const;

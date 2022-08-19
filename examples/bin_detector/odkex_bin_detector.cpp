@@ -239,11 +239,10 @@ public:
 
     void initTimebases(odk::IfHost* host) override
     {
-        const auto master_timestamp = getMasterTimestamp(host);
-
         m_timebase_frequency = 0.0;
 
-        for(auto& input_channel : getInputChannelProxies())
+        const auto channel_id = m_input_channel->getValue();
+        if(auto input_channel = getInputChannelProxy(channel_id))
         {
             const auto timebase = input_channel->getTimeBase();
             m_timebase_frequency = std::max(m_timebase_frequency, timebase.m_frequency);
@@ -255,50 +254,36 @@ public:
         }
     }
 
-    uint64_t getTickAtOrAfter(double time, double frequency)
-    {
-        if (time == 0.0)
-        {
-            return 0;
-        }
-        return static_cast<uint64_t>(std::nextafter(std::nextafter(time, 0.0) * frequency, std::numeric_limits<double>::lowest())) + 1;
-    }
-
     void process(ProcessingContext& context, odk::IfHost *host) override
     {
         const auto channel_id = m_input_channel->getValue();
         auto channel_iterator = context.m_channel_iterators[channel_id];
-        auto timebase = getInputChannelProxy(channel_id)->getTimeBase();
 
-        uint64_t start_sample = getTickAtOrAfter(context.m_window.first, m_timebase_frequency);
-        uint64_t end_sample = getTickAtOrAfter(context.m_window.second, m_timebase_frequency);
-
-        uint64_t sample_index = 0;
-        while ((start_sample + sample_index) < end_sample)
+        while (channel_iterator.valid())
         {
+            auto output_timestamp = channel_iterator.timestamp();
             auto data = static_cast<const double*> (channel_iterator.data());
             auto result = std::minmax_element(data, data+m_dimension);
             if (m_min_channels.m_value_channel && (m_min_channels.m_value_channel->getUsedProperty()->getValue()))
             {
-                addSample(host, m_min_channels.m_value_channel->getLocalId(), start_sample + sample_index, result.first, sizeof(double));
+                addSample(host, m_min_channels.m_value_channel->getLocalId(), output_timestamp, result.first, sizeof(double));
             }
             if (m_min_channels.m_bin_channel && (m_min_channels.m_bin_channel->getUsedProperty()->getValue()))
             {
                 float offset = static_cast<float>(result.first - data);
-                addSample(host, m_min_channels.m_bin_channel->getLocalId(), start_sample + sample_index, &offset, sizeof(float));
+                addSample(host, m_min_channels.m_bin_channel->getLocalId(), output_timestamp, &offset, sizeof(float));
             }
             if (m_max_channels.m_value_channel && (m_max_channels.m_value_channel->getUsedProperty()->getValue()))
             {
-                addSample(host, m_max_channels.m_value_channel->getLocalId(), start_sample + sample_index, result.second, sizeof(double));
+                addSample(host, m_max_channels.m_value_channel->getLocalId(), output_timestamp, result.second, sizeof(double));
             }
             if (m_max_channels.m_value_channel && (m_max_channels.m_bin_channel->getUsedProperty()->getValue()))
             {
                 float offset = static_cast<float>(result.second - data);
-                addSample(host, m_max_channels.m_bin_channel->getLocalId(), start_sample + sample_index, &offset, sizeof(float));
+                addSample(host, m_max_channels.m_bin_channel->getLocalId(), output_timestamp, &offset, sizeof(float));
             }
 
             ++channel_iterator;
-            ++sample_index;
         }
     }
 
