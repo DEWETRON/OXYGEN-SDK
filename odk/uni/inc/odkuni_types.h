@@ -25,7 +25,7 @@ namespace odk
             assign(0, 1);
         }
 
-        rational(const typename IntType& num, const typename IntType& den = 1)
+        rational(const IntType& num, const IntType& den = 1)
         {
             assign(num, den);
         }

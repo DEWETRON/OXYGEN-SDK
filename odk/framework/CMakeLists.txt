@@ -6,11 +6,6 @@ include(CMakeSettings)
 set(LIBNAME odk_framework)
 
 include_directories(
-    SYSTEM
-    ${Boost_INCLUDE_DIRS}
-)
-
-include_directories(
   inc
 )
 

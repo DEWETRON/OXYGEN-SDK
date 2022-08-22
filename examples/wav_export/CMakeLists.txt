@@ -81,6 +81,6 @@ SetPluginOutputOptions(${LIBNAME})
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_examples/ex_wav_export")
 set_target_properties(${LIBNAME}_qml PROPERTIES FOLDER "odk_examples/ex_wav_export")
 
-if (NOT GITHUB_REPO)
+if (WITH_ODK_TESTS)
   add_subdirectory(unit_tests)
 endif()

@@ -64,7 +64,7 @@ namespace framework
             m_stream_reader.setStreamDescriptor(m_dataset_descriptor.m_stream_descriptors.at(0));
         }
 
-        std::string channel_context = odk::queries::OxygenChannels + ("#" + std::to_string(m_channel->getChannelId()));
+        std::string channel_context = odk::queries::OxygenChannels + ("#" + odk::to_string(m_channel->getChannelId()));
         auto data_format_xml = m_host->getValue<IfXMLValue>(channel_context.c_str(), "DataFormat");
         odk::ChannelDataformat dataformat;
         if (dataformat.parse(data_format_xml->asStringView()))

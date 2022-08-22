@@ -127,6 +127,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'init': " << e.what());
         }
         catch (...)
@@ -203,6 +204,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'initInstance': " << e.what());
         }
         catch (...)
@@ -247,6 +249,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'initTimebases': " << e.what());
         }
         catch (...)
@@ -284,6 +287,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'prepareProcessing': " << e.what());
         }
         catch (...)
@@ -323,6 +327,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'stopProcessing': " << e.what());
         }
         catch (...)
@@ -482,6 +487,7 @@ namespace framework
                     }
                     catch (const std::exception& e)
                     {
+                        ODK_UNUSED(e);
                         ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
                         ret = odk::error_codes::UNHANDLED_EXCEPTION;
                     }
@@ -506,6 +512,7 @@ namespace framework
             }
             catch (const std::exception& e)
             {
+                ODK_UNUSED(e);
                 ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
                 ret = odk::error_codes::UNHANDLED_EXCEPTION;
             }
@@ -523,6 +530,7 @@ namespace framework
             }
             catch (const std::exception& e)
             {
+                ODK_UNUSED(e);
                 ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
                 ret = odk::error_codes::UNHANDLED_EXCEPTION;
             }

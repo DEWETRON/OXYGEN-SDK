@@ -5,10 +5,7 @@
 #include "odkapi_types.h"
 #include "odkapi_version_xml.h"
 #include "odkuni_defines.h"
-
-#include <boost/lexical_cast.hpp>
-#include <boost/rational.hpp>
-#include <boost/shared_ptr.hpp>
+#include "odkuni_types.h"
 
 #include <cstdint>
 #include <memory>
@@ -30,7 +27,7 @@ namespace odk
 
     struct Rational
     {
-        using value_type = boost::rational<int64_t>;
+        using value_type = odk::rational<int64_t>;
         Rational();
 
         Rational(const value_type& val, const std::string& unit);
@@ -220,70 +217,6 @@ namespace odk
         ODK_NODISCARD bool operator==(Property const& other) const;
         ODK_NODISCARD bool sameValue(Property const& other) const;
 
-        template <typename T, typename=void>
-        struct IsLexCastable : std::false_type {};
-
-        template <typename T>
-        struct IsLexCastable<T,
-                             decltype(void(std::declval<std::ostream&>() << std::declval<T>()))>
-            : std::true_type {};
-
-        template<class PROPERTY_TYPE>
-        typename std::enable_if<IsLexCastable<PROPERTY_TYPE>::value, PROPERTY_TYPE>::type cast() const
-        {
-            try
-            {
-
-                if(m_type == BOOLEAN)
-                {
-                    return boost::lexical_cast<PROPERTY_TYPE>(getBoolValue());
-                }
-                if(m_value)
-                {
-                    return *std::static_pointer_cast<PROPERTY_TYPE>(m_value);
-                }
-                else
-                {
-                    return boost::lexical_cast<PROPERTY_TYPE>(m_string_value);
-                }
-            }
-            catch(...)
-            {
-                throw std::runtime_error("");
-            }
-        }
-
-        template<class PROPERTY_TYPE>
-        typename std::enable_if<!IsLexCastable<PROPERTY_TYPE>::value, PROPERTY_TYPE>::type cast() const
-        {
-            if(m_value)
-            {
-                return *std::static_pointer_cast<PROPERTY_TYPE>(m_value);
-            }
-            throw std::runtime_error("");
-        }
-
-        template<class PROPERTY_TYPE>
-        PROPERTY_TYPE getValueStrict() const
-        {
-            if (m_type != getPropertyTypeFromValue(PROPERTY_TYPE()))
-            {
-                throw std::runtime_error("");
-            }
-            return cast<PROPERTY_TYPE>();
-        }
-
-        template<class PROPERTY_TYPE>
-        PROPERTY_TYPE getValue() const
-        {
-            if (m_value && m_type != getPropertyTypeFromValue(PROPERTY_TYPE()))
-            {
-                throw std::runtime_error("");
-            }
-            return cast<PROPERTY_TYPE>();
-        }
-
-
         /**
          * Returns true, if the data in the property is valid
          */
@@ -469,7 +402,7 @@ namespace odk
         void setValue(const PointList& value);
 
         /**
-         * Sets the value of this property as boost::rational
+         * Sets the value of this property as rational
          */
         void setValue(const Rational& value);
 
