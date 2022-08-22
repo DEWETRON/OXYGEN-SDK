@@ -1,42 +1,41 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_types.h"
+#include "odkuni_bimap.h"
 
-#include <boost/assign/list_of.hpp>
-#include <boost/bimap.hpp>
 #include <string>
 
 namespace odk
 {
-    typedef boost::bimap<DataSetMode, std::string> DataSetModeStringMap;
+    typedef odk::SimpleBiMap<DataSetMode, std::string> DataSetModeStringMap;
 
-    static const DataSetModeStringMap DATAMODE_TYPE_MAP = boost::assign::list_of<DataSetModeStringMap::relation>
-        (odk::DataSetMode::NORMAL, "NORMAL")
-        (odk::DataSetMode::SKIP, "SKIP")
-        (odk::DataSetMode::AVERAGE, "AVERAGE")
-        (odk::DataSetMode::REDUCED, "REDUCED")
-        ;
+    static const DataSetModeStringMap DATAMODE_TYPE_MAP = {
+        {odk::DataSetMode::NORMAL, "NORMAL"},
+        {odk::DataSetMode::SKIP, "SKIP"},
+        {odk::DataSetMode::AVERAGE, "AVERAGE"},
+        {odk::DataSetMode::REDUCED, "REDUCED"},
+    };
 
-    typedef boost::bimap<odk::DataSetType, std::string> DataSetTypeStringMap;
+    typedef odk::SimpleBiMap<odk::DataSetType, std::string> DataSetTypeStringMap;
 
-    static const DataSetTypeStringMap DATASETTYPE_MAP = boost::assign::list_of<DataSetTypeStringMap::relation>
-        (odk::DataSetType::SCALED, "SCALED")
-        (odk::DataSetType::RAW, "RAW")
-        ;
+    static const DataSetTypeStringMap DATASETTYPE_MAP = {
+        {odk::DataSetType::SCALED, "SCALED"},
+        {odk::DataSetType::RAW, "RAW"},
+    };
 
-    typedef boost::bimap<odk::StreamPolicy, std::string> StreamPolicyStringMap;
+    typedef odk::SimpleBiMap<odk::StreamPolicy, std::string> StreamPolicyStringMap;
 
-    static const StreamPolicyStringMap STREAM_POLICY_MAP = boost::assign::list_of<StreamPolicyStringMap::relation>
-        (odk::StreamPolicy::EXACT, "EXACT")
-        (odk::StreamPolicy::RELAXED, "RELAXED")
-        ;
+    static const StreamPolicyStringMap STREAM_POLICY_MAP = {
+        {odk::StreamPolicy::EXACT, "EXACT"},
+        {odk::StreamPolicy::RELAXED, "RELAXED"},
+    };
 
-    typedef boost::bimap<odk::StreamType, std::string> StreamTypeStringMap;
+    typedef odk::SimpleBiMap<odk::StreamType, std::string> StreamTypeStringMap;
 
-    static const StreamTypeStringMap STREAM_TYPE_MAP = boost::assign::list_of<StreamTypeStringMap::relation>
-        (odk::StreamType::PUSH, "Push")
-        (odk::StreamType::PULL, "Pull")
-        ;
+    static const StreamTypeStringMap STREAM_TYPE_MAP = {
+        {odk::StreamType::PUSH, "Push"},
+        {odk::StreamType::PULL, "Pull"},
+    };
 
     std::string dataSetModeToString(const DataSetMode& mode)
     {

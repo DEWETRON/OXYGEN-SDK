@@ -191,15 +191,15 @@ BOOST_AUTO_TEST_CASE(parse_generate_parse_data_start_request)
 
     BOOST_CHECK_EQUAL(data_start_request.m_id, 418);
     BOOST_CHECK(data_start_request.m_start);
-    BOOST_CHECK_EQUAL(data_start_request.m_start.get(), 0.0);
-    BOOST_CHECK_EQUAL(data_start_request.m_block_duration.get(), 0.1);
+    BOOST_CHECK_EQUAL(*data_start_request.m_start, 0.0);
+    BOOST_CHECK_EQUAL(*data_start_request.m_block_duration, 0.1);
 
     BOOST_CHECK(data_start_request.parse(data_start_request.generate().c_str()));
 
     BOOST_CHECK_EQUAL(data_start_request.m_id, 418);
     BOOST_CHECK(data_start_request.m_start);
-    BOOST_CHECK_EQUAL(data_start_request.m_start.get(), 0.0);
-    BOOST_CHECK_EQUAL(data_start_request.m_block_duration.get(), 0.1);
+    BOOST_CHECK_EQUAL(*data_start_request.m_start, 0.0);
+    BOOST_CHECK_EQUAL(*data_start_request.m_block_duration, 0.1);
 }
 
 BOOST_AUTO_TEST_CASE(parse_generate_parse_data_start_request_optional)
@@ -217,13 +217,13 @@ BOOST_AUTO_TEST_CASE(parse_generate_parse_data_start_request_optional)
 
     BOOST_CHECK_EQUAL(data_start_request.m_id, 418);
     BOOST_CHECK(!data_start_request.m_start);
-    BOOST_CHECK_EQUAL(data_start_request.m_block_duration.get(), 0.1);
+    BOOST_CHECK_EQUAL(*data_start_request.m_block_duration, 0.1);
 
     BOOST_CHECK(data_start_request.parse(data_start_request.generate().c_str()));
 
     BOOST_CHECK_EQUAL(data_start_request.m_id, 418);
     BOOST_CHECK(!data_start_request.m_start);
-    BOOST_CHECK_EQUAL(data_start_request.m_block_duration.get(), 0.1);
+    BOOST_CHECK_EQUAL(*data_start_request.m_block_duration, 0.1);
 }
 
 BOOST_AUTO_TEST_CASE(parse_generate_parse_data_stop_request)

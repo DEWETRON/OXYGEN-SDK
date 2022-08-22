@@ -4,7 +4,6 @@
 #include "odkapi_types.h"
 #include "odkapi_property_list_xml.h"
 
-#include <boost/optional.hpp>
 #include <cstdint>
 #include <string>
 #include <set>

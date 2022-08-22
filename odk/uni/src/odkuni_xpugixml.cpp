@@ -1,19 +1,12 @@
 // Copyright (c) DEWETRON GmbH 2015
 
-#include "odkuni_xpugixml.h"
-
 #include "odkuni_assert.h"
+#include "odkuni_xpugixml.h"
+#include "odkuni_string_util.h"
 
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/range/adaptor/reversed.hpp>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
-
-#include <sstream>
 #include <fstream>
+#include <memory>
+#include <sstream>
 
 namespace xpugi
 {
@@ -50,7 +43,7 @@ namespace xpugi
 
     pugi::xml_document_ptr createDocument()
     {
-        return boost::make_shared<pugi::xml_document>();
+        return std::make_shared<pugi::xml_document>();
     }
 
     pugi::xml_document_ptr createDocument(const pugi::xml_document& src_doc)
@@ -129,7 +122,7 @@ namespace xpugi
         priv::getTextImpl(node, text);
 
         // trim whitespace and return
-        boost::algorithm::trim(text);
+        odk::trim(text);
         return text;
     }
 
@@ -137,7 +130,7 @@ namespace xpugi
     {
         std::string text = attr.value();
         // trim whitespace and return
-        boost::algorithm::trim(text);
+        odk::trim(text);
         return text;
     }
 
@@ -217,7 +210,7 @@ namespace xpugi
         }
 
         // trim whitespace and return
-        boost::algorithm::trim(text);
+        odk::trim(text);
         return text;
     }
 
@@ -422,7 +415,7 @@ namespace xpugi
             for (auto child_it = node.begin();
                  child_it != node.end(); ++child_it)
             {
-                if (boost::equals(child_it->name(), name))
+                if (name == child_it->name())
                 {
                     return *child_it;
                 }
@@ -672,6 +665,7 @@ namespace xpugi
         auto attribute = node.append_attribute(name.c_str());
         ODK_ASSERT(attribute);
         bool success = attribute.set_value(value.c_str());
+        ODK_UNUSED(success);
         ODK_ASSERT(success);
     }
 

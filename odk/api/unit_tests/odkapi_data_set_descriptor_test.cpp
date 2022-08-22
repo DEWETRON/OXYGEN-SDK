@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(parse_generate)
                 </StreamDescriptor>
                 <StreamDescriptor stream_id="42">
                     <Channel channel_id="1234" size="2" stride="2" dimension="1" type="16bit_sint">
-                        <Scaling>   
+                        <Scaling>
                             <Linear factor="4" offset="16"/>
                         </Scaling>
                     </Channel>
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(parse_generate)
     BOOST_CHECK_EQUAL(data_set.m_stream_descriptors.at(1).m_channel_descriptors.at(0).m_scaling.at(0).m_offset, 16);
 
     BOOST_CHECK_EQUAL(data_set.m_stream_descriptors.at(1).m_channel_descriptors.at(1).m_channel_id, 78);
-    BOOST_CHECK_EQUAL(data_set.m_stream_descriptors.at(1).m_channel_descriptors.at(1).m_timestamp_position.get(), -8);
+    BOOST_CHECK_EQUAL(*data_set.m_stream_descriptors.at(1).m_channel_descriptors.at(1).m_timestamp_position, -8);
 
     DataSetDescriptor data_set2;
     BOOST_CHECK(data_set2.parse(data_set.generate().c_str()));

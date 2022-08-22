@@ -1,6 +1,9 @@
 // Copyright DEWETRON GmbH 2021
 #include "odkapi_property_xml.h"
 
+#include "odkuni_xpugixml.h"
+#include <cmath>
+
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(property_test_suite)
@@ -110,6 +113,35 @@ BOOST_AUTO_TEST_CASE(ScalarProperty)
     const auto& p2_val = p2.getScalarValue();
     BOOST_CHECK_EQUAL(p2_val.m_val, 123);
     BOOST_CHECK_EQUAL(p2_val.m_unit, "Unit");
+}
+
+BOOST_AUTO_TEST_CASE(ScalarPropertyPrecision)
+{
+    double v = std::nexttowardf(0, -1);
+    const odk::Scalar val_constructed(v, "Unit");
+    BOOST_CHECK_EQUAL(val_constructed.m_val, v);
+
+    odk::Property p;
+    p.setValue(val_constructed);
+    BOOST_REQUIRE_EQUAL(p.getType(), odk::Property::SCALAR);
+    auto val_string = p.valueToString();
+
+    const auto& p_val = p.getScalarValue();
+    BOOST_CHECK_EQUAL(p_val.m_val, v);
+    BOOST_CHECK_EQUAL(p_val.m_unit, "Unit");
+
+    const odk::Property p2("Name", val_constructed);
+    BOOST_REQUIRE_EQUAL(p2.getType(), odk::Property::SCALAR);
+    const auto& p2_val = p2.getScalarValue();
+    BOOST_CHECK_EQUAL(p2_val.m_val, v);
+    BOOST_CHECK_EQUAL(p2_val.m_unit, "Unit");
+
+    auto doc = xpugi::createDocument();
+    auto val_node = p.appendValue(doc->root());
+    odk::Property p3;
+    BOOST_CHECK(p3.readValue(val_node, odk::Version()));
+    auto p3_val = p3.getScalarValue();
+    BOOST_CHECK(p_val == p3_val);
 }
 
 BOOST_AUTO_TEST_CASE(EnumProperty)

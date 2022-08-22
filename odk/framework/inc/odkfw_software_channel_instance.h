@@ -10,6 +10,7 @@
 #include "odkfw_interfaces.h"
 #include "odkfw_stream_iterator.h"
 
+#include <optional>
 #include <set>
 
 namespace odk
@@ -402,7 +403,7 @@ namespace framework
         DataRequestType m_data_request_type;
         double m_data_request_interval;
         std::vector<InputChannelPtr> m_input_channel_proxies;
-        boost::optional<DataSetDescriptor> m_dataset_descriptor;
+        std::optional<DataSetDescriptor> m_dataset_descriptor;
         std::vector<const odk::IfDataBlockList*> m_block_lists;
         odk::IfHost* m_host = nullptr;
     };

@@ -5,9 +5,9 @@
 #include "odkapi_types.h"
 #include "odkuni_defines.h"
 
-#include <boost/utility/string_view.hpp>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -35,7 +35,7 @@ namespace odk
 
         BlockDescriptor& operator=(const BlockDescriptor& bd) = default;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 
@@ -59,7 +59,7 @@ namespace odk
 
         BlockListDescriptor() noexcept;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         std::string generate() const;
 
         std::uint32_t m_block_count;
@@ -73,7 +73,7 @@ namespace odk
     public:
         DataRegions() = default;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
         std::string generate() const;
 
         std::vector<DataRegion> m_data_regions;

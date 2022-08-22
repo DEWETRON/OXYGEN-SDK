@@ -2,10 +2,10 @@
 
 #include "wav_writer.h"
 #include "odkuni_assert.h"
-#include <boost/static_assert.hpp>
 #include <cstring>
 #include <ios>
 #include <stdexcept>
+#include <type_traits>
 
 #ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
@@ -22,7 +22,7 @@ namespace
         Chunk(const char* id, std::size_t size)
             : size(static_cast<std::uint32_t>(size))
         {
-            BOOST_STATIC_ASSERT(sizeof(*this) == 8);
+            static_assert(sizeof(*this) == 8, "check for padding");
             ODK_ASSERT(std::strlen(id) == 4);
             std::memcpy(this->id, id, sizeof(this->id));
         }
@@ -35,7 +35,7 @@ namespace
         RiffWaveHeader(std::size_t size)
             : Chunk("RIFF", size + sizeof(this->wave))
         {
-            BOOST_STATIC_ASSERT(sizeof(*this) == 12);
+            static_assert(sizeof(*this) == 12, "check for padding");
             memcpy(this->wave, "WAVE", sizeof(this->wave));
         }
         char wave[4];
@@ -46,7 +46,7 @@ namespace
         FormatHeader()
             : Chunk("fmt ", sizeof(*this) - 8)
         {
-            BOOST_STATIC_ASSERT(sizeof(*this) == (16 + 8));
+            static_assert(sizeof(*this) == (16 + 8), "check for padding");
         }
 
         std::uint16_t format_tag;

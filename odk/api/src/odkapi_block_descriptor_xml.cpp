@@ -2,9 +2,9 @@
 
 #include "odkapi_block_descriptor_xml.h"
 
+#include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
-#include <boost/lexical_cast.hpp>
 #include <cstring>
 
 namespace odk
@@ -26,7 +26,7 @@ namespace odk
     {
     }
 
-    bool BlockDescriptor::parse(const boost::string_view& xml_string)
+    bool BlockDescriptor::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {
@@ -92,7 +92,7 @@ namespace odk
     {
     }
 
-    bool BlockListDescriptor::parse(const boost::string_view& xml_string)
+    bool BlockListDescriptor::parse(const std::string_view& xml_string)
     {
         m_windows.clear();
 
@@ -107,15 +107,15 @@ namespace odk
 
                 auto block_list_desc_node = doc.document_element();
 
-                m_block_count = boost::lexical_cast<std::uint32_t>(block_list_desc_node.attribute("block_count").value());
+                m_block_count = odk::from_string<std::uint32_t>(block_list_desc_node.attribute("block_count").value());
 
                 auto interval_nodes = block_list_desc_node.select_nodes("Intervals/Interval");
                 m_windows.reserve(interval_nodes.size());
                 for (auto interval_node : interval_nodes)
                 {
                     auto a_interval_node = interval_node.node();
-                    auto begin = boost::lexical_cast<double>(a_interval_node.attribute("begin").value());
-                    auto end = boost::lexical_cast<double>(a_interval_node.attribute("end").value());
+                    auto begin = odk::from_string<double>(a_interval_node.attribute("begin").value());
+                    auto end = odk::from_string<double>(a_interval_node.attribute("end").value());
                     m_windows.emplace_back(begin, end);
                 }
 
@@ -124,13 +124,13 @@ namespace odk
                 for (auto a_region_node : channel_region_nodes)
                 {
                     auto a_region_detail_node = a_region_node.node();
-                    auto channel_id = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("channel_id").value());
-                    auto begin = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("begin").value());
-                    auto end = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("end").value());
+                    auto channel_id = odk::from_string<uint64_t>(a_region_detail_node.attribute("channel_id").value());
+                    auto begin = odk::from_string<uint64_t>(a_region_detail_node.attribute("begin").value());
+                    auto end = odk::from_string<uint64_t>(a_region_detail_node.attribute("end").value());
                     m_invalid_regions.emplace_back(channel_id, Interval<uint64_t>(begin, end));
                 }
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&)
             {
                 return false;
             }
@@ -171,7 +171,7 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool DataRegions::parse(const boost::string_view& xml_string)
+    bool DataRegions::parse(const std::string_view& xml_string)
     {
         pugi::xml_document doc;
         m_data_regions.clear();
@@ -188,13 +188,13 @@ namespace odk
                 for (auto a_region_node : channel_region_nodes)
                 {
                     auto a_region_detail_node = a_region_node.node();
-                    auto channel_id = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("channel_id").value());
-                    auto begin = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("begin").value());
-                    auto end = boost::lexical_cast<uint64_t>(a_region_detail_node.attribute("end").value());
+                    auto channel_id = odk::from_string<uint64_t>(a_region_detail_node.attribute("channel_id").value());
+                    auto begin = odk::from_string<uint64_t>(a_region_detail_node.attribute("begin").value());
+                    auto end = odk::from_string<uint64_t>(a_region_detail_node.attribute("end").value());
                     m_data_regions.emplace_back(channel_id, Interval<uint64_t>(begin, end));
                 }
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&) //invalid_argument, out_of_range
             {
                 return false;
             }

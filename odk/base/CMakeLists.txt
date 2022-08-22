@@ -5,11 +5,6 @@ cmake_minimum_required(VERSION 3.1)
 
 set(LIBNAME odk_base)
 
-include_directories(
-  ${Boost_INCLUDE_DIRS}
-)
-
-
 set(ODK_BASE_HEADER_FILES
     odkbase_api_object_ptr.h
     odkbase_basic_values.h
@@ -30,7 +25,11 @@ target_link_libraries(${LIBNAME}
 
 target_include_directories(${LIBNAME} INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${Boost_INCLUDE_DIRS}
 )
 
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
+
+# Unit Tests
+if (WITH_ODK_TESTS)
+  add_subdirectory(unit_tests)
+endif (WITH_ODK_TESTS)

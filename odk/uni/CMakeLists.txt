@@ -4,7 +4,6 @@ set(LIBNAME odk_uni)
 
 include_directories(
   SYSTEM
-  ${Boost_INCLUDE_DIRS}
   ${SW_APP_ROOT}/pugixml-1.9/src
 )
 
@@ -14,8 +13,10 @@ include_directories(
 
 set(ODK_UNI_HEADER_FILES
     inc/odkuni_assert.h
+    inc/odkuni_bimap.h
     inc/odkuni_defines.h
     inc/odkuni_logger.h
+    inc/odkuni_types.h
     inc/odkuni_string_util.h
     inc/odkuni_uuid.h
     inc/odkuni_xpugixml.h

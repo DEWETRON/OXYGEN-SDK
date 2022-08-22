@@ -13,6 +13,8 @@ void trim(std::string& s);
 
 bool isSpace(const std::string& str);
 
+std::vector<uint8_t> AsciiHexToBits(const std::string& input);
+
 class CSVNumberReader
 {
 public:

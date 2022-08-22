@@ -59,7 +59,7 @@ namespace
             const double t = pos - static_cast<double>(idx);
 
             ODK_ASSERT_GTE(idx, 0);
-            if (idx + 1 >= fp.size())
+            if (static_cast<std::size_t>(idx) + 1 >= fp.size())
             {
                 // element fp[idx + 1] is inaccessible, early return
                 return n;
@@ -116,7 +116,7 @@ std::uint64_t Resampler::addSamples(odk::IfHost* host, std::uint32_t local_chann
     std::uint64_t result = odk::error_codes::OK;
     if (last_sample_int > m_actual_scnt)
     {
-        const std::size_t num = last_sample_int - m_actual_scnt; // the maximum possible number of sample to compute
+        const std::size_t num = static_cast<std::size_t>(last_sample_int) - m_actual_scnt; // the maximum possible number of sample to compute
 
         // Prepare the output buffer which has a uint64 timestamp followed by up to <num> double values
         m_output_buffer.resize(1);

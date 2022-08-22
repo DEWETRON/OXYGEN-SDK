@@ -1,12 +1,13 @@
 // Copyright DEWETRON GmbH 2019
 
+#include "odkfw_version_check.h"
+
+#include "odkuni_string_util.h"
+
 #include <algorithm>
 #include <cctype>
 #include <string>
 #include <vector>
-
-#include <boost/lexical_cast.hpp>
-#include <boost/tokenizer.hpp>
 
 namespace odk
 {
@@ -17,16 +18,14 @@ namespace framework
     {
         std::vector<int> tuple;
 
-        boost::char_separator<char> sep(".");
-        boost::tokenizer< boost::char_separator<char>> tok(ver, sep);
-
-        for (auto t : tok)
+        auto tokens = odk::split(ver, '.');
+        for (auto t : tokens)
         {
             try
             {
-                tuple.push_back(boost::lexical_cast<int>(t));
+                tuple.push_back(odk::from_string<int>(t));
             }
-            catch (const boost::bad_lexical_cast&)
+            catch (const std::logic_error&)
             {
                 break;
             }

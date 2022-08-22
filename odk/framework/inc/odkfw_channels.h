@@ -90,7 +90,7 @@ namespace framework
         {
             std::string channel_context = odk::queries::OxygenChannels;
             channel_context += "#";
-            channel_context += std::to_string(getLocalId());
+            channel_context += odk::to_string(getLocalId());
 
             return m_host->getValue<T>(channel_context.c_str(), key);
         }
@@ -100,7 +100,7 @@ namespace framework
         {
             std::string channel_context = odk::queries::OxygenChannels;
             channel_context += "#";
-            channel_context += std::to_string(getLocalId());
+            channel_context += odk::to_string(getLocalId());
             channel_context += "#Config#";
             channel_context += key;
 

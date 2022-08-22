@@ -48,6 +48,10 @@ namespace odk
         std::string getString(const std::string& name) const;
         std::string getString(std::size_t idx) const;
 
+        void setXmlString(const std::string& name, const std::string& value);
+        std::string getXmlString(const std::string& name) const;
+        std::string getXmlString(std::size_t idx) const;
+
         void setScalar(const std::string& name, double value, const std::string& unit);
         odk::Scalar getScalar(const std::string& name) const;
         odk::Scalar getScalar(std::size_t idx) const;

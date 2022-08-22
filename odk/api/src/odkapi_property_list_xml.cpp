@@ -211,6 +211,31 @@ namespace odk
         return {};
     }
 
+    void PropertyList::setXmlString(const std::string& name, const std::string& value)
+    {
+        Property prop(name);
+        prop.setValue(value, Property::StringFormat::STRING_XML);
+        setProperty(prop);
+    }
+    std::string PropertyList::getXmlString(const std::string& name) const
+    {
+        auto prop = getPropertyByName(name);
+        if (prop.getType() == odk::Property::STRING)
+        {
+            return prop.getStringValue();
+        }
+        return {};
+    }
+    std::string PropertyList::getXmlString(std::size_t idx) const
+    {
+        auto prop = getProperty(idx);
+        if (prop.getType() == odk::Property::STRING)
+        {
+            return prop.getStringValue();
+        }
+        return {};
+    }
+
     void PropertyList::setScalar(const std::string& name, double value, const std::string& unit)
     {
         Property prop(name);

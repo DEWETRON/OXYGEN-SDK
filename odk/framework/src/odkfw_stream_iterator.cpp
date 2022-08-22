@@ -2,6 +2,9 @@
 
 #include "odkfw_stream_iterator.h"
 
+#include "odkapi_block_descriptor_xml.h"
+#include "odkapi_utils.h"
+
 namespace odk
 {
 namespace framework
@@ -115,5 +118,30 @@ namespace framework
         }
         return sample_count;
     }
+
+    std::vector<DataRegion> StreamIterator::getDataRegions(double start, double end) const noexcept
+    {
+        if (m_data_requester)
+        {
+            return m_data_requester->getDataRegions(start, end);
+        }
+        return {};
+    }
+
+    void StreamIterator::setTimebase(const odk::Timebase& timebase) noexcept
+    {
+        m_timebase = timebase;
+    }
+
+    const odk::Timebase& StreamIterator::getTimebase() const noexcept
+    {
+        return m_timebase;
+    }
+
+    double StreamIterator::getTime() noexcept
+    {
+        return odk::convertTickToTime(timestamp(), m_timebase);
+    }
+
 }
 }

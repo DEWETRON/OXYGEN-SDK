@@ -2,12 +2,16 @@
 # Oxygen plugin sdk
 #
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 #
 # handle setup of a cmake toplevel project
 # finding libraries etc
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+
+  #
+  # Force C++17
+  set(CMAKE_CXX_STANDARD 17)
 
   #
   # studio project name
@@ -58,33 +62,17 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   message(STATUS "GITHUB_REPO = ${GITHUB_REPO}")
 
-  SetBoostOptions() # set static, dynamic ...
-
   option(WITH_ODK_TESTS "Enable Unit Tests" OFF)
-
-  if (NOT GITHUB_REPO)
-    set(BOOST_MODULES
-      chrono
-      date_time
-      filesystem
-      locale
-      log
-      program_options
-      regex
-      system
-      thread
-    )
-  else()
-    set(BOOST_MODULES)
-  endif()
 
   if (WITH_ODK_TESTS)
     message(STATUS "Building with ODK unit tests")
 
-    set(BOOST_MODULES ${BOOST_MODULES} unit_test_framework)
+    SetBoostOptions() # set static, dynamic ...
+    set(BOOST_MODULES unit_test_framework)
     set(UNIT_TEST_SUFFIX test)
 
     include(CTest)
+    find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
     enable_testing()
 
     if (UNIX)
@@ -92,8 +80,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
       set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
     endif(UNIX)
   endif()
-
-  find_package(Boost REQUIRED COMPONENTS ${BOOST_MODULES})
 
   if (EXISTS "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts")
     AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")

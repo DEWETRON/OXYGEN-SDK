@@ -5,10 +5,10 @@
 #include "odkbase_if_value.h"
 #include "odkuni_defines.h"
 
-#include <boost/optional.hpp>
-#include <boost/utility/string_view.hpp>
 #include <cstdint>
+#include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -74,9 +74,9 @@ namespace odk
         std::uint32_t m_dimension;
 
         /// Position of timestamp value relative to sample position
-        boost::optional<std::int32_t> m_timestamp_position;
+        std::optional<std::int32_t> m_timestamp_position;
 
-        boost::optional<std::int32_t> m_sample_size_position;
+        std::optional<std::int32_t> m_sample_size_position;
 
         ODK_NODISCARD bool operator==(const ChannelDescriptor& other) const;
         ODK_NODISCARD bool operator!=(const ChannelDescriptor& other) const;
@@ -102,7 +102,7 @@ namespace odk
     public:
         DataSetDescriptor() noexcept;
 
-        bool parse(const boost::string_view& xml_string);
+        bool parse(const std::string_view& xml_string);
 
         ODK_NODISCARD std::string generate() const;
 

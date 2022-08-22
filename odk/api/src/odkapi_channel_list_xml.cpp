@@ -5,8 +5,8 @@
 
 #include "odkuni_xpugixml.h"
 
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
+#include <cstring>
+#include <limits>
 
 namespace odk
 {
@@ -20,7 +20,7 @@ namespace odk
         if (status.status == pugi::status_ok)
         {
             auto channels_node = doc.document_element();
-            if (strcmp(channels_node.name(), "Channels") != 0)
+            if (std::strcmp(channels_node.name(), "Channels") != 0)
                 return false;
 
             for (const auto channel_node : channels_node.children("Channel"))

@@ -14,6 +14,10 @@ set("${LIBNAME}_GUID_CMAKE" "3F33F346-D476-4B03-8F62-F38F0DD29A7B" CACHE INTERNA
 # finding libraries etc
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
+  #
+  # Force C++17
+  set(CMAKE_CXX_STANDARD 17)
+
   # project name
   project(${LIBNAME})
 
@@ -27,8 +31,6 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
   SetLinkStaticRuntime()
   SetCommonOutputDirectory()
-  SetBoostOptions()
-  find_package(Boost REQUIRED)
 
   AddUniqueTargetFromSubdirectory(pugixml "${SW_APP_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
   AddUniqueTargetFromSubdirectory(odk "${ODK_ROOT}/odk" "odk")
@@ -37,13 +39,8 @@ else()
 endif()
 
 
-include_directories(
-  SYSTEM
-  ${Boost_INCLUDE_DIRS}
-)
-
 set(SOURCE_FILES
-  odkex_sum_channels
+  odkex_sum_channels.cpp
 )
 source_group("Source Files" FILES ${SOURCE_FILES})
 

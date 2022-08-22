@@ -127,6 +127,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'init': " << e.what());
         }
         catch (...)
@@ -203,6 +204,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'initInstance': " << e.what());
         }
         catch (...)
@@ -247,6 +249,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'initTimebases': " << e.what());
         }
         catch (...)
@@ -284,6 +287,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'prepareProcessing': " << e.what());
         }
         catch (...)
@@ -315,7 +319,7 @@ namespace framework
                 msg->set(m_dataset_descriptor->m_id);
                 m_host->messageSync(odk::host_msg::DATA_GROUP_REMOVE, 0, msg.get(), nullptr);
 
-                m_dataset_descriptor = boost::none;
+                m_dataset_descriptor = std::nullopt;
             }
 
             stopProcessing(host);
@@ -323,6 +327,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'stopProcessing': " << e.what());
         }
         catch (...)
@@ -482,6 +487,7 @@ namespace framework
                     }
                     catch (const std::exception& e)
                     {
+                        ODK_UNUSED(e);
                         ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
                         ret = odk::error_codes::UNHANDLED_EXCEPTION;
                     }
@@ -495,6 +501,27 @@ namespace framework
                 }
             }
         }
+        else if (!m_dataset_descriptor && telegram.m_start.timestampValid() && telegram.m_end.timestampValid())
+        {
+            context.m_window.first = convertTickToTime(telegram.m_start.m_ticks, telegram.m_start.m_frequency);
+            context.m_window.second = convertTickToTime(telegram.m_end.m_ticks, telegram.m_end.m_frequency);
+
+            try
+            {
+                process(context, host);
+            }
+            catch (const std::exception& e)
+            {
+                ODK_UNUSED(e);
+                ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+            catch (...)
+            {
+                ODKLOG_ERROR("Unhandled exception during 'process'");
+                ret = odk::error_codes::UNHANDLED_EXCEPTION;
+            }
+        }
         else
         {
             try
@@ -503,6 +530,7 @@ namespace framework
             }
             catch (const std::exception& e)
             {
+                ODK_UNUSED(e);
                 ODKLOG_ERROR("Unhandled exception during 'process': " << e.what());
                 ret = odk::error_codes::UNHANDLED_EXCEPTION;
             }

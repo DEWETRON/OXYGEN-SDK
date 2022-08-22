@@ -85,7 +85,7 @@ public:
         return { true };
     }
 
-    void initTimebases(odk::IfHost* host) override
+    void initTimebases(odk::IfHost*) override
     {
         m_timebase_frequency = 0.0;
 
@@ -147,7 +147,7 @@ public:
         channel->setSampleFormat(dataformat.m_sample_occurrence,
             odk::ChannelDataformat::SampleFormat::DOUBLE,
             1);
-        
+
         return true;
     }
 
@@ -275,7 +275,7 @@ public:
                 const uint64_t timestamp = iterator.timestamp();
                 const double current_value = iterator.value<double>();
                 ++iterator;
-                
+
                 if (upsample_factor == 1)
                 {
                     // write a single async sample

@@ -1,6 +1,7 @@
 // Copyright DEWETRON GmbH 2017
 #pragma once
 
+#include "odkapi_timebase_xml.h"
 #include "odkfw_block_iterator.h"
 #include "odkuni_assert.h"
 #include "odkuni_defines.h"
@@ -11,6 +12,8 @@
 
 namespace odk
 {
+    class DataRegion;
+
 namespace framework
 {
     class IfIteratorUpdater;
@@ -96,7 +99,13 @@ namespace framework
 
         ODK_NODISCARD std::uint64_t getTotalSampleCount() const noexcept;
 
+        ODK_NODISCARD std::vector<DataRegion> getDataRegions(double start, double end) const noexcept;
+
         using BlockIteratorRange = std::pair<BlockIterator, BlockIterator>;
+
+        void setTimebase(const odk::Timebase& timebase) noexcept;
+        const odk::Timebase& getTimebase() const noexcept;
+        double getTime() noexcept;
 
     private:
         void getNextBlock();
@@ -109,12 +118,15 @@ namespace framework
         IfIteratorUpdater* m_data_requester;
         bool m_signal_gaps;
         bool m_skip_gaps;
+        odk::Timebase m_timebase;
     };
 
     class IfIteratorUpdater
     {
     public:
         virtual void updateStreamIterator(StreamIterator* iterator) = 0;
+        virtual std::vector<DataRegion> getDataRegions(double start, double end) = 0;
+        
         virtual ~IfIteratorUpdater() = default;
     };
 

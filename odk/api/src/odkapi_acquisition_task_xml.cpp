@@ -7,15 +7,13 @@
 
 #include "odkuni_xpugixml.h"
 
-#include <boost/lexical_cast.hpp>
-
 namespace odk
 {
     AddAcquisitionTaskTelegram::AddAcquisitionTaskTelegram() noexcept
         : m_id()
     {}
 
-    bool AddAcquisitionTaskTelegram::parse(const boost::string_view& xml_string)
+    bool AddAcquisitionTaskTelegram::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {
@@ -26,37 +24,30 @@ namespace odk
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
-            try
-            {
-                auto acq_task_node = doc.document_element();
+            auto acq_task_node = doc.document_element();
 
-                auto version = odk::getProtocolVersion(acq_task_node);
-                if (version != odk::Version(1,0))
-                {
-                    return false;
-                }
-
-                m_id = acq_task_node.attribute("acquisition_task_key").as_ullong();
-
-                auto input_channel_nodes = acq_task_node.select_nodes("InputChannels/Channel");
-                for (auto channel_node : input_channel_nodes)
-                {
-                    auto a_channel_node = channel_node.node();
-                    auto a_ch_id = a_channel_node.attribute("channel_id").as_ullong();
-                    m_input_channels.push_back(a_ch_id);
-                }
-
-                auto output_channel_nodes = acq_task_node.select_nodes("OutputChannels/Channel");
-                for (auto channel_node : output_channel_nodes)
-                {
-                    auto a_channel_node = channel_node.node();
-                    auto a_ch_id = a_channel_node.attribute("channel_id").as_ullong();
-                    m_output_channels.push_back(a_ch_id);
-                }
-            }
-            catch (const boost::bad_lexical_cast&)
+            auto version = odk::getProtocolVersion(acq_task_node);
+            if (version != odk::Version(1,0))
             {
                 return false;
+            }
+
+            m_id = acq_task_node.attribute("acquisition_task_key").as_ullong();
+
+            auto input_channel_nodes = acq_task_node.select_nodes("InputChannels/Channel");
+            for (auto channel_node : input_channel_nodes)
+            {
+                auto a_channel_node = channel_node.node();
+                auto a_ch_id = a_channel_node.attribute("channel_id").as_ullong();
+                m_input_channels.push_back(a_ch_id);
+            }
+
+            auto output_channel_nodes = acq_task_node.select_nodes("OutputChannels/Channel");
+            for (auto channel_node : output_channel_nodes)
+            {
+                auto a_channel_node = channel_node.node();
+                auto a_ch_id = a_channel_node.attribute("channel_id").as_ullong();
+                m_output_channels.push_back(a_ch_id);
             }
         }
         return true;
@@ -88,7 +79,7 @@ namespace odk
         return xpugi::toXML(doc);
     }
 
-    bool AcquisitionTaskProcessTelegram::parse(const boost::string_view& xml_string)
+    bool AcquisitionTaskProcessTelegram::parse(const std::string_view& xml_string)
     {
         if (xml_string.empty())
         {
@@ -99,29 +90,22 @@ namespace odk
         auto status = doc.load_buffer(xml_string.data(), xml_string.size(), pugi::parse_default, pugi::encoding_utf8);
         if (status.status == pugi::status_ok)
         {
-            try
-            {
-                auto acq_task_node = doc.document_element();
+            auto acq_task_node = doc.document_element();
 
-                auto version = odk::getProtocolVersion(acq_task_node);
-                if (version != odk::Version(1,0))
-                {
-                    return false;
-                }
-
-                if(auto start_node = acq_task_node.child("Start"))
-                {
-                    m_start.parseTickFrequencyAttributes(start_node);
-                }
-
-                if(auto end_node = acq_task_node.child("End"))
-                {
-                    m_end.parseTickFrequencyAttributes(end_node);
-                }
-            }
-            catch (const boost::bad_lexical_cast&)
+            auto version = odk::getProtocolVersion(acq_task_node);
+            if (version != odk::Version(1,0))
             {
                 return false;
+            }
+
+            if(auto start_node = acq_task_node.child("Start"))
+            {
+                m_start.parseTickFrequencyAttributes(start_node);
+            }
+
+            if(auto end_node = acq_task_node.child("End"))
+            {
+                m_end.parseTickFrequencyAttributes(end_node);
             }
         }
         return true;

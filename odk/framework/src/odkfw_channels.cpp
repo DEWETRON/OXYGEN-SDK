@@ -952,6 +952,7 @@ namespace framework
         }
         catch (const std::exception& e)
         {
+            ODK_UNUSED(e);
             ODKLOG_ERROR("Unhandled exception during 'pluginMessage " << id << "' : " << e.what());
         }
         catch (...)

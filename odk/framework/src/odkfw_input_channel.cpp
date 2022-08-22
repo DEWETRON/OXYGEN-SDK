@@ -160,7 +160,7 @@ namespace framework
         {
             std::string channel_context = odk::queries::OxygenChannels;
             channel_context += "#";
-            channel_context += std::to_string(getChannelId());
+            channel_context += odk::to_string(getChannelId());
             channel_context += "#Config#";
             channel_context += key;
 
@@ -192,7 +192,7 @@ namespace framework
         {
             std::string channel_context = odk::queries::OxygenChannels;
             channel_context += "#";
-            channel_context += std::to_string(getChannelId());
+            channel_context += odk::to_string(getChannelId());
             channel_context += "#Config#";
             channel_context += key;
 
@@ -205,7 +205,7 @@ namespace framework
                 auto status = doc.load_string(xml_value->getValue());
                 if (status.status == pugi::status_ok)
                 {
-                    if (strcmp(doc.document_element().name(), "Constraints") == 0)
+                    if (std::strcmp(doc.document_element().name(), "Constraints") == 0)
                     {
                         for (const auto& constraint_node : doc.document_element().children())
                         {
@@ -228,7 +228,7 @@ namespace framework
         {
             std::string channel_context = odk::queries::OxygenChannels;
             channel_context += "#";
-            channel_context += std::to_string(getChannelId());
+            channel_context += odk::to_string(getChannelId());
             channel_context += "#Config#";
             channel_context += key;
 
@@ -277,5 +277,21 @@ namespace framework
         }
         return {};
     }
+
+    void InputChannel::applyChannelAction(const std::string& key)
+    {
+        std::string channel_context = odk::queries::OxygenChannels;
+
+        pugi::xml_document doc;
+        auto channel_action_node = doc.append_child("ChannelActions");
+        auto action_node = channel_action_node.append_child("Action");
+        action_node.append_attribute("name").set_value(key.c_str());
+
+        auto channel = action_node.append_child("Channel");
+        channel.append_attribute("id").set_value(odk::to_string(getChannelId()).c_str());
+        auto xml_string = xpugi::toXML(doc);
+        m_host->queryXML(channel_context.c_str(), "ChannelActions", xml_string.c_str(), xml_string.size());
+    }
+
 }
 }

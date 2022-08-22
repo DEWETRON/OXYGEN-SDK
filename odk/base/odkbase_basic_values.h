@@ -8,7 +8,7 @@
 #include <string>
 
 #ifdef ODK_EXTENSION_FUNCTIONS
-#include <boost/utility/string_view.hpp>
+#include <string_view>
 #endif
 
 /**
@@ -121,9 +121,9 @@ namespace odk
             return std::string(getValue(), static_cast<std::size_t>(getLength()));
         }
 
-        boost::string_view asStringView() const
+        std::string_view asStringView() const
         {
-            return boost::string_view(getValue(), static_cast<std::size_t>(getLength()));
+            return std::string_view(getValue(), static_cast<std::size_t>(getLength()));
         }
 #endif
     };
@@ -222,9 +222,9 @@ namespace odk
             return std::string(getValue(), static_cast<std::size_t>(getLength()));
         }
 
-        boost::string_view asStringView() const
+        std::string_view asStringView() const
         {
-            return boost::string_view(getValue(), static_cast<std::size_t>(getLength()));
+            return std::string_view(getValue(), static_cast<std::size_t>(getLength()));
         }
 #endif
     };
