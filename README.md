@@ -3,7 +3,8 @@
 [![Build](https://github.com/DEWETRON/OXYGEN-SDK/actions/workflows/ci.yml/badge.svg)](https://github.com/DEWETRON/OXYGEN-SDK/actions/workflows/ci.yml)
 
 ## About
-Develop your own plugins for DEWETRON Oxygen Software! The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
+Develop your own plugins for DEWETRON Oxygen Software!
+The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
 The following functionality is currently supported in the SDK and 'Oxygen 6.0':
 - Read and Write data from/to numeric channels (Scalar and Vector)
@@ -14,13 +15,13 @@ The following functionality is currently supported in the SDK and 'Oxygen 6.0':
 - Get Timebase and start time for sample placing
 - Log into Oxygen Logfile
 - Custom export plugins
+- Offline use
 
 ## Documentation
 Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
 ## Coming soon
 Several advanced features are not yet available:
-- Offline use
 - Create an instrument
 - Marker management
 - Start/Stop measurement or other application control
@@ -29,6 +30,8 @@ Several advanced features are not yet available:
 
 If you are interested in one of the non-implemented features, please contact us!
 
+## Changelog
+For a detailed changelog see [CHANGELOG.md](CHANGELOG.md).
 
 # What is DEWETRON Oxygen Software?
 The OXYGEN measurement software is the most intuitive and easy-to-use software in the data acquisition sector, designed to be operated via touchscreen or classic mouse and keyboard.
