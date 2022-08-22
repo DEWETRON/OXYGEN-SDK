@@ -26,7 +26,7 @@ A free alternative to Visual Studio 2019/2022 is *Visual Studio Code*.
 Install Oxygen
 --------------
 
-To test the plugins an Oxygen installation is needed:
+To test the plugins, an Oxygen installation is needed:
 
 Please download and install the latest Oxygen installer from DEWETRON's
 download portal:
@@ -40,8 +40,6 @@ Development Requirements for Windows
 
 - Microsoft Visual Studio 2019 or later with C++ compiler and toolchain (https://visualstudio.microsoft.com/)
 - CMake (https://cmake.org/download/)
-- Source files for Boost C++ Libraries 1.70 or later
-  (https://www.boost.org/users/history/version_1_70_0.html)
 - Git for windows or https://desktop.github.com/ application
 
 Make sure Visual Studio and CMake are installed.
@@ -74,6 +72,8 @@ Alternatively one can install the complete Qt libraries package:
 Qt is a rather large download (40GB with included debug symbol files) so
 the use of the small provided qt_resource_compiler.zip archive is preferred.
 
+In order to build and execute unit tests, `Boost C++ Libraries 1.70 <https://www.boost.org/users/history/version_1_70_0.html>`__ or later are needed.
+ 
 
 
 Development Requirements for Linux
@@ -87,9 +87,9 @@ The minimum build environment for Linux consists of following packages:
 
 - cmake
 - gcc/g++
-- boost
 - qt-dev
 - make
+- boost (optional)
 - ninja (optional)
 
 It is completely ok to use the packages provided by the distribution.
@@ -104,6 +104,7 @@ The download is free and its usage is highly recommended.
 
 https://code.visualstudio.com/download
 
+In addition, to build and execute unit tests, the boost-test development packages are needed.
 
 
 .. _build_instructions:

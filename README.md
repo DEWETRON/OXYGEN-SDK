@@ -1,4 +1,8 @@
 # DEWETRON OXYGEN SDK
+[![Github All Releases](https://img.shields.io/github/downloads/DEWETRON/OXYGEN-SDK/total)]()
+[![Build](https://github.com/DEWETRON/OXYGEN-SDK/actions/workflows/ci.yml/badge.svg)](https://github.com/DEWETRON/OXYGEN-SDK/actions/workflows/ci.yml)
+
+## About
 Develop your own plugins for DEWETRON Oxygen Software! The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
 The following functionality is currently supported in the SDK and 'Oxygen 6.0':
@@ -11,7 +15,7 @@ The following functionality is currently supported in the SDK and 'Oxygen 6.0':
 - Log into Oxygen Logfile
 - Custom export plugins
 
-## Manual
+## Documentation
 Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
 ## Coming soon
@@ -24,9 +28,6 @@ Several advanced features are not yet available:
 - ...
 
 If you are interested in one of the non-implemented features, please contact us!
-
-
-[![Github All Releases](https://img.shields.io/github/downloads/DEWETRON/OXYGEN-SDK/total)]()
 
 
 # What is DEWETRON Oxygen Software?
@@ -72,7 +73,7 @@ gunther.laure@dewetron.com
 # License
 MIT License
 
-Copyright (c) 2021 DEWETRON
+Copyright (c) 2022 DEWETRON
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
