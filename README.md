@@ -6,7 +6,7 @@
 Develop your own plugins for DEWETRON Oxygen Software!
 The SDK includes the framework, manual and examples to quickly get up and running using the Microsoft Visual Studio C++ toolchain.
 
-The following functionality is currently supported in the SDK and 'Oxygen 6.0':
+The following functionality is currently supported in the SDK and 'Oxygen 6.0' and later:
 - Read and Write data from/to numeric channels (Scalar and Vector)
 - Create channels
 - Create config items for setup save/load and user config 
@@ -17,9 +17,6 @@ The following functionality is currently supported in the SDK and 'Oxygen 6.0':
 - Custom export plugins
 - Offline use
 
-## Documentation
-Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
-
 ## Coming soon
 Several advanced features are not yet available:
 - Create an instrument
@@ -29,6 +26,9 @@ Several advanced features are not yet available:
 - ...
 
 If you are interested in one of the non-implemented features, please contact us!
+
+## Documentation
+Documentation can be found at https://dewetron.github.io/OXYGEN-SDK
 
 ## Requirements
 The Oxygen SDK supports development under both Windows and Linux.
@@ -53,7 +53,7 @@ Its nice instruments and controls make it fun to navigate through tons of data.
 Check out https://www.dewetron.com/products/oxygen-measurement-software/ for more information.
 
 
-# How to get Oxygen Software?
+## How to get Oxygen Software?
 The current version of Oxygen for SDK users can be downloaded from the customer care center portal at https://ccc.dewetron.com/
 
 - Create a user account
@@ -83,6 +83,9 @@ Gunther Laure
 
 gunther.laure@dewetron.com
 
+Matthias Straka
+
+matthias.straka@dewetron.com
 
 
 # License
