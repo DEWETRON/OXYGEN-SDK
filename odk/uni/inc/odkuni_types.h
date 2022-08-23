@@ -7,14 +7,6 @@
 
 namespace odk
 {
-    typedef std::string_view string_view;
-
-    template <class T>
-    using optional = std::optional<T>;
-
-    static auto optional_none = std::nullopt;
-
-
     /// rational
     template <typename IntType>
     class rational

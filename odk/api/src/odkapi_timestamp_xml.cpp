@@ -84,7 +84,7 @@ namespace odk
         }
     }
 
-    AbsoluteTime::AbsoluteTime()
+    AbsoluteTime::AbsoluteTime() noexcept
         : m_year(0)
         , m_month(0)
         , m_day(0)

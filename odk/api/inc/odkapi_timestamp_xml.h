@@ -31,7 +31,7 @@ namespace odk
     class AbsoluteTime
     {
     public:
-        AbsoluteTime();
+        AbsoluteTime() noexcept;
 
         bool parse(const std::string_view& xml_string);
         ODK_NODISCARD std::string generate() const;

@@ -18,21 +18,21 @@ namespace
 namespace odk
 {
 
-    Timebase::Timebase()
+    Timebase::Timebase() noexcept
         : m_type(TimebaseType::NONE)
         , m_frequency(std::numeric_limits<double>::quiet_NaN())
         , m_offset(0)
     {
     }
 
-    Timebase::Timebase(double frequency)
+    Timebase::Timebase(double frequency) noexcept
         : m_type(TimebaseType::SIMPLE)
         , m_frequency(frequency)
         , m_offset(0)
     {
     }
 
-    Timebase::Timebase(double frequency, double offset)
+    Timebase::Timebase(double frequency, double offset) noexcept
         : m_type(TimebaseType::TIMEBASE_WITH_OFFSET)
         , m_frequency(frequency)
         , m_offset(offset)
