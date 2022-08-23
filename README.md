@@ -30,6 +30,18 @@ Several advanced features are not yet available:
 
 If you are interested in one of the non-implemented features, please contact us!
 
+## Requirements
+The Oxygen SDK supports development under both Windows and Linux.
+It requires the following build environment:
+- C++17 compatible compiler
+  - Visual Studio 2019 Community Edition or Professional (or newer)
+  - GCC/Clang for Linux
+- CMake 3.1 or newer
+- QT for GUI elements
+  - Open-Source version 5.12 or newer is supported
+  - A bundle with required components is provided in the [release section](https://github.com/DEWETRON/OXYGEN-SDK/releases)
+- Boost 1.70 or newer is used for unit testing (not required to use the SDK)
+
 ## Changelog
 For a detailed changelog see [CHANGELOG.md](CHANGELOG.md).
 
