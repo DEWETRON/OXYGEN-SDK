@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iomanip>
+#include <limits>
 #include <stdexcept>
 #include <sstream>
 #include <string>

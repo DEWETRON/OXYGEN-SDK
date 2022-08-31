@@ -59,7 +59,7 @@ namespace odk
         std::string m_message; //considered an error if no channels are reported; warning otherwise.
 
         bool m_show_channel_details = false;
-        std::uint32_t m_detail_channel;
+        std::uint32_t m_detail_channel = 0;
 
         std::vector<std::uint32_t> m_channels;
     };
@@ -82,7 +82,7 @@ namespace odk
 
     public:
         std::vector<std::uint64_t> m_invalid_channels;
-        bool m_valid;
+        bool m_valid = false;
     };
 
 }

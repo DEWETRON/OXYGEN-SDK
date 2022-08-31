@@ -400,8 +400,8 @@ namespace framework
     private:
         PluginChannelsPtr m_plugin_channels;
         PluginTaskPtr m_task;
-        DataRequestType m_data_request_type;
-        double m_data_request_interval;
+        DataRequestType m_data_request_type = NONE;
+        double m_data_request_interval = 0;
         std::vector<InputChannelPtr> m_input_channel_proxies;
         std::optional<DataSetDescriptor> m_dataset_descriptor;
         std::vector<const odk::IfDataBlockList*> m_block_lists;
