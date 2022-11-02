@@ -54,11 +54,33 @@ BOOST_AUTO_TEST_CASE(IntProperty)
     BOOST_REQUIRE_EQUAL(p2.getType(), odk::Property::INTEGER);
     BOOST_CHECK_EQUAL(p2.valueToString(), "123");
     BOOST_CHECK_EQUAL(p2.getIntValue(), 123);
+    BOOST_CHECK_EQUAL(p2.getInt64Value(), 123);
 
     const odk::Property p3("Name", -123);
     BOOST_REQUIRE_EQUAL(p3.getType(), odk::Property::INTEGER);
     BOOST_CHECK_EQUAL(p3.valueToString(), "-123");
     BOOST_CHECK_EQUAL(p3.getIntValue(), -123);
+    BOOST_CHECK_EQUAL(p3.getInt64Value(), -123);
+}
+
+BOOST_AUTO_TEST_CASE(Int64Property)
+{
+    odk::Property p;
+    p.setValue(static_cast<std::int64_t>(123));
+    BOOST_REQUIRE_EQUAL(p.getType(), odk::Property::INTEGER64);
+    BOOST_CHECK_EQUAL(p.valueToString(), "123");
+    BOOST_CHECK_EQUAL(p.getInt64Value(), 123);
+    BOOST_CHECK_EQUAL(p.isValid(), true);
+
+    const odk::Property p2("Name", static_cast<std::int64_t>(123));
+    BOOST_REQUIRE_EQUAL(p2.getType(), odk::Property::INTEGER64);
+    BOOST_CHECK_EQUAL(p2.valueToString(), "123");
+    BOOST_CHECK_EQUAL(p2.getInt64Value(), 123);
+
+    const odk::Property p3("Name", static_cast<std::int64_t>(-123));
+    BOOST_REQUIRE_EQUAL(p3.getType(), odk::Property::INTEGER64);
+    BOOST_CHECK_EQUAL(p3.valueToString(), "-123");
+    BOOST_CHECK_EQUAL(p3.getInt64Value(), -123);
 }
 
 BOOST_AUTO_TEST_CASE(UIntProperty)

@@ -199,6 +199,7 @@ namespace odk
         Property(std::string name, const char* string_value);
         Property(std::string name, bool value);
         Property(std::string name, int value);
+        Property(std::string name, std::int64_t value);
         Property(std::string name, unsigned int value);
         Property(std::string name, std::string value, std::string enum_type) noexcept;
         Property(const std::string& name, Type type, const std::string& value);

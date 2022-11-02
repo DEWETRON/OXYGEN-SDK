@@ -95,6 +95,13 @@ namespace odk
         setValue(value);
     }
 
+    Property::Property(std::string name, std::int64_t value)
+        : m_name(std::move(name))
+        , m_type(UNKNOWN)
+    {
+        setValue(value);
+    }
+
     Property::Property(std::string name, unsigned int value)
         : m_name(std::move(name))
         , m_type(UNKNOWN)
@@ -627,6 +634,7 @@ namespace odk
                 break;
             }
             case INTEGER:
+            case INTEGER64:
             case UNSIGNED_INTEGER:
             case UNSIGNED_INTEGER64:
             case FLOATING_POINT_NUMBER:
@@ -738,6 +746,7 @@ namespace odk
                 break;
             }
             case INTEGER:
+            case INTEGER64:
             case UNSIGNED_INTEGER:
             case UNSIGNED_INTEGER64:
             case FLOATING_POINT_NUMBER:
@@ -846,6 +855,9 @@ namespace odk
         case INTEGER:
             return "SignedValue";
 
+        case INTEGER64:
+            return "SignedValue64";
+
         case UNSIGNED_INTEGER:
             return "UnsignedValue";
 
@@ -924,6 +936,10 @@ namespace odk
         if (xml_type == "SignedValue")
         {
             return INTEGER;
+        }
+        if (xml_type == "SignedValue64")
+        {
+            return INTEGER64;
         }
         if (xml_type == "UnsignedValue")
         {
