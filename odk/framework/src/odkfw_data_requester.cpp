@@ -85,7 +85,10 @@ namespace framework
             if (ratio_response)
             {
                 m_ratio = ratio_response->getValue();
-                m_data_request_interval *= m_ratio;
+                if (m_ratio > 0)
+                {
+                    m_data_request_interval *= m_ratio;
+                }
             }
         }
     }

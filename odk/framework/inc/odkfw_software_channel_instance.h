@@ -277,6 +277,7 @@ namespace framework
         void removeOutputChannel(PluginChannelPtr& channel);
 
         InputChannelPtr getInputChannelProxy(std::uint64_t channel_id);
+        InputChannelPtr getInputChannelProxyChecked(std::uint64_t channel_id);
 
 
         std::vector<InputChannelPtr> getInputChannelProxies();

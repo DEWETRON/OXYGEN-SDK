@@ -892,8 +892,15 @@ namespace framework
                     if (task->m_worker)
                     {
                         auto process_xml = odk::value_cast<const odk::IfXMLValue>(param);
-                        task->m_worker->onProcess(m_host, task->m_token, process_xml);
-                        return odk::error_codes::OK;
+                        try
+                        {
+                            task->m_worker->onProcess(m_host, task->m_token, process_xml);
+                            return odk::error_codes::OK;
+                        }
+                        catch(...)
+                        {
+                            return odk::error_codes::UNHANDLED_EXCEPTION;
+                        }
                     }
                     else
                     {

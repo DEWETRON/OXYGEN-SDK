@@ -17,6 +17,7 @@
 #include "odkuni_logger.h"
 #include "odkuni_assert.h"
 #include <limits>
+#include <stdexcept>
 
 namespace odk
 {
@@ -102,10 +103,16 @@ namespace framework
                 odk::Interval<std::uint64_t> channel_interval(0, std::numeric_limits<std::uint64_t>::max());
                 if(interval.m_begin >= 0.0 && interval.m_end < std::numeric_limits<double>::max())
                 {
-                    channel_interval.m_begin = convertTimeToTickAtOrAfter(interval.m_begin, getInputChannelProxy(channel.m_channel_id)->getTimeBase().m_frequency);
-                    channel_interval.m_end = convertTimeToTickAtOrAfter(interval.m_end, getInputChannelProxy(channel.m_channel_id)->getTimeBase().m_frequency);
+                    channel_interval.m_begin = convertTimeToTickAtOrAfter(interval.m_begin, getInputChannelProxyChecked(channel.m_channel_id)->getTimeBase().m_frequency);
+                    channel_interval.m_end = convertTimeToTickAtOrAfter(interval.m_end, getInputChannelProxyChecked(channel.m_channel_id)->getTimeBase().m_frequency);
                 }
-                iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id, channel_interval);
+                try
+                {
+                    iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id, channel_interval);
+                }
+                catch (std::out_of_range&)
+                {
+                }
             }
         }
 
@@ -837,6 +844,18 @@ namespace framework
             }
         }
         return {};
+    }
+
+    InputChannelPtr SoftwareChannelInstance::getInputChannelProxyChecked(std::uint64_t channel_id)
+    {
+        for (auto& channel : m_input_channel_proxies)
+        {
+            if (channel->getChannelId() == channel_id)
+            {
+                return channel;
+            }
+        }
+        throw std::out_of_range("no proxy for input channel");
     }
 
     std::vector<InputChannelPtr> SoftwareChannelInstance::getInputChannelProxies()

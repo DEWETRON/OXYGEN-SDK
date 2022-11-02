@@ -7,7 +7,6 @@
 
 namespace odk
 {
-    /// rational
     template <typename IntType>
     class rational
     {

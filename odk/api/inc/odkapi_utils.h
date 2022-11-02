@@ -75,7 +75,7 @@ namespace odk
 
     /**
      * Convert from tick values to time in seconds
-     * 
+     *
      * @param tick      sample position in ticks
      * @param frequency sample rate in Hz
      * @return          tick value converted to seconds
@@ -83,6 +83,11 @@ namespace odk
     ODK_NODISCARD inline double convertTickToTime(std::uint64_t tick, double frequency)
     {
         return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
+    }
+
+    ODK_NODISCARD inline double convertTickToTime(const odk::Timestamp& ts)
+    {
+        return std::nextafter(ts.m_ticks / ts.m_frequency, std::numeric_limits<double>::max());
     }
 
     /**

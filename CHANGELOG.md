@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file
 
+## [6.3.0] - 2022-11-02
+### Added
+- Support for 64-bit Signed Integer properties (Oxygen 6.3 or later)
+
+### Changed
+- Updated SDK for Oxygen 6.3
+
 ## [6.2.0] - 2022-08-23
 ### Added
 - Support for handling channel timebases with offset (for processing offline files in Oxygen 6.1 or later)
