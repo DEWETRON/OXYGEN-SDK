@@ -32,7 +32,7 @@ namespace odk
     {
         auto it = std::find_if(s.begin(), s.end(),
             [](char c) {
-                return !isspace(c);
+                return !isspace(c & 0x7f);
             });
         s.erase(s.begin(), it);
     }
@@ -42,7 +42,7 @@ namespace odk
         auto it = std::find_if(s.rbegin(), s.rend(),
             [](char c)
             {
-                return !isspace(c);
+                return !isspace(c & 0x7f);
             }
         );
         s.erase(it.base(), s.end());
