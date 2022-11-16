@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file
 
+## [6.3.1] - 2022-11-16
+### Changed
+- Fixed odk::trim (and variants) to accept UTF-8 strings
+
 ## [6.3.0] - 2022-11-02
 ### Added
 - Support for 64-bit Signed Integer properties (Oxygen 6.3 or later)
