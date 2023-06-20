@@ -216,6 +216,7 @@ namespace odk
         ODK_NODISCARD std::string getNodeName() const;
 
         ODK_NODISCARD bool operator==(Property const& other) const;
+        ODK_NODISCARD bool operator!=(Property const& other) const;
         ODK_NODISCARD bool sameValue(Property const& other) const;
 
         /**

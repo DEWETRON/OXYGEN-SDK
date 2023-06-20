@@ -114,6 +114,12 @@ namespace odk
                 return *this;
             }
 
+            PluginChannelInfo& setTimebaseWithOffset(double f, double offset)
+            {
+                m_timebase = Timebase(f, offset);
+                return *this;
+            }
+
             PluginChannelInfo& setDefaultName(const std::string& name)
             {
                 m_default_name = name;

@@ -4,13 +4,15 @@
 #define ODK_EXTENSION_FUNCTIONS //enable C++ integration
 
 #include "odkapi_timebase_xml.h"
-#include "odkbase_if_host_fwd.h"
+#include "odkapi_message_ids.h"
+#include "odkbase_if_host.h"
 #include "odkbase_basic_values.h"
 
 #include "odkapi_timestamp_xml.h"
 
 #include "odkuni_defines.h"
 
+#include <array>
 #include <cmath>
 #include <cstring>
 #include <limits>
@@ -39,7 +41,11 @@ namespace odk
     template <class T>
     inline void addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const T& data)
     {
-        addSample(host, local_channel_id, timestamp, &data, sizeof(T));
+        std::array<std::byte, sizeof(std::uint64_t) + sizeof(T)> sample;
+        *reinterpret_cast<std::uint64_t*>(sample.data()) = timestamp;
+        *reinterpret_cast<T*>(sample.data() + sizeof(std::uint64_t)) = data;
+
+        host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
     }
 
     void updateChannelState(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp);
@@ -82,7 +88,12 @@ namespace odk
      */
     ODK_NODISCARD inline double convertTickToTime(std::uint64_t tick, double frequency)
     {
-        return std::nextafter(tick / frequency, std::numeric_limits<double>::max());
+        double time = tick / frequency;
+        if (static_cast<uint64_t>(time * frequency) < tick)
+        {
+            return std::nextafter(time, std::numeric_limits<double>::max());
+        }
+        return time; 
     }
 
     ODK_NODISCARD inline double convertTickToTime(const odk::Timestamp& ts)

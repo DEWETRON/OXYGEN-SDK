@@ -97,6 +97,22 @@ namespace odk
         std::string error_message;
     };
 
+    struct ValidationMessage
+    {
+        enum class Severity
+        {
+            DEFAULT,
+            VALIDATION_INFO,
+            VALIDATION_WARNING,
+            VALIDATION_ERROR
+        };
+
+        static std::string toString(Severity s);
+
+        Severity m_severity = Severity::DEFAULT;
+        std::string m_message;
+    };
+
     class ValidateExportResponse
     {
     public:
@@ -109,5 +125,6 @@ namespace odk
         bool m_success;
         std::vector<ChannelError> m_channel_errors;
         std::vector<ChannelError> m_channel_warnings;
+        std::vector<ValidationMessage> m_messages;
     };
 }

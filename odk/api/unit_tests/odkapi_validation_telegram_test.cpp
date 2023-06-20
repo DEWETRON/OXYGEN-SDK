@@ -138,6 +138,12 @@ BOOST_AUTO_TEST_CASE(ParseResponseFailure)
                         <ErrorMessage>message</ErrorMessage>
                     </Channel>
                 </Channels>
+                <Messages>
+                    <Message>
+                        <Severity>ERROR</Severity>
+                        <Text>ErrorMsg</Text>
+                    </Message>
+                </Messages>
             </ValidationFailed>
             )xxx"
             ;
@@ -150,6 +156,14 @@ BOOST_AUTO_TEST_CASE(ParseResponseFailure)
     BOOST_CHECK_EQUAL(response.m_channel_errors.front().channel_id, 123);
     BOOST_CHECK_EQUAL(response.m_channel_errors.front().error_code, 456);
     BOOST_CHECK_EQUAL(response.m_channel_errors.front().error_message, "message");
+
+    BOOST_REQUIRE_EQUAL(response.m_messages.size(), 1);
+    auto severity = odk::ValidationMessage::Severity::VALIDATION_ERROR;
+    BOOST_CHECK_MESSAGE(response.m_messages.front().m_severity == severity,
+        "Severity does not match: " << odk::ValidationMessage::toString(response.m_messages.front().m_severity) << "!=" 
+        << odk::ValidationMessage::toString(severity));
+    BOOST_CHECK_EQUAL(response.m_messages.front().m_message, "ErrorMsg");
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -127,6 +127,11 @@ namespace odk
             && sameValue(other);
     }
 
+    bool Property::operator!=(Property const& other) const
+    {
+        return !(*this == other);
+    }
+
     bool Property::sameValue(Property const& other) const
     {
         return m_type == other.m_type

@@ -21,6 +21,48 @@ namespace
         {odk::RegisterExport::StartExportAction::SELECT_DIRECTORY, "SELECT_DIRECTORY"},
         {odk::RegisterExport::StartExportAction::NONE, "NONE"},
     };
+
+    using ValidationMessageSeveityMap = odk::SimpleBiMap <odk::ValidationMessage::Severity, std::string>;
+    static const ValidationMessageSeveityMap SEVERITY_MAP = {
+        {odk::ValidationMessage::Severity::DEFAULT, "DEFAULT"},
+        {odk::ValidationMessage::Severity::VALIDATION_INFO, "INFO"},
+        {odk::ValidationMessage::Severity::VALIDATION_WARNING, "WARNING"},
+        {odk::ValidationMessage::Severity::VALIDATION_ERROR, "ERROR"},
+    };
+
+    void appendMessagesTo(pugi::xml_node& parent, const std::vector<odk::ValidationMessage>& messages)
+    {
+        if (!messages.empty())
+        {
+            auto msgs_node = parent.append_child("Messages");
+            for (const auto& msg : messages)
+            {
+                auto msg_node = msgs_node.append_child("Message");
+                xpugi::setText(msg_node.append_child("Severity"), SEVERITY_MAP.left.at(msg.m_severity));
+                xpugi::setText(msg_node.append_child("Text"), msg.m_message);
+            }
+        }
+    }
+
+    std::vector<odk::ValidationMessage>parseMessagesFrom(const pugi::xml_node& parent)
+    {
+        std::vector<odk::ValidationMessage> messages;
+        for (auto msg : parent.select_nodes("Messages/Message"))
+        {
+            auto severity_txt = xpugi::getText(msg.node().child("Severity"));
+            auto txt = xpugi::getText(msg.node().child("Text"));
+            try
+            {
+                auto s = SEVERITY_MAP.right.at(severity_txt);
+                messages.emplace_back() = { s, txt };
+            }
+            catch (const std::logic_error&)
+            {
+            }
+        }
+        return messages;
+    }
+
 }
 
 namespace odk
@@ -372,6 +414,13 @@ namespace odk
         , error_message(error_message)
     {}
 
+
+    std::string ValidationMessage::toString(Severity s)
+    {
+        return SEVERITY_MAP.left.at(s);
+    }
+
+
     ValidateExportResponse::ValidateExportResponse()
         : m_success(false)
     {
@@ -411,6 +460,7 @@ namespace odk
                         }
                     }
 
+                    m_messages = parseMessagesFrom(success_node);
                     return true;
                 }
                 else if (auto failure_node = doc.child("ValidationFailed"))
@@ -433,6 +483,8 @@ namespace odk
                             return false;
                         }
                     }
+
+                    m_messages = parseMessagesFrom(failure_node);
                     return true;
                 }
                 return false;
@@ -464,6 +516,8 @@ namespace odk
                     xpugi::setText(ch_warning.append_child("ErrorMessage"), odk::error_codes::toString(channel.error_code));
                 }
             }
+
+            appendMessagesTo(root, m_messages);
         }
         else
         {
@@ -481,6 +535,8 @@ namespace odk
                     xpugi::setText(ch_error.append_child("ErrorMessage"), channel.error_message);
                 }
             }
+
+            appendMessagesTo(root, m_messages);
         }
         return xpugi::toXML(doc);
     }
