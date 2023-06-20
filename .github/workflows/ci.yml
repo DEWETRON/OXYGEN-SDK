@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Install Requirements
       run: |-
-        sudo apt-get install -yq libboost-test-dev qtbase5-dev valgrind
+        sudo apt update && sudo apt -yq install libboost-test-dev qtbase5-dev valgrind
     - uses: actions/checkout@v3
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=${{matrix.cc}} -DWITH_ODK_TESTS=ON
