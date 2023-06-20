@@ -471,7 +471,6 @@ namespace framework
 
     private:
         std::vector<std::shared_ptr<SoftwareChannelInstance>> m_instances;
-        odk::ChannelList m_all_channels;
     };
 }
 }

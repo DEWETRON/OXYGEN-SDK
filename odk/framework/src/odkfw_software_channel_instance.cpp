@@ -49,7 +49,10 @@ namespace framework
         {
             for (auto& channel : sd.m_channel_descriptors)
             {
-                data_regions.m_data_regions.push_back(DataRegion(channel.m_channel_id, odk::Interval<std::uint64_t>(0, std::numeric_limits<std::uint64_t>::max())));
+                data_regions.m_data_regions.emplace_back(
+                    channel.m_channel_id,
+                    odk::Interval<std::uint64_t>(0, std::numeric_limits<std::uint64_t>::max())
+                );
             }
         }
         return createChannelIterators(stream_descriptor,
@@ -630,7 +633,13 @@ namespace framework
         bool all_input_channels_usable = true;
         for (auto an_input_channel : m_input_channel_proxies)
         {
-            all_input_channels_usable &= an_input_channel->isUsable();
+            const auto sample_occurence = an_input_channel->getDataFormat().m_sample_occurrence;
+
+            if(!(sample_occurence == odk::ChannelDataformat::SampleOccurrence::NEVER ||
+                 sample_occurence == odk::ChannelDataformat::SampleOccurrence::INVALID))
+            {
+                all_input_channels_usable &= an_input_channel->isUsable();
+            }
         }
         for (auto an_output_channel : m_output_channels)
         {
@@ -782,8 +791,14 @@ namespace framework
     {
         auto new_input_channel = std::make_shared<InputChannel>(m_host, channel_id);
         new_input_channel->updateDataFormat();
+        const auto sample_occurence = new_input_channel->getDataFormat().m_sample_occurrence;
         m_input_channel_proxies.push_back(std::move(new_input_channel));
-        m_task->addInputChannel(channel_id);
+
+        if(!(sample_occurence == odk::ChannelDataformat::SampleOccurrence::NEVER ||
+             sample_occurence == odk::ChannelDataformat::SampleOccurrence::INVALID))
+        {
+            m_task->addInputChannel(channel_id);
+        }
     }
 
     void SoftwareChannelInstance::removeOutputChannel(PluginChannelPtr& channel)

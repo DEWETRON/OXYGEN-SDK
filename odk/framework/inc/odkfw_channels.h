@@ -44,6 +44,7 @@ namespace framework
             odk::ChannelDataformat::SampleFormat format, std::uint32_t dimension = 1);
 
         PluginChannel& setSimpleTimebase(double frequency);
+        PluginChannel& setTimebaseWithOffset(double frequency, double offset);
 
         PluginChannel& setDefaultName(const std::string& name);
         std::string getDefaultName() const;

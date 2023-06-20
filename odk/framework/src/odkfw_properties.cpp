@@ -56,13 +56,13 @@ namespace framework
         }
     }
 
-    EditableUnsignedProperty::EditableUnsignedProperty(unsigned int val, unsigned int mi, unsigned int ma)
+    EditableUnsignedProperty::EditableUnsignedProperty(unsigned int val, unsigned int mi, unsigned int ma) noexcept
         : m_value(val)
         , m_min(mi)
         , m_max(ma)
     {
     }
-    unsigned int EditableUnsignedProperty::getValue() const
+    unsigned int EditableUnsignedProperty::getValue() const noexcept
     {
         return m_value;
     }
@@ -84,7 +84,7 @@ namespace framework
             notifyChanged();
         }
     }
-    bool EditableUnsignedProperty::hasValidRange() const
+    bool EditableUnsignedProperty::hasValidRange() const noexcept
     {
         return m_min <= m_max;
     }
@@ -175,16 +175,19 @@ namespace framework
             update(value.getProperty());
         }
     }
-    EditableFloatingPointProperty::EditableFloatingPointProperty(const double value)
+
+    EditableFloatingPointProperty::EditableFloatingPointProperty(double value, double mi, double ma) noexcept
         : m_value(value)
-        , m_min(1.0)
-        , m_max(0.0)
+        , m_min(mi)
+        , m_max(ma)
     {
     }
-    double EditableFloatingPointProperty::getValue() const
+
+    double EditableFloatingPointProperty::getValue() const noexcept
     {
         return m_value;
     }
+
     void EditableFloatingPointProperty::setValue(const double value)
     {
         if (value != m_value)
@@ -195,8 +198,12 @@ namespace framework
     }
     void EditableFloatingPointProperty::setMinMaxConstraint(double min, double max)
     {
-        m_min = min;
-        m_max = max;
+        if (m_min != min || m_max != max)
+        {
+            m_min = min;
+            m_max = max;
+            notifyChanged();
+        }
     }
     void EditableFloatingPointProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
@@ -231,7 +238,7 @@ namespace framework
 
         return true;
     }
-    bool EditableFloatingPointProperty::hasValidRange() const
+    bool EditableFloatingPointProperty::hasValidRange() const noexcept
     {
         return m_min <= m_max;
     }
@@ -297,7 +304,7 @@ namespace framework
         {
             case odk::Property::SCALAR:
             {
-                auto scalar_value = value.getScalarValue();
+                const auto& scalar_value = value.getScalarValue();
                 if (m_unit.empty())
                 {
                     m_unit = scalar_value.m_unit;
@@ -312,9 +319,8 @@ namespace framework
                 v = scalar_value.m_val;
             } break;
             case odk::Property::FLOATING_POINT_NUMBER:
-            {
                 v = value.getDoubleValue();
-            } break;
+                break;
             default:
                 return false;
         }
@@ -368,6 +374,8 @@ namespace framework
     }
 
     EditableFilePathProperty::EditableFilePathProperty(const RawPropertyHolder& value)
+        : m_file_type(FileType::INPUT_FILE)
+        , m_multi_select(false)
     {
         if (value.getProperty().isValid())
         {
@@ -629,12 +637,12 @@ namespace framework
         }
     }
 
-    EditableChannelIDProperty::EditableChannelIDProperty(const odk::ChannelID val)
+    EditableChannelIDProperty::EditableChannelIDProperty(const odk::ChannelID val) noexcept
         : m_value(val)
     {
     }
 
-    odk::ChannelID EditableChannelIDProperty::getValue() const
+    odk::ChannelID EditableChannelIDProperty::getValue() const noexcept
     {
         return m_value;
     }
@@ -648,7 +656,7 @@ namespace framework
         }
     }
 
-    bool EditableChannelIDProperty::isValid() const
+    bool EditableChannelIDProperty::isValid() const noexcept
     {
         return m_value != std::numeric_limits<odk::ChannelID>::max();
     }
@@ -736,7 +744,7 @@ namespace framework
         return true;
     }
 
-    BooleanProperty::BooleanProperty(bool value)
+    BooleanProperty::BooleanProperty(bool value) noexcept
         : m_value(value)
         , m_editable(false)
     {
@@ -752,7 +760,7 @@ namespace framework
         }
     }
 
-    bool BooleanProperty::getValue() const
+    bool BooleanProperty::getValue() const noexcept
     {
         return m_value;
     }

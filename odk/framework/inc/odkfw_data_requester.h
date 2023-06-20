@@ -42,7 +42,7 @@ namespace framework
     {
         static constexpr uint64_t BLOCK_SIZE = 1000;
         static constexpr double DEFAULT_REQUEST_INTERVAL = 0.1;
-        static constexpr uint64_t SAMPLES_PER_REQUEST = 10000;
+        static constexpr uint64_t SAMPLES_PER_REQUEST = 100000;
 
     public:
         DataRequester(odk::IfHost *host, std::shared_ptr<InputChannel> channel, bool user_reduced = false);

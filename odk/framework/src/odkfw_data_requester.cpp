@@ -98,8 +98,8 @@ namespace framework
         m_stream_reader.clearBlocks();
         m_data_block_list.reset();
 
-        while(m_current_position != m_end_position
-              && (!m_data_block_list || m_data_block_list->getBlockCount() == 0))
+        while (m_current_position != m_end_position
+            && (!m_data_block_list || m_data_block_list->getBlockCount() == 0))
         {
             double next_position = std::min(m_current_position + m_data_request_interval, m_end_position);
 
@@ -123,7 +123,6 @@ namespace framework
                 }
 
                 m_data_block_list = odk::ptr(odk::value_cast<odk::IfDataBlockList>(response));
-                m_current_position = next_position;
             }
 
             const auto block_count = m_data_block_list->getBlockCount();
@@ -131,8 +130,6 @@ namespace framework
             auto block_list_descriptor_xml = odk::ptr(m_data_block_list->getBlockListDescription());
             BlockListDescriptor list_descriptor;
             list_descriptor.parse(block_list_descriptor_xml->asStringView());
-
-            odk::framework::StreamReader stream_reader;
 
             for (int i = 0; i < block_count; ++i)
             {
@@ -148,38 +145,39 @@ namespace framework
                 }
             }
 
-            std::shared_ptr<odk::DataRegions> data_regions;
+            auto data_regions = getDataRegions(m_current_position, next_position);
+
+            if (data_regions.empty())
             {
-                auto xml_msg = m_host->createValue<odk::IfXMLValue>();
-                if (xml_msg)
+                auto regions = getDataRegions(m_current_position, m_end_position);
+                if (!regions.empty())
                 {
-                    PluginDataRegionsRequest req(m_dataset_descriptor.m_id);
-                    req.m_data_window = PluginDataRegionsRequest::DataWindow(m_current_position, next_position);
-                    xml_msg->set(req.generate().c_str());
-                }
-
-                const odk::IfValue* data_regions_result = nullptr;
-                m_host->messageSync(odk::host_msg::DATA_REGIONS_READ, 0, xml_msg.get(), &data_regions_result);
-
-                const odk::IfXMLValue* data_regions_result_xml = odk::value_cast<odk::IfXMLValue>(data_regions_result);
-                if (data_regions_result)
-                {
-                    if (data_regions_result_xml)
+                    if (m_user_reduced)
                     {
-                        data_regions = std::make_shared<DataRegions>();
-                        data_regions->parse(data_regions_result_xml->asStringView());
+                        auto next_region_start = (regions.front().m_region.m_begin / m_channel->getTimeBase().m_frequency) * m_ratio;
+                        next_position = std::min(m_end_position, next_region_start);
                     }
-                    data_regions_result->release();
+                    else
+                    {
+                        auto next_region_start = (regions.front().m_region.m_begin / m_channel->getTimeBase().m_frequency);
+                        next_position = std::min(m_end_position, next_region_start);
+                    }
+
+                }
+                else
+                {
+                    next_position = m_end_position;
+                }
+            }
+            else
+            {
+                for (const auto& valid_region : data_regions)
+                {
+                    m_stream_reader.addDataRegion(valid_region);
                 }
             }
 
-            if(data_regions)
-            {
-                for(const auto& invalid_region : data_regions->m_data_regions)
-                {
-                    stream_reader.addDataRegion(invalid_region);
-                }
-            }
+            m_current_position = next_position;
         }
     }
 

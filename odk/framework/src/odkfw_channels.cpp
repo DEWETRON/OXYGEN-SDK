@@ -45,7 +45,7 @@ namespace framework
 
     PluginChannel::~PluginChannel()
     {
-        for (auto p : m_properties)
+        for (const auto& p : m_properties)
         {
             p.second->setChangeListener(nullptr);
         }
@@ -73,6 +73,22 @@ namespace framework
         {
             m_channel_info.setSimpleTimebase(frequency);
 
+            if (m_channel_info.m_dataformat_info.m_sample_occurrence ==
+                ChannelDataformat::SampleOccurrence::SYNC)
+            {
+                setSamplerate(odk::Scalar(frequency, "Hz"));
+            }
+
+            m_change_listener->onChannelSetupChanged(this);
+        }
+        return *this;
+    }
+
+    PluginChannel& PluginChannel::setTimebaseWithOffset(double frequency, double offset)
+    {
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            m_channel_info.setTimebaseWithOffset(frequency, offset);
             if (m_channel_info.m_dataformat_info.m_sample_occurrence ==
                 ChannelDataformat::SampleOccurrence::SYNC)
             {
@@ -213,7 +229,7 @@ namespace framework
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             prop->setChangeListener(this);
-            m_properties.push_back(std::make_pair(name, prop));
+            m_properties.emplace_back(name, std::move(prop));
             m_change_listener->onChannelPropertyChanged(this, name);
         }
         return *this;
@@ -224,8 +240,8 @@ namespace framework
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             auto prop_holder = std::make_shared<RawPropertyHolder>(prop);
-            std::dynamic_pointer_cast<IfChannelProperty>(prop_holder)->setChangeListener(this);
-            m_properties.push_back(std::make_pair(name, prop_holder));
+            static_cast<IfChannelProperty*>(prop_holder.get())->setChangeListener(this);
+            m_properties.emplace_back(name, std::move(prop_holder));
             m_change_listener->onChannelPropertyChanged(this, name);
         }
         return *this;
@@ -236,7 +252,7 @@ namespace framework
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             auto it = std::find_if(m_properties.begin(), m_properties.end(),
-                [name](std::pair<std::string, ChannelPropertyPtr> a_property)
+                [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
                 {
                     return a_property.first == name;
                 }
@@ -252,11 +268,11 @@ namespace framework
 
     ChannelPropertyPtr PluginChannel::getProperty(const std::string& name) const
     {
-        for (auto& prop : m_properties)
+        for (const auto& [prop_name, prop] : m_properties)
         {
-            if (prop.first == name)
+            if (prop_name == name)
             {
-                return prop.second;
+                return prop;
             }
         }
         return {};
@@ -338,11 +354,11 @@ namespace framework
         }
 
         std::string name;
-        for (const auto& p : m_properties)
+        for (const auto& [prop_name, prop] : m_properties)
         {
-            if (p.second.get() == channel)
+            if (prop.get() == channel)
             {
-                name = p.first;
+                name = prop_name;
                 break;
             }
         }
@@ -413,7 +429,7 @@ namespace framework
 
     PluginChannels::~PluginChannels()
     {
-        for (auto p : m_channels)
+        for (const auto& p : m_channels)
         {
             p.second->setChangeListener(nullptr);
         }
@@ -445,7 +461,7 @@ namespace framework
         auto task_map_it = m_channel_to_task.find(ch->m_channel_info.m_local_id);
         if (task_map_it != m_channel_to_task.end())
         {
-            auto task = m_tasks[task_map_it->second];
+            const auto& task = m_tasks[task_map_it->second];
             ODK_ASSERT(task);
             m_channel_to_task.erase(task_map_it);
             task->removeOutputChannel(ch);
@@ -503,8 +519,8 @@ namespace framework
             }
             telegram.m_list_topology = m_list_topology;
             {
-                auto xml = telegram.generate();
-                m_host->messageSyncData(odk::host_msg::SET_PLUGIN_OUTPUT_CHANNELS, 0, xml.c_str(), xml.size() + 1, nullptr);
+                const std::string xml = telegram.generate();
+                m_host->messageSyncData(odk::host_msg::SET_PLUGIN_OUTPUT_CHANNELS, 0, xml.data(), xml.size() + 1);
             }
         }
         if (!m_properties_dirty.empty())
@@ -515,17 +531,17 @@ namespace framework
                 if (m_channels.find(channel->getLocalId()) != m_channels.end())
                 {
                     auto& tg_ch = telegram.addChannel(channel->m_channel_info.m_local_id);
-                    for (const auto& prop : channel->m_properties)
+                    for (const auto& [prop_name, prop] : channel->m_properties)
                     {
-                        prop.second->addToTelegram(tg_ch, prop.first);
+                        prop->addToTelegram(tg_ch, prop_name);
                     }
                 }
             }
 
             if (!telegram.m_channel_configs.empty())
             {
-                auto xml = telegram.generate();
-                m_host->messageSyncData(odk::host_msg::SET_PLUGIN_CONFIGURATION, 0, xml.c_str(), xml.size() + 1, nullptr);
+                const std::string xml = telegram.generate();
+                m_host->messageSyncData(odk::host_msg::SET_PLUGIN_CONFIGURATION, 0, xml.data(), xml.size() + 1);
             }
         }
 
@@ -586,7 +602,7 @@ namespace framework
             auto task_map_it = m_channel_to_task.find(ch_changes.m_channel_info.m_local_id);
             if (task_map_it != m_channel_to_task.end())
             {
-                auto task = m_tasks[task_map_it->second];
+                const auto& task = m_tasks[task_map_it->second];
                 ODK_ASSERT(task);
                 affected_tasks.insert(task);
             }
@@ -629,13 +645,13 @@ namespace framework
             auto it = m_channels.find(ch_changes.m_channel_info.m_local_id);
             if (it != m_channels.end())
             {
-                auto ch = it->second;
+                const auto& ch = it->second;
 
                 for (const auto& ch_change : ch_changes.m_properties)
                 {
                     try
                     {
-                        auto prop_name = ch_change.getName();
+                        const auto& prop_name = ch_change.getName();
                         auto prop = ch->getProperty(prop_name);
                         if (prop)
                         {
@@ -653,9 +669,9 @@ namespace framework
                 }
 
                 auto& tg_ch = response.addChannel(ch->m_channel_info.m_local_id);
-                for (const auto& prop : ch->m_properties)
+                for (const auto& [prop_name, prop] : ch->m_properties)
                 {
-                    prop.second->addToTelegram(tg_ch, prop.first);
+                    prop->addToTelegram(tg_ch, prop_name);
                 }
             }
         }
@@ -852,10 +868,7 @@ namespace framework
                         task->m_worker->onInitTimebases(m_host, task->m_token);
                         return odk::error_codes::OK;
                     }
-                    else
-                    {
-                        return odk::error_codes::INVALID_INPUT_PARAMETER;
-                    }
+                    return odk::error_codes::INVALID_INPUT_PARAMETER;
                 }
                 break;
             case odk::plugin_msg::ACQUISITION_TASK_START_PROCESSING:
@@ -866,10 +879,7 @@ namespace framework
                         task->m_worker->onStartProcessing(m_host, task->m_token);
                         return odk::error_codes::OK;
                     }
-                    else
-                    {
-                        return odk::error_codes::INVALID_INPUT_PARAMETER;
-                    }
+                    return odk::error_codes::INVALID_INPUT_PARAMETER;
                 }
                 break;
             case odk::plugin_msg::ACQUISITION_TASK_STOP_PROCESSING:
@@ -880,10 +890,7 @@ namespace framework
                         task->m_worker->onStopProcessing(m_host, task->m_token);
                         return odk::error_codes::OK;
                     }
-                    else
-                    {
-                        return odk::error_codes::INVALID_INPUT_PARAMETER;
-                    }
+                    return odk::error_codes::INVALID_INPUT_PARAMETER;
                 }
                 break;
             case odk::plugin_msg::ACQUISITION_TASK_PROCESS:
@@ -902,10 +909,7 @@ namespace framework
                             return odk::error_codes::UNHANDLED_EXCEPTION;
                         }
                     }
-                    else
-                    {
-                        return odk::error_codes::INVALID_INPUT_PARAMETER;
-                    }
+                    return odk::error_codes::INVALID_INPUT_PARAMETER;
                 }
                 break;
             case odk::plugin_msg::PLUGIN_CONFIGURATION_CHANGE_REQUEST:
@@ -968,7 +972,5 @@ namespace framework
         }
         return odk::error_codes::UNHANDLED_EXCEPTION;
     }
-
 }
 }
-

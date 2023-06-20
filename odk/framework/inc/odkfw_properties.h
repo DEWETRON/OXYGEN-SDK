@@ -20,7 +20,7 @@ namespace framework
             notifyChanged();
         }
 
-        bool isLive() const
+        ODK_NODISCARD bool isLive() const noexcept
         {
             return m_live;
         }
@@ -32,7 +32,7 @@ namespace framework
             notifyChanged();
         }
 
-        std::string getVisiblity() const
+        ODK_NODISCARD std::string getVisiblity() const
         {
             return m_visibility;
         }
@@ -47,7 +47,7 @@ namespace framework
         }
 
     protected:
-        PropertyBase()
+        PropertyBase() noexcept
             : m_live(true)
             , m_change_listener(nullptr)
         {
@@ -73,12 +73,12 @@ namespace framework
     class RawPropertyHolder : public PropertyBase
     {
     public:
-        explicit RawPropertyHolder();
+        RawPropertyHolder();
         explicit RawPropertyHolder(const odk::Property& value);
 
         bool update(const odk::Property& value) override;
 
-        odk::Property getProperty() const;
+        ODK_NODISCARD odk::Property getProperty() const;
 
     protected:
         void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
@@ -90,10 +90,10 @@ namespace framework
     class EditableUnsignedProperty : public PropertyBase
     {
     public:
-        explicit EditableUnsignedProperty(const RawPropertyHolder& value);
-        explicit EditableUnsignedProperty(unsigned int val, unsigned int mi = 1, unsigned int ma = 0);
+        EditableUnsignedProperty(const RawPropertyHolder& value);
+        explicit EditableUnsignedProperty(unsigned int val, unsigned int mi = 1, unsigned int ma = 0) noexcept;
 
-        unsigned int getValue() const;
+        ODK_NODISCARD unsigned int getValue() const noexcept;
 
         void setValue(unsigned int v);
 
@@ -101,7 +101,7 @@ namespace framework
 
         bool update(const odk::Property& value) override;
 
-        bool hasValidRange() const;
+        ODK_NODISCARD bool hasValidRange() const noexcept;
 
         void addOption(unsigned int val);
 
@@ -120,19 +120,18 @@ namespace framework
     class EditableFloatingPointProperty : public PropertyBase
     {
     public:
-        //TODO limit constraints
-        explicit EditableFloatingPointProperty(const RawPropertyHolder& value);
-        explicit EditableFloatingPointProperty(const double value);
+        EditableFloatingPointProperty(const RawPropertyHolder& value);
+        explicit EditableFloatingPointProperty(double value, double mi = 1., double ma = 0.) noexcept;
 
-        double getValue() const;
+        ODK_NODISCARD double getValue() const noexcept;
 
-        void setValue(const double value);
+        void setValue(double value);
 
         void setMinMaxConstraint(double min = 1.0, double max = 0.0);
 
         bool update(const odk::Property& value) override;
 
-        bool hasValidRange() const;
+        ODK_NODISCARD bool hasValidRange() const noexcept;
 
     protected:
         void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
@@ -146,18 +145,18 @@ namespace framework
     class EditableScalarProperty : public PropertyBase
     {
     public:
-        explicit EditableScalarProperty(const RawPropertyHolder& value);
-        explicit EditableScalarProperty(double val, const std::string& unit, double mi = 1.0, double ma = 0.0);
-        explicit EditableScalarProperty(odk::Scalar scalar, double mi = 1.0, double ma = 0.0);
+        EditableScalarProperty(const RawPropertyHolder& value);
+        EditableScalarProperty(double val, const std::string& unit, double mi = 1.0, double ma = 0.0);
+        EditableScalarProperty(odk::Scalar scalar, double mi = 1.0, double ma = 0.0);
 
-        odk::Scalar getValue() const;
+        ODK_NODISCARD odk::Scalar getValue() const;
         void setValue(const odk::Scalar& s);
 
         void setMinMaxConstraint(double min = 1, double max = 0);
 
         bool update(const odk::Property& value) override;
 
-        bool hasValidRange() const;
+        ODK_NODISCARD bool hasValidRange() const;
 
         void addOption(double val);
 
@@ -192,16 +191,16 @@ namespace framework
             const std::string& title = "", const std::string& path = "",
             const std::vector<std::string>& filter = {});
 
-        static std::string toString(FileType ft);
-        FileType getFileType() const;
+        ODK_NODISCARD static std::string toString(FileType ft);
+        ODK_NODISCARD FileType getFileType() const;
         void setFiletype(const FileType ft);
-        std::string getFilename() const;
+        ODK_NODISCARD std::string getFilename() const;
         void setTitle(const std::string& fl);
-        std::string getTitle() const;
+        ODK_NODISCARD std::string getTitle() const;
         void setFilename(const std::string& fl);
-        std::string getDefaultPath() const;
+        ODK_NODISCARD  std::string getDefaultPath() const;
         void setDefaultPath(const std::string& path);
-        std::vector<std::string> getNameFilters() const;
+        ODK_NODISCARD  std::vector<std::string> getNameFilters() const;
         void setNameFilters(const std::vector<std::string>& filter);
 
         bool update(const odk::Property& value) override;
@@ -226,7 +225,7 @@ namespace framework
         explicit StringProperty(const RawPropertyHolder& value);
         explicit StringProperty(const std::string& val);
 
-        std::string getValue() const;
+        ODK_NODISCARD std::string getValue() const;
         void setValue(const std::string& str);
 
         bool update(const odk::Property& value) override;
@@ -279,12 +278,12 @@ namespace framework
     class EditableChannelIDProperty : public PropertyBase
     {
     public:
-        explicit EditableChannelIDProperty(odk::ChannelID val = std::numeric_limits<odk::ChannelID>::max());
+        explicit EditableChannelIDProperty(odk::ChannelID val = std::numeric_limits<odk::ChannelID>::max()) noexcept;
 
-        odk::ChannelID getValue() const;
+        ODK_NODISCARD odk::ChannelID getValue() const noexcept;
         void setValue(odk::ChannelID ch_id);
 
-        bool isValid() const;
+        ODK_NODISCARD bool isValid() const noexcept;
 
         bool update(const odk::Property& value) override;
 
@@ -307,7 +306,7 @@ namespace framework
 
         explicit EditableChannelIDListProperty();
 
-        odk::ChannelIDList getValue() const;
+        ODK_NODISCARD odk::ChannelIDList getValue() const;
         void setValue(const odk::ChannelIDList& value);
 
         bool update(const odk::Property& value) override;
@@ -328,10 +327,10 @@ namespace framework
     class BooleanProperty : public PropertyBase
     {
     public:
-        explicit BooleanProperty(bool value);
+        explicit BooleanProperty(bool value) noexcept;
         explicit BooleanProperty(const RawPropertyHolder& value);
 
-        bool getValue() const;
+        ODK_NODISCARD bool getValue() const noexcept;
         void setValue(bool value);
 
         bool update(const odk::Property& value) override;
@@ -359,7 +358,7 @@ namespace framework
         explicit RangeProperty(const RawPropertyHolder& value);
         explicit RangeProperty(const odk::Range& value);
 
-        odk::Range getValue() const;
+        ODK_NODISCARD odk::Range getValue() const;
         void setValue(odk::Range value);
 
         bool update(const odk::Property& value) override;
@@ -382,7 +381,7 @@ namespace framework
         explicit SelectableProperty(const RawPropertyHolder& value);
         explicit SelectableProperty(odk::Property);
 
-        odk::Property getValue() const;
+        ODK_NODISCARD odk::Property getValue() const;
         void setValue(odk::Property);
 
         bool update(const odk::Property& value) override;
@@ -390,7 +389,7 @@ namespace framework
         void addOption(odk::Property);
         void clearOptions();
 
-        std::uint32_t count() const;
+        ODK_NODISCARD std::uint32_t count() const;
 
     protected:
         void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
@@ -405,7 +404,7 @@ namespace framework
     public:
         explicit StringListProperty() = default;
 
-        odk::StringList getValue() const;
+        ODK_NODISCARD odk::StringList getValue() const;
         void setValue(const odk::StringList& value);
 
         bool update(const odk::Property& value) override;
