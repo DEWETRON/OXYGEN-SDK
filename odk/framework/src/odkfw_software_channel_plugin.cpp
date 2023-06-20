@@ -89,6 +89,39 @@ namespace framework
         return m_custom_requests;
     }
 
-}
-}
+    bool SoftwareChannelPluginBase::mapRemovedChannels(std::map<std::uint64_t, std::uint64_t>& mapped_channels)
+    {
+        bool channel_removed = false;
+        auto channel_ids_xml = getHost()->template getValue<odk::IfXMLValue>(odk::queries::OxygenChannels, odk::queries::OxygenChannels_AllIds);
 
+        if (channel_ids_xml)
+        {
+            odk::ChannelList channel_list;
+            channel_list.parse(channel_ids_xml->getValue());
+
+            // Find channels that are removed and mark them as invalid (-1)
+            for (const auto& known_channel : m_all_channels.m_channels)
+            {
+                if (std::find(channel_list.m_channels.begin(), channel_list.m_channels.end(), known_channel) == channel_list.m_channels.end())
+                {
+                    const std::uint64_t invalid_id = static_cast<std::uint64_t>(-1);
+                    mapped_channels.emplace(known_channel.m_channel_id, invalid_id);
+                    channel_removed = true;
+                }
+            }
+            // Add new and existing channels
+            for (const auto& current_channel : channel_list.m_channels)
+            {
+                if (mapped_channels.find(current_channel.m_channel_id) == mapped_channels.end())
+                {
+                    mapped_channels.emplace(current_channel.m_channel_id, current_channel.m_channel_id);
+                }
+            }
+            m_all_channels = std::move(channel_list);
+        }
+
+        return channel_removed;
+    }
+
+}
+}

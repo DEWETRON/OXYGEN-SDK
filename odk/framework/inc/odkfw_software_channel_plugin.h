@@ -53,8 +53,17 @@ namespace framework
 
         bool checkOxygenCompatibility();
 
+        /**
+         * Creates a map of all channel IDs (old, existing and new) and maps them to their ID
+         * Deleted channels will be mapped to the invalid ID -1
+         * used as input to updateInternalInputChannelIDs and updateInputChannelIDs of instances
+         * @returns true if channels have been removed, false if no channels have been removed
+         */
+        bool mapRemovedChannels(std::map<std::uint64_t, std::uint64_t>& mapped_channels);
+
     private:
         PluginChannelsPtr m_plugin_channels;
+        odk::ChannelList m_all_channels;
         std::shared_ptr<odk::framework::CustomRequestHandler> m_custom_requests;
     };
 
@@ -172,34 +181,6 @@ namespace framework
                 root_channel_id_map[root_channel_id] = instance->getRootChannel()->getLocalId();
             }
             return true;
-        }
-
-        bool mapRemovedChannels(std::map<std::uint64_t, std::uint64_t>& mapped_channels)
-        {
-            bool channel_removed = false;
-            auto channel_ids_xml = getHost()->template getValue<odk::IfXMLValue>(odk::queries::OxygenChannels, odk::queries::OxygenChannels_AllIds);
-
-            if (channel_ids_xml)
-            {
-                odk::ChannelList channel_list;
-                channel_list.parse(channel_ids_xml->getValue());
-
-                for (const auto& known_channel : m_all_channels.m_channels)
-                {
-                    if (std::find(channel_list.m_channels.begin(), channel_list.m_channels.end(), known_channel) == channel_list.m_channels.end())
-                    {
-                        mapped_channels[known_channel.m_channel_id] = static_cast<std::uint64_t>(-1);
-                        channel_removed = true;
-                    }
-                    else
-                    {
-                        mapped_channels[known_channel.m_channel_id] = known_channel.m_channel_id;
-                    }
-                }
-                m_all_channels = channel_list;
-            }
-
-            return channel_removed;
         }
 
         bool handleMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret, std::uint64_t& ret_code) override
