@@ -81,6 +81,18 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     endif(UNIX)
   endif()
 
+  option(WITH_CLANG_TIDY "Enable Clang Tidy checks" OFF)
+
+  if (WITH_CLANG_TIDY)
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+    if (CLANG_TIDY_EXE)
+      message(STATUS "clang-tidy found")
+      set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,clang-analyzer-*")
+    else()
+      message(STATUS "clang-tidy not found")
+    endif()
+  endif()
+
   if (EXISTS "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts")
     AddUniqueTargetFromSubdirectory(pugixml "${ODK_ROOT}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
   else()

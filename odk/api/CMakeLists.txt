@@ -82,6 +82,9 @@ target_include_directories(${LIBNAME} INTERFACE
 )
 
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
+if (CLANG_TIDY_COMMAND)
+  set_target_properties(${LIBNAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+endif()
 
 # Unit Tests
 if (WITH_ODK_TESTS)
