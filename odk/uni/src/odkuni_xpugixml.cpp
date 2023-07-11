@@ -29,8 +29,6 @@ namespace xpugi
             //case pugi::node_pi:
             //case pugi::node_comment:
             case pugi::node_cdata:
-                text += node.value();
-                break;
             case pugi::node_pcdata:
                 text += node.value();
                 break;
@@ -199,8 +197,6 @@ namespace xpugi
             case pugi::node_pi:
             case pugi::node_comment:
             case pugi::node_cdata:
-                text = node.value();
-                break;
             case pugi::node_pcdata:
                 text = node.value();
                 break;
@@ -256,8 +252,6 @@ namespace xpugi
             case pugi::node_pi:
             case pugi::node_comment:
             case pugi::node_cdata:
-                text = node.value();
-                break;
             case pugi::node_pcdata:
                 text = node.value();
                 break;
@@ -559,7 +553,7 @@ namespace xpugi
     {}
 
     xml_element::xml_element(pugi::xml_node node)
-        : pugi::xml_node(static_cast<xml_element*>(&node)->_root)
+        : pugi::xml_node(node)
     {
         if ((type() != pugi::node_element)
            && (type() != pugi::node_null))
