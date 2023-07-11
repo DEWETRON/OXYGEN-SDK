@@ -127,9 +127,9 @@ namespace odk
 
     bool Timebase::operator==(const Timebase& other) const
     {
-        return m_type == other.m_type
-            && ((m_frequency == other.m_frequency) || (std::isnan(m_frequency) && std::isnan(other.m_frequency))
-            && (m_offset == other.m_offset));
+        return (m_type == other.m_type)
+            && ((m_frequency == other.m_frequency) || (std::isnan(m_frequency) && std::isnan(other.m_frequency)))
+            && (m_offset == other.m_offset);
     }
 
     void Timebase::reset()

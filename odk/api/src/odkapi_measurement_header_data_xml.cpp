@@ -26,7 +26,7 @@ namespace odk
         if (status.status == pugi::status_ok)
         {
             auto root = doc.document_element();
-            auto nm = root.name();
+            //auto nm = root.name();
             for (auto child_node : root.children("Header"))
             {
                 auto name_attr = child_node.attribute("name");

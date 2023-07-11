@@ -7,7 +7,7 @@
 
 std::uint64_t PLUGIN_API odk::framework::PluginBase::pluginMessage(odk::PluginMessageId id, std::uint64_t key, const odk::IfValue* param, const odk::IfValue** ret)
 {
-    std::uint64_t ret_code = 0;
+    std::uint64_t ret_code = odk::error_codes::OK;
     if (handleMessage(id, key, param, ret, ret_code))
     {
         return ret_code;

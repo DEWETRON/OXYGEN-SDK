@@ -123,5 +123,47 @@ namespace framework
         return channel_removed;
     }
 
+    bool SoftwareChannelPluginBase::handleSofwareChannelQueryAction(const odk::IfValue* param, const odk::IfValue** ret)
+    {
+        odk::QuerySoftwareChannelAction telegram;
+        if (!parseXMLValue(param, telegram))
+        {
+            return false;
+        }
+
+        std::vector<InputChannel::InputChannelData> input_channel_data;
+        input_channel_data.reserve(telegram.m_all_selected_channels_data.size());
+        for (const auto& a_channel : telegram.m_all_selected_channels_data)
+        {
+            input_channel_data.push_back({ a_channel.channel_id, a_channel.data_format, odk::Timebase() });
+        }
+
+        odk::QuerySoftwareChannelActionResponse response;
+
+        response.m_valid = validateInputChannels(input_channel_data, response.m_invalid_channels);
+
+        if (ret)
+        {
+            const auto result_xml = response.generate();
+            auto result = getHost()->template createValue<odk::IfXMLValue>();
+            result->set(result_xml.c_str());
+            *ret = result.detach();
+        }
+
+        return true;
+    }
+
+    bool SoftwareChannelPluginBase::handleNotifyEvent(odk::EventIds event)
+    {
+        switch (event)
+        {
+        case odk::EventIds::EVENT_ID_LICENSE_CHANGED:
+            updateSoftwareChannel();
+            return true;
+
+        default:
+            return false; // event not handled
+        }
+    }
 }
 }
