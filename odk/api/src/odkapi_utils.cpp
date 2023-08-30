@@ -7,6 +7,7 @@
 
 #include "odkbase_if_host.h"
 
+#include "odkuni_logger.h"
 #include "odkuni_assert.h"
 
 namespace odk
@@ -27,11 +28,12 @@ namespace odk
     {
         if (!isAnalysisModeActive(host))
         {
-            auto master_timebase_xml = host->getValue<odk::IfXMLValue>(odk::queries::Oxygen, odk::queries::Oxygen_MasterTimebaseValue);
+            auto master_timebase_xml = host->getValue<odk::IfXMLValue>(odk::queries::Oxygen,
+                                                                       odk::queries::Oxygen_MasterTimebaseValue);
 
             if (!master_timebase_xml)
             {
-                ODK_ASSERT_FAIL("Unable to retrieve master timebase value");
+                ODKLOG_WARN("Unable to retrieve master timebase value.");
                 return {};
             }
 

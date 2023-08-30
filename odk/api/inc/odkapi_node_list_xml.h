@@ -41,6 +41,12 @@ namespace odk
             m_nodes.push_back(std::move(property));
         }
 
+        template<class... Args>
+        void emplace_back(Args&&... args)
+        {
+            m_nodes.emplace_back(std::forward<Args>(args)...);
+        }
+
         void insert(size_t idx, const T& property)
         {
             m_nodes.insert(m_nodes.begin()+idx, property);
@@ -59,6 +65,11 @@ namespace odk
         void clear()
         {
             m_nodes.clear();
+        }
+
+        void reserve(std::size_t capacity)
+        {
+            m_nodes.reserve(capacity);
         }
 
         typedef T value_type;

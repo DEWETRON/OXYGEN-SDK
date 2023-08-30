@@ -38,10 +38,7 @@ namespace
         {
             return odk::Property::STRING_RST;
         }
-        else
-        {
-            return odk::Property::STRING_PLAIN;
-        }
+        return odk::Property::STRING_PLAIN;
     }
 
 }
@@ -83,30 +80,37 @@ namespace odk
 
     Property::Property(std::string name, bool value)
         : m_name(std::move(name))
-        , m_type(UNKNOWN)
+        , m_type(BOOLEAN)
+        , m_string_value(value ? "True" : "False")
     {
-        setValue(value);
     }
 
     Property::Property(std::string name, int value)
         : m_name(std::move(name))
-        , m_type(UNKNOWN)
+        , m_type(INTEGER)
+        , m_string_value(odk::to_string(value))
     {
-        setValue(value);
     }
 
     Property::Property(std::string name, std::int64_t value)
         : m_name(std::move(name))
-        , m_type(UNKNOWN)
+        , m_type(INTEGER64)
+        , m_string_value(odk::to_string(value))
     {
-        setValue(value);
     }
 
     Property::Property(std::string name, unsigned int value)
         : m_name(std::move(name))
-        , m_type(UNKNOWN)
+        , m_type(UNSIGNED_INTEGER)
+        , m_string_value(odk::to_string(value))
     {
-        setValue(value);
+    }
+
+    Property::Property(std::string name, double value)
+        : m_name(std::move(name))
+        , m_type(FLOATING_POINT_NUMBER)
+        , m_string_value(odk::to_string(value))
+    {
     }
 
     Property::Property(const std::string& name, Type type, const std::string& value)

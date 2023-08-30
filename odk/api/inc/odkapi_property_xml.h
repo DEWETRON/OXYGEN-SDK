@@ -201,6 +201,7 @@ namespace odk
         Property(std::string name, int value);
         Property(std::string name, std::int64_t value);
         Property(std::string name, unsigned int value);
+        Property(std::string name, double value);
         Property(std::string name, std::string value, std::string enum_type) noexcept;
         Property(const std::string& name, Type type, const std::string& value);
 
@@ -211,7 +212,13 @@ namespace odk
             , m_value(std::make_shared<T>(std::move(value)))
         {
         }
+
+        Property(const Property&) = default;
+        Property(Property&&) noexcept = default;
         virtual ~Property() = default;
+
+        Property& operator=(const Property&) = default;
+        Property& operator=(Property&&) noexcept = default;
 
         ODK_NODISCARD std::string getNodeName() const;
 
