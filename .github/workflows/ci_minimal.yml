@@ -1,10 +1,6 @@
 name: build and run tests
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 env:
   BUILD_TYPE: Release
@@ -17,7 +13,7 @@ jobs:
     - name: Install minimal requirements
       run: |-
         sudo apt-get install -yq qt5-default
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++
     - name: Build
