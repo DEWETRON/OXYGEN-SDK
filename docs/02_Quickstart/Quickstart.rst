@@ -626,7 +626,7 @@ Please create both files using the above source code.
 Hello World Building
 ~~~~~~~~~~~~~~~~~~~~
 
-Now lets build the plugin:
+Now lets build the plugin. On Windows, run:
 
 .. code:: text
 
@@ -680,6 +680,14 @@ Start compiling by pressing *Ctrl+Shift+B* or selecting *Build Solution* in the
 
     Building Hello World in Visual Studio.
 
+On Linux, just execute these commands to build the plugin:
+
+.. code:: text
+
+   mkdir build
+   cd build
+   cmake ..
+   make
 
 Hello World Deployment
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -691,6 +699,9 @@ In Windows these locations are valid for plugins:
 - ``C:\Program Files\DEWETRON\OXYGEN\bin``
 - ``C:\Users\Public\Documents\Dewetron\Oxygen\Plugins``
 
+In Linux (e.g. Ubuntu 22.04), you can place the plugin into:
+
+- ``/usr/Oxygen/plugins/``
 
 Now start Oxygen. After Oxygen started look for the plugin in *System Setup*:
 
