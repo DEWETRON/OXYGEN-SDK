@@ -576,7 +576,7 @@ code to a valid binary plugin file.
        if (MSVC)
            set(ODK_ROOT "C:/OXYGEN-SDK")
        else()
-           set(ODK_ROOT "../OXYGEN-SDK")
+           set(ODK_ROOT "../../OXYGEN-SDK")
        endif()
    endif()
 
