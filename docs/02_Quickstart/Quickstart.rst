@@ -51,7 +51,7 @@ during installation or add it to the PATH manually.
 
    C:\> cmake --version
    cmake version 3.16.4
-   
+
    CMake suite maintained and supported by Kitware (kitware.com/cmake).
 
 
@@ -73,7 +73,7 @@ Qt is a rather large download (40GB with included debug symbol files) so
 the use of the small provided qt_resource_compiler.zip archive is preferred.
 
 In order to build and execute unit tests, `Boost C++ Libraries 1.70 <https://www.boost.org/users/history/version_1_70_0.html>`__ or later are needed.
- 
+
 
 
 Development Requirements for Linux
@@ -126,7 +126,7 @@ Git clone using cmd.exe
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: text
-   
+
    C:\> cd C:\
    C:\> git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 
@@ -156,7 +156,7 @@ setup.py needs python3 to be installed. Using setup.py is completely optional: A
 steps necessary can be done manually.
 
 .. code:: text
-   
+
    C:\> cd C:\OXYGEN-SDK
    C:\> python setup.py
    Boost 1.70.0 dependency processing ...
@@ -172,7 +172,7 @@ Workspace setup step by step
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Setup Boost libraries 
+Setup Boost libraries
 ^^^^^^^^^^^^^^^^^^^^^
 *If setup.py was not used or did not succeed*
 
@@ -189,7 +189,7 @@ Setup Qt resource compiler
 
 Unpack ``qt_resource_compiler.zip`` to ``C:\OXYGEN-SDK``
 
-*Or: Qt 5.15.2 has to be installed on the system. 
+*Or: Qt 5.15.2 has to be installed on the system.
 This manual assumes the correct build for your compiler is installed to {QT_DIR}
 (for example C:\\Qt\\5.15.2\\msvc2017_64)*
 
@@ -203,7 +203,7 @@ Open a command line prompt and change to the directory ``C:\OXYGEN-SDK``
 Create a new directory ``build`` and change to ``C:\OXYGEN-SDK\build``
 
 .. code:: text
-   
+
    C:\> cd C:\OXYGEN-SDK
    C:\OXYGEN-SDK> mkdir build
    C:\OXYGEN-SDK> cd build
@@ -212,7 +212,7 @@ Create a new directory ``build`` and change to ``C:\OXYGEN-SDK\build``
 Using cmake we create a Visual Studio solution:
 
 .. code:: text
-   
+
    C:\OXYGEN-SDK\build> cmake -A x64 ..
 
 The option *-A x64* forces the solution to build for 64bit architecture.
@@ -221,26 +221,26 @@ and Oxygen is not able to load the plugins.
 
 
 If your are using a qt installation instead of the qt_resource_compiler package please call cmake like this:
-    
+
 .. code:: text
-   
+
    C:\OXYGEN-SDK\build> cmake -A x64 -DCMAKE_PREFIX_PATH={QT_DIR} ..
 
-    
-    
+
+
 If CMake encounters an error, you need to fix the issue and then invoke
 
 .. code:: text
-   
+
    C:\OXYGEN-SDK\build> del CMakeCache.txt
 
 before retrying to ensure a clean run.
 
-  
+
 Open the generated Solution in Visual Studio
 
 .. code:: text
-   
+
    C:\OXYGEN-SDK\build> start ODK.sln
 
 
@@ -280,7 +280,7 @@ It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
 to the directory refered to as WORKSPACE:
 
 .. code:: text
-   
+
    PC$ cd $HOME
    PC$ git clone https://github.com/DEWETRON/OXYGEN-SDK.git OXYGEN-SDK
 
@@ -296,7 +296,7 @@ Enter the OXYGEN-SDK directory and execute cmake to check for all necessary
 dependencies and let it create a Makefile.
 
 .. code:: text
-   
+
    PC$ cd $HOME/OXYGEN-SDK
    PC$ mkdir build
    PC$ cd build
@@ -321,27 +321,27 @@ dependencies and let it create a Makefile.
    -- Checking C++11 support for "constexpr"
    -- Checking C++11 support for "constexpr": works
    -- GITHUB_REPO = True
-   -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0")  
+   -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0")
    -- Qt found
    -- Configuring done
    -- Generating done
    -- Build files have been written to: /home/USER/OXYGEN-SDK/build
-   
+
 
 Now run make to build the SDK and all example plugins
 
 .. code:: text
-   
+
    PC$ make
    Scanning dependencies of target pugixml
    [  1%] Building CXX object 3rdparty/pugixml-1.9/CMakeFiles/pugixml.dir/__/src/pugixml.cpp.o
    [  2%] Linking CXX static library ../../Debug/libpugixml.a
-   
+
    lines skipped
-   
+
    [ 98%] Linking CXX shared library ../../Debug/plugins/libex_wav_export.plugin
    [100%] Built target ex_wav_export
-  
+
 
 After building all plugins are found here:
 
@@ -351,7 +351,7 @@ After building all plugins are found here:
 
 
 .. code:: text
-   
+
    PC$ ls build/Debug/plugins/
    libex_bin_detector.plugin
    libex_property_callback.plugin
@@ -426,7 +426,7 @@ After building all plugins are found here:
 
 
 .. code:: text
-   
+
    PC$ ls build/Debug/plugins/
    libex_bin_detector.plugin
    libex_property_callback.plugin
@@ -445,7 +445,7 @@ Hello World plugin
 The first plugin will be a variant of the classic "Hello World" programming
 example.
 
-To start the development a project directory for our new development has to 
+To start the development a project directory for our new development has to
 be created: ``C:\OXYGEN-PLUGINS\Hello_World``
 
 Our plugin directory has to be populated with at least two files:
@@ -462,9 +462,9 @@ Lets start with the plugin source code:
 
 .. code:: c++
 
-   // Copyright DEWETRON GmbH 2022  
+   // Copyright DEWETRON GmbH 2022
    #include "odkfw_software_channel_plugin.h"
-   
+
    static const char* PLUGIN_MANIFEST =
    R"XML(<?xml version="1.0"?>
    <OxygenPlugin name="HELLO_WORLD" version="1.0"
@@ -476,16 +476,16 @@ Lets start with the plugin source code:
      <Host minimum_version="6.0"/>
    </OxygenPlugin>
    )XML";
-   
+
    using namespace odk::framework;
-   
+
    class HelloWorldChannel : public SoftwareChannelInstance
    {
    public:
        HelloWorldChannel()
        {
        }
-   
+
        // Describe how the software channel should be shown in the "Add Channel" dialog
        static odk::RegisterSoftwareChannel getSoftwareChannelInfo()
        {
@@ -495,19 +495,19 @@ Lets start with the plugin source code:
            telegram.m_display_group = "Examples";
            telegram.m_description = "Simplest plugin possible";
            telegram.m_analysis_capable = true;
-   
+
            return telegram;
        }
-   
+
        bool update() override
        {
            return true;
        }
-   
+
        void create(odk::IfHost* host) override
        {
        }
-   
+
        bool configure(
            const odk::UpdateChannelsTelegram& request,
            std::map<std::uint32_t, std::uint32_t>& channel_id_map) override
@@ -515,24 +515,24 @@ Lets start with the plugin source code:
            configureFromTelegram(request, channel_id_map);
            return true;
        }
-   
+
        void prepareProcessing(odk::IfHost* host) override
        {
        }
-   
+
        void process(ProcessingContext& context, odk::IfHost *host) override
        {
        }
    private:
    };
-   
+
    class HelloWorldPlugin : public SoftwareChannelPlugin<HelloWorldChannel>
    {
    public:
    };
-   
+
    OXY_REGISTER_PLUGIN1("HELLO_WORLD", PLUGIN_MANIFEST, HelloWorldPlugin);
-    
+
 
 
 This small (but complete) plugin source code describes the *Hello World*
@@ -556,20 +556,20 @@ code to a valid binary plugin file.
    # Oxygen Hello World
    #
    cmake_minimum_required(VERSION 3.16)
-   
+
    # Name of the plugin project and compiled plugin file
    set(LIBNAME hello_world)
    # This is just any stable GUID to help Visual Studio identify the project for rebuilds
    set("${LIBNAME}_GUID_CMAKE" "8c15e366-e94f-4870-8ec1-0db0b342994c" CACHE INTERNAL "remove this and Visual Studio will mess up incremental builds")
-   
+
    #
    # Project name
    project(HelloWorldPlugin)
-   
+
    #
    # C++ Standard, Compiler Flags
    set(CMAKE_CXX_STANDARD 17)
-   
+
    #
    # Import Oxygen SDK
    if (NOT DEFINED ODK_ROOT)
@@ -579,41 +579,41 @@ code to a valid binary plugin file.
            set(ODK_ROOT "../OXYGEN-SDK")
        endif()
    endif()
-   
+
    # get absolute path of ODK_ROOT
    get_filename_component(ODK_ROOT ${ODK_ROOT} ABSOLUTE)
-   
+
    # Expand cmake path to find ODK cmake utilities
    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ODK_ROOT}/cmake)
    include(CMakeSettings)
    include(OxygenPluginFunctions)
-   
+
    # Build settings and 3rdparty libs
    SetupODKEnvironment(${ODK_ROOT})
 
    # Add ODK sources
-   add_subdirectory(${ODK_ROOT}/odk OXYGEN-SDK)  
-   
+   add_subdirectory(${ODK_ROOT}/odk OXYGEN-SDK)
+
    include_directories(
      SYSTEM
      ${Boost_INCLUDE_DIRS}
    )
-   
+
    set(SOURCE_FILES
      hello_world_plugin.cpp
    )
    source_group("Source Files" FILES ${SOURCE_FILES})
-   
+
    add_library(${LIBNAME} SHARED
      ${SOURCE_FILES}
    )
-   
+
    target_link_libraries(${LIBNAME}
      odk_framework
    )
-   
+
    SetPluginOutputOptions(${LIBNAME})
-   
+
    #
    # add this to Visual Studio group lib
    set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk_plugins")
@@ -629,10 +629,10 @@ Hello World Building
 Now lets build the plugin:
 
 .. code:: text
-   
+
    C:\OXYGEN-SDK> cd C:\OXYGEN-PLUGINS\Hello_World
    C:\OXYGEN-PLUGINS\Hello_World> mkdir build
-   C:\OXYGEN-PLUGINS\Hello_World> cd build  
+   C:\OXYGEN-PLUGINS\Hello_World> cd build
    C:\OXYGEN-PLUGINS\Hello_World\build> cmake -A x64 -DODK_ROOT=C:\\OXYGEN-SDK ..
    -- Building for: Visual Studio 16 2019
    -- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19044.
