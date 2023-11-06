@@ -252,7 +252,7 @@ Open the generated Solution in Visual Studio
     Visual Studio 2019 ODK solution
 
 
-Build at least one of the example plugins. *Build Solution* will build everthing.
+Build at least one of the example plugins. *Build Solution* will build everything.
 
 The compiled plugins will be stored in
 ``C:\OXYGEN-SDK\build\{Debug|Release}\plugins``
@@ -277,7 +277,7 @@ Build instructions for Linux
 ----------------------------
 
 It is assumed that https://github.com/DEWETRON/OXYGEN-SDK is cloned
-to the directory refered to as WORKSPACE:
+to the directory referred to as WORKSPACE:
 
 .. code:: text
    
