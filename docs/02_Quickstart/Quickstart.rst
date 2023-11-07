@@ -79,7 +79,7 @@ In order to build and execute unit tests, `Boost C++ Libraries 1.70 <https://www
 Development Requirements for Linux
 ----------------------------------
 
-- Ubuntu 20.04 LTS Linux (Focal Fossa)
+- Ubuntu 20.04 LTS Linux (Focal Fossa) or Ubuntu 22.04 LTS Linux (Jammy Jellyfish)
 - Red Hat Enterprise Linux 8 (RHEL8)
 
 
