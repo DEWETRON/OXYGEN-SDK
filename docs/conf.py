@@ -24,7 +24,7 @@ author = 'DEWETRON GmbH'
 nav_title = 'DEWETRON Oxygen SDK'
 
 # The full version, including alpha/beta/rc tags
-release = '6.1'
+release = '6.3.1'
 
 
 # -- General configuration ---------------------------------------------------
