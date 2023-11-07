@@ -75,10 +75,6 @@ support@dewetron.com
 
 **For technical questions please contact:**
 
-Michael Oberhofer 
-
-michael.oberhofer@dewetron.com
-
 Gunther Laure
 
 gunther.laure@dewetron.com
