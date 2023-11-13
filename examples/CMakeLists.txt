@@ -4,6 +4,7 @@
 
 add_subdirectory("bin_detector")
 add_subdirectory("property_callback")
+add_subdirectory("replay_message")
 add_subdirectory("replay_sync_scalar")
 add_subdirectory("sample_interpolator")
 add_subdirectory("simple_moving_average")
