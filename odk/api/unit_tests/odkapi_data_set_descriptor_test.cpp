@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(parse_generate)
     BOOST_CHECK_EQUAL(*data_set.m_stream_descriptors.at(1).m_channel_descriptors.at(1).m_timestamp_position, -8);
 
     DataSetDescriptor data_set2;
-    BOOST_CHECK(data_set2.parse(data_set.generate().c_str()));
+    BOOST_CHECK(data_set2.parse(data_set.generate()));
 
     BOOST_CHECK(data_set2 == data_set);
 
