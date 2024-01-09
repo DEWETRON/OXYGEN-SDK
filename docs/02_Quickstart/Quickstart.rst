@@ -62,7 +62,7 @@ For resource package creation the qt resource compiler (rcc) is needed.
 
 It is found the GitHub projects download section:
 
-https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_resource_compiler.zip
+https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.3.0/qt_resource_compiler.zip
 
 
 Alternatively one can install the complete Qt libraries package:
@@ -79,7 +79,7 @@ In order to build and execute unit tests, `Boost C++ Libraries 1.70 <https://www
 Development Requirements for Linux
 ----------------------------------
 
-- Ubuntu 20.04 LTS Linux (Focal Fossa)
+- Ubuntu 20.04 LTS Linux (Focal Fossa) or Ubuntu 22.04 LTS Linux (Jammy Jellyfish)
 - Red Hat Enterprise Linux 8 (RHEL8)
 
 
