@@ -2,11 +2,13 @@
 
 #include "odkapi_channel_list_xml.h"
 #include "odkapi_version_xml.h"
+#include "odkapi_xml_builder.h"
 
 #include "odkuni_xpugixml.h"
 
 #include <cstring>
 #include <limits>
+#include <sstream>
 
 namespace odk
 {
@@ -29,7 +31,7 @@ namespace odk
                 if (channel_id == std::numeric_limits<uint64_t>::max())
                     return false;
                 std::string status_str = channel_node.attribute("status").as_string();
-                m_channels.emplace_back(channel_id, status_str);
+                m_channels.emplace_back(channel_id, std::move(status_str));
             }
             return true;
         }
@@ -38,21 +40,23 @@ namespace odk
 
     std::string ChannelList::generate() const
     {
-        pugi::xml_document doc;
-        auto request_node = doc.append_child("Channels");
-
-        for (const auto& channel : m_channels)
+        std::ostringstream stream;
         {
-            auto channel_node = request_node.append_child("Channel");
-
-            channel_node.append_attribute("channel_id") = static_cast<uint64_t>(channel.m_channel_id);
-            if (!channel.m_status.empty())
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto request_node = doc.append_child("Channels");
+            for (const auto& channel : m_channels)
             {
-                channel_node.append_attribute("status") = channel.m_status.c_str();
+                auto channel_node = request_node.append_child("Channel",
+                    Attribute("channel_id", channel.m_channel_id)
+                );
+                if (!channel.m_status.empty())
+                {
+                    channel_node.append_attribute("status", channel.m_status);
+                }
             }
         }
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
 
     bool ChannelList::valid(bool with_status) const
