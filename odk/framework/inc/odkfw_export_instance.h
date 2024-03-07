@@ -68,7 +68,7 @@ namespace framework
     private:
         odk::IfHost* m_host = nullptr;
         std::thread m_worker_thread;
-        std::atomic<bool> m_canceled = false;
+        std::atomic<bool> m_canceled;
         std::vector<std::unique_ptr<DataRequester>> m_data_requester;
         std::vector<std::unique_ptr<DataRequester>> m_reduced_requester;
         ProcessingContext m_context;

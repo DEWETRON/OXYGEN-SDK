@@ -144,7 +144,7 @@ namespace
 
 BOOST_FIXTURE_TEST_SUITE(export_instance_test_suite, Fixture)
 
-BOOST_AUTO_TEST_CASE(InitialState)
+BOOST_AUTO_TEST_CASE(IntialState)
 {
     TestInstance instance;
     BOOST_CHECK_EQUAL(instance.getID(), 0);

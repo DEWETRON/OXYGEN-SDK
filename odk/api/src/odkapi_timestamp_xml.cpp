@@ -1,13 +1,11 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_timestamp_xml.h"
-#include "odkapi_xml_builder.h"
 
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
 #include <cstring>
-#include <sstream>
 
 namespace odk
 {
@@ -50,15 +48,10 @@ namespace odk
 
     std::string Timestamp::generate() const
     {
-        std::ostringstream stream;
-        {
-            using odk::xml_builder::Attribute;
-            odk::xml_builder::Document doc(stream);
-            doc.append_child("Timestamp",
-                Attribute("ticks", m_ticks),
-                Attribute("frequency", m_frequency));
-        }
-        return stream.str();
+        pugi::xml_document doc;
+        auto node = doc.append_child("Timestamp");
+        writeTickFrequencyAttributes(node);
+        return xpugi::toXML(doc);
     }
 
     void Timestamp::writeTickFrequencyAttributes(pugi::xml_node& node) const

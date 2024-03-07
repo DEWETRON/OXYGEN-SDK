@@ -25,7 +25,6 @@ set(ODKAPI_TEST_SOURCES
   odkapi_utils_test.cpp
   odkapi_validation_telegram_test.cpp
   odkapi_version_test.cpp
-  odkapi_xml_builder_test.cpp
   test_module.cpp
 )
 source_group("Test Sources" FILES ${ODKAPI_TEST_SOURCES})

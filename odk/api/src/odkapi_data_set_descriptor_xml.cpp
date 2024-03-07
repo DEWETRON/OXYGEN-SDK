@@ -1,7 +1,6 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_data_set_descriptor_xml.h"
-#include "odkapi_xml_builder.h"
 
 #include "odkuni_assert.h"
 #include "odkuni_string_util.h"
@@ -9,7 +8,6 @@
 
 #include <algorithm>
 #include <cctype>
-#include <sstream>
 
 namespace odk
 {
@@ -263,56 +261,52 @@ namespace odk
 
     std::string DataSetDescriptor::generate() const
     {
-        std::ostringstream stream;
+        pugi::xml_document doc;
+        auto data_set_desc_node = doc.append_child("DataSetDescriptor");
 
+        data_set_desc_node.append_attribute("data_set_key").set_value(m_id);
+
+        for (const auto& scan_descriptor : m_stream_descriptors)
         {
-            using odk::xml_builder::Attribute;
-            odk::xml_builder::Document doc(stream);
-            auto data_set_desc_node = doc.append_child("DataSetDescriptor",
-                Attribute("data_set_key", m_id));
+            auto scan_descriptor_node = data_set_desc_node.append_child("StreamDescriptor");
+            scan_descriptor_node.append_attribute("stream_id").set_value(scan_descriptor.m_stream_id);
 
-            for (const auto& scan_descriptor : m_stream_descriptors)
+            for (const auto& channel_descriptor : scan_descriptor.m_channel_descriptors)
             {
-                auto scan_descriptor_node = data_set_desc_node.append_child("StreamDescriptor",
-                    Attribute("stream_id", scan_descriptor.m_stream_id));
+                auto channel_descriptor_node = scan_descriptor_node.append_child("Channel");
 
-                for (const auto& channel_descriptor : scan_descriptor.m_channel_descriptors)
+                channel_descriptor_node.append_attribute("channel_id").set_value(channel_descriptor.m_channel_id);
+                channel_descriptor_node.append_attribute("size").set_value(channel_descriptor.m_size);
+                channel_descriptor_node.append_attribute("stride").set_value(channel_descriptor.m_stride);
+                channel_descriptor_node.append_attribute("dimension").set_value(channel_descriptor.m_dimension);
+                channel_descriptor_node.append_attribute("type").set_value(stringifySampleType(channel_descriptor.m_type).c_str());
+
+                if (!channel_descriptor.m_scaling.empty())
                 {
-                    auto channel_descriptor_node = scan_descriptor_node.append_child("Channel");
-
-                    channel_descriptor_node.append_attribute("channel_id", channel_descriptor.m_channel_id);
-                    channel_descriptor_node.append_attribute("size", channel_descriptor.m_size);
-                    channel_descriptor_node.append_attribute("stride", channel_descriptor.m_stride);
-                    channel_descriptor_node.append_attribute("dimension", channel_descriptor.m_dimension);
-                    channel_descriptor_node.append_attribute("type", stringifySampleType(channel_descriptor.m_type));
-
-                    if (!channel_descriptor.m_scaling.empty())
+                    auto scaling_node = channel_descriptor_node.append_child("Scaling");
+                    for (auto scaling_item : channel_descriptor.m_scaling)
                     {
-                        auto scaling_node = channel_descriptor_node.append_child("Scaling");
-                        for (const auto& scaling_item : channel_descriptor.m_scaling)
-                        {
-                            scaling_node.append_child("Linear",
-                                Attribute("factor", scaling_item.m_factor),
-                                Attribute("offset", scaling_item.m_offset));
-                        }
+                        auto scaling_type_node = scaling_node.append_child("Linear");
+                        scaling_type_node.append_attribute("factor").set_value(scaling_item.m_factor);
+                        scaling_type_node.append_attribute("offset").set_value(scaling_item.m_offset);
                     }
+                }
 
-                    if (channel_descriptor.m_timestamp_position)
-                    {
-                        channel_descriptor_node.append_child("Timestamp",
-                            Attribute("position", *channel_descriptor.m_timestamp_position));
-                    }
+                if (channel_descriptor.m_timestamp_position)
+                {
+                    auto timestamp_node = channel_descriptor_node.append_child("Timestamp");
+                    timestamp_node.append_attribute("position").set_value(*channel_descriptor.m_timestamp_position);
+                }
 
-                    if (channel_descriptor.m_sample_size_position)
-                    {
-                        channel_descriptor_node.append_child("Samplesize",
-                            Attribute("position", *channel_descriptor.m_sample_size_position));
-                    }
+                if (channel_descriptor.m_sample_size_position)
+                {
+                    auto size_position_node = channel_descriptor_node.append_child("Samplesize");
+                    size_position_node.append_attribute("position").set_value(*channel_descriptor.m_sample_size_position);
                 }
             }
         }
 
-        return stream.str();
+        return xpugi::toXML(doc);
     }
 
     bool DataSetDescriptor::operator==(const DataSetDescriptor& other) const
