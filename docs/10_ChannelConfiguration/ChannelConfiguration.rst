@@ -63,12 +63,13 @@ configuration and identification data. The name of these custom items
 has to conform to the following patterns:
 
 - "UNIQUE_PLUGIN_NAME/MyCustomName"
-- "ID:UNIQUE_PLUGIN_NAME/MyCustomIdentifier"
+- "ID:UNIQUE_PLUGIN_NAME/MyCustomIdentifier" ("ID:" is reserved prefix for
+  identification items)
 
-All other config items keys are reserved for Oxygen and other plugins
+All other config item keys are reserved for Oxygen or other plugins
 and may not be used for custom items.
-It is recommended to use CamelCase ASCII characters for the identifier
-and avoid white space.
+Identifiers may use upper and lower case ASCII characters, digits and
+the underscore "_" only. CamelCase spelling is recommended.
 
 ID item are considered internal, are therefore not shown to the user,
 and may be used to store identification data that is not part of the
