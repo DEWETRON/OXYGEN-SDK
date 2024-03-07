@@ -13,7 +13,6 @@ namespace odk
 namespace framework
 {
     ExportInstance::ExportInstance()
-        : m_canceled(false)
     {
     }
 

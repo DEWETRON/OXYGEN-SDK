@@ -41,6 +41,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_update_config_xml.h
     inc/odkapi_utils.h
     inc/odkapi_version_xml.h
+    inc/odkapi_xml_builder.h
 )
 source_group("Public Header Files" FILES ${ODK_API_HEADER_FILES})
 
@@ -67,6 +68,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_update_config_xml.cpp
     src/odkapi_utils.cpp
     src/odkapi_version_xml.cpp
+    src/odkapi_xml_builder.cpp
 )
 source_group("Source Files" FILES ${ODK_API_SOURCE_FILES})
 

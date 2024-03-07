@@ -65,6 +65,8 @@ namespace framework
         {
             switch (id)
             {
+            case odk::plugin_msg::INIT:
+                return false; // Do not remove this label/return as it breaks Win32 builds
 
             case odk::plugin_msg::EXPORT_VALIDATE_SETTINGS:
             {
