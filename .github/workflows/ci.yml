@@ -7,19 +7,18 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-
     strategy:
       matrix:
-        cc: [g++, clang++]
+        os: [ubuntu-22.04, ubuntu-20.04]
+        
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Install Requirements
-      run: |-
-        sudo apt update && sudo apt -yq install libboost-test-dev qtbase5-dev valgrind clang-tidy
+      run: sudo apt update && sudo apt -yq install libboost-test-dev qtbase5-dev valgrind clang-tidy
     - uses: actions/checkout@v4
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=${{matrix.cc}} -DWITH_ODK_TESTS=ON -DWITH_CLANG_TIDY=ON
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++ -DWITH_ODK_TESTS=ON -DWITH_CLANG_TIDY=ON
     - name: Build
       run: cmake --build ${{github.workspace}}/build --target all --parallel
     - name: Test
