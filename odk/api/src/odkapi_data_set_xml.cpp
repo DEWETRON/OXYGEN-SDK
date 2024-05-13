@@ -2,9 +2,12 @@
 
 #include "odkapi_data_set_xml.h"
 #include "odkapi_version_xml.h"
+#include "odkapi_xml_builder.h"
 
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
+
+#include <sstream>
 
 namespace odk
 {
@@ -149,30 +152,34 @@ namespace odk
 
     std::string PluginDataRequest::generate() const
     {
-        pugi::xml_document doc;
-        auto data_request_node = doc.append_child("DataTransferRequest");
+        std::ostringstream stream;
 
-        data_request_node.append_attribute("data_set_key").set_value(m_id);
-
-        if(m_data_window)
         {
-            auto window_node = data_request_node.append_child("Window");
-            window_node.append_attribute("start").set_value(m_data_window->m_start);
-            window_node.append_attribute("end").set_value(m_data_window->m_stop);
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto data_request_node = doc.append_child("DataTransferRequest",
+                Attribute("data_set_key", m_id));
+
+            if (m_data_window)
+            {
+                data_request_node.append_child("Window",
+                    Attribute("start", m_data_window->m_start),
+                    Attribute("end", m_data_window->m_stop));
+            }
+
+            if (m_single_value)
+            {
+                data_request_node.append_child("SingleValue",
+                    Attribute("timestamp", m_single_value->m_timestamp));
+            }
+
+            if (m_data_stream)
+            {
+                data_request_node.append_child("DataStream");
+            }
         }
 
-        if(m_single_value)
-        {
-            auto single_value_node = data_request_node.append_child("SingleValue");
-            single_value_node.append_attribute("timestamp").set_value(m_single_value->m_timestamp);
-        }
-
-        if(m_data_stream)
-        {
-            data_request_node.append_child("DataStream");
-        }
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
 
 
@@ -241,19 +248,20 @@ namespace odk
 
     std::string PluginDataStartRequest::generate() const
     {
-        pugi::xml_document doc;
-        auto data_request_node = doc.append_child("DataTransferRequest");
+        std::ostringstream stream;
+        {
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto data_request_node = doc.append_child("DataTransferRequest",
+                Attribute("data_set_key", m_id));
+            auto stream_node = data_request_node.append_child("Stream");
+            if (m_start) { stream_node.append_attribute("start", *m_start); }
+            if (m_block_duration) { stream_node.append_attribute("block_duration", *m_block_duration); }
+            if (m_ignore_regions) { stream_node.append_attribute("ignore_regions", *m_ignore_regions); }
+            stream_node.append_attribute("stream_type", streamTypeToString(m_stream_type));
+        }
 
-        data_request_node.append_attribute("data_set_key").set_value(m_id);
-
-        auto stream_node = data_request_node.append_child("Stream");
-
-        if (m_start) { stream_node.append_attribute("start").set_value(*m_start); }
-        if (m_block_duration) { stream_node.append_attribute("block_duration").set_value(*m_block_duration); }
-        if (m_ignore_regions) { stream_node.append_attribute("ignore_regions").set_value(*m_ignore_regions); }
-        stream_node.append_attribute("stream_type").set_value(streamTypeToString(m_stream_type).c_str());
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
 
 
@@ -286,12 +294,13 @@ namespace odk
 
     std::string PluginDataStopRequest::generate() const
     {
-        pugi::xml_document doc;
-        auto data_request_node = doc.append_child("DataTransferRequest");
-
-        data_request_node.append_attribute("data_set_key").set_value(m_id);
-
-        return xpugi::toXML(doc);
+        std::ostringstream stream;
+        {
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            doc.append_child("DataTransferRequest", Attribute("data_set_key", m_id));
+        }
+        return stream.str();
     }
 
     PluginDataRegionsRequest::PluginDataRegionsRequest()
@@ -331,20 +340,18 @@ namespace odk
 
     std::string PluginDataRegionsRequest::generate() const
     {
-        pugi::xml_document doc;
-        auto data_request_node = doc.append_child("DataRegionsRequest");
-
-        data_request_node.append_attribute("data_set_key").set_value(m_id);
-
-        if(m_data_window)
+        std::ostringstream stream;
         {
-            auto window_node = data_request_node.append_child("Window");
-            window_node.append_attribute("start").set_value(m_data_window->m_start);
-            window_node.append_attribute("end").set_value(m_data_window->m_stop);
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto data_request_node = doc.append_child("DataRegionsRequest", Attribute("data_set_key", m_id));
+            if(m_data_window)
+            {
+                data_request_node.append_child("Window",
+                    Attribute("start", m_data_window->m_start),
+                    Attribute("end", m_data_window->m_stop));
+            }
         }
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
-
 }
-

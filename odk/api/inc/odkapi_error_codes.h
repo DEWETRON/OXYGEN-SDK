@@ -48,6 +48,11 @@ namespace error_codes
     ERROR_ID(UNSUPPORTED_VERSION,      GENERIC, 0x0000000C, "Unsupported version");
     ERROR_ID(UNHANDLED_EXCEPTION,      GENERIC, 0x0000000D, "Unhandled exception");
 
+    ERROR_ID(FILE_DATA_CORRUPT,        GENERIC, 0x0000000E, "File data is corrupted");
+    ERROR_ID(FILE_NOT_FOUND,           GENERIC, 0x0000000F, "File not found");
+    ERROR_ID(INVALID_CONFIGURATION,    GENERIC, 0x00000010, "The configuration is invalid");
+    ERROR_ID(FILE_PROTECTED,           GENERIC, 0x00000011, "File is protected");
+    ERROR_ID(UNKNOWN_FILE_FORMAT,      GENERIC, 0x00000012, "File format is unknown");
 
     ERROR_ID(COMMAND_SPECIFIC_RETURN_BASE, COMMAND_SPECIFIC, 0x00000000, "Commands can use up to 2^48 custom return codes starting at this id");
 
@@ -70,6 +75,13 @@ namespace error_codes
             ADD_NAMED_ERROR(INVALID_STATE);
             ADD_NAMED_ERROR(UNSUPPORTED_VERSION);
             ADD_NAMED_ERROR(UNHANDLED_EXCEPTION);
+
+            ADD_NAMED_ERROR(FILE_DATA_CORRUPT);
+            ADD_NAMED_ERROR(FILE_NOT_FOUND);
+            ADD_NAMED_ERROR(INVALID_CONFIGURATION);
+            ADD_NAMED_ERROR(FILE_PROTECTED);
+            ADD_NAMED_ERROR(UNKNOWN_FILE_FORMAT);
+
             default:
                 return nullptr;
         }

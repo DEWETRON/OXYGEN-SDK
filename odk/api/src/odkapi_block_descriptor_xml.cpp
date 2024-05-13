@@ -1,11 +1,13 @@
 // Copyright DEWETRON GmbH 2017
 
 #include "odkapi_block_descriptor_xml.h"
+#include "odkapi_xml_builder.h"
 
 #include "odkuni_string_util.h"
 #include "odkuni_xpugixml.h"
 
 #include <cstring>
+#include <sstream>
 
 namespace odk
 {
@@ -60,24 +62,26 @@ namespace odk
 
     std::string BlockDescriptor::generate() const
     {
-        pugi::xml_document doc;
-        auto block_desc_node = doc.append_child("BlockDescriptor");
-
-        block_desc_node.append_attribute("stream_id").set_value(m_stream_id);
-        block_desc_node.append_attribute("data_size").set_value(m_data_size);
-
-        for (const auto& block_channel : m_block_channels)
+        std::ostringstream stream;
         {
-            auto channel_node = block_desc_node.append_child("Channel");
-            channel_node.append_attribute("channel_id").set_value(block_channel.m_channel_id);
-            channel_node.append_attribute("offset").set_value(block_channel.m_offset);
-            channel_node.append_attribute("count").set_value(block_channel.m_count);
-            channel_node.append_attribute("first_sample_index").set_value(block_channel.m_first_sample_index);
-            channel_node.append_attribute("timestamp").set_value(block_channel.m_timestamp);
-            channel_node.append_attribute("duration").set_value(block_channel.m_duration);
-        }
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto block_desc_node = doc.append_child("BlockDescriptor",
+                Attribute("stream_id", m_stream_id),
+                Attribute("data_size", m_data_size));
 
-        return xpugi::toXML(doc);
+            for (const auto& block_channel : m_block_channels)
+            {
+                block_desc_node.append_child("Channel",
+                    Attribute("channel_id", block_channel.m_channel_id),
+                    Attribute("offset", block_channel.m_offset),
+                    Attribute("count", block_channel.m_count),
+                    Attribute("first_sample_index", block_channel.m_first_sample_index),
+                    Attribute("timestamp", block_channel.m_timestamp),
+                    Attribute("duration", block_channel.m_duration));
+            }
+        }
+        return stream.str();
     }
 
     DataRegion::DataRegion(std::uint64_t channel_id, const Interval<std::uint64_t>& region)
@@ -140,35 +144,37 @@ namespace odk
 
     std::string BlockListDescriptor::generate() const
     {
-        pugi::xml_document doc;
-        auto block_list_desc_node = doc.append_child("BlockListDescriptor");
-        block_list_desc_node.append_attribute("block_count").set_value(m_block_count);
-
-        if (!m_windows.empty())
+        std::ostringstream stream;
         {
-            auto intervals_node = block_list_desc_node.append_child("Intervals");
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto block_list_desc_node = doc.append_child("BlockListDescriptor",
+                Attribute("block_count", m_block_count));
 
-            for (const auto& interval : m_windows)
+            if (!m_windows.empty())
             {
-                auto interval_node = intervals_node.append_child("Interval");
-                interval_node.append_attribute("begin").set_value(interval.m_begin);
-                interval_node.append_attribute("end").set_value(interval.m_end);
+                auto intervals_node = block_list_desc_node.append_child("Intervals");
+                for (const auto& interval : m_windows)
+                {
+                    intervals_node.append_child("Interval",
+                        Attribute("begin", interval.m_begin),
+                        Attribute("end", interval.m_end));
+                }
+                if (!m_invalid_regions.empty())
+                {
+                    auto regions_node = block_list_desc_node.append_child("InvalidRegions");
+
+                    for (const auto& a_region : m_invalid_regions)
+                    {
+                        regions_node.append_child("DataRegion",
+                            Attribute("channel_id", a_region.m_channel_id),
+                            Attribute("begin", a_region.m_region.m_begin),
+                            Attribute("end", a_region.m_region.m_end));
+                    }
+                }
             }
         }
-        if (!m_invalid_regions.empty())
-        {
-            auto regions_node = block_list_desc_node.append_child("InvalidRegions");
-
-            for (const auto& a_region : m_invalid_regions)
-            {
-                auto channel_region_node = regions_node.append_child("DataRegion");
-                channel_region_node.append_attribute("channel_id").set_value(a_region.m_channel_id);
-                channel_region_node.append_attribute("begin").set_value(a_region.m_region.m_begin);
-                channel_region_node.append_attribute("end").set_value(a_region.m_region.m_end);
-            }
-        }
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
 
     bool DataRegions::parse(const std::string_view& xml_string)
@@ -204,18 +210,20 @@ namespace odk
 
     std::string DataRegions::generate() const
     {
-        pugi::xml_document doc;
-        auto regions_node = doc.append_child("DataRegions");
-
-        for (const auto& a_region : m_data_regions)
+        std::ostringstream stream;
         {
-            auto channel_region_node = regions_node.append_child("DataRegion");
-            channel_region_node.append_attribute("channel_id").set_value(a_region.m_channel_id);
-            channel_region_node.append_attribute("begin").set_value(a_region.m_region.m_begin);
-            channel_region_node.append_attribute("end").set_value(a_region.m_region.m_end);
+            using odk::xml_builder::Attribute;
+            odk::xml_builder::Document doc(stream);
+            auto regions_node = doc.append_child("DataRegions");
+            for (const auto& a_region : m_data_regions)
+            {
+                regions_node.append_child("DataRegion",
+                    Attribute("channel_id", a_region.m_channel_id),
+                    Attribute("begin", a_region.m_region.m_begin),
+                    Attribute("end", a_region.m_region.m_end));
+            }
         }
-
-        return xpugi::toXML(doc);
+        return stream.str();
     }
 }
 

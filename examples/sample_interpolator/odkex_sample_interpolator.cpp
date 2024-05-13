@@ -279,7 +279,7 @@ public:
                 if (upsample_factor == 1)
                 {
                     // write a single async sample
-                    addSample(host, out_channel->getLocalId(), timestamp, &current_value, sizeof(double));
+                    addSample(host, out_channel->getLocalId(), timestamp, current_value);
                 }
                 else
                 {
@@ -290,8 +290,9 @@ public:
                         {
                             double t = static_cast<double>(n) / upsample_factor;
                             double value = lerp(m_last_sample, current_value, t);
-                            double time = lerp(m_last_timestamp * upsample_factor, timestamp * upsample_factor, t);
-                            addSample(host, out_channel->getLocalId(), time, &value, sizeof(double));
+                            uint64_t time = static_cast<uint64_t>(lerp(static_cast<double>(m_last_timestamp * upsample_factor),
+                                static_cast<double>(timestamp * upsample_factor), t));
+                            addSample(host, out_channel->getLocalId(), time, value);
                         }
                     }
                     m_last_timestamp = timestamp;

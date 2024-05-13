@@ -690,6 +690,10 @@ namespace framework
                         {
                             new_input_channel_ids.push_back(mapping_it->second);
                         }
+                        else
+                        {
+                            new_input_channel_ids.push_back(a_old_channel);
+                        }
                     }
 
                     channel_list_property->setValue(odk::ChannelIDList(new_input_channel_ids));

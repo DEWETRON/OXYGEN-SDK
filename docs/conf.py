@@ -19,12 +19,12 @@ import platform
 # -- Project information -----------------------------------------------------
 
 project = 'Oxygen SDK'
-copyright = '2022, DEWETRON GmbH'
+copyright = '2024, DEWETRON GmbH'
 author = 'DEWETRON GmbH'
 nav_title = 'DEWETRON Oxygen SDK'
 
 # The full version, including alpha/beta/rc tags
-release = '6.1'
+release = '7.1'
 
 
 # -- General configuration ---------------------------------------------------
