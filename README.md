@@ -59,7 +59,7 @@ The current version of Oxygen for SDK users can be downloaded from the customer 
 - Create a user account
 - Navigate to DOWNLOADS -> SOFTWARE & TOOLS -> OXYGEN
 (https://ccc.dewetron.com/pl/oxygen)
-- Click on the latest DEWETRON Oxygen R6.X.X installer.
+- Click on the latest DEWETRON Oxygen R7.X.X installer.
 
 
 # Contact
@@ -87,7 +87,7 @@ matthias.straka@dewetron.com
 # License
 MIT License
 
-Copyright (c) 2022 DEWETRON
+Copyright (c) 2024 DEWETRON
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

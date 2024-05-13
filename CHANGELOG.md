@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file
 
+## [7.1.0] - 2024-05-13
+### Added
+- Api: Export validation
+- Examples: Replay message
+
+### Changed
+- Various code base cleanups and improvements
+
 ## [6.3.1] - 2022-11-16
 ### Changed
 - Fixed odk::trim (and variants) to accept UTF-8 strings
