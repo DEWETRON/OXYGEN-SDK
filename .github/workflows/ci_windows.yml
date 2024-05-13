@@ -16,7 +16,7 @@ jobs:
     - name: Extract qt_resource_compiler.zip
       run: |
         Expand-Archive -Path 'qt_resource_compiler.zip' -DestinationPath 'extracted_files'
-        Move-Item -Path 'extracted_files\*' -Destination .
+        Move-Item -Path 'extracted_files\3rdparty\*' -Destination 3rdparty\
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
     - name: Build
