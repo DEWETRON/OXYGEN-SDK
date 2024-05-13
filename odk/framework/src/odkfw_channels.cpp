@@ -372,6 +372,7 @@ namespace framework
         , m_worker(worker)
         , m_token(token)
         , m_valid(false)
+        , m_block_duration(0.0)
     {
     }
 
@@ -421,6 +422,10 @@ namespace framework
         m_valid = valid;
     }
 
+    void PluginTask::setBlockDuration(double duration)
+    {
+        m_block_duration = duration;
+    }
 
     void PluginTask::setChangeListener(IfPluginTaskChangeListener* l)
     {
@@ -813,6 +818,7 @@ namespace framework
         {
             odk::AddAcquisitionTaskTelegram telegram;
             telegram.m_id = task.m_id;
+            telegram.m_block_duration = task.m_block_duration;
 
             for (const auto& ch : task.m_input_channels)
             {

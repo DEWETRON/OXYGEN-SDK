@@ -133,6 +133,8 @@ namespace framework
         bool isValid() const;
         void setValid(bool valid);
 
+        void setBlockDuration(double duration);
+
     protected:
 
         void setChangeListener(IfPluginTaskChangeListener* l);
@@ -147,6 +149,7 @@ namespace framework
         std::shared_ptr<IfTaskWorker> m_worker;
         std::uint64_t m_token;
         bool m_valid;
+        double m_block_duration;
     };
 
     class PluginChannels : public IfMessageHandler, public IfPluginChannelChangeListener, public IfPluginTaskChangeListener

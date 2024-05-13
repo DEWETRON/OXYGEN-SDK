@@ -23,6 +23,7 @@ namespace odk
         std::uint64_t m_id;
         std::vector<std::uint64_t> m_input_channels;
         std::vector<std::uint64_t> m_output_channels;
+        double m_block_duration;
     };
 
     class AcquisitionTaskProcessTelegram
