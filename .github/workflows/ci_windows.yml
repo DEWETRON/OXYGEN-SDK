@@ -11,6 +11,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Download qt_resource_compiler.zip
+      run: Invoke-WebRequest -Uri 'https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.3.0/qt_resource_compiler.zip' -OutFile 'qt_resource_compiler.zip'
+    - name: Extract qt_resource_compiler.zip
+      run: |
+        Expand-Archive -Path 'qt_resource_compiler.zip' -DestinationPath 'extracted_files'
+        Move-Item -Path 'extracted_files\*' -Destination .
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
     - name: Build
