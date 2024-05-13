@@ -1,5 +1,9 @@
 // Copyright DEWETRON GmbH 2019
 
+#ifdef WIN32
+#define  _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+#endif
+
 #include "odkapi_config_item_keys.h"
 #include "odkfw_custom_request_handler.h"
 #include "odkfw_properties.h"
@@ -79,7 +83,7 @@ public:
         odk::RegisterSoftwareChannel telegram;
         telegram.m_display_name = "Example Plugin: Simple file replay";
         telegram.m_service_name = "CreateChannel";
-        telegram.m_display_group = "Data Sources";
+        telegram.m_display_group = "Data Input";
         telegram.m_description = "Adds a synchronous channel that delivers samples read from a CSV file.";
         telegram.m_ui_item_add = "AddChannel";
         telegram.m_analysis_capable = false;

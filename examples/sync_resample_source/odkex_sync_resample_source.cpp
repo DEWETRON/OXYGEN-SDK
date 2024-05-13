@@ -49,7 +49,7 @@ public:
         odk::RegisterSoftwareChannel telegram;
         telegram.m_display_name = "Example Plugin: Sync Resample Source";
         telegram.m_service_name = "SyncResampleSource";
-        telegram.m_display_group = "Data Sources";
+        telegram.m_display_group = "Data Input";
         telegram.m_description = "Plugin that resamples input samples that do not match the nominal output sample rate";
         return telegram;
     }
@@ -127,7 +127,7 @@ public:
         {
             if (n < num_samples / 4)
             {
-                samples[n] = n;
+                samples[n] = static_cast<double>(n);
             }
             else if (n < 3 * num_samples / 4)
             {
@@ -154,7 +154,7 @@ public:
         // expected output timestamp
         const auto& master_timestamp = context.m_master_timestamp;
         const std::size_t block_size = 1000;
-        
+
         // only generate samples up until the master timestamp (not into the future)
         if (master_timestamp.m_ticks > (m_resampler.getSampleCount() + block_size) / m_timebase_frequency * master_timestamp.m_frequency)
         {

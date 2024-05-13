@@ -294,8 +294,11 @@ public:
                 for (std::size_t channel_index = 0; channel_index < 2; ++channel_index)
                 {
                     auto& iterator = iterators[channel_index].first;
-                    m_current_values[channel_index] = iterator.value<double>();
-                    ++iterator;
+                    if (iterator.valid())
+                    {
+                        m_current_values[channel_index] = iterator.value<double>();
+                        ++iterator;
+                    }
                 }
 
                 samples[output_sample_index++] = computeOutput();
