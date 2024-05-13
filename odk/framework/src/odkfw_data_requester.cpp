@@ -160,7 +160,14 @@ namespace framework
                     else
                     {
                         auto next_region_start = (regions.front().m_region.m_begin / m_channel->getTimeBase().m_frequency);
-                        next_position = std::min(m_end_position, next_region_start);
+                        if (next_region_start >= m_current_position)
+                        {
+                            next_position = std::min(m_end_position, next_region_start);
+                        }
+                        else
+                        {
+                            next_position = m_end_position;
+                        }
                     }
 
                 }
