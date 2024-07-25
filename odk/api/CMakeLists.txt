@@ -33,6 +33,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_oxygen_queries.h
     inc/odkapi_property_xml.h
     inc/odkapi_property_list_xml.h
+    inc/odkapi_pugixml_fwd.h
     inc/odkapi_software_channel_xml.h
     inc/odkapi_timebase_xml.h
     inc/odkapi_timestamp_xml.h
