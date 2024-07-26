@@ -28,4 +28,4 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: ctest -T memcheck
     - name: Install library
-      run: cmake --build ${{github.workspace}}/build --target install
+      run: cmake --install ${{github.workspace}}/build --prefix ${{github.workspace}}/install
