@@ -230,6 +230,19 @@ namespace odk
 
             return makeRange(minv, maxv);
         }
+        if (element_name == "ScalarRangeConstraint")
+        {
+            odk::Scalar mn, mx;
+            mn.m_val = tree.attribute("min").as_double();
+            mn.m_unit = tree.attribute("min_unit").as_string();
+            mx.m_val = tree.attribute("max").as_double();
+            mx.m_unit = tree.attribute("max_unit").as_string();
+            odk::Property minv, maxv;
+            minv.setValue(mn);
+            maxv.setValue(mx);
+
+            return makeRange(minv, maxv);
+        }
         else if (element_name == "OptionConstraint")
         {
             std::vector<odk::Property> options;
@@ -309,15 +322,32 @@ namespace odk
             {
                 auto pmin = getRangeMin();
                 auto pmax = getRangeMax();
-                if (pmin.getType() == odk::Property::FLOATING_POINT_NUMBER)
+                if (pmin.getType() == pmax.getType())
                 {
-                    auto constraint_node = parent.append_child("DoubleRangeConstraint");
-                    constraint_node.append_attribute("min").set_value(pmin.getDoubleValue());
-                    constraint_node.append_attribute("max").set_value(pmax.getDoubleValue());
+                    if (pmin.getType() == odk::Property::FLOATING_POINT_NUMBER)
+                    {
+                        auto constraint_node = parent.append_child("DoubleRangeConstraint");
+                        constraint_node.append_attribute("min").set_value(pmin.getDoubleValue());
+                        constraint_node.append_attribute("max").set_value(pmax.getDoubleValue());
+                    }
+                    else if (pmin.getType() == odk::Property::SCALAR)
+                    {
+                        auto mn = pmin.getScalarValue();
+                        auto mx = pmax.getScalarValue();
+                        auto constraint_node = parent.append_child("ScalarRangeConstraint");
+                        constraint_node.append_attribute("min").set_value(mn.m_val);
+                        constraint_node.append_attribute("max").set_value(mx.m_val);
+                        constraint_node.append_attribute("min_unit").set_value(mn.m_unit.c_str());
+                        constraint_node.append_attribute("max_unit").set_value(mx.m_unit.c_str());
+                    }
+                    else
+                    {
+                        ODK_ASSERT_FAIL("Unimplemented range type");
+                    }
                 }
                 else
                 {
-                    ODK_ASSERT_FAIL("Unimplemented range type");
+                    ODK_ASSERT_FAIL("Mixed ranges not supported");
                 }
             } break;
             case Constraint::ARBITRARY_STRING:
