@@ -27,3 +27,5 @@ jobs:
     - name: Memory Checks
       working-directory: ${{github.workspace}}/build
       run: ctest -T memcheck
+    - name: Install library
+      run: cmake --build ${{github.workspace}}/build --target install
