@@ -9,7 +9,7 @@ The SDK includes the framework, manual and examples to quickly get up and runnin
 The following functionality is currently supported in the SDK and 'Oxygen 6.0' and later:
 - Read and Write data from/to numeric channels (Scalar and Vector)
 - Create channels
-- Create config items for setup save/load and user config 
+- Create config items for setup save/load and user config
   * Numeric, Text, Channel List
 - Get Access to full channel list (read only)
 - Get Timebase and start time for sample placing

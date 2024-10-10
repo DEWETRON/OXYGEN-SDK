@@ -10,12 +10,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04]
-        
+
     runs-on: ${{ matrix.os }}
 
     steps:
     - name: Install Requirements
-      run: sudo apt update &&  sudo apt -y upgrade && sudo apt -yq install libboost-test-dev qtbase5-dev valgrind clang-tidy
+      run: sudo apt -y install libboost-test-dev qtbase5-dev valgrind clang-tidy
     - uses: actions/checkout@v4
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++ -DWITH_ODK_TESTS=ON -DWITH_CLANG_TIDY=ON -DWITH_ODK_INSTALL=ON
