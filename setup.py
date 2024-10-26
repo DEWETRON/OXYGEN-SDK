@@ -6,22 +6,22 @@
 #  - Downloads and installs necessary 3rdparty libraries
 #
 
-
 import argparse
-import os
 import platform
 import subprocess
 import sys
-
 import json
 import zipfile
+from pathlib import Path
+import logging
+import requests
 
-from urllib import request
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("Oxygen-SDK-Setup")
 
-#
 # List of OXYGEN-SDK dependencies
-dependencies_json = \
-'''
+dependencies_json = '''
 {
     "Windows" : [
         {
@@ -60,144 +60,125 @@ dependencies_json = \
 }
 '''
 
-
-VERBOSE = 0
-
 def verbose(msg):
-    if VERBOSE:
-        print('dwbuild:', msg, flush=True)
-
-
-
-
+    logger.info(msg)
 
 def do_check(check):
     """
-    Checks if the given setup step has to executed or
-    if the dependency is already fullfilled.
-    check is the content of the json "check" section.
+    Checks if the given setup step has to be executed or
+    if the dependency is already fulfilled.
     """
-    cmd = check.get('cmd', None)
-    exists = check.get('exists', None)
+    cmd = check.get('cmd')
+    exists = check.get('exists')
 
     if cmd:
         try:
-            cmd_list = cmd.split()
-            out = subprocess.check_output(cmd_list)
-        except OSError as error:
-            #print("Check error %s" % (error), flush=True)
-            return False
-        except:
+            subprocess.run(cmd.split(), check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
             return False
     elif exists:
-        return os.path.exists(exists)
+        return Path(exists).exists()
 
-    return True
-
+    return False
 
 def do_download(url, filename):
     """
-    download
+    Download the file from the given URL to the specified filename.
     """
-    verbose("downloading %s" % (filename))
-    request.urlretrieve(url, filename)
-
+    verbose(f"Downloading {filename} from {url}")
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+    except requests.RequestException as e:
+        logger.error(f"Failed to download {url}: {e}")
+        sys.exit(1)
 
 def do_afterprocessing(dep, after):
     """
-    do_afterprocessing
+    Perform after-processing steps such as extracting or executing files.
     """
-    exec = after.get('exec', None)
-    extract_to = after.get('extract_to', None)
+    exec_command = after.get('exec')
+    extract_to = after.get('extract_to')
 
-    name = dep.get('name', None)    
-    url = dep.get('url', None)
+    name = dep.get('name')
+    url = dep.get('url')
 
-    if exec:
-        print("Executing %s ..." % (name), flush=True)
-        verbose("Running executable %s" % (exec))
+    if exec_command:
+        logger.info(f"Executing {name} ...")
         try:
-            exec_list = exec.split()
-            subprocess.check_output(exec_list, shell=True)
-        except OSError as error:
-            print("Check error %s" % (error), flush=True)
-            return False
-        except:
-            return False
+            subprocess.run(exec_command.split(), check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error executing {exec_command}: {e}")
+            sys.exit(1)
 
     elif extract_to:
-        print("Unpacking %s ..." % (name), flush=True)
-        archive_name = os.path.basename(url)
-        verbose("Extracting %s to %s" % (archive_name, extract_to))
-        archive = zipfile.ZipFile(archive_name)
-        archive.extractall(path=extract_to)
-
-    return True
-
+        logger.info(f"Unpacking {name} ...")
+        archive_name = Path(url).name
+        try:
+            with zipfile.ZipFile(archive_name, 'r') as archive:
+                archive.extractall(Path(extract_to))
+        except zipfile.BadZipFile as e:
+            logger.error(f"Error extracting {archive_name}: {e}")
+            sys.exit(1)
 
 def process_dependency(cmd_cfg, dep):
     """
-    process_dependency
+    Process each dependency by checking, downloading, and after-processing.
     """
-    name = dep.get('name', None)
-    url = dep.get('url', None)
+    name = dep.get('name')
+    url = dep.get('url')
     check = dep.get('check', {})
     after = dep.get('after', {})
 
     skip_download = cmd_cfg.get('skip_download', False)
 
-    verbose("processing dependency %s (%s)" % (name, url))
+    verbose(f"Processing dependency {name} ({url})")
 
-    if name == None or url == None:
+    if not name or not url:
         return
 
-    # Install only if check fails
     if not do_check(check):
         if not skip_download:
-            print("Downloading %s ..." % (name), flush=True)
-            do_download(url, os.path.basename(url))
+            logger.info(f"Downloading {name} ...")
+            do_download(url, Path(url).name)
         do_afterprocessing(dep, after)
     else:
-        print("%s dependency is fullfilled!" % (name), flush=True)
-
+        logger.info(f"{name} dependency is fulfilled!")
 
 def setup(argv):
     """
-    setup main
+    Main setup function.
     """
     parser = argparse.ArgumentParser(
-        description='%s is a script file for initial setup of an OXYGEN-SDK workspace' % sys.argv[0])
+        description='Setup script for OXYGEN-SDK workspace')
 
-    parser.add_argument('-v', '--verbose', dest='verbose',
-                        action='store_true',
-                        default=False,
-                        help='be more verbose')
-    parser.add_argument('--skip-download', dest='skip_download',
-                        action='store_true',
-                        default=False,
-                        help='Omit download steps')
-
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose logging')
+    parser.add_argument('--skip-download', action='store_true', help='Skip download steps')
 
     args = parser.parse_args(argv)
 
-
-    global VERBOSE
-    VERBOSE = args.verbose
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
 
     cmd_cfg = {
-        "skip_download" : args.skip_download
+        "skip_download": args.skip_download
     }
 
-
     dep_json = json.loads(dependencies_json)
-    dep_list = dep_json[platform.system()]
+    system = platform.system()
+    dep_list = dep_json.get(system, [])
 
+    if not dep_list:
+        logger.error(f"No dependencies found for {system}. Exiting.")
+        return 1
 
     for dep in dep_list:
         process_dependency(cmd_cfg, dep)
 
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(setup(sys.argv[1:]))
