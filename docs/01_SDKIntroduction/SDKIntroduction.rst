@@ -69,7 +69,7 @@ Supported Operating Systems
 Following operating systems are supported by Oxygen:
 
  * Microsoft Windows 7,10,11 (64bit)
- * Ubuntu 20.04 LTS Linux (Focal Fossa)
+ * Ubuntu 20.04 LTS Linux (Focal Fossa) and 22.04 LTS Linux (Jammy Jellyfish)
  * Red Hat Enterprise Linux 8 (RHEL8)
 
 
