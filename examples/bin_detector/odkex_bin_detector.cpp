@@ -179,9 +179,17 @@ public:
     bool update() override
     {
         auto all_input_channels(getInputChannelProxies());
-        auto is_valid((all_input_channels.size() > 0));
+        bool is_valid = all_input_channels.size() > 0;
+        if (!is_valid)
+        {
+            return false;
+        }
 
         auto an_input_channel = getInputChannelProxy(m_input_channel->getValue());
+        if (!an_input_channel)
+        {
+            return false;
+        }
 
         const auto dataformat = an_input_channel->getDataFormat();
         //check for a valid input channel type
@@ -266,21 +274,21 @@ public:
             auto result = std::minmax_element(data, data+m_dimension);
             if (m_min_channels.m_value_channel && (m_min_channels.m_value_channel->getUsedProperty()->getValue()))
             {
-                addSample(host, m_min_channels.m_value_channel->getLocalId(), output_timestamp, result.first, sizeof(double));
+                addSample(host, m_min_channels.m_value_channel->getLocalId(), output_timestamp, result.first[0]);
             }
             if (m_min_channels.m_bin_channel && (m_min_channels.m_bin_channel->getUsedProperty()->getValue()))
             {
                 float offset = static_cast<float>(result.first - data);
-                addSample(host, m_min_channels.m_bin_channel->getLocalId(), output_timestamp, &offset, sizeof(float));
+                addSample(host, m_min_channels.m_bin_channel->getLocalId(), output_timestamp, offset);
             }
             if (m_max_channels.m_value_channel && (m_max_channels.m_value_channel->getUsedProperty()->getValue()))
             {
-                addSample(host, m_max_channels.m_value_channel->getLocalId(), output_timestamp, result.second, sizeof(double));
+                addSample(host, m_max_channels.m_value_channel->getLocalId(), output_timestamp, result.second[0]);
             }
             if (m_max_channels.m_value_channel && (m_max_channels.m_bin_channel->getUsedProperty()->getValue()))
             {
                 float offset = static_cast<float>(result.second - data);
-                addSample(host, m_max_channels.m_bin_channel->getLocalId(), output_timestamp, &offset, sizeof(float));
+                addSample(host, m_max_channels.m_bin_channel->getLocalId(), output_timestamp, offset);
             }
 
             ++channel_iterator;
@@ -292,7 +300,7 @@ private:
     std::shared_ptr<EditableStringProperty> m_enable_min;
     std::shared_ptr<EditableStringProperty> m_enable_max;
 
-    double m_timebase_frequency;
+    double m_timebase_frequency = 0;
     uint32_t m_dimension = 0;
 
     struct OutputChannelStruct

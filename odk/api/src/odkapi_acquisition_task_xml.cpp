@@ -11,6 +11,7 @@ namespace odk
 {
     AddAcquisitionTaskTelegram::AddAcquisitionTaskTelegram() noexcept
         : m_id()
+        , m_block_duration(0.0)
     {}
 
     bool AddAcquisitionTaskTelegram::parse(const std::string_view& xml_string)
@@ -33,6 +34,8 @@ namespace odk
             }
 
             m_id = acq_task_node.attribute("acquisition_task_key").as_ullong();
+
+            m_block_duration = acq_task_node.attribute("block_duration").as_double();
 
             auto input_channel_nodes = acq_task_node.select_nodes("InputChannels/Channel");
             for (auto channel_node : input_channel_nodes)
@@ -61,6 +64,8 @@ namespace odk
         odk::setProtocolVersion(acq_task_node, odk::Version(1,0));
 
         acq_task_node.append_attribute("acquisition_task_key").set_value(m_id);
+
+        acq_task_node.append_attribute("block_duration").set_value(m_block_duration);
 
         auto input_channels_node = acq_task_node.append_child("InputChannels");
         for (const auto& channel : m_input_channels)

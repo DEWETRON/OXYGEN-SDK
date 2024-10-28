@@ -158,7 +158,8 @@ steps necessary can be done manually.
 .. code:: text
 
    C:\> cd C:\OXYGEN-SDK
-   C:\> python setup.py
+   C:\OXYGEN-SDK> python -m pip install requests
+   C:\OXYGEN-SDK> python setup.py
    Boost 1.70.0 dependency processing ...
    Qt resource compiler (rcc) dependency processing ...
    CMake 3.23.1 dependency is fullfilled!
@@ -682,7 +683,7 @@ Start compiling by pressing *Ctrl+Shift+B* or selecting *Build Solution* in the
 
 On Linux, just execute these commands to build the plugin:
 
-.. code:: text
+.. code:: bash
 
    mkdir build
    cd build

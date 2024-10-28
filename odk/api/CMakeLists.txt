@@ -33,6 +33,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_oxygen_queries.h
     inc/odkapi_property_xml.h
     inc/odkapi_property_list_xml.h
+    inc/odkapi_pugixml_fwd.h
     inc/odkapi_software_channel_xml.h
     inc/odkapi_timebase_xml.h
     inc/odkapi_timestamp_xml.h
@@ -41,6 +42,7 @@ set(ODK_API_HEADER_FILES
     inc/odkapi_update_config_xml.h
     inc/odkapi_utils.h
     inc/odkapi_version_xml.h
+    inc/odkapi_xml_builder.h
 )
 source_group("Public Header Files" FILES ${ODK_API_HEADER_FILES})
 
@@ -67,6 +69,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_update_config_xml.cpp
     src/odkapi_utils.cpp
     src/odkapi_version_xml.cpp
+    src/odkapi_xml_builder.cpp
 )
 source_group("Source Files" FILES ${ODK_API_SOURCE_FILES})
 
@@ -82,8 +85,16 @@ target_include_directories(${LIBNAME} INTERFACE
 )
 
 set_target_properties(${LIBNAME} PROPERTIES FOLDER "odk")
+set_target_properties(${LIBNAME} PROPERTIES PUBLIC_HEADER "${ODK_API_HEADER_FILES}")
 if (CLANG_TIDY_COMMAND)
   set_target_properties(${LIBNAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+endif()
+
+if (WITH_ODK_INSTALL)
+  install(TARGETS ${LIBNAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/odk
+  )
 endif()
 
 # Unit Tests
