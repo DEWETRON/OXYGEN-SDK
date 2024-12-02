@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file
 
+## [7.3.2] - 2024-12-02
+### Added
+- Api: Export channel selection
+
 ## [7.1.0] - 2024-05-13
 ### Added
 - Api: Export validation

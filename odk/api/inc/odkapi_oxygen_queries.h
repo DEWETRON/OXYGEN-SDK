@@ -78,13 +78,13 @@ namespace queries
     READ_ONLY_PROPERTY(OxygenPaths, SetupDir,           IfStringValue, "Absolute path of the oxygen setup folder ");
 
     STATIC_CONTEXT(OxygenExport, "#Oxygen#Export", "Standard Export for Oxygen");
-    READ_WRITE_PROPERTY(OxygenExport, AutoExportDir,          IfStringValue, "Absolute path of the auto export data folder");
+    READ_WRITE_PROPERTY(OxygenExport, AutoExportDir,          IfStringValue,  "Absolute path of the auto export data folder");
     READ_WRITE_PROPERTY(OxygenExport, AutoExport,             IfBooleanValue, "Enable/disable auto export");
     READ_ONLY_PROPERTY(OxygenExport,  ItemsAvail,             IfXMLValue,     "Get selectable channels for export");
     READ_WRITE_PROPERTY(OxygenExport, ItemsList,              IfXMLValue,     "Get/Set selected channels for export");
     WRITE_ONLY_PROPERTY(OxygenExport, ItemsClear,             IfBooleanValue, "Clear selected channels for export");
     WRITE_ONLY_PROPERTY(OxygenExport, ItemsAdd,               IfBooleanValue, "Add channels for export");
-    WRITE_ONLY_PROPERTY(OxygenExport, ItemsDelete,            IfXMLValue,     "Add channels for export");
+    WRITE_ONLY_PROPERTY(OxygenExport, ItemsDelete,            IfXMLValue,     "Remove channels from export");
 }
 }
 
