@@ -26,6 +26,7 @@ R"XML(<?xml version="1.0"?>
 <TS version="2.1" language="en" sourcelanguage="en">
     <context><name>ConfigKeys</name>
         <message><source>ODK_SUM_CHANNELS/MyInputChannels</source><translation>Input Channels</translation></message>
+        <message><source>ODK_SUM_CHANNELS/Mode</source><translation>Mode</translation></message>
     </context>
 </TS>
 )XML";
@@ -35,11 +36,13 @@ R"XML(<?xml version="1.0"?>
 <TS version="2.1" language="de" sourcelanguage="en">
     <context><name>ConfigKeys</name>
         <message><source>ODK_SUM_CHANNELS/MyInputChannels</source><translation>Eingangskan<byte value="xe4"/>le</translation></message>
+        <message><source>ODK_SUM_CHANNELS/Mode</source><translation>Modus</translation></message>
     </context>
 </TS>
 )XML";
 
-static const char* KEY_INPUT_CHANNELS = "ODK_SUM_CHANNELS/MyInputChannels";
+static const std::string KEY_INPUT_CHANNELS = "ODK_SUM_CHANNELS/MyInputChannels";
+static const std::string KEY_CALC_MODE = "ODK_SUM_CHANNELS/Mode";
 
 using namespace odk::framework;
 
@@ -48,11 +51,15 @@ class MyExampleSoftwareChannelInstance : public SoftwareChannelInstance
 public:
 
     MyExampleSoftwareChannelInstance()
-        : m_input_channels(new EditableChannelIDListProperty())
+        : m_input_channels(std::make_shared<EditableChannelIDListProperty>())
+        , m_calculation_mode(std::make_shared<SelectableProperty>(odk::Property(KEY_CALC_MODE, "Sum", "")))
         , m_current_values({ std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() })
     {
         // make property m_input_channels visible in the GUI
         m_input_channels->setVisiblity("PUBLIC");
+        m_calculation_mode->setVisiblity("PUBLIC");
+        m_calculation_mode->addOption(odk::Property(KEY_CALC_MODE, "Sum", ""));
+        m_calculation_mode->addOption(odk::Property(KEY_CALC_MODE, "Difference", ""));
     }
 
     /**
@@ -208,6 +215,7 @@ public:
                 1)
             .setDeletable(true)
             .addProperty(KEY_INPUT_CHANNELS, m_input_channels)
+            .addProperty(KEY_CALC_MODE, m_calculation_mode)
             ;
     }
 
@@ -252,6 +260,9 @@ public:
         std::vector<double> samples(end_sample - start_sample);
         std::size_t output_sample_index = 0;
 
+        auto calculation_mode = m_calculation_mode->getValue().getEnumValue();
+        bool compute_sum = calculation_mode == "Sum";
+
         if (m_resampling_enabled)
         {
             for (auto sample_index = start_sample; sample_index < end_sample; ++sample_index)
@@ -272,7 +283,7 @@ public:
                     }
                 }
 
-                samples[output_sample_index++] = computeOutput();
+                samples[output_sample_index++] = compute_sum ? computeSum() : computeDifference();
             }
 
             // Read remaining samples to prevent missing samples in the next call of process
@@ -301,7 +312,7 @@ public:
                     }
                 }
 
-                samples[output_sample_index++] = computeOutput();
+                samples[output_sample_index++] = compute_sum ? computeSum() : computeDifference();
             }
         }
 
@@ -322,9 +333,14 @@ private:
     /**
      * Perform the actual calculation with the current sample values
      */
-    ODK_NODISCARD inline double computeOutput() const
+    ODK_NODISCARD inline double computeSum() const
     {
         return m_current_values[0] + m_current_values[1];
+    }
+
+    ODK_NODISCARD inline double computeDifference() const
+    {
+        return m_current_values[0] - m_current_values[1];
     }
 
     /**
@@ -350,6 +366,7 @@ private:
 
     // move to base?
     std::shared_ptr<EditableChannelIDListProperty> m_input_channels;
+    std::shared_ptr<SelectableProperty> m_calculation_mode;
     std::array<double, 2> m_current_values;
     bool m_resampling_enabled = false;
     double m_timebase_frequency = 0.0;

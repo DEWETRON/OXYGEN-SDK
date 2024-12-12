@@ -10,6 +10,7 @@ Features
   * Register a new Software Channel Type in Oxygen
   * Plugin instance provides a Channel Id List Config Item to configure the two input channels
   * Config Item name is translated to English and German
+  * Config Item for selecting one of two modes (Sum/Difference)
   * Validate input channels and their type
   * Read samples from synchronous and/or asynchronous channels
   * Write samples to a synchronous and an asynchronous output channel
