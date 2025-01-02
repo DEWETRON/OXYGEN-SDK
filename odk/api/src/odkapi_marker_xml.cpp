@@ -125,6 +125,7 @@ namespace odk
         , m_desc(description)
         , m_group_id(group_id)
         , m_is_mutable(is_mutable)
+        , m_recording_id()
     {
     }
 
@@ -203,6 +204,11 @@ namespace odk
             m_group_id = storage_node.child_value();
         }
 
+        if(auto recording_id_node = parent.child("RecordingId"))
+        {
+            m_recording_id = recording_id_node.child_value();
+        }
+
         return true;
     }
 
@@ -239,6 +245,11 @@ namespace odk
         {
             auto storage_group_node = marker_node.append_child("StorageGroup");
             storage_group_node.append_child(pugi::node_pcdata).set_value(m_group_id.c_str());
+        }
+        if (!m_recording_id.empty())
+        {
+            auto recording_id_node = marker_node.append_child("RecordingId");
+            recording_id_node.append_child(pugi::node_pcdata).set_value(m_recording_id.c_str());
         }
     }
 

@@ -84,6 +84,7 @@ namespace odk
         std::string m_group_id;
         odk::Timebase m_timebase;
         bool m_is_mutable;
+        std::string m_recording_id;
 
         void generateMarker(pugi::xml_node& parent) const;
         bool parseMarker(const pugi::xml_node& parent);
