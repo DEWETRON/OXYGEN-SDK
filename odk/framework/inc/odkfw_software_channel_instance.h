@@ -165,6 +165,9 @@ namespace framework
          */
         virtual void process(ProcessingContext& context, odk::IfHost* host) = 0;
 
+        virtual void measurementStarted() {}
+
+        virtual void measurementStopped() {}
     public:
 
         enum DataRequestType

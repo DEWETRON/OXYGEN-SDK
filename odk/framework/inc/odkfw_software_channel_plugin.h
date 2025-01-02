@@ -28,10 +28,10 @@ namespace framework
         virtual void registerResources() { registerTranslations(); }
 
         virtual bool validateInputChannels(const std::vector<InputChannel::InputChannelData>& input_channel_data,
-            std::vector<std::uint64_t>& invalid_channels) { 
+            std::vector<std::uint64_t>& invalid_channels) {
             ODK_UNUSED(input_channel_data);
-            ODK_UNUSED(invalid_channels); 
-            return true; 
+            ODK_UNUSED(invalid_channels);
+            return true;
         }
 
     protected:
@@ -300,6 +300,14 @@ namespace framework
             return true;
         }
 
+        bool hasInstance(const odk::IfValue** ret)
+        {
+            auto result = getHost()->template createValue<odk::IfBooleanValue>();
+            result->set(!m_instances.empty());
+            *ret = result.detach();
+            return true;
+        }
+
         bool handlePluginLoadConfiguration(const odk::IfValue* param, const odk::IfValue** ret)
         {
             odk::UpdateChannelsTelegram telegram;
@@ -307,7 +315,7 @@ namespace framework
             {
                 return true;
             }
-            
+
             odk::ChannelMappingTelegram<std::uint32_t>::MapType id_map_root_channels;
             if (createInstancesfromTelegram(telegram, id_map_root_channels))
             {
@@ -420,6 +428,24 @@ namespace framework
                 return true;
             }
 
+            case odk::EventIds::EVENT_ID_MEASUREMENT_ACTIVE:
+            {
+                for (const auto& instance : m_instances)
+                {
+                    instance->measurementStarted();
+                }
+                return true;
+            }
+
+            case odk::EventIds::EVENT_ID_MEASUREMENT_STOPPED:
+            {
+                for (const auto& instance : m_instances)
+                {
+                    instance->measurementStopped();
+                }
+                return true;
+            }
+
             default:
                 return SoftwareChannelPluginBase::handleNotifyEvent(event);
             }
@@ -453,6 +479,9 @@ namespace framework
 
             case odk::plugin_msg::NOTIFY_EVENT:
                 return handleNotifyEvent(static_cast<odk::EventIds>(key));
+
+            case odk::plugin_msg::SOFTWARE_CHANNEL_HAS_INSTANCE:
+                return hasInstance(ret);
 
             default:
                 return false;

@@ -66,6 +66,8 @@ BEGIN_GROUP(plugin_msg)
 
     MSG_ID(DELETE_PLUGIN_CHANNELS,        GENERAL_FUNCTIONS, 0x000007, "-", "<Channels/> (odk::ChannelList) containing the local ids of channels to remove", "-", " ");
 
+    MSG_ID(SOFTWARE_CHANNEL_HAS_INSTANCE, SOFTWARE_CHANNEL, 0x000008, "SoftwareChannelId", "-", "-", " ");
+
     MSG_ID(EXPORT_VALIDATE_SETTINGS,      DATA_EXPORT, 0x000201, "Plugin UNIQUE",
             "<settings as EXPORT_START>", "<reason OK/NOK>",
             "0 if okay; 1 for internal error; 2 for compatibility error");
