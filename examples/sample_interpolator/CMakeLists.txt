@@ -2,7 +2,7 @@
 # Oxygen example plugin "sample interpolator"
 # Demonstrates reading a single SYNC or ASYNC channel writing an upsampled version of the channel
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Name of the plugin project and compiled plugin file
 set(LIBNAME ex_sample_interpolator)

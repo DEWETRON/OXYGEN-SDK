@@ -2,7 +2,7 @@
 # Oxygen example plugin "simple moving average"
 # Demonstrates reading a single SYNC scalar channel and computing a centered moving average
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Name of the plugin project and compiled plugin file
 set(LIBNAME ex_simple_moving_average)

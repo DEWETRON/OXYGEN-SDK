@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt for odk base
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(LIBNAME odk_base)
 

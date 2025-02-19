@@ -2,7 +2,7 @@
 # Oxygen example plugin "sum channels"
 # Demonstrates adding two oxygen channels and writing the result to an output channel
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Name of the plugin project and compiled plugin file
 set(LIBNAME ex_sum_channels)

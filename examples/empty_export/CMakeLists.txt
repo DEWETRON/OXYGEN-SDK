@@ -1,7 +1,7 @@
 #
 # Oxygen example plugin "export"
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Name of the plugin project and compiled plugin file
 set(LIBNAME $ODK_REPLACE_ME$$PLUGIN_FILENAME$)

@@ -2,7 +2,7 @@
 # Oxygen example plugin "sync resample source"
 # Demonstrates creating sync data from a source with a non-stable samplerate
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 # Name of the plugin project and compiled plugin file
 set(LIBNAME ex_sync_resample_source)
