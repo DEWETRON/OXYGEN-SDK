@@ -173,12 +173,12 @@ std::vector<uint8_t> AsciiHexToBits(const std::string& input)
 {
     std::vector<uint8_t> result;
     result.reserve((input.length() / 2));
-    auto i = input.begin();
-    auto decode = [&i, input](uint8_t& val) {
-        if (i != input.end())
+    auto iter = input.begin();
+    auto decode = [&iter, &input](uint8_t& val) {
+        if (iter != input.end())
         {
-            auto ch = *i;
-            ++i;
+            auto ch = *iter;
+            ++iter;
             if (ch <= '9' && ch >= '0')
             {
                 val = ch - '0';
