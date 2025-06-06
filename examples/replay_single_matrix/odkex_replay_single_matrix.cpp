@@ -57,7 +57,7 @@ public:
         , m_matrix_description(new EditableStringProperty(""))
         , m_rows(0)
         , m_cols(0)
-        , m_next_tick(-1)
+        , m_next_tick(std::numeric_limits<uint64_t>::max())
     {
         m_matrix_description->setVisiblity("HIDDEN");
     }
@@ -76,10 +76,12 @@ public:
 
     void updatePropertyTypes(const PluginChannelPtr& output_channel) override
     {
+        ODK_UNUSED(output_channel);
     }
 
     void updateStaticPropertyConstraints(const PluginChannelPtr& channel) override
     {
+        ODK_UNUSED(channel);
     }
 
     bool update() override
@@ -91,7 +93,7 @@ public:
         CSVNumberReader csv;
         std::ifstream input_stream(filename.native());
 
-        m_next_tick = -1;
+        m_next_tick = std::numeric_limits<uint64_t>::max();
         m_values.clear();
 
         double range_min = std::numeric_limits<double>::max();
@@ -192,7 +194,7 @@ public:
         return is_valid;
     }
 
-    void create(odk::IfHost* host) override
+    void create(odk::IfHost*) override
     {
         getRootChannel()->setSamplerate({1.0, "Hz"});
         m_sample_rate = getRootChannel()->getSamplerateProperty();
@@ -225,15 +227,15 @@ public:
         m_next_tick = static_cast<std::uint64_t>(ts.m_ticks* rate_factor);
     }
 
-    void process(ProcessingContext& context, odk::IfHost *host) override
+    void process(ProcessingContext&, odk::IfHost *host) override
     {
         std::uint32_t channel_id = getRootChannel()->getLocalId();
         auto ts = getMasterTimestamp(host);
 
-        auto tick = m_next_tick;
         const auto rate_factor = m_sample_rate->getValue().m_val / ts.m_frequency;
         std::uint64_t target_tick = static_cast<std::uint64_t>(ts.m_ticks * rate_factor);
 #if 0
+        auto tick = m_next_tick;
         while (tick < target_tick)
         {
             addSamples(host, channel_id, tick, m_values.data(), sizeof(double) * m_values.size());

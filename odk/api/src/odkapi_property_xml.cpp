@@ -1233,11 +1233,11 @@ namespace odk
                 }
                 else if (sub_name == "RangeMinUnit")
                 {
-                    range.m_min_unit = xpugi::getText(n);
+                    range.m_min_unit = n.text().as_string();
                 }
                 else if (sub_name == "RangeMaxUnit")
                 {
-                    range.m_max_unit = xpugi::getText(n);
+                    range.m_max_unit = n.text().as_string();
                 }
                 else
                 {

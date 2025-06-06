@@ -635,6 +635,10 @@ namespace framework
         {
             telegram.addConstraint(property_name, odk::makeVisiblityConstraint(m_visibility));
         }
+        if (!m_item_hint.empty())
+        {
+            telegram.addConstraint(property_name, odk::makeItemHintConstraint(m_item_hint));
+        }
     }
 
     EditableChannelIDProperty::EditableChannelIDProperty(const odk::ChannelID val) noexcept

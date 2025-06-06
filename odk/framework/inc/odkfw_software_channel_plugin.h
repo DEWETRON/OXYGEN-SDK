@@ -63,7 +63,16 @@ namespace framework
 
         bool handleSofwareChannelQueryAction(const odk::IfValue* param, const odk::IfValue** ret);
 
+        /**
+         * method is called when odk::plugin_msg::NOTIFY_EVENT is handled
+         * and handleNotifyEventEx did not already handle the event
+         */
         virtual bool handleNotifyEvent(odk::EventIds event);
+        /**
+         * method is called when odk::plugin_msg::NOTIFY_EVENT is handled
+         * default implementation calls handleNotifyEvent(event)
+         */
+        virtual bool handleNotifyEventEx(odk::EventIds event, const odk::IfValue* param);
 
     private:
         PluginChannelsPtr m_plugin_channels;
@@ -428,26 +437,37 @@ namespace framework
                 return true;
             }
 
+            default:
+                return SoftwareChannelPluginBase::handleNotifyEvent(event);
+            }
+        }
+
+        bool handleNotifyEventEx(odk::EventIds event, const odk::IfValue* param) override
+        {
+            switch (event)
+            {
             case odk::EventIds::EVENT_ID_MEASUREMENT_ACTIVE:
             {
+                auto xml_param = dynamic_cast<const odk::IfXMLValue*>(param);
                 for (const auto& instance : m_instances)
                 {
-                    instance->measurementStarted();
+                    instance->measurementStartedEx(xml_param);
                 }
                 return true;
             }
 
             case odk::EventIds::EVENT_ID_MEASUREMENT_STOPPED:
             {
+                auto xml_param = dynamic_cast<const odk::IfXMLValue*>(param);
                 for (const auto& instance : m_instances)
                 {
-                    instance->measurementStopped();
+                    instance->measurementStoppedEx(xml_param);
                 }
                 return true;
             }
 
             default:
-                return SoftwareChannelPluginBase::handleNotifyEvent(event);
+                return handleNotifyEvent(event);
             }
         }
 
@@ -478,7 +498,7 @@ namespace framework
                 return handlePluginLoadFinish();
 
             case odk::plugin_msg::NOTIFY_EVENT:
-                return handleNotifyEvent(static_cast<odk::EventIds>(key));
+                return handleNotifyEventEx(static_cast<odk::EventIds>(key), param);
 
             case odk::plugin_msg::SOFTWARE_CHANNEL_HAS_INSTANCE:
                 return hasInstance(ret);

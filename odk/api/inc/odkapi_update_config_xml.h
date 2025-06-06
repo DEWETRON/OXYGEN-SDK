@@ -50,7 +50,8 @@ namespace odk
                 ARBITRARY_STRING,
                 CHANNEL_IDS,
                 VISIBLITY,
-                FILE_PATH
+                FILE_PATH,
+                ITEM_HINT,
             };
 
             ODK_NODISCARD static Constraint makeOption(const odk::Property& value)
@@ -128,6 +129,13 @@ namespace odk
             {
                 Constraint r(VISIBLITY);
                 r.m_params.setProperty(odk::Property("visibility", visibility));
+                return r;
+            }
+
+            ODK_NODISCARD static Constraint makeItemHint(const std::string& item_hint)
+            {
+                Constraint r(ITEM_HINT);
+                r.m_params.setProperty(odk::Property("item_hint", item_hint));
                 return r;
             }
 
@@ -269,6 +277,15 @@ namespace odk
                     throw std::runtime_error("constraint is not of type file path");
                 }
                 return m_params.getPropertyByName("multi_select").getBoolValue();
+            }
+
+            ODK_NODISCARD std::string getItemHint() const
+            {
+                if (m_type != ITEM_HINT)
+                {
+                    throw std::runtime_error("constraint is not of type item_hint");
+                }
+                return m_params.getPropertyByName("item_hint").getStringValue();
             }
 
             Constraint()
@@ -456,4 +473,5 @@ namespace odk
     ODK_NODISCARD UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
         const std::string& dialog_title, const std::string& path,
         const std::vector<std::string>& name_filters, bool multi_select);
+    ODK_NODISCARD UpdateConfigTelegram::Constraint makeItemHintConstraint(const std::string& item_hint);
 }

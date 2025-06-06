@@ -37,6 +37,17 @@ namespace framework
             return m_visibility;
         }
 
+        void setItemHint(const std::string& hint)
+        {
+            m_item_hint = hint;
+            notifyChanged();
+        }
+
+        ODK_NODISCARD std::string getItemHint() const
+        {
+            return m_item_hint;
+        }
+
         void addToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override
         {
             if(isLive())
@@ -64,6 +75,7 @@ namespace framework
     private:
         bool m_live;
         std::string m_visibility;
+        std::string m_item_hint;
         IfChannelPropertyChangeListener* m_change_listener;
     };
 

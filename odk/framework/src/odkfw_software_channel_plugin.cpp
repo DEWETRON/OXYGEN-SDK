@@ -165,5 +165,10 @@ namespace framework
             return false; // event not handled
         }
     }
+
+    bool SoftwareChannelPluginBase::handleNotifyEventEx(odk::EventIds event, const odk::IfValue*)
+    {
+        return handleNotifyEvent(event);
+    }
 }
 }

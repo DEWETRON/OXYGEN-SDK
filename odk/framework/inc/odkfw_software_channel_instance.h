@@ -166,8 +166,10 @@ namespace framework
         virtual void process(ProcessingContext& context, odk::IfHost* host) = 0;
 
         virtual void measurementStarted() {}
-
         virtual void measurementStopped() {}
+
+        virtual void measurementStartedEx(const odk::IfXMLValue* /* timestamp */) { measurementStarted(); }
+        virtual void measurementStoppedEx(const odk::IfXMLValue* /* timestamp */) { measurementStopped(); }
     public:
 
         enum DataRequestType
@@ -406,6 +408,8 @@ namespace framework
         PluginTaskPtr m_task;
         DataRequestType m_data_request_type = NONE;
         double m_data_request_interval = 0;
+        std::optional<odk::Scalar> m_calculation_start;
+        std::optional<odk::Scalar> m_calculation_stop;
         std::vector<InputChannelPtr> m_input_channel_proxies;
         std::optional<DataSetDescriptor> m_dataset_descriptor;
         std::vector<const odk::IfDataBlockList*> m_block_lists;

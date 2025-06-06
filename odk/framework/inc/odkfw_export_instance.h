@@ -63,7 +63,7 @@ namespace framework
     protected:
         ODK_NODISCARD odk::IfHost* getHost() const noexcept;
 
-        void notifyProgress(uint64_t progress) const;
+        void notifyProgress(uint64_t progress, const std::string& extra_info = {}) const;
 
     private:
         odk::IfHost* m_host = nullptr;

@@ -1,7 +1,7 @@
 // Copyright DEWETRON GmbH 2020
 
 #include "odkfw_export_instance.h"
-
+#include "odkfw_property_list_utils.h"
 #define ODK_EXTENSION_FUNCTIONS
 
 #include "odkapi_error_codes.h"
@@ -162,16 +162,19 @@ namespace framework
         return m_telegram.m_transaction_id;
     }
 
-    void ExportInstance::notifyProgress(uint64_t progress) const
+    void ExportInstance::notifyProgress(uint64_t progress, const std::string& extra_info) const
     {
         if (m_canceled.load(std::memory_order_acquire))
         {
             throw std::runtime_error("transaction cancelled");
         }
 
-        auto p = m_host->createValue<odk::IfUIntValue>();
-        p->set(progress);
-        m_host->messageSync(odk::host_msg::EXPORT_PROGRESS, m_telegram.m_transaction_id, p.get(), nullptr);
+        odk::PropertyList properties;
+        properties.setUnsigned("Progress", progress);
+        properties.setString("ProgressInfo", extra_info);
+        auto xml_val = odk::framework::utils::convertToXMLValue(m_host, properties);
+        m_host->messageSync(odk::host_msg::EXPORT_PROGRESS, m_telegram.m_transaction_id, xml_val, nullptr);
+        xml_val->release();
     }
 
     void ExportInstance::notifyDone() const

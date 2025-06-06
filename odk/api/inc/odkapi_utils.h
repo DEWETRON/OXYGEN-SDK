@@ -130,4 +130,14 @@ namespace odk
         return convertTickToTime(tick, timebase.m_frequency) + offset;
     }
 
+    ODK_NODISCARD inline std::uint64_t convertTimestampToTick(const odk::Timestamp& timestamp, double target_frequency)
+    {
+        if (timestamp.m_frequency == target_frequency)
+        {
+            return timestamp.m_ticks;
+        }
+        double result = target_frequency * (timestamp.m_ticks / timestamp.m_frequency);
+        return static_cast<std::uint64_t>(std::nextafter(result, std::numeric_limits<double>::max()));
+    }
+
 }

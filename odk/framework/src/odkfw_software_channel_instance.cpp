@@ -397,6 +397,7 @@ namespace framework
                 {
                     double start = telegram.m_start.m_ticks / telegram.m_start.m_frequency;
                     double end = telegram.m_end.m_ticks / telegram.m_end.m_frequency;
+
                     PluginDataRegionsRequest req(m_dataset_descriptor->m_id);
                     req.m_data_window = PluginDataRegionsRequest::DataWindow(start, end);
                     xml_msg->set(req.generate().c_str());
@@ -631,7 +632,7 @@ namespace framework
         const auto is_valid = update();
         bool output_channel_used = false;
         bool all_input_channels_usable = true;
-        for (auto an_input_channel : m_input_channel_proxies)
+        for (auto& an_input_channel : m_input_channel_proxies)
         {
             const auto sample_occurence = an_input_channel->getDataFormat().m_sample_occurrence;
 
@@ -641,7 +642,7 @@ namespace framework
                 all_input_channels_usable &= an_input_channel->isUsable();
             }
         }
-        for (auto an_output_channel : m_output_channels)
+        for (auto& an_output_channel : m_output_channels)
         {
             const auto& used_property = an_output_channel->getUsedProperty();
             const bool this_output_channel_used = (!used_property || used_property->getValue());
@@ -651,8 +652,7 @@ namespace framework
             {
                 if (const auto& parent_used_property = parent->getUsedProperty())
                 {
-                    bool val =
-                        (parent_used_property->getValue() & this_output_channel_used);
+                    bool val = this_output_channel_used && parent_used_property->getValue();
                     used_property->setValue(val);
                 }
             }

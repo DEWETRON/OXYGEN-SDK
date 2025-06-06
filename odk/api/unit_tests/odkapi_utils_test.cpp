@@ -60,4 +60,14 @@ BOOST_AUTO_TEST_CASE(convert_ticks_test)
     }
 }
 
+BOOST_AUTO_TEST_CASE(convert_timestamp_to_tick_test)
+{
+    BOOST_CHECK_EQUAL(1000, convertTimestampToTick(odk::Timestamp(1000, 100.0), 100.0));
+    BOOST_CHECK_EQUAL(2000, convertTimestampToTick(odk::Timestamp(1000, 100.0), 200.0));
+    BOOST_CHECK_EQUAL(500, convertTimestampToTick(odk::Timestamp(1000, 100.0), 50.0));
+
+    BOOST_CHECK_EQUAL(1234 * 2, convertTimestampToTick(odk::Timestamp(1234, 100.0), 200.0));
+    BOOST_CHECK_EQUAL(1233 / 2, convertTimestampToTick(odk::Timestamp(1233, 100.0), 50.0));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

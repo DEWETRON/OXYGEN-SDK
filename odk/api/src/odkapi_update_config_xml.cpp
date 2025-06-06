@@ -299,6 +299,11 @@ namespace odk
             bool multi_select = tree.attribute("multi_select").as_bool();
             return makeFilePathConstraint(ft, dialog_title, default_path, filters, multi_select);
         }
+        else if (element_name == "ItemHintConstraint")
+        {
+            std::string item_hint = tree.attribute("item_hint").as_string();
+            return makeItemHint(item_hint);
+        }
 
         return {};
     }
@@ -386,6 +391,11 @@ namespace odk
                 }
                 constraint_node.append_attribute("multi_select").set_value(getMultiSelect());
             } break;
+            case Constraint::ITEM_HINT:
+            {
+                auto item_hint_node = parent.append_child("ItemHintConstraint");
+                item_hint_node.append_attribute("item_hint").set_value(getItemHint().c_str());
+            } break;
             default:
                 ODK_ASSERT_FAIL("Unimplemented constraint type");
                 break;
@@ -463,6 +473,11 @@ namespace odk
     UpdateConfigTelegram::Constraint makeVisiblityConstraint(const std::string& vis)
     {
         return UpdateConfigTelegram::Constraint::makeVisibility(vis);
+    }
+
+    UpdateConfigTelegram::Constraint makeItemHintConstraint(const std::string& hint)
+    {
+        return UpdateConfigTelegram::Constraint::makeItemHint(hint);
     }
 
     UpdateConfigTelegram::Constraint makeFilePathConstraint(std::string& file_type,
