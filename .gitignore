@@ -7,3 +7,4 @@
 **/build
 qt/
 **/_build
+.vscode/
