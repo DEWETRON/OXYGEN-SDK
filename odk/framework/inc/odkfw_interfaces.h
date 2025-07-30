@@ -8,6 +8,7 @@
 #include "odkapi_timestamp_xml.h"
 #include "odkbase_basic_values.h"
 
+#include <map>
 #include <string>
 #include <cstdint>
 
@@ -58,6 +59,13 @@ namespace framework
     class IfTaskWorker
     {
     public:
+        using ConfigItemChanges = std::map<odk::ChannelID, std::vector<odk::Property>>;
+        enum class ConfigItemChangeResult : uint64_t
+        {
+            NO_ACTION = 0,
+            RESET_TASK = 1
+        };
+
         virtual void onInitTimebases(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
         virtual void onStartProcessing(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); }
         virtual void onProcess(odk::IfHost* host, std::uint64_t token, const odk::IfXMLValue* param) = 0;
@@ -65,6 +73,12 @@ namespace framework
         virtual void onChannelConfigChanged(odk::IfHost* host, std::uint64_t token) { ODK_UNUSED(host); ODK_UNUSED(token); };
 
         virtual void onChannelDataformatChanged(std::uint64_t channel_id) { ODK_UNUSED(channel_id); };
+
+        virtual std::uint64_t onConfigItemsChanged(const ConfigItemChanges&)
+        {
+            return static_cast<std::uint64_t>(ConfigItemChangeResult::NO_ACTION);
+        }
+
     protected:
         virtual ~IfTaskWorker() = default;
     };

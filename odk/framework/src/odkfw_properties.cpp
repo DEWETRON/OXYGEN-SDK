@@ -339,7 +339,8 @@ namespace framework
         telegram.addProperty(property_name, odk::Scalar(m_value, m_unit));
         if (hasValidRange())
         {
-            telegram.addConstraint(property_name, odk::makeRangeConstraint(m_min, m_max));
+            telegram.addConstraint(property_name,
+                odk::UpdateConfigTelegram::Constraint::makeRange(odk::Scalar(m_min, m_unit), odk::Scalar(m_max, m_unit)));
         }
 
         for (const auto& str_option : m_string_options)
@@ -1041,7 +1042,10 @@ namespace framework
 
     void XmlStringProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
-        telegram.addProperty(odk::Property(property_name, getValue(), "XML"));
+        auto prop = odk::Property(property_name);
+        prop.setValue(getValue(), Property::STRING_XML);
+        telegram.addProperty(prop);
+        //telegram.addConstraint(property_name, odk::makeArbitraryStringConstraint());
     }
 }
 }

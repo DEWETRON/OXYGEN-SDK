@@ -360,6 +360,19 @@ namespace framework
          */
         std::vector<PluginChannelPtr> getChildrenOfChannel(uint32_t local_id, bool recursive) const;
 
+        /**
+         * Get task action if a config item of a related channel is changed in oxygen
+         *
+         * @param changes map of:
+         *      key : channel id of the related channel
+         *      values: changed properties
+         *
+         * @return needed task action
+         */
+        std::uint64_t onConfigItemsChanged(const IfTaskWorker::ConfigItemChanges& changes) override;
+
+        void restartTask();
+
     private:
 
         template<class SoftwareChannelInstance>

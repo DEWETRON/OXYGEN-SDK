@@ -448,7 +448,18 @@ namespace odk
 
     UpdateConfigTelegram::Constraint makeRangeConstraint(double low, double high)
     {
-        //return UpdateConfigTelegram::Constraint::makeRange(neoncfg::Scalar(low, ""), neoncfg::Scalar(high, ""));
+        return UpdateConfigTelegram::Constraint::makeRange(odk::Scalar(low, ""), odk::Scalar(high, ""));
+
+        odk::Property pmin, pmax;
+        pmin.setValue(low);
+        pmax.setValue(high);
+        return UpdateConfigTelegram::Constraint::makeRange(pmin, pmax);
+    }
+
+    UpdateConfigTelegram::Constraint makeScalarRangeConstraint(double low, const std::string& low_unit, double high, const std::string& high_unit)
+    {
+        return UpdateConfigTelegram::Constraint::makeRange(odk::Scalar(low, low_unit), odk::Scalar(high, high_unit));
+
         odk::Property pmin, pmax;
         pmin.setValue(low);
         pmax.setValue(high);

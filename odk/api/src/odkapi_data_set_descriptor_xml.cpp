@@ -188,6 +188,7 @@ namespace odk
     DataSetDescriptor::DataSetDescriptor() noexcept
         : m_id()
         , m_stream_descriptors()
+        , m_all_channels_registered(false)
     {
     }
 
@@ -203,6 +204,7 @@ namespace odk
                 auto block_desc_node = doc.document_element();
 
                 m_id = odk::from_string<std::uint64_t>(block_desc_node.attribute("data_set_key").value());
+                m_all_channels_registered = block_desc_node.attribute("all_channels_registered").as_bool();
 
                 for (auto scan_desc_node : block_desc_node.children("StreamDescriptor"))
                 {
@@ -269,7 +271,8 @@ namespace odk
             using odk::xml_builder::Attribute;
             odk::xml_builder::Document doc(stream);
             auto data_set_desc_node = doc.append_child("DataSetDescriptor",
-                Attribute("data_set_key", m_id));
+                Attribute("data_set_key", m_id),
+                Attribute("all_channels_registered", m_all_channels_registered));
 
             for (const auto& scan_descriptor : m_stream_descriptors)
             {

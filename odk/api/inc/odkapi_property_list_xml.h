@@ -32,6 +32,7 @@ namespace odk
         bool getBool(const std::string& name) const;
         bool getBool(std::size_t idx) const;
 
+        void setSigned(const std::string& name, std::int32_t value);
         void setSigned(const std::string& name, std::int64_t value);
         std::int64_t getSigned(const std::string& name) const;
         std::int64_t getSigned(std::size_t idx) const;

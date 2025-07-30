@@ -108,6 +108,7 @@ namespace odk
 
         std::uint64_t m_id;
         std::vector<StreamDescriptor> m_stream_descriptors;
+        bool m_all_channels_registered;
 
         ODK_NODISCARD bool operator==(const DataSetDescriptor& other) const;
         ODK_NODISCARD bool operator!=(const DataSetDescriptor& other) const;

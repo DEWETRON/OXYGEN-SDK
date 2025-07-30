@@ -586,6 +586,12 @@ namespace framework
         return true;
     }
 
+    void PluginChannels::restartTask(PluginTaskPtr& task)
+    {
+        unregisterTask(*task);
+        registerTask(*task);
+    }
+
     void PluginChannels::pauseTask(PluginTaskPtr& task)
     {
         unregisterTask(*task);
@@ -615,7 +621,7 @@ namespace framework
         return affected_tasks;
     }
 
-    std::set<PluginTaskPtr> PluginChannels::getAffectedTasks(std::uint64_t input_channel_id)
+/*    std::set<PluginTaskPtr> PluginChannels::getAffectedTasks(std::uint64_t input_channel_id)
     {
         std::set<PluginTaskPtr> affected_tasks;
         for (const auto& a_task : m_tasks)
@@ -631,7 +637,7 @@ namespace framework
             }
         }
         return affected_tasks;
-    }
+    }*/
 
     std::uint64_t PluginChannels::processConfigUpdate(const odk::UpdateConfigTelegram& request)
     {
@@ -699,13 +705,16 @@ namespace framework
         return odk::error_codes::OK;
     }
 
-    uint64_t PluginChannels::processInputChannelChange(const std::set<std::uint64_t>& channel_ids)
+    std::uint64_t PluginChannels::processConfigItemsChanged(const IfTaskWorker::ConfigItemChanges& changes)
     {
         std::set<PluginTaskPtr> affected_tasks;
-        for(const auto& channel_id : channel_ids)
+        for (auto [id, task] : m_tasks)
         {
-            const auto affected_tasks_by_id = getAffectedTasks(channel_id);
-            affected_tasks.insert(affected_tasks_by_id.begin(), affected_tasks_by_id.end());
+            if ((task->m_worker->onConfigItemsChanged(changes) &
+                static_cast<std::uint64_t>(IfTaskWorker::ConfigItemChangeResult::RESET_TASK)) > 0)
+            {
+                affected_tasks.insert(task);
+            }
         }
 
         for (const auto& affected_task : affected_tasks)
@@ -728,17 +737,20 @@ namespace framework
 
     std::uint64_t PluginChannels::processDataFormatChange(const odk::ChannelDataformatTelegram& request)
     {
-        return processInputChannelChange({request.channel_id});
+        IfTaskWorker::ConfigItemChanges changes; // { request.channel_id, {} };
+        changes[request.channel_id] = {};
+        return processConfigItemsChanged(changes);
     }
 
-    uint64_t PluginChannels::processInputChannelConfigChange(const odk::ChannelConfigChangedTelegram& telegram)
+    uint64_t PluginChannels::processConfigItemsChanged(const odk::ChannelConfigChangedTelegram& telegram)
     {
-        std::set<std::uint64_t> channel_ids;
-        for(const auto& channel_config : telegram.m_channel_configs)
+        IfTaskWorker::ConfigItemChanges changes;
+        for (const auto& config : telegram.m_channel_configs)
         {
-            channel_ids.insert(channel_config.m_channel_id);
+            auto& props = changes[config.m_channel_id];
+            std::copy(config.m_properties.begin(), config.m_properties.end(), std::back_inserter(props));
         }
-        return processInputChannelChange(channel_ids);
+        return processConfigItemsChanged(changes);
     }
 
     uint64_t PluginChannels::reserveChannelIds(const odk::ChannelList& telegram)
@@ -943,7 +955,7 @@ namespace framework
 
                 if (parseXMLValue(param, telegram))
                 {
-                    return processInputChannelConfigChange(telegram);
+                    return processConfigItemsChanged(telegram);
                 }
                 return odk::error_codes::INVALID_INPUT_PARAMETER;
             }

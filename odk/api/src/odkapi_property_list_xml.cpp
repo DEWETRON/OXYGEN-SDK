@@ -111,6 +111,13 @@ namespace odk
         return std::numeric_limits<double>::signaling_NaN();
     }
 
+    void PropertyList::setSigned(const std::string& name, std::int32_t value)
+    {
+        Property prop(name);
+        prop.setValue(value);
+        setProperty(prop);
+    }
+
     void PropertyList::setSigned(const std::string& name, std::int64_t value)
     {
         Property prop(name);

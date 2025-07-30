@@ -112,6 +112,11 @@ namespace framework
                 try
                 {
                     iterators[channel.m_channel_id] = stream_reader.createChannelIterator(channel.m_channel_id, channel_interval);
+                    auto channel_proxy = getInputChannelProxyChecked(channel.m_channel_id);
+                    if(channel_proxy)
+                    {
+                        iterators[channel.m_channel_id].setTimebase(channel_proxy->getTimeBase());
+                    }
                 }
                 catch (std::out_of_range&)
                 {
@@ -397,7 +402,6 @@ namespace framework
                 {
                     double start = telegram.m_start.m_ticks / telegram.m_start.m_frequency;
                     double end = telegram.m_end.m_ticks / telegram.m_end.m_frequency;
-
                     PluginDataRegionsRequest req(m_dataset_descriptor->m_id);
                     req.m_data_window = PluginDataRegionsRequest::DataWindow(start, end);
                     xml_msg->set(req.generate().c_str());
@@ -448,9 +452,9 @@ namespace framework
                 context.m_window.second = list_descriptor.m_windows.back().m_end;
 
                 context.m_channel_iterators = createChannelIterators(m_dataset_descriptor->m_stream_descriptors,
-                                                                     block_list,
-                                                                     odk::Interval<double>(context.m_window.first, context.m_window.second),
-                                                                     data_regions);
+                    block_list,
+                    odk::Interval<double>(context.m_window.first, context.m_window.second),
+                    data_regions);
 
                 process(context, host);
                 response->release();
@@ -562,6 +566,33 @@ namespace framework
         if (ret != odk::error_codes::OK)
         {
             throw odk::framework::CallbackError(ret);
+        }
+    }
+
+    std::uint64_t SoftwareChannelInstance::onConfigItemsChanged(const IfTaskWorker::ConfigItemChanges& changes)
+    {
+        std::uint64_t result = 0;
+        auto input_proxies = getInputChannelProxies();
+        for (const auto& [id, _] : changes)
+        {
+            const auto it = std::find_if(input_proxies.cbegin(), input_proxies.cend(),
+                [id = id] (const InputChannelPtr& proxy)
+                {
+                    return proxy->getChannelId() == id;
+                });
+            if (it != input_proxies.cend())
+            {
+                result |= static_cast<std::uint64_t>(IfTaskWorker::ConfigItemChangeResult::RESET_TASK);
+            }
+        }
+        return result;
+    }
+
+    void SoftwareChannelInstance::restartTask()
+    {
+        if (m_task)
+        {
+            m_plugin_channels->restartTask(m_task);
         }
     }
 

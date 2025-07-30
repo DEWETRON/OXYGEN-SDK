@@ -175,17 +175,17 @@ namespace framework
         void reset();
 
         void pauseTasks();
-        void pauseTask(PluginTaskPtr &task);
+        void pauseTask(PluginTaskPtr& task);
+        void restartTask(PluginTaskPtr& task);
     private:
 
         std::set<PluginTaskPtr> getAffectedTasks(const odk::UpdateConfigTelegram& request);
-        std::set<PluginTaskPtr> getAffectedTasks(std::uint64_t input_channel_id);
 
         std::uint64_t processConfigUpdate(const odk::UpdateConfigTelegram& request);
 
         std::uint64_t processDataFormatChange(const odk::ChannelDataformatTelegram& request);
-        std::uint64_t processInputChannelConfigChange(const odk::ChannelConfigChangedTelegram& telegram);
-        std::uint64_t processInputChannelChange(const std::set<std::uint64_t>& channel_id);
+        std::uint64_t processConfigItemsChanged(const odk::ChannelConfigChangedTelegram& telegram);
+        std::uint64_t processConfigItemsChanged(const IfTaskWorker::ConfigItemChanges&);
 
         uint64_t reserveChannelIds(const odk::ChannelList& telegram);
 
