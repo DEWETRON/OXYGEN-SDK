@@ -300,6 +300,34 @@ namespace framework
         return *this;
     }
 
+    PluginChannel& PluginChannel::setProperty(const std::string& name, const odk::Property& prop)
+    {
+        auto property_matcher = [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
+            {
+                return a_property.first == name;
+            };
+
+        if (m_change_listener && m_change_listener->configChangeAllowed())
+        {
+            auto prop_holder = std::make_shared<RawPropertyHolder>(prop);
+            static_cast<IfChannelProperty*>(prop_holder.get())->setChangeListener(this);
+
+            auto it = std::find_if(m_properties.begin(), m_properties.end(), property_matcher);
+            if (it != m_properties.end())
+            {
+                it->second = prop_holder;
+            }
+            else
+            {
+                m_properties.emplace_back(name, std::move(prop_holder));
+            }
+
+            m_change_listener->onChannelPropertyChanged(this, name);
+        }
+
+        return *this;
+    }
+
     void PluginChannel::updatePropertyTypes()
     {
         replacePropertyType<EditableScalarProperty>(*this, "SampleRate");

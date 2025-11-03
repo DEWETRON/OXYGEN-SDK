@@ -69,6 +69,7 @@ namespace framework
             ++predecessor;
         }
         m_blocks_ranges.emplace(predecessor.base(), begin, end);
+
         m_block_index = 0;
         m_current_iterator = m_blocks_ranges.front().first;
         if (m_skip_gaps && data() == nullptr)
@@ -102,6 +103,31 @@ namespace framework
                 getNextBlock();
             }
         }
+    }
+
+    bool StreamIterator::isInGap(double timestamp) const
+    {
+        auto ts = odk::convertTimeToTickAtOrAfter(timestamp, m_timebase);
+
+        if (m_blocks_ranges.empty()) return true;
+
+        for (auto rng = m_blocks_ranges.begin();
+            rng != m_blocks_ranges.end(); rng++)
+        {
+            bool interval_pause = rng->first.data() == nullptr;
+
+            if(interval_pause)
+            {
+                uint64_t interval_begin = rng->first.timestamp();
+                uint64_t interval_end = rng->second.timestamp();
+                if ((ts >= interval_begin) && (ts < interval_end))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     void StreamIterator::setDataRequester(IfIteratorUpdater *requester) noexcept

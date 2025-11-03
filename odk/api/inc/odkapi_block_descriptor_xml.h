@@ -32,6 +32,10 @@ namespace odk
     public:
         BlockDescriptor() noexcept;
         BlockDescriptor(const BlockDescriptor& bd) = default;
+        BlockDescriptor(std::uint64_t stream_id, std::uint64_t data_size) noexcept
+            : m_stream_id(stream_id)
+            , m_data_size(data_size)
+        {}
 
         BlockDescriptor& operator=(const BlockDescriptor& bd) = default;
 

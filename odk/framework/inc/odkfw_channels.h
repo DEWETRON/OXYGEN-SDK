@@ -70,6 +70,8 @@ namespace framework
         ChannelPropertyPtr getProperty(const std::string& name) const;
         PluginChannel& replaceProperty(const std::string& name, ChannelPropertyPtr prop);
 
+        PluginChannel& setProperty(const std::string& name, const odk::Property& prop);
+
         void updatePropertyTypes();
 
         std::shared_ptr<BooleanProperty> getUsedProperty() const;

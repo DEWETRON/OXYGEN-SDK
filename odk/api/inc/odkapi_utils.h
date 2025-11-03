@@ -140,4 +140,12 @@ namespace odk
         return static_cast<std::uint64_t>(std::nextafter(result, std::numeric_limits<double>::max()));
     }
 
+    ODK_NODISCARD inline std::uint64_t convertTimeToTick(double time, double frequency)
+    {
+        if (time < 0.0)
+        {
+            return 0;
+        }
+        return std::llround(time * frequency);
+    }
 }

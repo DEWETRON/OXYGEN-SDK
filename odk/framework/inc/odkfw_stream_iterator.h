@@ -97,6 +97,8 @@ namespace framework
         void setSignalGaps(bool enabled) noexcept;
         void setSkipGaps(bool enabled);
 
+        bool isInGap(double timestamp) const;
+
         ODK_NODISCARD std::uint64_t getTotalSampleCount() const noexcept;
 
         ODK_NODISCARD std::vector<DataRegion> getDataRegions(double start, double end) const noexcept;

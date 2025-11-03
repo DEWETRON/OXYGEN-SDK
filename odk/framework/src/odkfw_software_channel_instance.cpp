@@ -711,7 +711,8 @@ namespace framework
                 else if(auto channel_list_property = std::dynamic_pointer_cast<EditableChannelIDListProperty>(property.second))
                 {
                     const auto current_channel_ids(channel_list_property->getValue().m_values);
-                    std::vector<std::uint64_t> new_input_channel_ids;
+                    odk::ChannelIDList new_input_channel_ids;
+                    new_input_channel_ids.m_values.reserve(current_channel_ids.size());
 
                     //preserve order
                     for (const auto& a_old_channel : current_channel_ids)
@@ -719,15 +720,15 @@ namespace framework
                         const auto mapping_it = changed_ids.find(a_old_channel);
                         if (mapping_it != changed_ids.cend())
                         {
-                            new_input_channel_ids.push_back(mapping_it->second);
+                            new_input_channel_ids.m_values.push_back(mapping_it->second);
                         }
                         else
                         {
-                            new_input_channel_ids.push_back(a_old_channel);
+                            new_input_channel_ids.m_values.push_back(a_old_channel);
                         }
                     }
 
-                    channel_list_property->setValue(odk::ChannelIDList(new_input_channel_ids));
+                    channel_list_property->setValue(new_input_channel_ids);
                 }
             }
         }
