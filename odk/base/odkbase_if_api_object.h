@@ -3,7 +3,7 @@
 #define _ODKBASE_IF_API_OBJECT_H_
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #  define PLUGIN_API __stdcall
 #else
 #  define PLUGIN_API

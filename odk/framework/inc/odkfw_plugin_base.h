@@ -12,13 +12,16 @@
 #include <set>
 #include <string>
 
-#ifdef WIN32
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
 #include "windows.h"
 #endif
 
 
-#ifdef WIN32
+#ifdef _WIN32
 # ifdef __GNUC__
 #  define DLL_EXPORT __attribute__ ((dllexport))
 #  define EXTERN_C extern "C"

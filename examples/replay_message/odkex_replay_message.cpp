@@ -1,6 +1,6 @@
 // Copyright DEWETRON GmbH 2019
 
-#ifdef WIN32
+#ifdef _WIN32
 #define  _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #endif
 
