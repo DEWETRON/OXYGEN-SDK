@@ -33,6 +33,7 @@ MinSizeRel
 *.ipch
 *.iobj
 *.ipdb
+*.rcc
 
 # Static / shared library artifacts
 *.lib
