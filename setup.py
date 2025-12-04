@@ -26,7 +26,7 @@ dependencies_json = '''
     "Windows" : [
         {
             "name" : "Boost 1.70.0",
-            "url" : "https://boostorg.jfrog.io/artifactory/main/release/1.70.0/source/boost_1_70_0.zip",
+            "url" : "https://archives.boost.io/release/1.70.0/source/boost_1_70_0.zip",
             "check" : {
                 "exists" : "3rdparty/boost_1_70_0"
             },
