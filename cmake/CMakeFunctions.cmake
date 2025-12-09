@@ -411,8 +411,6 @@ macro(SetupODKEnvironment OXYGEN_SDK_PATH)
 
   SetLinkStaticRuntime()
   SetCommonOutputDirectory()
-  SetBoostOptions()
-  find_package(Boost REQUIRED)
   find_package(SDKQt REQUIRED)
 
   AddUniqueTargetFromSubdirectory(pugixml "${OXYGEN_SDK_PATH}/3rdparty/pugixml-1.9/scripts" "3rdparty/pugixml-1.9")
