@@ -174,6 +174,7 @@
     <ClInclude Include="inc\odkapi_update_config_xml.h" />
     <ClInclude Include="inc\odkapi_utils.h" />
     <ClInclude Include="inc\odkapi_version_xml.h" />
+    <ClInclude Include="inc\odkapi_video.h" />
     <ClInclude Include="inc\odkapi_xml_builder.h" />
     <ClInclude Include="src\assert_bimap_size.h" />
   </ItemGroup>
