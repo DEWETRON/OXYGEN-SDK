@@ -3,7 +3,7 @@
 #define _ODKBASE_IF_API_OBJECT_H_
 
 
-#ifdef _WIN32
+#ifdef WIN32
 #  define PLUGIN_API __stdcall
 #else
 #  define PLUGIN_API
@@ -39,8 +39,7 @@ namespace odk
         ~IfApiObject() = default;
 
     private:
-        IfApiObject(const IfApiObject&)
-        {}
+        IfApiObject(const IfApiObject&) = default;
         IfApiObject& operator=(const IfApiObject&)
         { return *this;}
     };

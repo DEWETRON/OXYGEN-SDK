@@ -19,7 +19,7 @@ namespace detail
 
         ApiObjectPtr() noexcept = default;
 
-        explicit ApiObjectPtr(T* p)
+        explicit ApiObjectPtr(T* p) noexcept
             : m_p(p)
         {
             //api objects are created with an initial ref count of 1,
@@ -38,10 +38,16 @@ namespace detail
         ApiObjectPtr(ApiObjectPtr const& rhs)
             : m_p(rhs.m_p)
         {
-            if (m_p != 0)
+            if (m_p)
             {
                 intrusive_ptr_add_ref(m_p);
             }
+        }
+
+        ApiObjectPtr(ApiObjectPtr&& rhs) noexcept
+            : m_p(rhs.m_p)
+        {
+            rhs.m_p = nullptr;
         }
 
         ~ApiObjectPtr()
@@ -66,21 +72,32 @@ namespace detail
             return *this;
         }
 
+        ApiObjectPtr& operator=(ApiObjectPtr&& rhs) noexcept
+        {
+            if (m_p)
+            {
+                intrusive_ptr_release(m_p);
+            }
+            m_p = rhs.m_p;
+            rhs.m_p = nullptr;
+            return *this;
+        }
+
         ApiObjectPtr& operator=(T* rhs)
         {
             this_type(rhs).swap(*this);
             return *this;
         }
 
-        T* get() const
+        T* get() const noexcept
         {
             return m_p;
         }
 
-        T* detach()
+        ODK_NODISCARD T* detach() noexcept
         {
             T* ret = m_p;
-            m_p = 0;
+            m_p = nullptr;
             return ret;
         }
 

@@ -117,6 +117,8 @@ namespace framework
 
         void addOption(unsigned int val);
 
+        void addOptions(unsigned int* values, std::size_t num);
+
         void clearOptions();
 
     protected:
@@ -171,6 +173,8 @@ namespace framework
         ODK_NODISCARD bool hasValidRange() const;
 
         void addOption(double val);
+
+        void addOptions(const double* values, std::size_t num);
 
         void clearOptions();
 

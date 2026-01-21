@@ -152,6 +152,24 @@ namespace framework
         return { false };
     }
 
+    void SoftwareChannelInstance::measurementStarted()
+    {
+    }
+
+    void SoftwareChannelInstance::measurementStopped()
+    {
+    }
+
+    void SoftwareChannelInstance::measurementStartedEx(const odk::IfXMLValue* /* timestamp */)
+    {
+        measurementStarted();
+    }
+
+    void SoftwareChannelInstance::measurementStoppedEx(const odk::IfXMLValue* /* timestamp */)
+    {
+        measurementStopped();
+    }
+
     std::vector<std::uint32_t> SoftwareChannelInstance::getChannelsToDelete(std::vector<std::uint32_t> requested_chanels)
     {
         const auto root = getRootChannel();

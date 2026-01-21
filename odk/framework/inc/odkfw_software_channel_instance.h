@@ -165,11 +165,11 @@ namespace framework
          */
         virtual void process(ProcessingContext& context, odk::IfHost* host) = 0;
 
-        virtual void measurementStarted() {}
-        virtual void measurementStopped() {}
+        virtual void measurementStarted();
+        virtual void measurementStopped();
 
-        virtual void measurementStartedEx(const odk::IfXMLValue* /* timestamp */) { measurementStarted(); }
-        virtual void measurementStoppedEx(const odk::IfXMLValue* /* timestamp */) { measurementStopped(); }
+        virtual void measurementStartedEx(const odk::IfXMLValue* timestamp);
+        virtual void measurementStoppedEx(const odk::IfXMLValue* timestamp);
     public:
 
         enum DataRequestType

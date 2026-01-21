@@ -104,6 +104,12 @@ namespace framework
         notifyChanged();
     }
 
+    void EditableUnsignedProperty::addOptions(unsigned int* values, std::size_t num)
+    {
+        m_options.insert(m_options.end(), values, values + num);
+        notifyChanged();
+    }
+
     bool EditableUnsignedProperty::update(const odk::Property& value)
     {
         //TBD: is it necessary to accept/convert compatible property types?
@@ -362,6 +368,11 @@ namespace framework
     void EditableScalarProperty::addOption(double val)
     {
         m_options.push_back(val);
+    }
+
+    void EditableScalarProperty::addOptions(const double* values, std::size_t num)
+    {
+        m_options.insert(m_options.end(), values, values + num);
     }
 
     void EditableScalarProperty::clearOptions()
