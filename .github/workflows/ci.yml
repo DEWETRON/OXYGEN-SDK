@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: awalsh128/cache-apt-pkgs-action@latest
       with:
         packages: qtbase5-dev libboost-test-dev valgrind clang-tidy

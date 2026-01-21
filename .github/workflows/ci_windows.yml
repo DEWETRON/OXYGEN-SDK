@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Download and extract qt_resource_compiler.zip
       run: |
         Invoke-WebRequest -Uri 'https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-R6.3.0/qt_resource_compiler.zip' -OutFile 'qt_resource_compiler.zip'
