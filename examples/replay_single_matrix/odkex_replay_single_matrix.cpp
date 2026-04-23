@@ -53,8 +53,8 @@ class ReplayChannel : public SoftwareChannelInstance
 public:
 
     ReplayChannel()
-        : m_input_file(new EditableStringProperty(""))
-        , m_matrix_description(new EditableStringProperty(""))
+        : m_input_file(std::make_shared<EditableFilePathProperty>(EditableFilePathProperty::FileType::INPUT_FILE))
+        , m_matrix_description(std::make_shared<EditableStringProperty>(""))
         , m_rows(0)
         , m_cols(0)
         , m_next_tick(std::numeric_limits<uint64_t>::max())
@@ -88,7 +88,7 @@ public:
     {
         // channel is only valid if we can properly parse the specified csv file
         // in production code the parsing should not be done on every config change, but only if the filename was updated
-        const auto filename = std::filesystem::path(m_input_file->getValue());
+        const auto filename = std::filesystem::path(m_input_file->getFilename());
 
         CSVNumberReader csv;
         std::ifstream input_stream(filename.native());
@@ -249,7 +249,7 @@ public:
     }
 
 private:
-    std::shared_ptr<EditableStringProperty> m_input_file;
+    std::shared_ptr<EditableFilePathProperty> m_input_file;
     std::shared_ptr<EditableScalarProperty> m_sample_rate;
     std::shared_ptr<EditableStringProperty> m_matrix_description;
     std::vector<double> m_values;
