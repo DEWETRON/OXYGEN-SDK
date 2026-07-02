@@ -7,13 +7,13 @@ using odk::xml_builder::Document;
 using odk::xml_builder::Element;
 using odk::xml_builder::Node;
 
-Element Node::append_child(const std::string_view& name)
+Element Node::append_child(std::string_view name)
 {
     m_has_children = true;
     return Element(m_document, name);
 }
 
-Element::Element(Document& doc, const std::string_view& name)
+Element::Element(Document& doc, std::string_view name)
     : Node(doc)
     , m_name(name)
 {
@@ -33,7 +33,7 @@ Element::~Element()
     }
 }
 
-void Element::append_text(const std::string_view& text)
+void Element::append_text(std::string_view text)
 {
     m_has_children = true;
     m_document.write_escaped(text);
@@ -54,7 +54,7 @@ Document::~Document()
     m_out.flush();
 }
 
-void Document::write_escaped(const std::string_view& text)
+void Document::write_escaped(std::string_view text)
 {
     std::string_view::const_pointer p_start = text.data();
     std::string_view::const_pointer p_cur = text.data();
@@ -116,7 +116,7 @@ void Document::flush()
     m_buffer_pos = m_buffer;
 }
 
-void Document::write(const std::string_view& sv)
+void Document::write(std::string_view sv)
 {
     if (ensure_buffer(sv.size()))
     {

@@ -15,6 +15,7 @@
 
 #include "odkuni_assert.h"
 #include <algorithm>
+#include <cstring>
 #if defined(HAS_TO_CHARS_INT) || defined(HAS_TO_CHARS_FLOAT)
 #  include <charconv>
 #endif
@@ -37,7 +38,7 @@ namespace odk
         {
             friend class Element;
         public:
-            Attribute(const std::string_view& name, const T& value) noexcept
+            Attribute(std::string_view name, const T& value) noexcept
                 : m_name(name)
                 , m_value(value)
             {
@@ -50,9 +51,9 @@ namespace odk
         class Node
         {
         public:
-            Element append_child(const std::string_view& name);
+            Element append_child(std::string_view name);
             template<typename... Attributes>
-            Element append_child(const std::string_view& name, Attributes&&... attributes);
+            Element append_child(std::string_view name, Attributes&&... attributes);
         protected:
             Node(Document& doc) noexcept : m_document(doc) {}
             Node(const Node&) = delete;
@@ -88,7 +89,7 @@ namespace odk
                 ensure_buffer(1);
                 write_unchecked(c);
             }
-            void write(const std::string_view& v);
+            void write(std::string_view v);
             void flush();
 
             template<typename... Parts>
@@ -104,18 +105,19 @@ namespace odk
                     (write(std::forward<Parts>(parts)), ...);
                 }
             }
-            void write_escaped(const std::string_view& text);
+            void write_escaped(std::string_view text);
             std::ostream& m_out;
         private:
             constexpr static std::size_t len(char) { return 1; }
-            constexpr static std::size_t len(const std::string_view & s) { return s.size(); }
+            constexpr static std::size_t len(std::string_view s) { return s.size(); }
             void write_unchecked(char c)
             {
                 *m_buffer_pos++ = c;
             }
-            void write_unchecked(const std::string_view& v)
+            void write_unchecked(std::string_view v)
             {
-                m_buffer_pos = std::copy_n(v.data(), v.size(), m_buffer_pos);
+                std::memcpy(m_buffer_pos, v.data(), v.size());
+                m_buffer_pos += v.size();
             }
             char m_buffer[BUFFER_SIZE];
             char* m_buffer_pos;
@@ -126,10 +128,10 @@ namespace odk
             friend class Node;
         public:
             ~Element();
-            void append_text(const std::string_view& text);
+            void append_text(std::string_view text);
 
             template<typename T>
-            void append_attribute(const std::string_view& name, const T& value)
+            void append_attribute(std::string_view name, const T& value)
             {
                 append_attribute(Attribute(name, value));
             }
@@ -143,9 +145,9 @@ namespace odk
                 m_document.write('>');
             }
         protected:
-            Element(Document&, const std::string_view& name);
+            Element(Document&, std::string_view name);
             template<typename... Attributes>
-            Element(Document& doc, const std::string_view& name, Attributes&&... attributes)
+            Element(Document& doc, std::string_view name, Attributes&&... attributes)
                 : Node(doc)
                 , m_name(name)
             {
@@ -209,7 +211,7 @@ namespace odk
         };
 
         template<typename... Attributes>
-        Element Node::append_child(const std::string_view& name, Attributes&&... attributes)
+        Element Node::append_child(std::string_view name, Attributes&&... attributes)
         {
             m_has_children = true;
             return Element(m_document, name, std::forward<Attributes>(attributes)...);
