@@ -39,9 +39,8 @@ namespace odk
         ~IfApiObject() = default;
 
     private:
-        IfApiObject(const IfApiObject&) = default;
-        IfApiObject& operator=(const IfApiObject&)
-        { return *this;}
+        IfApiObject(const IfApiObject&) = delete;
+        IfApiObject& operator=(const IfApiObject&) = delete;
     };
 
     /**

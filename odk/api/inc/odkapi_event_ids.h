@@ -22,6 +22,7 @@ namespace odk
         EVENT_ID_OUT_OF_DISK_SPACE_ACTIVE,   //< sent after a low disk space exception
         EVENT_ID_OUT_OF_DISK_SPACE_INACTIVE, //< sent after a low disk space exception
         EVENT_ID_LICENSE_CHANGED,            //< sent after a the license was changed
+        EVENT_ID_ACQUISITION_STOPPING,       //< sent when acquisition is about to stop (channels still valid)
     };
 }
 

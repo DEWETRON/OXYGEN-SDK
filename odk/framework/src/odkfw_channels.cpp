@@ -745,6 +745,11 @@ namespace framework
             }
         }
 
+        return processConfigItemsChanged(affected_tasks);
+    }
+
+    std::uint64_t PluginChannels::processConfigItemsChanged(const std::set<PluginTaskPtr>& affected_tasks)
+    {
         for (const auto& affected_task : affected_tasks)
         {
             unregisterTask(*affected_task);
@@ -779,6 +784,16 @@ namespace framework
             std::copy(config.m_properties.begin(), config.m_properties.end(), std::back_inserter(props));
         }
         return processConfigItemsChanged(changes);
+    }
+
+    uint64_t PluginChannels::processChannelUpdateRequested()
+    {
+        std::set<PluginTaskPtr> affected_tasks;
+        for (const auto& [id, task] : m_tasks)
+        {
+           affected_tasks.insert(task);
+        }
+        return processConfigItemsChanged(affected_tasks);
     }
 
     uint64_t PluginChannels::reserveChannelIds(const odk::ChannelList& telegram)
@@ -986,6 +1001,10 @@ namespace framework
                     return processConfigItemsChanged(telegram);
                 }
                 return odk::error_codes::INVALID_INPUT_PARAMETER;
+            }
+            case odk::plugin_msg::NOTIFY_CHANNEL_UPDATE_REQUESTED:
+            {
+                return processChannelUpdateRequested();
             }
             case odk::plugin_msg::PLUGIN_RESERVE_CHANNEL_IDS:
             {
