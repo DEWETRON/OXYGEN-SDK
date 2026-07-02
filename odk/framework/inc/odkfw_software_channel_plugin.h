@@ -517,6 +517,7 @@ namespace framework
                 {
                     instance->shutDown();
                     func(instance.get(), params, return_list);
+                    instance->handleConfigChange();
                     break;
                 }
             }

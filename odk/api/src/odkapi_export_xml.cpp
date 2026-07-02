@@ -22,8 +22,8 @@ namespace
         {odk::RegisterExport::StartExportAction::NONE, "NONE"},
     };
 
-    using ValidationMessageSeveityMap = odk::SimpleBiMap <odk::ValidationMessage::Severity, std::string>;
-    static const ValidationMessageSeveityMap SEVERITY_MAP = {
+    using ValidationMessageSeverityMap = odk::SimpleBiMap <odk::ValidationMessage::Severity, std::string>;
+    static const ValidationMessageSeverityMap SEVERITY_MAP = {
         {odk::ValidationMessage::Severity::DEFAULT, "DEFAULT"},
         {odk::ValidationMessage::Severity::VALIDATION_INFO, "INFO"},
         {odk::ValidationMessage::Severity::VALIDATION_WARNING, "WARNING"},

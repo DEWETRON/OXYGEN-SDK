@@ -72,6 +72,7 @@ namespace odk
         m_display_name = xpugi::getText(node.child("DisplayName"));
         m_description = xpugi::getText(node.child("Description"));
         m_display_group = xpugi::getText(node.child("DisplayGroup"));
+        m_short_name = xpugi::getText(node.child("ShortName"));
 
         m_analysis_capable = [node]() {
             if (auto analysis_capability = node.child("AnalysisCapable"))
@@ -119,6 +120,7 @@ namespace odk
         xpugi::setText(xpugi::xml_element(register_elem.append_child("ServiceName")), m_service_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("DisplayName")), m_display_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("DisplayGroup")), m_display_group);
+        xpugi::setText(xpugi::xml_element(register_elem.append_child("ShortName")), m_short_name);
         xpugi::setText(xpugi::xml_element(register_elem.append_child("AnalysisCapable")), m_analysis_capable ? "True" : "False");
         xpugi::setText(xpugi::xml_element(register_elem.append_child("AcquisitionCapable")), m_acquisition_capable ? "True" : "False");
         xpugi::setText(xpugi::xml_element(register_elem.append_child("IsLicensed")), m_is_licensed ? "True" : "False");

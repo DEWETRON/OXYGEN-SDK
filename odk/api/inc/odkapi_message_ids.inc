@@ -53,6 +53,8 @@ BEGIN_GROUP(plugin_msg)
 
     MSG_ID(PLUGIN_RESERVE_CHANNEL_IDS,          GENERAL_FUNCTIONS, 0x00050a, "always 0", "<ChannelID/> (List of channel IDs)", " ", "0: no error");
 
+    MSG_ID(NOTIFY_CHANNEL_UPDATE_REQUESTED,     GENERAL_FUNCTIONS, 0x00050b, "always 0", " ", " ", "0: no error");
+
     // > Plugin
     // PLUGIN SUPPORT
     MSG_ID(NOTIFY_EVENT,               SUPPORT_FUNCTIONS, 0x000001, "Event ID", "event specific", "-",
@@ -80,7 +82,6 @@ BEGIN_GROUP(plugin_msg)
             "0 if okay; 1 for internal error; 2 for compatibility error");
     MSG_ID(EXPORT_FINALIZE,               DATA_EXPORT, 0x000205, "Plugin UNIQUE", "<reason?>", "-",
             "0 if okay; 1 for internal error; 2 for compatibility error");
-
 
 END_GROUP()
 
@@ -136,6 +137,14 @@ BEGIN_GROUP(host_msg)
             "-", "0 if okay; 1 for internal error; 2 for compatibility error");
     MSG_ID(AUTO_EXPORT_FOLDER,         DATA_EXPORT, 0x000106, "0", "<reason?>",
             "-", "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(REMOTE_CONTROL_REGISTER,            REMOTE_CONTROL, 0x000107, "0", "<XML>",
+            "<xml special settings?>",
+            "0 if okay; 1 for internal error; 2 for compatibility error; 3 already registered ...");
+    MSG_ID(REMOTE_CONTROL_UNREGISTER,          REMOTE_CONTROL, 0x000108, "0", "<REASON>", "-",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
+    MSG_ID(REMOTE_CONTROL_UPDATE,              REMOTE_CONTROL, 0x000109, "0", "<XML>",
+            "<xml special settings?>",
+            "0 if okay; 1 for internal error; 2 for compatibility error");
 
 
     // DATA_REQUEST key, settings - blocking

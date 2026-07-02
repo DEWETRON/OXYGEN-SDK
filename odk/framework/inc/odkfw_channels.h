@@ -187,9 +187,12 @@ namespace framework
 
         std::uint64_t processDataFormatChange(const odk::ChannelDataformatTelegram& request);
         std::uint64_t processConfigItemsChanged(const odk::ChannelConfigChangedTelegram& telegram);
-        std::uint64_t processConfigItemsChanged(const IfTaskWorker::ConfigItemChanges&);
+        std::uint64_t processConfigItemsChanged(const IfTaskWorker::ConfigItemChanges& changes);
+        std::uint64_t processConfigItemsChanged(const std::set<PluginTaskPtr>& affected_tasks);
 
-        uint64_t reserveChannelIds(const odk::ChannelList& telegram);
+        std::uint64_t processChannelUpdateRequested();
+
+        std::uint64_t reserveChannelIds(const odk::ChannelList& telegram);
 
         std::uint64_t pluginMessage(
             odk::PluginMessageId id,
@@ -233,7 +236,7 @@ namespace framework
     };
 
     template<class TargetClass>
-    void replacePropertyType(PluginChannel& channel, const std::string& property_name)
+    bool replacePropertyType(PluginChannel& channel, const std::string& property_name)
     {
         const auto original_prop =
             std::dynamic_pointer_cast<RawPropertyHolder>(channel.getProperty(property_name));
@@ -241,11 +244,13 @@ namespace framework
         {
             auto property_replacer = std::make_shared<TargetClass>(*original_prop);
             channel.replaceProperty(property_name, property_replacer);
+            return true;
         }
+        return false;
     }
 
     template<class TargetClass>
-    void replacePropertyType(const PluginChannelPtr& channel, const std::string& property_name)
+    bool replacePropertyType(const PluginChannelPtr& channel, const std::string& property_name)
     {
         const auto original_prop =
             std::dynamic_pointer_cast<RawPropertyHolder>(channel->getProperty(property_name));
@@ -253,7 +258,9 @@ namespace framework
         {
             auto property_replacer = std::make_shared<TargetClass>(*original_prop);
             channel->replaceProperty(property_name, property_replacer);
+            return true;
         }
+        return false;
     }
 
 }
