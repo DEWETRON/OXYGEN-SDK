@@ -23,6 +23,7 @@ logger = logging.getLogger("Oxygen-SDK-Setup")
 # List of OXYGEN-SDK dependencies
 dependencies_json = '''
 {
+    "Windows" : [
         {
             "name" : "Qt resource compiler (rcc)",
             "url" : "https://github.com/DEWETRON/OXYGEN-SDK/releases/download/OXYGEN-SDK-6.0.0/qt_resource_compiler.zip",
