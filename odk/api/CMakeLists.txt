@@ -58,6 +58,7 @@ set(ODK_API_SOURCE_FILES
     src/odkapi_data_set_xml.cpp
     src/odkapi_data_set_descriptor_xml.cpp
     src/odkapi_export_xml.cpp
+    src/odkapi_logging.cpp
     src/odkapi_marker_xml.cpp
     src/odkapi_measurement_header_data_xml.cpp
     src/odkapi_property_xml.cpp
