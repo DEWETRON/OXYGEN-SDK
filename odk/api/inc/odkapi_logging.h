@@ -21,10 +21,11 @@ namespace odk
 
     /**
      * Write a message to the log file
+     * Example: logMessage(host, LOGLEVEL_INFO, "Number of elements is %d", num_elements);
      *
      * @param host      pointer to host interface
      * @param log_level level as defined in odkapi_logging.h
-     * @param message   message string
+     * @param format    printf-style format string followed by variable parameters
      */
-    void logMessage(odk::IfHost* host, LogSeverityLevel log_level, const char* message);
+    void logMessage(odk::IfHost* host, LogSeverityLevel log_level, const char* format, ...);
 }

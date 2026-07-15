@@ -16,6 +16,7 @@ set(ODKAPI_TEST_SOURCES
   odkapi_data_set_test.cpp
   odkapi_block_descriptor_test.cpp
   odkapi_export_properties_test.cpp
+  odkapi_logging_test.cpp
   odkapi_property_test.cpp
   odkapi_start_telegram_test.cpp
   odkapi_stream_descriptor_test.cpp
