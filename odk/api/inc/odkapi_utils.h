@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <type_traits>
 #include <vector>
 
 namespace odk
@@ -30,22 +31,43 @@ namespace odk
 
     /**
      * Sends a odk::host_msg::ADD_CONTIGUOUS_SAMPLES message to the host
+     * @param host pointer to host interface
+     * @param local_channel_id local id of the channel to add samples to
+     * @param timestamp timestamp of the first sample
+     * @param data pointer to sample data
+     * @param data_size total size of the data in bytes (can be multiple samples)
+     * @return error code (0 == success)
      */
-    void addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size);
+    std::uint64_t addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size);
 
     /**
      * Sends a odk::host_msg::ADD_SAMPLE message to the host
+     * @param host pointer to host interface
+     * @param local_channel_id local id of the channel to add samples to
+     * @param timestamp timestamp of the sample
+     * @param data pointer to sample data
+     * @param data_size total size of the sample in bytes
+     * @return error code (0 == success)
      */
-    void addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size);
+    std::uint64_t addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size);
 
+    /**
+     * Sends a odk::host_msg::ADD_SAMPLE message to the host with a single sample
+     * @param host pointer to host interface
+     * @param local_channel_id local id of the channel to add samples to
+     * @param timestamp timestamp of the sample
+     * @param data reference to the sample
+     * @return error code (0 == success)
+     */
     template <class T>
-    inline void addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const T& data)
+    inline std::uint64_t addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const T& data)
     {
-        std::array<std::byte, sizeof(std::uint64_t) + sizeof(T)> sample;
+        static_assert(std::is_trivially_copyable_v<T>);
+        alignas(sizeof(std::uint64_t)) std::array<std::byte, sizeof(std::uint64_t) + sizeof(T)> sample;
         *reinterpret_cast<std::uint64_t*>(sample.data()) = timestamp;
         *reinterpret_cast<T*>(sample.data() + sizeof(std::uint64_t)) = data;
 
-        host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
+        return host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
     }
 
     void updateChannelState(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp);

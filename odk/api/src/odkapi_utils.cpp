@@ -70,7 +70,18 @@ namespace odk
         return time;
     }
 
-    void addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
+    std::uint64_t addSamples(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
+    {
+        constexpr size_t MAX_STACK_BYTES = 256;
+        if (data_size <= MAX_STACK_BYTES)
+        {
+            alignas(sizeof(std::uint64_t)) std::byte sample[MAX_STACK_BYTES + sizeof(std::uint64_t)];
+            *reinterpret_cast<std::uint64_t*>(sample + 0) = timestamp;
+            std::memcpy(sample + sizeof(std::uint64_t), data, data_size);
+
+            return host->messageSyncData(odk::host_msg::ADD_CONTIGUOUS_SAMPLES, local_channel_id, sample, data_size + sizeof(std::uint64_t), nullptr);
+        }
+        else
     {
         const std::uint8_t* timestamp_bytes = reinterpret_cast<const std::uint8_t*>(&timestamp);
         const std::uint8_t* data_bytes = reinterpret_cast<const std::uint8_t*>(data);
@@ -80,10 +91,22 @@ namespace odk
         sample.insert(sample.end(), timestamp_bytes, timestamp_bytes + sizeof(std::uint64_t));
         sample.insert(sample.end(), data_bytes, data_bytes + data_size);
 
-        host->messageSyncData(odk::host_msg::ADD_CONTIGUOUS_SAMPLES, local_channel_id, sample.data(), sample.size(), nullptr);
+            return host->messageSyncData(odk::host_msg::ADD_CONTIGUOUS_SAMPLES, local_channel_id, sample.data(), sample.size(), nullptr);
+    }
     }
 
-    void addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
+    std::uint64_t addSample(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp, const void* data, size_t data_size)
+    {
+        constexpr size_t MAX_STACK_BYTES = 256;
+        if (data_size <= MAX_STACK_BYTES)
+        {
+            alignas(sizeof(std::uint64_t)) std::byte sample[MAX_STACK_BYTES + sizeof(std::uint64_t)];
+            *reinterpret_cast<std::uint64_t*>(sample + 0) = timestamp;
+            std::memcpy(sample + sizeof(std::uint64_t), data, data_size);
+
+            return host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample, data_size + sizeof(std::uint64_t), nullptr);
+        }
+        else
     {
         const std::uint8_t* timestamp_bytes = reinterpret_cast<const std::uint8_t*>(&timestamp);
         const std::uint8_t* data_bytes = reinterpret_cast<const std::uint8_t*>(data);
@@ -93,7 +116,8 @@ namespace odk
         sample.insert(sample.end(), timestamp_bytes, timestamp_bytes + sizeof(std::uint64_t));
         sample.insert(sample.end(), data_bytes, data_bytes + data_size);
 
-        host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
+            return host->messageSyncData(odk::host_msg::ADD_SAMPLE, local_channel_id, sample.data(), sample.size(), nullptr);
+        }
     }
 
     void updateChannelState(odk::IfHost* host, std::uint32_t local_channel_id, std::uint64_t timestamp)
