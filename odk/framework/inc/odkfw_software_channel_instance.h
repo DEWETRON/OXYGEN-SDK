@@ -12,6 +12,7 @@
 
 #include <optional>
 #include <set>
+#include <string_view>
 
 namespace odk
 {
@@ -214,8 +215,10 @@ namespace framework
          */
         std::vector<PluginChannelPtr> getOutputChannels();
 
-
-        std::string getKey(const PluginChannelPtr& channel) const;
+        /**
+         * Return the instance-unique key of the channel
+         */
+        static std::string getKey(const PluginChannelPtr& channel);
 
         void enqueueRequest(std::uint16_t id, const odk::PropertyList& params);
 
@@ -270,16 +273,32 @@ namespace framework
          * @param key  instance unique key refering to the channel
          * @return created channel
          */
-        PluginChannelPtr addOutputChannel(const std::string& key, PluginChannelPtr group_channel = {});
+        PluginChannelPtr addOutputChannel(std::string_view key, PluginChannelPtr group_channel = {});
 
-        PluginChannelPtr addGroupChannel(const std::string& key, PluginChannelPtr group_channel);
+        /**
+         * Adds a group channel with the given key. A group channel does not have data.
+         *
+         * @param key instance unique key to identify the channel in instance scope, used e.g. on config load
+         * @return created channel
+         */
+        PluginChannelPtr addGroupChannel(std::string_view key, PluginChannelPtr group_channel);
 
         /**
          * Removes the given output channel
          *
          * @param channel  channel to remove
          */
-        void removeOutputChannel(PluginChannelPtr& channel);
+        void removeOutputChannel(PluginChannelPtr channel);
+
+        /**
+         * Sets the channel tree shown below the root channel of this instance
+         *  The children of the given node (groups via appendGroup(), output channels via appendChannel())
+         *  replace the tree derived from the output channels' group channels, so a grouping does not need
+         *  a separate group channel. Output channels that are not listed are not shown in the tree.
+         *  An empty topology restores the tree derived from the group channels.
+         *  The topology is sent to the host on the next synchronization.
+         */
+        void setTopology(const odk::UpdateChannelsTelegram::ChannelGroupInfo& topology);
 
         InputChannelPtr getInputChannelProxy(std::uint64_t channel_id);
         InputChannelPtr getInputChannelProxyChecked(std::uint64_t channel_id);
@@ -347,7 +366,7 @@ namespace framework
          * Get output channel by key specified on AddChannel
          * @param key
          */
-        PluginChannelPtr getOutputChannelByKey(const std::string& key) const;
+        PluginChannelPtr getOutputChannelByKey(std::string_view key) const;
 
         /**
          * Get all output-channel children of a given channel id

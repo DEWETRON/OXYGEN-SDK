@@ -12,6 +12,8 @@
 
 #include "odkuni_assert.h"
 
+#include <algorithm>
+
 namespace
 {
     template <class T>
@@ -59,6 +61,13 @@ namespace framework
     PluginChannel& PluginChannel::setSampleFormat(
         odk::ChannelDataformat::SampleOccurrence occurrence, odk::ChannelDataformat::SampleFormat format, std::uint32_t dimension)
     {
+        if (m_channel_info.m_dataformat_info.m_sample_occurrence == occurrence &&
+            m_channel_info.m_dataformat_info.m_sample_format == format &&
+            m_channel_info.m_dataformat_info.m_sample_dimension == dimension)
+        {
+            return *this;
+        }
+
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             m_channel_info.setSampleFormat(occurrence, format, dimension);
@@ -100,8 +109,13 @@ namespace framework
         return *this;
     }
 
-    PluginChannel& PluginChannel::setDefaultName(const std::string& name)
+    PluginChannel& PluginChannel::setDefaultName(std::string_view name)
     {
+        if (name == getDefaultName())
+        {
+            return *this;
+        }
+
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             m_channel_info.setDefaultName(name);
@@ -109,13 +123,14 @@ namespace framework
         }
         return *this;
     }
-    std::string PluginChannel::getDefaultName() const
+
+    PluginChannel& PluginChannel::setDomain(std::string_view name)
     {
-        return m_channel_info.m_default_name;
+        if (name == getDomain())
+    {
+            return *this;
     }
 
-    PluginChannel& PluginChannel::setDomain(const std::string& name)
-    {
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             m_channel_info.setDomain(name);
@@ -123,13 +138,14 @@ namespace framework
         }
         return *this;
     }
-    std::string PluginChannel::getDomain() const
-    {
-        return m_channel_info.m_domain;
-    }
 
     PluginChannel& PluginChannel::setValid(const bool valid)
     {
+        if (valid == m_channel_info.m_valid)
+        {
+            return *this;
+        }
+
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             m_channel_info.setValid(valid);
@@ -155,6 +171,11 @@ namespace framework
         return *this;
     }
 
+    PluginChannel& PluginChannel::setRange(double range_min, double range_max, std::string_view unit)
+    {
+        return setRange(odk::Range(range_min, range_max, unit));
+    }
+
     PluginChannel& PluginChannel::setSamplerate(const odk::Scalar& sample_rate)
     {
         if (m_change_listener && m_change_listener->configChangeAllowed())
@@ -175,7 +196,7 @@ namespace framework
         return *this;
     }
 
-    PluginChannel &PluginChannel::setUnit(const std::string& unit)
+    PluginChannel &PluginChannel::setUnit(std::string_view unit)
     {
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
@@ -201,16 +222,6 @@ namespace framework
             m_change_listener->onChannelSetupChanged(this);
         }
         return *this;
-    }
-
-    bool PluginChannel::isDeletable() const
-    {
-        return m_channel_info.m_deletable;
-    }
-
-    PluginChannelPtr PluginChannel::getLocalParent() const
-    {
-        return m_local_parent;
     }
 
     PluginChannel& PluginChannel::setLocalParent(PluginChannelPtr ch)
@@ -252,7 +263,7 @@ namespace framework
         if (m_change_listener && m_change_listener->configChangeAllowed())
         {
             auto it = std::find_if(m_properties.begin(), m_properties.end(),
-                [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
+                [&name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
                 {
                     return a_property.first == name;
                 }
@@ -280,7 +291,7 @@ namespace framework
 
     PluginChannel& PluginChannel::replaceProperty(const std::string& name, ChannelPropertyPtr prop)
     {
-        auto property_matcher = [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
+        auto property_matcher = [&name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
         {
             return a_property.first == name;
         };
@@ -302,7 +313,7 @@ namespace framework
 
     PluginChannel& PluginChannel::setProperty(const std::string& name, const odk::Property& prop)
     {
-        auto property_matcher = [name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
+        auto property_matcher = [&name](const std::pair<std::string, ChannelPropertyPtr>& a_property)
             {
                 return a_property.first == name;
             };
@@ -355,18 +366,36 @@ namespace framework
         return std::dynamic_pointer_cast<EditableStringProperty>(getProperty("Unit"));
     }
 
-    const std::vector<std::pair<std::string, ChannelPropertyPtr> > &PluginChannel::getProperties()
+    const std::vector<std::pair<std::string, ChannelPropertyPtr> > &PluginChannel::getProperties() const
     {
         return m_properties;
     }
 
-    const std::string PluginChannel::getName()
+    std::string PluginChannel::getName()
     {
         if (const auto name = getChannelParam<odk::IfStringValue>("Name"))
         {
             return name->getValue();
         }
         return {};
+    }
+
+    bool PluginChannel::getUsed() const
+    {
+        if (const auto used = getUsedProperty())
+        {
+            return used->getValue();
+        }
+        return false;
+    }
+
+    PluginChannel& PluginChannel::setUsed(bool value)
+    {
+        if (const auto used = getUsedProperty())
+        {
+            used->setValue(value);
+        }
+        return *this;
     }
 
     void PluginChannel::setChangeListener(IfPluginChannelChangeListener* l)
@@ -396,9 +425,9 @@ namespace framework
     PluginTask::PluginTask(std::uint64_t id, IfPluginTaskChangeListener* l, std::shared_ptr<IfTaskWorker> worker, std::uint64_t token)
         : m_change_listener(l)
         , m_id(id)
-        , m_registered(false)
         , m_worker(worker)
         , m_token(token)
+        , m_registered(false)
         , m_valid(false)
         , m_block_duration(0.0)
     {
@@ -435,7 +464,7 @@ namespace framework
         }
     }
 
-    uint64_t PluginTask::getID()
+    uint64_t PluginTask::getID() const
     {
         return m_id;
     }
@@ -481,6 +510,7 @@ namespace framework
     {
         ch->setChangeListener(nullptr);
         m_channels.erase(ch->m_channel_info.m_local_id);
+        m_list_topology.erase(ch->m_channel_info.m_local_id);
         m_channels_dirty = true;
 
         for (auto& c : m_channels)
@@ -498,6 +528,25 @@ namespace framework
             ODK_ASSERT(task);
             m_channel_to_task.erase(task_map_it);
             task->removeOutputChannel(ch);
+        }
+    }
+
+    void PluginChannels::setTopology(std::uint32_t root_local_id, const odk::UpdateChannelsTelegram::ChannelGroupInfo& topology)
+    {
+        if (topology.m_children.empty())
+        {
+            m_channels_dirty |= m_list_topology.erase(root_local_id) > 0;
+            return;
+        }
+
+        odk::UpdateChannelsTelegram::ChannelGroupInfo subtree(root_local_id);
+        subtree.m_children = topology.m_children;
+
+        auto& entry = m_list_topology[root_local_id];
+        if (entry != subtree)
+        {
+            entry = std::move(subtree);
+            m_channels_dirty = true;
         }
     }
 
@@ -550,7 +599,10 @@ namespace framework
                 ODK_ASSERT(channel.second->m_channel_info.m_local_parent_id == (channel.second->m_local_parent ? channel.second->m_local_parent->getLocalId() : -1));
                 telegram.appendChannel(channel.second->m_channel_info);
             }
-            telegram.m_list_topology = m_list_topology;
+            for (const auto& [_, subtree] : m_list_topology)
+            {
+                telegram.m_list_topology.m_children.push_back(subtree);
+            }
             {
                 const std::string xml = telegram.generate();
                 m_host->messageSyncData(odk::host_msg::SET_PLUGIN_OUTPUT_CHANNELS, 0, xml.data(), xml.size() + 1);

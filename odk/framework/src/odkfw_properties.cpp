@@ -104,7 +104,7 @@ namespace framework
         notifyChanged();
     }
 
-    void EditableUnsignedProperty::addOptions(unsigned int* values, std::size_t num)
+    void EditableUnsignedProperty::addOptions(const unsigned int* values, std::size_t num)
     {
         m_options.insert(m_options.end(), values, values + num);
         notifyChanged();
@@ -261,7 +261,7 @@ namespace framework
         }
     }
 
-    EditableScalarProperty::EditableScalarProperty(double val, const std::string& unit, double mi, double ma)
+    EditableScalarProperty::EditableScalarProperty(double val, std::string_view unit, double mi, double ma)
         : m_value(val)
         , m_unit(unit)
         , m_min(mi)
@@ -281,15 +281,22 @@ namespace framework
     {
         return { m_value, m_unit };
     }
+
     void EditableScalarProperty::setValue(const odk::Scalar& s)
     {
-        if (!(s == odk::Scalar(m_value, m_unit)))
+        setValue(s.m_val, s.m_unit);
+    }
+
+    void EditableScalarProperty::setValue(double value, std::string_view unit)
+    {
+        if (m_value != value || m_unit != unit)
         {
-            m_value = s.m_val;
-            m_unit = s.m_unit;
+            m_value = value;
+            m_unit = unit;
             notifyChanged();
         }
     }
+
     void EditableScalarProperty::setMinMaxConstraint(double min, double max)
     {
         if (m_min != min || m_max != max)
@@ -327,6 +334,45 @@ namespace framework
             case odk::Property::FLOATING_POINT_NUMBER:
                 v = value.getDoubleValue();
                 break;
+            case odk::Property::STRING:
+            {
+                const auto& string_value = value.getStringValue();
+                bool has_match = false;
+                for (const auto& [text, text_value] : m_string_options)
+                {
+                    if (text == string_value)
+                    {
+                        v = text_value;
+                        has_match = true;
+                        break;
+                    }
+                }
+                if (!has_match)
+                {
+                    // not a string option: accept a number, optionally followed by this property's unit
+                    try
+                    {
+                        std::size_t pos = 0;
+                        v = std::stod(string_value, &pos);
+                        if (!std::isfinite(v)) // "nan"/"inf" would slip through the range check below
+                        {
+                            return false;
+                        }
+
+                        auto remainder = std::string_view(string_value).substr(pos);
+                        const auto first = remainder.find_first_not_of(' ');
+                        remainder = (first == std::string_view::npos) ? std::string_view() : remainder.substr(first);
+                        if (!remainder.empty() && remainder != m_unit)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (const std::logic_error&)
+                    {
+                        return false;
+                    }
+                }
+            } break;
             default:
                 return false;
         }
@@ -342,14 +388,27 @@ namespace framework
     }
     void EditableScalarProperty::doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const
     {
+        bool has_match = false;
+        for (const auto& [text, text_value] : m_string_options)
+        {
+            if (text_value == m_value)
+            {
+                telegram.addProperty(property_name, text);
+                has_match = true;
+                break;
+            }
+        }
+        if (!has_match)
+        {
         telegram.addProperty(property_name, odk::Scalar(m_value, m_unit));
+        }
         if (hasValidRange())
         {
             telegram.addConstraint(property_name,
                 odk::UpdateConfigTelegram::Constraint::makeRange(odk::Scalar(m_min, m_unit), odk::Scalar(m_max, m_unit)));
         }
 
-        for (const auto& str_option : m_string_options)
+        for (const auto& [str_option, _] : m_string_options)
         {
             telegram.addConstraint(property_name,
                 odk::UpdateConfigTelegram::Constraint::makeOption(odk::Property("", str_option)));
@@ -380,9 +439,9 @@ namespace framework
         m_options.clear();
     }
 
-    void EditableScalarProperty::addStringOption(const std::string& val)
+    void EditableScalarProperty::addStringOption(std::string_view text, double value)
     {
-        m_string_options.push_back(val);
+        m_string_options.emplace_back(text, value);
     }
 
     EditableFilePathProperty::EditableFilePathProperty(const RawPropertyHolder& value)
@@ -513,17 +572,17 @@ namespace framework
         }
     }
 
-    StringProperty::StringProperty(const std::string& val)
+    StringProperty::StringProperty(std::string_view val)
         : m_value(val)
     {
     }
 
-    std::string StringProperty::getValue() const
+    const std::string& StringProperty::getValue() const
     {
         return m_value;
     }
 
-    void StringProperty::setValue(const std::string& str)
+    void StringProperty::setValue(std::string_view str)
     {
         if (str != m_value)
         {
@@ -553,7 +612,7 @@ namespace framework
         }
     }
 
-    EditableStringProperty::EditableStringProperty(const std::string& val)
+    EditableStringProperty::EditableStringProperty(std::string_view val)
         : StringProperty(val)
         , m_is_a_arbitrary_string(true)
     {
@@ -618,7 +677,7 @@ namespace framework
         }
     }
 
-    void EditableStringProperty::addOption(const std::string& val)
+    void EditableStringProperty::addOption(std::string_view val)
     {
         m_options.emplace_back(val);
     }

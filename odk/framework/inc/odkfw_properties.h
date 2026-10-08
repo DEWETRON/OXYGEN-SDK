@@ -5,6 +5,12 @@
 
 #include <regex>
 #include <limits>
+#include <string_view>
+#include <version>
+
+#ifdef __cpp_lib_span
+#include <span>
+#endif
 
 namespace odk
 {
@@ -117,7 +123,17 @@ namespace framework
 
         void addOption(unsigned int val);
 
-        void addOptions(unsigned int* values, std::size_t num);
+        void addOptions(const unsigned int* values, std::size_t num);
+
+#ifdef __cpp_lib_span
+        /**
+         * appends the given values as additional options, same as addOptions(values.data(), values.size())
+         */
+        void addOptions(std::span<const unsigned int> values)
+        {
+            addOptions(values.data(), values.size());
+        }
+#endif
 
         void clearOptions();
 
@@ -160,11 +176,12 @@ namespace framework
     {
     public:
         EditableScalarProperty(const RawPropertyHolder& value);
-        EditableScalarProperty(double val, const std::string& unit, double mi = 1.0, double ma = 0.0);
+        EditableScalarProperty(double val, std::string_view unit, double mi = 1.0, double ma = 0.0);
         EditableScalarProperty(odk::Scalar scalar, double mi = 1.0, double ma = 0.0);
 
         ODK_NODISCARD odk::Scalar getValue() const;
         void setValue(const odk::Scalar& s);
+        void setValue(double value, std::string_view unit);
 
         void setMinMaxConstraint(double min = 1, double max = 0);
 
@@ -176,9 +193,24 @@ namespace framework
 
         void addOptions(const double* values, std::size_t num);
 
+#ifdef __cpp_lib_span
+        /**
+         * appends the given values as additional options, same as addOptions(values.data(), values.size())
+         */
+        void addOptions(std::span<const double> values)
+        {
+            addOptions(values.data(), values.size());
+        }
+#endif
+
         void clearOptions();
 
-        void addStringOption(const std::string& val);
+        /**
+         * Adds a string alias (e.g. "Auto") for the given value
+         *  The host can select the alias instead of entering a number; whenever the property holds
+         *  exactly this value, it is reported to the host as the alias text instead of the scalar.
+         */
+        void addStringOption(std::string_view text, double value = 0);
 
     protected:
         void doAddToTelegram(odk::UpdateConfigTelegram::ChannelConfig& telegram, const std::string& property_name) const override;
@@ -189,7 +221,7 @@ namespace framework
         double m_min;
         double m_max;
         std::vector<double> m_options;
-        std::vector<std::string> m_string_options;
+        std::vector<std::pair<std::string, double>> m_string_options;
     };
 
     class EditableFilePathProperty : public PropertyBase
@@ -239,10 +271,10 @@ namespace framework
     public:
         StringProperty() = default;
         explicit StringProperty(const RawPropertyHolder& value);
-        explicit StringProperty(const std::string& val);
+        explicit StringProperty(std::string_view val);
 
-        ODK_NODISCARD std::string getValue() const;
-        void setValue(const std::string& str);
+        ODK_NODISCARD const std::string& getValue() const;
+        void setValue(std::string_view str);
 
         bool update(const odk::Property& value) override;
 
@@ -257,13 +289,13 @@ namespace framework
     {
     public:
         explicit EditableStringProperty(const RawPropertyHolder& value);
-        explicit EditableStringProperty(const std::string& val);
+        explicit EditableStringProperty(std::string_view val);
 
         void setRegEx(const std::string& regex);
 
         bool update(const odk::Property& value) override;
 
-        void addOption(const std::string& val);
+        void addOption(std::string_view val);
         void setArbitraryString(bool state);
 
         void clearOptions();
