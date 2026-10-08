@@ -16,7 +16,9 @@
 #include "odkfw_stream_reader.h"
 #include "odkuni_logger.h"
 #include "odkuni_assert.h"
+#include <algorithm>
 #include <limits>
+#include <map>
 #include <stdexcept>
 
 namespace odk
@@ -25,16 +27,17 @@ namespace framework
 {
     static const char* INSTANCE_CHANNEL_KEY = "SoftwareChannelInstanceKey";
     static const char* INSTANCE_ROOT_ID_KEY = "SoftwareChannelInstanceRootID";
+    static const char* USED_KEY = "Used";
 
     namespace
     {
 
-        void addDefaultProperties(PluginChannelPtr& channel, const std::string& instance_channel_key)
+        void addDefaultProperties(PluginChannel& channel, std::string_view instance_channel_key)
         {
             auto key_property = std::make_shared<EditableStringProperty>(instance_channel_key);
             key_property->setVisiblity("HIDDEN");
-            channel->addProperty(INSTANCE_CHANNEL_KEY, key_property);
-            channel->addProperty("Used", std::make_shared<BooleanProperty>(true));
+            channel.addProperty(INSTANCE_CHANNEL_KEY, key_property);
+            channel.addProperty(USED_KEY, std::make_shared<BooleanProperty>(true));
         }
 
     }
@@ -756,9 +759,9 @@ namespace framework
 
     PluginChannelPtr SoftwareChannelInstance::getRootChannel()
     {
-        if (m_output_channels.size() > 0)
+        if (!m_output_channels.empty())
         {
-            return m_output_channels[0];
+            return m_output_channels.front();
         }
 
         return {};
@@ -769,10 +772,14 @@ namespace framework
         return m_output_channels;
     }
 
-    std::string SoftwareChannelInstance::getKey(const PluginChannelPtr &channel) const
+    std::string SoftwareChannelInstance::getKey(const PluginChannelPtr &channel)
     {
-        const auto& key_property = std::dynamic_pointer_cast<EditableStringProperty>(channel->getProperty(INSTANCE_CHANNEL_KEY));
+        const auto key_property = std::dynamic_pointer_cast<EditableStringProperty>(channel->getProperty(INSTANCE_CHANNEL_KEY));
+        if (key_property)
+    {
         return key_property->getValue();
+    }
+        return {};
     }
 
     void SoftwareChannelInstance::enqueueRequest(uint16_t id, const PropertyList &params)
@@ -855,7 +862,7 @@ namespace framework
         }
     }
 
-    void SoftwareChannelInstance::removeOutputChannel(PluginChannelPtr& channel)
+    void SoftwareChannelInstance::removeOutputChannel(PluginChannelPtr channel)
     {
         m_task->removeOutputChannel(channel);
         m_plugin_channels->removeChannel(channel);
@@ -866,7 +873,12 @@ namespace framework
         }
     }
 
-    PluginChannelPtr SoftwareChannelInstance::addOutputChannel(const std::string& key, PluginChannelPtr group_channel)
+    void SoftwareChannelInstance::setTopology(const odk::UpdateChannelsTelegram::ChannelGroupInfo& topology)
+    {
+        m_plugin_channels->setTopology(getRootChannel()->getLocalId(), topology);
+    }
+
+    PluginChannelPtr SoftwareChannelInstance::addOutputChannel(std::string_view key, PluginChannelPtr group_channel)
     {
         if(getOutputChannelByKey(key))
         {
@@ -875,13 +887,13 @@ namespace framework
         }
 
         auto channel = m_plugin_channels->addChannel();
-        addDefaultProperties(channel, key);
+        addDefaultProperties(*channel, key);
         m_task->addOutputChannel(channel);
         m_output_channels.push_back(channel);
 
         if (group_channel)
         {
-            channel->setLocalParent(group_channel);
+            channel->setLocalParent(std::move(group_channel));
         }
         else
         {
@@ -891,10 +903,9 @@ namespace framework
         return channel;
     }
 
-    PluginChannelPtr SoftwareChannelInstance::addGroupChannel(const std::string& key, PluginChannelPtr group_channel)
+    PluginChannelPtr SoftwareChannelInstance::addGroupChannel(std::string_view key, PluginChannelPtr group_channel)
     {
-        auto channel = addOutputChannel(key, group_channel);
-        channel->addProperty("Used", std::make_shared<BooleanProperty>(true));
+        auto channel = addOutputChannel(key, std::move(group_channel));
         channel->setSampleFormat(
             odk::ChannelDataformat::SampleOccurrence::NEVER,
             odk::ChannelDataformat::SampleFormat::NONE,
@@ -963,8 +974,7 @@ namespace framework
                 {
                     const auto parent_id = parent_id_it->second;
 
-                    const auto& parent_channel = getOutputChannel(parent_id);
-                    auto output_channel = addOutputChannel(key, parent_channel);
+                    auto output_channel = addOutputChannel(key, getOutputChannel(parent_id));
                     output_channel->setDefaultName(requested_channel.m_default_name)
                         .setSampleFormat(requested_channel.m_dataformat_info.m_sample_occurrence,
                             requested_channel.m_dataformat_info.m_sample_format,
@@ -1036,10 +1046,10 @@ namespace framework
         return {};
     }
 
-    PluginChannelPtr SoftwareChannelInstance::getOutputChannelByKey(const std::string& key) const
+    PluginChannelPtr SoftwareChannelInstance::getOutputChannelByKey(std::string_view key) const
     {
         auto match = std::find_if(m_output_channels.begin(), m_output_channels.end(),
-                                  [&key](const odk::framework::PluginChannelPtr& output_channel)
+                                  [key](const odk::framework::PluginChannelPtr& output_channel)
         {
             const auto& key_property = std::dynamic_pointer_cast<EditableStringProperty>(output_channel->getProperty(INSTANCE_CHANNEL_KEY));
             return key == key_property->getValue();
