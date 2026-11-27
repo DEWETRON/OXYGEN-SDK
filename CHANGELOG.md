@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file
 
+## [8.3.0] - 2026-11-27
+### Added
+- Framework: Support for channel topology
+
+### Changed
+- Framework: Optimized channel updates
+
+## [8.2.0] - 2026-07-16
+### Added
+- Api: use odk::logFormat to log formatted strings to the log file
+- Api: Support for `EVENT_ID_ACQUISITION_STOPPING`
+
+### Changed
+- Api: speedup of utility functions for sample-adding
+
 ## [7.3.2] - 2024-12-02
 ### Added
 - Api: Export channel selection
