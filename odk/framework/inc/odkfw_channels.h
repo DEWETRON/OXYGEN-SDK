@@ -46,22 +46,23 @@ namespace framework
         PluginChannel& setSimpleTimebase(double frequency);
         PluginChannel& setTimebaseWithOffset(double frequency, double offset);
 
-        PluginChannel& setDefaultName(const std::string& name);
-        std::string getDefaultName() const;
+        PluginChannel& setDefaultName(std::string_view name);
+        const std::string& getDefaultName() const { return m_channel_info.m_default_name; }
 
-        PluginChannel& setDomain(const std::string& name);
-        std::string getDomain() const;
+        PluginChannel& setDomain(std::string_view name);
+        const std::string& getDomain() const { return m_channel_info.m_domain; }
 
         PluginChannel& setDeletable(bool deletable);
-        bool isDeletable() const;
+        bool isDeletable() const { return m_channel_info.m_deletable; }
 
-        PluginChannelPtr getLocalParent() const;
+        const PluginChannelPtr& getLocalParent() const { return m_local_parent; }
         PluginChannel& setLocalParent(PluginChannelPtr ch);
 
         PluginChannel& setValid(const bool valid);
         PluginChannel& setRange(const odk::Range& range);
+        PluginChannel& setRange(double range_min, double range_max, std::string_view unit);
         PluginChannel& setSamplerate(const odk::Scalar& sample_rate);
-        PluginChannel& setUnit(const std::string& unit);
+        PluginChannel& setUnit(std::string_view unit);
 
         PluginChannel& addProperty(const std::string& name, ChannelPropertyPtr prop);
         PluginChannel& addProperty(const std::string& name, const odk::Property& prop);
@@ -75,13 +76,26 @@ namespace framework
         void updatePropertyTypes();
 
         std::shared_ptr<BooleanProperty> getUsedProperty() const;
+        /**
+         * @brief Returns if the channel is currently used (turned on)
+         */
+        bool getUsed() const;
+        /**
+         * @brief turns the channel on or off
+         * @param value true for on, false for off
+         */
+        PluginChannel& setUsed(bool value);
+
         std::shared_ptr<RangeProperty> getRangeProperty() const;
         std::shared_ptr<EditableScalarProperty> getSamplerateProperty() const;
         std::shared_ptr<EditableStringProperty> getUnitProperty() const;
 
-        const std::vector<std::pair<std::string, ChannelPropertyPtr>>& getProperties();
+        const std::vector<std::pair<std::string, ChannelPropertyPtr>>& getProperties() const;
 
-        const std::string getName();
+        /**
+         * @brief returns the current name of the channel
+         */
+        std::string getName();
 
     protected:
         void setChangeListener(IfPluginChannelChangeListener* l);
@@ -92,8 +106,8 @@ namespace framework
         odk::detail::ApiObjectPtr<const T> getChannelParam(const char* const key)
         {
             std::string channel_context = odk::queries::OxygenChannels;
-            channel_context += "#";
-            channel_context += odk::to_string(getLocalId());
+            channel_context += '#';
+            channel_context += std::to_string(getLocalId());
 
             return m_host->getValue<T>(channel_context.c_str(), key);
         }
@@ -102,8 +116,8 @@ namespace framework
         odk::detail::ApiObjectPtr<const T> getChannelConfigParam(const char* const key)
         {
             std::string channel_context = odk::queries::OxygenChannels;
-            channel_context += "#";
-            channel_context += odk::to_string(getLocalId());
+            channel_context += '#';
+            channel_context += std::to_string(getLocalId());
             channel_context += "#Config#";
             channel_context += key;
 
@@ -130,7 +144,7 @@ namespace framework
 
         void removeOutputChannel(PluginChannelPtr ch);
 
-        std::uint64_t getID();
+        std::uint64_t getID() const;
 
         bool isValid() const;
         void setValid(bool valid);
@@ -146,10 +160,10 @@ namespace framework
         std::uint64_t m_id;
         std::vector<std::uint64_t> m_input_channels;
         std::vector<PluginChannelPtr> m_output_channels;
-        bool m_registered;
 
         std::shared_ptr<IfTaskWorker> m_worker;
         std::uint64_t m_token;
+        bool m_registered;
         bool m_valid;
         double m_block_duration;
     };
@@ -163,6 +177,16 @@ namespace framework
         PluginChannelPtr addChannel();
 
         void removeChannel(PluginChannelPtr ch);
+
+        /**
+         * Sets the list topology below the given root channel (e.g. groups without a backing group channel)
+         *  children of the given topology node become the children of the root channel in the host's channel tree,
+         *  replacing the tree derived from the channels' local parents; channels not listed there are not shown.
+         *  An empty topology restores the parent-derived tree.
+         *  Subtrees of different root channels (e.g. of other instances) are independent.
+         *  The topology is sent to the host on the next synchronize().
+         */
+        void setTopology(std::uint32_t root_local_id, const odk::UpdateChannelsTelegram::ChannelGroupInfo& topology);
 
         std::shared_ptr<PluginTask> addTask(IfTaskWorker* worker, uint64_t token = 0);
 
@@ -225,7 +249,7 @@ namespace framework
         std::map<std::uint32_t, PluginChannelPtr> m_channels;
         std::set<std::uint32_t> m_ids;
         std::set<std::uint32_t> m_reseved_ids;
-        odk::UpdateChannelsTelegram::ChannelGroupInfo m_list_topology;
+        std::map<std::uint32_t, odk::UpdateChannelsTelegram::ChannelGroupInfo> m_list_topology; //< per root channel local id
 
         std::map<uint64_t, PluginTaskPtr> m_tasks;
         uint64_t m_next_task_id = 0;
@@ -265,7 +289,3 @@ namespace framework
 
 }
 }
-
-
-
-

@@ -135,6 +135,30 @@ BOOST_AUTO_TEST_CASE(ScalarProperty)
     const auto& p2_val = p2.getScalarValue();
     BOOST_CHECK_EQUAL(p2_val.m_val, 123);
     BOOST_CHECK_EQUAL(p2_val.m_unit, "Unit");
+
+    // Operator tests
+    BOOST_CHECK(p2 == p2);
+    BOOST_CHECK_EQUAL(default_constructed == p2_val, false);
+
+    const odk::Scalar p3_val(123.4, "Unit");
+    const odk::Scalar p4_val(123.4, "unit");
+    BOOST_CHECK_EQUAL(p2_val == p3_val, false);
+    BOOST_CHECK_EQUAL(p2_val <  p3_val, true);
+    BOOST_CHECK_EQUAL(p2_val <= p3_val, true);
+    BOOST_CHECK_EQUAL(p2_val >= p3_val, false);
+    BOOST_CHECK_EQUAL(p2_val >  p3_val, false);
+
+    BOOST_CHECK_EQUAL(p3_val == p3_val, true);
+    BOOST_CHECK_EQUAL(p3_val <  p3_val, false);
+    BOOST_CHECK_EQUAL(p3_val <= p3_val, true);
+    BOOST_CHECK_EQUAL(p3_val >= p3_val, true);
+    BOOST_CHECK_EQUAL(p3_val >  p3_val, false);
+
+    BOOST_CHECK_EQUAL(p4_val == p3_val, false);
+    BOOST_CHECK_EQUAL(p4_val <  p3_val, false);
+    BOOST_CHECK_EQUAL(p4_val <= p3_val, false);
+    BOOST_CHECK_EQUAL(p4_val >= p3_val, false);
+    BOOST_CHECK_EQUAL(p4_val >  p3_val, false);
 }
 
 BOOST_AUTO_TEST_CASE(ScalarPropertyPrecision)

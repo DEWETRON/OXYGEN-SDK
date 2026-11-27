@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string_view>
 #include <vector>
 
 namespace odk
@@ -17,9 +18,13 @@ namespace odk
     struct Scalar
     {
         Scalar() noexcept : m_val(0) {}
-        Scalar(double val, std::string unit);
+        Scalar(double val, std::string_view unit);
 
+        ODK_NODISCARD bool operator<(Scalar const& other) const;
+        ODK_NODISCARD bool operator<=(Scalar const& other) const;
         ODK_NODISCARD bool operator==(Scalar const& other) const;
+        ODK_NODISCARD bool operator>=(Scalar const& other) const;
+        ODK_NODISCARD bool operator>(Scalar const& other) const;
 
         double m_val;
         std::string m_unit;
@@ -30,9 +35,9 @@ namespace odk
         using value_type = odk::rational<int64_t>;
         Rational();
 
-        Rational(const value_type& val, const std::string& unit);
+        Rational(const value_type& val, std::string_view unit);
 
-        bool operator==(Rational const& other) const;
+        ODK_NODISCARD bool operator==(Rational const& other) const;
 
         value_type m_val;
         std::string m_unit;
@@ -40,11 +45,11 @@ namespace odk
 
     struct DecoratedNumber
     {
-        DecoratedNumber();
+        DecoratedNumber() noexcept;
 
-        DecoratedNumber(const double& val, const std::string& prefix, const std::string& suffix);
+        DecoratedNumber(double val, std::string_view prefix, std::string_view suffix);
 
-        bool operator==(DecoratedNumber const& other) const;
+        ODK_NODISCARD bool operator==(DecoratedNumber const& other) const;
 
         double m_val;
         std::string m_prefix;
@@ -53,9 +58,9 @@ namespace odk
 
     struct Range
     {
-        Range();
-        Range(const double& min, const double& max, const std::string& min_unit, const std::string& max_unit);
-        Range(const double& min, const double& max, const std::string& unit);
+        Range() noexcept;
+        Range(double min, double max, std::string_view min_unit, std::string_view max_unit);
+        Range(double min, double max, std::string_view unit);
 
         bool operator==(Range const& other) const;
         bool operator!=(Range const& other) const;
@@ -97,7 +102,7 @@ namespace odk
         {
         }
 
-        bool operator==(ValueList<ValueType> const& rhs) const
+        ODK_NODISCARD bool operator==(ValueList<ValueType> const& rhs) const
         {
             if (m_values.size() != rhs.m_values.size())
             {
@@ -116,7 +121,7 @@ namespace odk
             return true;
         }
 
-        bool operator!=(ValueList<ValueType> const& rhs) const
+        ODK_NODISCARD bool operator!=(ValueList<ValueType> const& rhs) const
         {
             return !(*this == rhs);
         }
@@ -250,8 +255,8 @@ namespace odk
         /**
          * Sets the value of this property as string
          */
-        void setValue(const std::string& value);
-        void setValue(const std::string& value, StringFormat format);
+        void setValue(std::string_view value);
+        void setValue(std::string_view value, StringFormat format);
 
         /**
          * Returns the value of this property as string
@@ -425,10 +430,10 @@ namespace odk
 
         ODK_NODISCARD ChannelIDList getChannelIDListValue() const;
 
-        void setDateValue(const std::string& date);
-        void setDateTimeValue(const std::string& date_time);
-        void setColorValue(const std::string& color);
-        void setGeoCoordinateValue(const std::string& coord);
+        void setDateValue(std::string_view date);
+        void setDateTimeValue(std::string_view date_time);
+        void setColorValue(std::string_view color);
+        void setGeoCoordinateValue(std::string_view coord);
         /**
          * Returns the value of this property as string
          * If this property is not of type POINT_LIST, an exception is thrown
@@ -454,7 +459,7 @@ namespace odk
 
     private:
         std::string toXMLType(Type type) const;
-        Type fromXMLType(const std::string& xml_type) const;
+        Type fromXMLType(std::string_view xml_type) const;
 
         bool parseEnum(const pugi::xml_node& type_node);
 
@@ -488,7 +493,7 @@ namespace odk
         void appendChannelIdListNode(pugi::xml_node parent) const;
         ChannelIDList parseChannelIdListNode(const pugi::xml_node& type_node);
 
-        std::string unitToString(const std::string& unit_string) const;
+        static std::string unitToString(std::string_view unit_string);
 
         std::string m_name;
         Type m_type;

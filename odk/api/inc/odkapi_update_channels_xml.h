@@ -31,7 +31,7 @@ namespace odk
 
             ChannelGroupInfo() = default;
 
-            explicit ChannelGroupInfo(const std::string& name)
+            explicit ChannelGroupInfo(std::string_view name)
                 : m_group_name(name)
             {
             }
@@ -52,14 +52,12 @@ namespace odk
 
             ChannelGroupInfo& appendChannel(std::uint32_t local_id)
             {
-                m_children.emplace_back(local_id);
-                return m_children.back();
+                return m_children.emplace_back(local_id);
             }
 
-            ChannelGroupInfo& appendGroup(const std::string& name)
+            ChannelGroupInfo& appendGroup(std::string_view name)
             {
-                m_children.emplace_back(name);
-                return m_children.back();
+                return m_children.emplace_back(std::string(name));
             }
 
             ODK_NODISCARD bool operator==(const ChannelGroupInfo& other) const
@@ -120,13 +118,13 @@ namespace odk
                 return *this;
             }
 
-            PluginChannelInfo& setDefaultName(const std::string& name)
+            PluginChannelInfo& setDefaultName(std::string_view name)
             {
                 m_default_name = name;
                 return *this;
             }
 
-            PluginChannelInfo& setDomain(const std::string& name)
+            PluginChannelInfo& setDomain(std::string_view name)
             {
                 m_domain = name;
                 return *this;
@@ -180,7 +178,7 @@ namespace odk
         ODK_NODISCARD const UpdateChannelsTelegram::PluginChannelInfo* getChannel(std::uint32_t local_id) const;
         void removeChannel(std::uint32_t local_id);
 
-        bool parse(const std::string_view& xml_string);
+        bool parse(std::string_view xml_string);
         ODK_NODISCARD std::string generate() const;
         ODK_NODISCARD bool operator==(const UpdateChannelsTelegram& other) const;
     };

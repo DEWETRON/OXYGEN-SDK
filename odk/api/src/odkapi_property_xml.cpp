@@ -177,7 +177,7 @@ namespace odk
         return STRING_UNKNOWN;
     }
 
-    void Property::setValue(const std::string& value)
+    void Property::setValue(std::string_view value)
     {
         m_type = STRING;
         m_string_value = value;
@@ -185,7 +185,7 @@ namespace odk
         m_value.reset();
     }
 
-    void Property::setValue(const std::string& value, StringFormat format)
+    void Property::setValue(std::string_view value, StringFormat format)
     {
         m_type = STRING;
         m_string_value = value;
@@ -212,7 +212,7 @@ namespace odk
 
     void Property::setValue(const char* value)
     {
-        setValue(std::string(value));
+        setValue(std::string_view(value));
     }
 
     void Property::setValue(int value)
@@ -528,28 +528,28 @@ namespace odk
         return *std::static_pointer_cast<ChannelIDList>(m_value);
     }
 
-    void Property::setDateValue(const std::string& date)
+    void Property::setDateValue(std::string_view date)
     {
         m_type = DATE;
         m_string_value = date;
         m_value.reset();
     }
 
-    void Property::setDateTimeValue(const std::string& date_time)
+    void Property::setDateTimeValue(std::string_view date_time)
     {
         m_type = DATETIME;
         m_string_value = date_time;
         m_value.reset();
     }
 
-    void Property::setColorValue(const std::string& color)
+    void Property::setColorValue(std::string_view color)
     {
         m_type = COLOR;
         m_string_value = color;
         m_value.reset();
     }
 
-    void Property::setGeoCoordinateValue(const std::string& coord)
+    void Property::setGeoCoordinateValue(std::string_view coord)
     {
         m_type = GEO_COORDINATE;
         m_string_value = coord;
@@ -924,7 +924,7 @@ namespace odk
         }
     }
 
-    Property::Type Property::fromXMLType(const std::string& xml_type) const
+    Property::Type Property::fromXMLType(std::string_view xml_type) const
     {
         if (xml_type == "StringValue")
         {
@@ -1507,13 +1507,13 @@ namespace odk
         return list;
     }
 
-    std::string Property::unitToString(const std::string& unit_string) const
+    std::string Property::unitToString(std::string_view unit_string)
     {
         if (unit_string.empty())
         {
             return {};
         }
-        return " " + unit_string;
+        return " " + std::string(unit_string);
     }
     std::string Property::valueToString() const
     {
@@ -1632,9 +1632,9 @@ namespace odk
         }
     }
 
-    Scalar::Scalar(double val, std::string unit)
+    Scalar::Scalar(double val, std::string_view unit)
         : m_val(val)
-        , m_unit(std::move(unit))
+        , m_unit(unit)
     {
     }
 
@@ -1644,12 +1644,36 @@ namespace odk
             && (m_unit == other.m_unit);
     }
 
+    bool Scalar::operator<(Scalar const& other) const
+    {
+        return (m_val < other.m_val)
+            && (m_unit == other.m_unit);
+    }
+
+    bool Scalar::operator<= (Scalar const& other) const
+    {
+        return (m_val <= other.m_val)
+            && (m_unit == other.m_unit);
+    }
+
+    bool Scalar::operator>=(Scalar const& other) const
+    {
+        return (m_val >= other.m_val)
+            && (m_unit == other.m_unit);
+    }
+
+    bool Scalar::operator>(Scalar const& other) const
+    {
+        return (m_val > other.m_val)
+            && (m_unit == other.m_unit);
+    }
+
     Rational::Rational()
         : m_val()
         , m_unit()
     {}
 
-    Rational::Rational(const value_type & val, const std::string & unit)
+    Rational::Rational(const value_type & val, std::string_view unit)
         : m_val(val)
         , m_unit(unit)
     {
@@ -1661,14 +1685,14 @@ namespace odk
             && (m_unit == other.m_unit);
     }
 
-    DecoratedNumber::DecoratedNumber()
+    DecoratedNumber::DecoratedNumber() noexcept
         : m_val(0.0)
         , m_prefix()
         , m_suffix()
     {
     }
 
-    DecoratedNumber::DecoratedNumber(const double& val, const std::string& prefix, const std::string& suffix)
+    DecoratedNumber::DecoratedNumber(double val, std::string_view prefix, std::string_view suffix)
         : m_val(val)
         , m_prefix(prefix)
         , m_suffix(suffix)
@@ -1682,14 +1706,14 @@ namespace odk
             && (m_suffix == other.m_suffix);
     }
 
-    Range::Range()
+    Range::Range() noexcept
         : m_min(0.0)
         , m_max(0.0)
-        , m_min_unit("")
-        , m_max_unit("")
+        , m_min_unit()
+        , m_max_unit()
     {}
 
-    Range::Range(const double& min, const double& max, const std::string & min_unit, const std::string & max_unit)
+    Range::Range(double min, double max, std::string_view min_unit, std::string_view max_unit)
         : m_min(min)
         , m_max(max)
         , m_min_unit(min_unit)
@@ -1697,7 +1721,7 @@ namespace odk
     {
     }
 
-    Range::Range(const double& min, const double& max, const std::string & unit)
+    Range::Range(double min, double max, std::string_view unit)
         : m_min(min)
         , m_max(max)
         , m_min_unit(unit)

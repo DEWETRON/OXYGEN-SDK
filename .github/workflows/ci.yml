@@ -8,6 +8,7 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-26.04, ubuntu-24.04, ubuntu-22.04]
 
@@ -15,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
-    - uses: awalsh128/cache-apt-pkgs-action@latest
-      with:
-        packages: qtbase5-dev libboost-test-dev valgrind clang-tidy
-        version: 1.0
+    - name: Install packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qtbase5-dev libboost-test-dev valgrind clang-tidy
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++ -DWITH_ODK_TESTS=ON -DWITH_CLANG_TIDY=ON -DWITH_ODK_INSTALL=ON
     - name: Build
